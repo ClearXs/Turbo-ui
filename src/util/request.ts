@@ -1,8 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import sysconfig from '@/config/config';
-import { get as localget } from '@/util/local';
+import * as local from '@/util/local';
 import { R } from '@/api/api.interface';
 import { Notification } from '@douyinfe/semi-ui';
+import * as headers from './headers';
 
 axios.defaults.baseURL = sysconfig.request.baseUrl;
 axios.defaults.timeout = sysconfig.request.timeout;
@@ -10,7 +11,11 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 axios.interceptors.request.use((config) => {
   // 设置请求头
-  config.headers.set('X-Authentication', localget('X-Authentication') || '');
+  config.headers.set(
+    headers.Authentication,
+    local.get(headers.Authentication) || '',
+  );
+  config.headers.set(headers.Tenant, local.get(headers.Tenant) || '');
   return config;
 });
 
@@ -35,9 +40,7 @@ const errorCode: Record<number, string> = {
 
 function handleSuccess<T>(res: AxiosResponse): Promise<AxiosResponse> {
   const status = res.status;
-  const data = res.data || ({} as R<T>);
   if (status === 200) {
-    const msg = data.msg || '';
     // 消息提示
     return Promise.resolve(res);
   } else {
@@ -50,17 +53,16 @@ function handleSuccess<T>(res: AxiosResponse): Promise<AxiosResponse> {
  * reponse错误处理，包含消息提示
  * @param err
  */
-function handleResError<T>(err: AxiosError, errorValue?: R<T>): Promise<R<T>> {
+function handleResError<T>(err: AxiosError, errorValue?: R<T>) {
   // 1.消息提示
-  const msg = errorCode[err.status || 500];
+  const msg = err.response?.data?.message || errorCode[err.status || 500];
   Notification.error({
     duration: 3,
     position: 'top',
     content: msg,
   });
   // 2.返回错误数据
-
-  return Promise.resolve(errorValue || ({} as R<T>));
+  return Promise.resolve(errorValue || err.response);
 }
 
 /**

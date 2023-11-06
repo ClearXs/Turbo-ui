@@ -5,7 +5,15 @@ export type User = TenantEntity & {
   password: string;
   email: string;
   name: string;
-  age: number;
+  phone: number;
+};
+
+export type LoginInfo = {
+  captchaId: string;
+  username: string;
+  password: string;
+  tenant?: string;
+  captcha: string;
 };
 
 export type Captcha = {

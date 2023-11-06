@@ -4,8 +4,6 @@ import { resolve } from 'path';
 
 const apiUrl = process.env.API_URL || 'http://localhost:8600';
 
-console.log(apiUrl);
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -23,7 +21,7 @@ export default defineConfig({
       '/api': {
         target: apiUrl,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (apiPath) => apiPath.replace(/^\/api/, ''),
       },
     },
   },
@@ -34,5 +32,9 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: 'src/setupTests.ts',
     clearMocks: true,
+  },
+  define: {
+    'process.env': process.env,
+    'process.cwd': process.cwd,
   },
 });

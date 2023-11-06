@@ -1,7 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import 'tailwindcss/tailwind.css';
 import React from 'react';
-import { RouterProvider } from 'react-router-dom';
 import AppRouter from '@/router/router';
 import { RecoilRoot } from 'recoil';
 
@@ -11,7 +10,7 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <RecoilRoot>
-      <RouterProvider router={AppRouter} />
+      <AppRouter />
     </RecoilRoot>
   </React.StrictMode>,
 );

@@ -1,5 +1,5 @@
 import { get, post } from '@/util/request';
-import { Captcha, User } from '@/api/user.interface';
+import { Captcha, User, LoginInfo } from '@/api/user.interface';
 import { Exceptions, R } from './api.interface';
 
 /**
@@ -9,15 +9,13 @@ import { Exceptions, R } from './api.interface';
  * @param code 验证码
  * @returns user of collection
  */
-export function login(
-  params: Record<string, string | number>,
-): Promise<R<string>> {
+export function loginApi(params: LoginInfo): Promise<R<Record<string, any>>> {
   return post('/api/auth/login', params).then((res) => {
     return res.data;
   });
 }
 
-export function register(user: User): Promise<R<string>> {
+export function registerApi(user: User): Promise<R<Record<string, any>>> {
   return post('/api/auth/register', user).then((res) => {
     return res.data;
   });
@@ -27,7 +25,7 @@ export function register(user: User): Promise<R<string>> {
  * 获取验证码
  * @returns promise for captcha
  */
-export function captcha(): Promise<R<Captcha>> {
+export function captchaApi(): Promise<R<Captcha>> {
   return get('/api/auth/captcha').then((res) => {
     return res.data || ({} as R<Captcha>);
   });
