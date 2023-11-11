@@ -1,12 +1,22 @@
-import { Config, Request } from '@/config/config.interface'
+export type Config = {
+  env: string;
+  request: Request;
+};
 
-const env: string = process.env.NODE_ENV || 'development'
+export type Request = {
+  // 请求默认头
+  baseUrl: string;
+  // 请求超时时间
+  timeout: number;
+};
+
+const env: string = process.env.NODE_ENV || 'development';
 
 export default {
   env,
   request: {
     baseUrl: '/',
     // 默认超时时间为10s
-    timeout: 100000
-  } as Request
-} as Config
+    timeout: 100000,
+  } as Request,
+} as Config;

@@ -12,24 +12,29 @@ import './theme/default.css';
 import { useSetRecoilState } from 'recoil';
 import { CurrentUserRouteState } from './store/menu';
 import { useEffect } from 'react';
-import { getCurrentUserMenuApi } from './api/menu';
 import { get } from './util/local';
 import { Authentication } from './util/headers';
-import { useLoaderData } from 'react-router-dom';
-import { TurboRouter, menuToRouterObject } from './router/router';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import { TurboRoute, menuToRouterObject } from './router/router';
 import Sidebar from './components/Sidebar';
 import MotionContent from './components/MotionContent';
+import { useAddUserMenu, userFindUserMenu } from './hook/menu';
+import useAuthApi from './api/auth';
 
 export default function App(): React.ReactNode {
+  const navigate = useNavigate();
+  const authApi = useAuthApi();
+  const findUserMenu = userFindUserMenu();
+  const addUserMenu = useAddUserMenu();
   const setUserRouters = useSetRecoilState(CurrentUserRouteState);
   useEffect(() => {
-    getCurrentUserMenuApi().then((res) => {
+    authApi.getCurrentUserMenu().then((res) => {
       res.code === 200 && setUserRouters(menuToRouterObject(res.data || []));
     });
     // 重新加载组件需要重新考虑变更条件
   }, [get(Authentication)]);
-  const userRoutes = useLoaderData() as TurboRouter[];
-  const { Header, Footer, Content } = Layout;
+  const userRoutes = useLoaderData() as TurboRoute[];
+  const { Header, Footer } = Layout;
   return (
     <Layout className="h-100vh w-100vw">
       <Sidebar routes={userRoutes} />
@@ -52,6 +57,7 @@ export default function App(): React.ReactNode {
                     <Dropdown.Item>暗色</Dropdown.Item>
                   </Dropdown.Menu>
                 }
+                clickToHide
               >
                 <Button
                   theme="borderless"
@@ -73,6 +79,7 @@ export default function App(): React.ReactNode {
                     <Dropdown.Item>日本語</Dropdown.Item>
                   </Dropdown.Menu>
                 }
+                clickToHide
               >
                 <Button
                   theme="borderless"
@@ -99,11 +106,20 @@ export default function App(): React.ReactNode {
                 trigger={'click'}
                 render={
                   <Dropdown.Menu>
-                    <Dropdown.Item>个人信息</Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => {
+                        const route = findUserMenu('/profile');
+                        route && addUserMenu(route);
+                        navigate('/profile');
+                      }}
+                    >
+                      个人档案
+                    </Dropdown.Item>
                     <Dropdown.Item>修改密码</Dropdown.Item>
                     <Dropdown.Item>退出登陆</Dropdown.Item>
                   </Dropdown.Menu>
                 }
+                clickToHide
               >
                 <Avatar color="orange" size="small">
                   YJ

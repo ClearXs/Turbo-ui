@@ -1,4 +1,3 @@
-import { registerApi } from '@/api/user';
 import {
   Button,
   Form,
@@ -11,9 +10,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
+import useUserApi from '@/api/user';
 
 const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
+  const userApi = useUserApi();
   const [loding, setLoding] = useState<boolean>(false);
   const [registerTabKey, setRegisterKey] = useState<string>('default');
 
@@ -37,7 +38,7 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               <Form
                 onSubmit={async (data) => {
                   setLoding(true);
-                  const res = await registerApi({
+                  const res = await userApi.register({
                     ...data,
                     tenantId,
                   });

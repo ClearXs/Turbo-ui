@@ -1,6 +1,7 @@
-import { captchaApi } from '@/api/user';
-import { Captcha } from '@/api/user.interface';
-import { atom } from 'recoil';
+import useAuthApi from '@/api/auth';
+import useUserApi, { Captcha, User } from '@/api/user';
+import _ from 'lodash';
+import { atom, selector } from 'recoil';
 
 const namespace = 'user';
 
@@ -11,7 +12,19 @@ export const captchaState = atom({
   effects: [
     ({ setSelf }) => {
       // 设置预先加载的验证码数据
-      setSelf(captchaApi().then((res) => res.data) as Promise<Captcha>);
+      setSelf(
+        useUserApi()
+          .captcha()
+          .then((res) => res.data) as Promise<Captcha>,
+      );
     },
   ],
+});
+
+export const CurrentUserState = selector<User | undefined>({
+  key: `${namespace}:current:user`,
+  get: async ({}) => {
+    const res = await useAuthApi().getCurrentUser();
+    return res.data;
+  },
 });

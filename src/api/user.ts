@@ -1,32 +1,49 @@
-import { get, post } from '@/util/request';
-import { Captcha, User, LoginInfo } from '@/api/user.interface';
-import { Exceptions, R } from './api.interface';
+import { R, TenantEntity } from './api';
+import useRequest from '@/hook/request';
 
-/**
- * 登陆
- * @param username 用户名
- * @param password 密码
- * @param code 验证码
- * @returns user of collection
- */
-export function loginApi(params: LoginInfo): Promise<R<Record<string, any>>> {
-  return post('/api/auth/login', params).then((res) => {
-    return res.data;
-  });
-}
+export type User = TenantEntity & {
+  username: string;
+  password: string;
+  email: string;
+  name: string;
+  phone: number;
+  nickname: string;
+  avatar: string;
+};
 
-export function registerApi(user: User): Promise<R<Record<string, any>>> {
-  return post('/api/auth/register', user).then((res) => {
-    return res.data;
-  });
-}
+export type LoginInfo = {
+  captchaId: string;
+  username: string;
+  password: string;
+  tenant?: string;
+  captcha: string;
+};
 
-/**
- * 获取验证码
- * @returns promise for captcha
- */
-export function captchaApi(): Promise<R<Captcha>> {
-  return get('/api/auth/captcha').then((res) => {
-    return res.data || ({} as R<Captcha>);
-  });
-}
+export type Captcha = {
+  captchaId: string;
+  base64: string;
+};
+
+const useUserApi = () => {
+  const request = useRequest();
+
+  const register = (user: User): Promise<R<Record<string, any>>> => {
+    return request.post('/api/auth/register', user).then((res) => {
+      return res.data;
+    });
+  };
+
+  /**
+   * 获取验证码
+   * @returns promise for captcha
+   */
+  const captcha = (): Promise<R<Captcha>> => {
+    return request.get('/api/auth/captcha').then((res) => {
+      return res.data || ({} as R<Captcha>);
+    });
+  };
+
+  return { register, captcha };
+};
+
+export default useUserApi;

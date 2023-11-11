@@ -1,6 +1,3 @@
-import { captchaApi, loginApi } from '@/api/user';
-import { Captcha } from '@/api/user.interface';
-import { captchaState } from '@/store/user';
 import {
   Button,
   Divider,
@@ -10,23 +7,31 @@ import {
   Tooltip,
   Typography,
 } from '@douyinfe/semi-ui';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { IconGithubLogo, IconWeibo } from '@douyinfe/semi-icons';
+import useUserApi, { Captcha } from '@/api/user';
+import useAuthApi from '@/api/auth';
 
 const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
+  const userApi = useUserApi();
+  const authApi = useAuthApi();
   const [loding, setLoding] = useState<boolean>(false);
-  const [captcha, setCaptcha] = useRecoilState(captchaState);
+  const [captcha, setCaptcha] = useState<Captcha | undefined>();
 
-  const refreshCaptch = async () => {
-    const result = await captchaApi().then((res) => res.data);
+  useEffect(() => {
+    userApi.captcha().then((res) => setCaptcha(res.data as Captcha));
+  }, []);
+
+  const getCaptcha = async () => {
+    const result = await userApi.captcha().then((res) => res.data);
     setCaptcha(result as Captcha);
   };
+
   return (
     <>
       <Typography.Title
@@ -41,13 +46,13 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
           <Form
             onSubmit={async (data) => {
               setLoding(true);
-              const result = await loginApi({
+              const result = await authApi.login({
                 ...data,
                 captchaId: captcha?.captchaId,
                 tenant: tenantId,
               });
               if (result.code !== 200) {
-                await refreshCaptch();
+                await getCaptcha();
               } else {
                 // 登陆成功
                 // 1.设置local storage
@@ -87,7 +92,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                 <img
                   src={captcha?.base64 || ''}
                   className="w-24 h-12 ml-auto max-w-24"
-                  onClick={refreshCaptch}
+                  onClick={getCaptcha}
                 />
               </Tooltip>
             </div>

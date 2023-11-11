@@ -1,17 +1,11 @@
-import { TurboRouter } from '@/router/router';
 import { Nav, Image } from '@douyinfe/semi-ui';
 import Sider from '@douyinfe/semi-ui/lib/es/layout/Sider';
 import Brand from '../../../public/vite.svg';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavItemProps } from '@douyinfe/semi-ui/lib/es/navigation';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import {
-  CurrentUserSelectTabState,
-  CurrentUserTabsState,
-  UserTab,
-} from '@/store/menu';
-import { newArray } from '@/util/utils';
+import { TurboRoute } from '@/router/router';
+import { useAddUserMenu } from '@/hook/menu';
 
 /**
  * 把router渲染称组件
@@ -20,53 +14,50 @@ import { newArray } from '@/util/utils';
  * @returns tsx 组件
  */
 function renderMenu<T>(
-  userRouters: TurboRouter[],
-  render: (router: TurboRouter) => T,
+  userRouters: TurboRoute[],
+  render: (router: TurboRoute) => T,
   sub: string = 'children',
 ): T[] {
-  return userRouters.map((router) => {
-    const r: T = render(router);
-    if (router.children) {
-      r[sub] = renderMenu(router.children as TurboRouter[], render);
-    }
-    return r;
-  }) as T[];
+  // 过滤router中属性为'hide'的路由
+  return userRouters
+    .filter((router) => {
+      // 过滤router.attribute属性中存在hide数据
+      return (router.attribute || []).findIndex((attr) => attr === 'hide') < 0;
+    })
+    .map((router) => {
+      const r: T = render(router);
+      if (router.children) {
+        r[sub] = renderMenu(router.children as TurboRoute[], render);
+      }
+      return r;
+    }) as T[];
 }
 
-const Sidebar: React.FC<{ routes: TurboRouter[] }> = ({ routes }) => {
-  const naviage = useNavigate();
+function allowRenderNav(navItems: NavItemProps[]): boolean {
+  return (
+    navItems.filter((item) => {
+      return item.route?.type !== 'system';
+    }).length > 0
+  );
+}
+
+const Sidebar: React.FC<{ routes: TurboRoute[] }> = ({ routes }) => {
+  const navigate = useNavigate();
+  const addUserMenuTab = useAddUserMenu();
   useEffect(() => {
-    naviage('/home');
+    navigate('/home');
   }, []);
   const [selectRoute, setSelectRoute] = useState<React.ReactText>('/home');
-  const [userTabs, setCurrentUserTabs] = useRecoilState(CurrentUserTabsState);
-  const setSelectTab = useSetRecoilState(CurrentUserSelectTabState);
-  const navItems = renderMenu(
+  let navItems = renderMenu(
     routes,
-    (router) => {
+    (route) => {
       return {
-        itemKey: router.path,
-        text: router.name,
+        itemKey: route.code,
+        text: route.name,
+        route,
         onClick: ({ itemKey }) => {
-          // 跳转
-          naviage(itemKey as string);
-          // 设置用户选择的tab
-          const hasTabIndex = userTabs.findIndex(
-            (tab) => tab.itemKey === itemKey,
-          );
-          if (hasTabIndex < 0) {
-            // 添加user tab
-            const newTabs = newArray<UserTab>();
-            userTabs.map((tab) => newTabs.push(tab));
-            newTabs.push({
-              itemKey: router.path,
-              icon: router.icon,
-              tab: router.name,
-              closable: true,
-            });
-            setCurrentUserTabs(newTabs);
-          }
-          setSelectTab(itemKey as string);
+          navigate(itemKey as string);
+          addUserMenuTab(route);
         },
       } as NavItemProps;
     },
@@ -74,7 +65,7 @@ const Sidebar: React.FC<{ routes: TurboRouter[] }> = ({ routes }) => {
   );
   return (
     <Sider>
-      {navItems.length > 0 && (
+      {allowRenderNav(navItems) && (
         <Nav
           style={{ height: '100%', alignItems: 'center' }}
           items={navItems}

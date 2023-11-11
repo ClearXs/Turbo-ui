@@ -1,22 +1,30 @@
 import LoginSVG from '@/img/login.svg';
-import React, { useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import React, { useEffect, useState } from 'react';
 import { Button, Select, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { IconArrowLeft } from '@douyinfe/semi-icons';
-import { tenantListQuery } from '@/store/tenant';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
+import useTenantApi, { Tenant } from '@/api/tenant';
 
 const Login: React.FC = () => {
   const [switchReigster, setSwitchRegister] = useState<boolean>(false);
-  const tenantList = useRecoilValue(tenantListQuery({}));
-  const [tenantId, setTenantId] = useState(
-    (tenantList?.length > 0 && tenantList[0].tenantId) || '',
-  );
-  // 初始化系统租户
-  local.set(headers.Tenant, tenantId);
+  const [tenantList, setTenantList] = useState<Tenant[]>([]);
+  const [tenantId, setTenantId] = useState('');
+  const tenantApi = useTenantApi();
+
+  useEffect(() => {
+    tenantApi.list({}).then((res) => {
+      const data = res.data;
+      setTenantList(data);
+      // 初始化系统租户
+      const defaultTenantId = data?.length > 0 && data[0].tenantId;
+      defaultTenantId && local.set(headers.Tenant, defaultTenantId);
+      defaultTenantId && setTenantId(defaultTenantId);
+    });
+  }, []);
+
   return (
     <React.Suspense>
       <div className="fixed left-0 top-0 flex h-100vh w-100vw items-center bg-slate-100">

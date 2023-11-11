@@ -1,5 +1,4 @@
-import { list } from '@/api/tenant';
-import { Tenant, TenantParams } from '@/api/tenant.interface';
+import TenantApi, { Tenant, TenantParams } from '@/api/tenant';
 import { atom, atomFamily, selectorFamily, useRecoilValue } from 'recoil';
 
 const namespace = 'tenant';
@@ -12,7 +11,7 @@ export const tenantIdState = atomFamily({
 export const tenantState = atom({
   key: `${namespace}:tenant:list`,
   default: async (params: TenantParams) => {
-    const res = await list(params);
+    const res = await TenantApi().list(params);
     return res.data || [];
   },
 });
@@ -20,7 +19,7 @@ export const tenantState = atom({
 export const tenantListQuery = selectorFamily({
   key: `${namespace}:list:query`,
   get: (params: TenantParams) => async () => {
-    const res = await list(params);
+    const res = await TenantApi().list(params);
     return res.data || [];
   },
 });

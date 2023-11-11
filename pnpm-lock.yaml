@@ -20,6 +20,9 @@ dependencies:
   axios:
     specifier: ^1.5.1
     version: 1.5.1
+  classnames:
+    specifier: ^2.3.2
+    version: registry.npmmirror.com/classnames@2.3.2
   lodash:
     specifier: ^4.17.21
     version: registry.npmmirror.com/lodash@4.17.21

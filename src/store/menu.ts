@@ -1,4 +1,4 @@
-import { TurboRouter } from '@/router/router';
+import { TurboRoute } from '@/router/router';
 import { TabPaneProps } from '@douyinfe/semi-ui/lib/es/tabs';
 import { atom } from 'recoil';
 
@@ -8,12 +8,12 @@ export type UserTab = Omit<TabPaneProps, 'className' | 'children' | 'style'>;
 
 export const CurrentUserRouteState = atom({
   key: `${namespace}:current:router:state`,
-  default: [] as TurboRouter[],
+  default: [] as TurboRoute[],
 });
 
 // 当前用户选择打开的tab标签
-export const CurrentUserTabsState = atom({
-  key: `${namespace}:current:user:tabs`,
+export const CurrentUserMenuTabsState = atom({
+  key: `${namespace}:current:user:menu:tabs`,
   default: [] as UserTab[],
 });
 

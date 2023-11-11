@@ -1,27 +1,19 @@
-import { CurrentUserSelectTabState, CurrentUserTabsState } from '@/store/menu';
-import { newArray } from '@/util/utils';
-import { IconHome } from '@douyinfe/semi-icons';
+import {
+  CurrentUserSelectTabState,
+  CurrentUserMenuTabsState,
+} from '@/store/menu';
 import { Layout, TabPane, Tabs } from '@douyinfe/semi-ui';
-import { useEffect } from 'react';
+import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
-const MotionContent = () => {
-  const [userTabs, setCurrentUserTabs] = useRecoilState(CurrentUserTabsState);
+const MotionContent = React.memo(() => {
+  const [userTabs, setCurrentUserTabs] = useRecoilState(
+    CurrentUserMenuTabsState,
+  );
   const [selectTab, setSelectTab] = useRecoilState(CurrentUserSelectTabState);
   const { Content } = Layout;
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setCurrentUserTabs([
-      {
-        itemKey: '/home',
-        tab: '首页',
-        closable: false,
-        icon: <IconHome />,
-      },
-    ]);
-  }, []);
 
   return (
     <>
@@ -34,15 +26,28 @@ const MotionContent = () => {
           setSelectTab(activeKey);
         }}
         onTabClose={(tabKey) => {
-          let newTabs = newArray(...userTabs);
-          newTabs = newTabs.filter((tab) => {
-            return tab.itemKey !== tabKey;
+          // 去除关闭的menu tab
+          // 获取当前menu tab的下一项作为默认打开项
+          const closeTabIndex = userTabs.findIndex((tab) => {
+            return tab.itemKey === tabKey;
           });
+          // 判断当前关闭的key是否为激活的key，如果不是则不重新设置激活key
+          if (tabKey === selectTab) {
+            // 判断当前关闭是否为最后一个，如果是则取上一个，如果不是则取下一个
+            const nextActiveKey =
+              userTabs[
+                closeTabIndex === userTabs.length - 1
+                  ? closeTabIndex - 1
+                  : closeTabIndex + 1
+              ]?.itemKey;
+            setSelectTab(nextActiveKey as string);
+            navigate(nextActiveKey as string);
+          }
+          const newTabs = [
+            ...userTabs.slice(0, closeTabIndex),
+            ...userTabs.slice(closeTabIndex + 1, userTabs.length),
+          ];
           setCurrentUserTabs(newTabs);
-          // 设置最后一个为当前所选
-          const lastTab = newTabs[newTabs.length - 1];
-          navigate(lastTab.itemKey as string);
-          setSelectTab(lastTab.itemKey as string);
         }}
         activeKey={selectTab}
       >
@@ -50,11 +55,12 @@ const MotionContent = () => {
           return <TabPane {...tab} />;
         })}
       </Tabs>
+
       <Content className="ml-2">
         <Outlet />
       </Content>
     </>
   );
-};
+});
 
 export default MotionContent;

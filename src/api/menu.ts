@@ -1,11 +1,11 @@
-import { R } from './api.interface';
+import useRequest from '@/hook/request';
 
 export interface Menu {
   id: number;
   /**
    * 菜单编码
    */
-  code: string;
+  code?: string;
 
   /**
    * 菜单名称
@@ -18,9 +18,14 @@ export interface Menu {
   sort: number;
 
   /**
+   * 菜单类型
+   */
+  type: string;
+
+  /**
    * 父级菜单
    */
-  parentId: number;
+  parentId?: number;
 
   /**
    * 别名
@@ -30,36 +35,25 @@ export interface Menu {
   /**
    * 路径
    */
-  path: string;
+  route: string;
 
   /**
    * icon
    */
-  icon: string;
+  icon?: string;
 
   /**
    * 菜单所在层级
    */
-  level: number;
+  depth?: number;
 }
 
 export type MenuTree = Menu & {
   children: MenuTree[];
 };
 
-/**
- * 获取当前用户菜单
- */
-export const getCurrentUserMenuApi = (): Promise<R<MenuTree[]>> => {
-  // mock
-  return Promise.resolve({
-    code: 200,
-    data: [
-      { id: 1, code: 1, name: '首页', path: '/home', level: 1 },
-      { id: 2, code: 2, name: '用户管理', path: '/user', level: 1 },
-      { id: 2, code: 2, name: '角色管理', path: '/role', level: 1 },
-      { id: 2, code: 2, name: '图标管理', path: '/icon', level: 1 },
-    ],
-    message: '',
-  });
-};
+export default function useMenuApi() {
+  const request = useRequest();
+
+  return {};
+}

@@ -1,19 +1,16 @@
 // 基于semi的icon提供列表
-import { Icon, IconSystem, getIconModle, importIcon } from '@/components/Icon';
-import { IconSearch } from '@douyinfe/semi-icons';
-import { Col, Collapse, Input, Row, TabPane, Tabs } from '@douyinfe/semi-ui';
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Icon, IconSystem, getIconModle } from '@/components/Icon';
+import { Col, Collapse, Row, TabPane, Tabs } from '@douyinfe/semi-ui';
+import { Suspense, useEffect, useState } from 'react';
 import _ from 'lodash';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 
 type IconView = {
-  type: string;
-  // 按照行切分划分
-  icons: Icon[][];
+  icons: Icon[];
 };
 
 // 每一行的切分数量
-const splitNum = 8;
+const splitNum = 6;
 
 const IconList: React.FC<{ chooseIcon: (key: string) => void }> = ({
   chooseIcon,
@@ -21,22 +18,14 @@ const IconList: React.FC<{ chooseIcon: (key: string) => void }> = ({
   const iconSystem = ['semi', 'system'];
 
   const [iconTab, setIconTab] = useState<IconSystem>('semi');
-  const [iconViews, setIconViews] = useState<IconView[]>([]);
+  const [iconViews, setIconViews] = useState<Icon[][]>([]);
 
   useEffect(() => {
     const iconModel = getIconModle(iconTab);
     const icons = iconModel.getIconList();
-    const groupIconByKey = _.groupBy(icons, (icon) => {
-      return icon.type;
-    });
-    const initialIconView = new Array<IconView>();
-    // 切分icon区块
-    for (const gk in groupIconByKey) {
-      const groupList = groupIconByKey[gk];
-      const iconChunk = _.chunk(groupList, splitNum);
-      initialIconView.push({ type: gk, icons: iconChunk });
-    }
-    setIconViews(initialIconView);
+    // 按照切分数量把其切分各个区块
+    const iconChunk = _.chunk(icons, splitNum);
+    setIconViews(iconChunk);
   }, [iconTab]);
 
   return (
@@ -61,52 +50,40 @@ const IconList: React.FC<{ chooseIcon: (key: string) => void }> = ({
 };
 
 function renderIconViews(
-  iconViews: IconView[],
+  iconViews: Icon[][],
   chooseIcon: (key: string) => void,
 ) {
   return (
     <>
-      <Collapse>
-        {iconViews.map((views) => {
-          return (
-            <>
-              <Collapse.Panel
-                header={views.type}
-                itemKey={views.type}
-                showArrow
-              >
-                {views.icons.map((icons) => {
-                  return (
-                    <Row>
-                      {icons.map((icon) => {
-                        const IconComponent = icon.component;
-                        return (
-                          <Col span={24 / splitNum}>
-                            {
-                              <Suspense>
-                                <div
-                                  className="flex flex-col items-center gap-2 m-3 hover:bg-slate-100 hover:cursor-pointer"
-                                  onClick={() => {
-                                    // TODO 选择时的回调
-                                    chooseIcon && chooseIcon(icon.key);
-                                  }}
-                                >
-                                  <IconComponent size="extra-large" />
-                                  <Text type="primary">{icon.key}</Text>
-                                </div>
-                              </Suspense>
-                            }
-                          </Col>
-                        );
-                      })}
-                    </Row>
-                  );
-                })}
-              </Collapse.Panel>
-            </>
-          );
-        })}
-      </Collapse>
+      {iconViews.map((icons) => {
+        return (
+          <>
+            <Row gutter={24}>
+              {icons.map((icon) => {
+                const IconComponent = icon.component;
+                return (
+                  <Col span={24 / splitNum}>
+                    {
+                      <Suspense>
+                        <div
+                          className="flex flex-col items-center gap-4 m-3 hover:bg-slate-100 hover:cursor-pointer"
+                          onClick={() => {
+                            // TODO 选择时的回调
+                            chooseIcon && chooseIcon(icon.key);
+                          }}
+                        >
+                          <IconComponent size="extra-large" />
+                          <Text type="primary">{icon.key}</Text>
+                        </div>
+                      </Suspense>
+                    }
+                  </Col>
+                );
+              })}
+            </Row>
+          </>
+        );
+      })}
     </>
   );
 }
