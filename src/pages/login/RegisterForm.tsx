@@ -38,15 +38,21 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               <Form
                 onSubmit={async (data) => {
                   setLoding(true);
-                  const res = await userApi.register({
-                    ...data,
-                    tenantId,
-                  });
-                  if (res.code === 200) {
-                    local.set(headers.Authentication, res.data?.tokenValue);
-                    navigate('/');
-                  }
-                  setLoding(false);
+                  userApi
+                    .register({
+                      ...data,
+                      tenantId,
+                    })
+                    .then((res) => {
+                      if (res.code === 200) {
+                        local.set(headers.Authentication, res.data?.tokenValue);
+                        navigate('/');
+                      }
+                      setLoding(false);
+                    })
+                    .catch((err) => {
+                      setLoding(false);
+                    });
                 }}
                 labelPosition="left"
               >

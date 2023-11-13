@@ -1,9 +1,8 @@
 import ErrorSVG from '@/img/error.svg';
 import { Button, Typography } from '@douyinfe/semi-ui';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function Error(): React.ReactNode {
-  const navigate = useNavigate();
   return (
     <div>
       <div className="flex h-100vh w-100vw items-center justify-center">
@@ -17,7 +16,9 @@ export default function Error(): React.ReactNode {
             我们正在努力创造更好的东西，
             <span className="font-bold">但不会太久的……</span>
           </Typography>
-          <Button onClick={() => navigate('/')}>回到首页</Button>
+          <Link to="/">
+            <Button block>回到首页</Button>
+          </Link>
         </div>
       </div>
     </div>

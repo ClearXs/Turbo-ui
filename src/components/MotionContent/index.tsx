@@ -2,7 +2,7 @@ import {
   CurrentUserSelectTabState,
   CurrentUserMenuTabsState,
 } from '@/store/menu';
-import { Layout, TabPane, Tabs } from '@douyinfe/semi-ui';
+import { Card, Layout, TabPane, Tabs } from '@douyinfe/semi-ui';
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -51,13 +51,24 @@ const MotionContent = React.memo(() => {
         }}
         activeKey={selectTab}
       >
-        {userTabs.map((tab) => {
-          return <TabPane {...tab} />;
+        {userTabs.map((tab, index) => {
+          return (
+            <TabPane
+              key={tab.itemKey}
+              tab={tab.tab}
+              tabIndex={index}
+              itemKey={tab.itemKey}
+              icon={tab.icon}
+              closable={tab.closable}
+            />
+          );
         })}
       </Tabs>
 
-      <Content className="ml-2">
-        <Outlet />
+      <Content className="bg-slate-50 p-2">
+        <Card className="w-[100%] h-[100%]">
+          <Outlet />
+        </Card>
       </Content>
     </>
   );

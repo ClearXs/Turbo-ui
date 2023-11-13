@@ -1,5 +1,5 @@
 import { CurrentUserState } from '@/store/user';
-import { Avatar, Button, Divider, Form } from '@douyinfe/semi-ui';
+import { Avatar, Button, Divider, Form, Space } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import Title from '@douyinfe/semi-ui/lib/es/typography/title';
 import _ from 'lodash';
@@ -26,16 +26,18 @@ export default function UserProfile() {
           <div className="ml-auto mr-5">
             {isSave ? (
               <>
-                <Button theme="solid" type="primary" htmlType="submit">
-                  保存
-                </Button>
-                <Button
-                  theme="solid"
-                  type="tertiary"
-                  onClick={() => setSave(false)}
-                >
-                  取消
-                </Button>
+                <Space>
+                  <Button theme="solid" type="primary" htmlType="submit">
+                    保存
+                  </Button>
+                  <Button
+                    theme="solid"
+                    type="tertiary"
+                    onClick={() => setSave(false)}
+                  >
+                    取消
+                  </Button>
+                </Space>
               </>
             ) : (
               <Button

@@ -2,25 +2,6 @@ import { lazy } from 'react';
 
 export type Icon = {
   key: string;
-  type:
-    | 'Accessibility'
-    | 'Alert'
-    | 'Arrow'
-    | 'Basis'
-    | 'Brands'
-    | 'Building'
-    | 'Code'
-    | 'Communication'
-    | 'Device'
-    | 'Files&Folder'
-    | 'Interface'
-    | 'Layout'
-    | 'Music'
-    | 'Object'
-    | 'Photo&Video'
-    | 'Time'
-    | 'User'
-    | 'Writing';
   component: any;
 };
 
@@ -63,7 +44,6 @@ export class SemiIconsModle implements IconModel {
         const component = lazy(semiIconImports[iconKey]);
         return {
           key,
-          type: 'Accessibility',
           component,
         } as Icon;
       })
@@ -93,12 +73,10 @@ export class SystemIconsModle implements IconModel {
   constructor(private icons: Map<string, Icon>) {
     this.icons.set('IconMessage', {
       key: 'IconMessage',
-      type: 'Accessibility',
       component: lazy(() => import('./IconMessage')),
     });
     this.icons.set('IconTheme', {
       key: 'IconTheme',
-      type: 'Accessibility',
       component: lazy(() => import('./IconTheme')),
     });
   }
@@ -138,6 +116,17 @@ export const importIcon = (icon: string, type: IconSystem = 'semi') => {
   return iconModel.getIcon(icon)?.component;
 };
 
-const getIcon = (key: string, type: Icon['type'], component: any): Icon => {
-  return { key, type, component };
+/**
+ * 直接获取Icon组件
+ * @param icon icon名称
+ * @param type icon系统的类型
+ * @returns Component
+ */
+export const directGetIcon = (
+  icon: string,
+  type: IconSystem = 'semi',
+): React.ReactNode => {
+  const iconModel = getIconModle(type);
+  const IconComponent = iconModel.getIcon(icon)?.component;
+  return IconComponent && <IconComponent />;
 };

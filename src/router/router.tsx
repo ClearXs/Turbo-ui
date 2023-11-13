@@ -13,18 +13,24 @@ import { useRecoilValue } from 'recoil';
 import { CurrentUserRouteState } from '@/store/menu';
 import { MenuTree } from '@/api/menu';
 import { importIcon } from '@/components/Icon';
+import _ from 'lodash';
 
 export type TurboRoute = RouteObject &
-  Pick<MenuTree, 'code' | 'alias' | 'sort' | 'icon' | 'name' | 'depth'> & {
+  Pick<MenuTree, 'code' | 'alias' | 'sort' | 'name' | 'depth'> & {
+    // 菜单类型 'system' 系统默认菜单。 'custom'是自定义菜单由后端返回
     type: 'system' | 'custom';
+    // 菜单属性集合
     attribute?: string[];
+    // 是否允许关闭
+    clearable: boolean;
+    icon?: React.ReactNode;
   };
 
 // 组件懒加载方式进行导入
 export const lazyLoader = (factory: () => Promise<any>) => {
   const Module = lazy(factory);
   return (
-    <Suspense fallback={''}>
+    <Suspense>
       <Module />
     </Suspense>
   );
@@ -40,43 +46,56 @@ export const menuToRouterObject = (menus: MenuTree[]): TurboRoute[] => {
     return [];
   }
   return menus.map((m) => {
+    /* @vite-ignore */
+    // 目标route组件
+    const Component = _.isEmpty(m.route)
+      ? null
+      : lazyLoader(() => import('../pages' + `${m.route}`));
+    // 图标组件
+    const IconComponent = importIcon(m.icon as string);
     return {
       id: String(m.id),
-      /* @vite-ignore */
-      element: lazyLoader(() => import(`../pages${m.route}`)),
+      element: Component,
       children: menuToRouterObject(m.children),
       path: m.route,
       code: m.code,
       alias: m.alias,
       sort: m.sort,
-      icon: m.icon,
+      icon: IconComponent && <IconComponent />,
       name: m.name,
       depth: m.depth,
       type: 'custom',
+      clearable: true,
     } as TurboRoute;
   });
 };
 
 const AppRouter: React.FC = () => {
   const userRoutes = useRecoilValue(CurrentUserRouteState);
-
+  const IconHomeComponent = importIcon('IconHome');
+  const IconUserComnpoent = importIcon('IconUser');
   const renderRoutes = [
     {
       id: '/home',
+      code: 'home',
       path: '/home',
       name: '首页',
       level: 2,
       element: lazyLoader(() => import('@/pages/home')),
-      icon: importIcon('IconHome'),
+      icon: IconHomeComponent && <IconHomeComponent />,
+      clearable: false,
       type: 'system',
     },
     {
       id: '/profile',
+      code: 'profile',
       path: '/profile',
       name: '个人档案',
       level: 2,
       element: lazyLoader(() => import('@/pages/profile')),
       type: 'system',
+      icon: IconUserComnpoent && <IconUserComnpoent />,
+      clearable: true,
       attribute: ['hide'],
     },
     ...userRoutes,
@@ -97,7 +116,7 @@ const AppRouter: React.FC = () => {
       children: renderRoutes,
     },
     {
-      id: '/login',
+      id: 'login',
       path: '/login',
       element: lazyLoader(() => import('@/pages/login')),
       loader: () => {

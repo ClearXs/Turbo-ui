@@ -10,7 +10,7 @@ import { IconBell, IconLanguage, IconSearch } from '@douyinfe/semi-icons';
 import IconTheme from './components/Icon/IconTheme';
 import './theme/default.css';
 import { useSetRecoilState } from 'recoil';
-import { CurrentUserRouteState } from './store/menu';
+import { CurrentUserRouteState, CurrentUserSelectTabState } from './store/menu';
 import { useEffect } from 'react';
 import { get } from './util/local';
 import { Authentication } from './util/headers';
@@ -18,28 +18,41 @@ import { useLoaderData, useNavigate } from 'react-router-dom';
 import { TurboRoute, menuToRouterObject } from './router/router';
 import Sidebar from './components/Sidebar';
 import MotionContent from './components/MotionContent';
-import { useAddUserMenu, userFindUserMenu } from './hook/menu';
+import { useContentMenu, useFindUserRoute } from './hook/menu';
 import useAuthApi from './api/auth';
 
 export default function App(): React.ReactNode {
-  const navigate = useNavigate();
   const authApi = useAuthApi();
-  const findUserMenu = userFindUserMenu();
-  const addUserMenu = useAddUserMenu();
+  const findUserRoute = useFindUserRoute();
+  const [addUserContentTab] = useContentMenu();
   const setUserRouters = useSetRecoilState(CurrentUserRouteState);
+  const navigate = useNavigate();
+  const setSelectContentTab = useSetRecoilState(CurrentUserSelectTabState);
+  const userRoutes = useLoaderData() as TurboRoute[];
+
   useEffect(() => {
     authApi.getCurrentUserMenu().then((res) => {
       res.code === 200 && setUserRouters(menuToRouterObject(res.data || []));
     });
+    // 默认路由值home页面
+    const route = findUserRoute('home');
+    if (route) {
+      // 1.加上content tabs的页签
+      addUserContentTab(route);
+      // 2.navigate to home
+      navigate(route.path as string);
+      // 3.设置content选中的面板
+      setSelectContentTab(route.code as string);
+    }
     // 重新加载组件需要重新考虑变更条件
   }, [get(Authentication)]);
-  const userRoutes = useLoaderData() as TurboRoute[];
+
   const { Header, Footer } = Layout;
   return (
     <Layout className="h-100vh w-100vw">
       <Sidebar routes={userRoutes} />
       <Layout>
-        <Header className="h-16 w-[100%]">
+        <Header className="h-16 w-[100%] bg-slate-50">
           <div className="flex items-center h-[100%]">
             <div className="max-w-lg ml-10">
               <Input
@@ -108,9 +121,8 @@ export default function App(): React.ReactNode {
                   <Dropdown.Menu>
                     <Dropdown.Item
                       onClick={() => {
-                        const route = findUserMenu('/profile');
-                        route && addUserMenu(route);
-                        navigate('/profile');
+                        const route = findUserRoute('profile');
+                        route && addUserContentTab(route);
                       }}
                     >
                       个人档案

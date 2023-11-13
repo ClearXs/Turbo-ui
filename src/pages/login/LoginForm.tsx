@@ -27,9 +27,10 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
     userApi.captcha().then((res) => setCaptcha(res.data as Captcha));
   }, []);
 
-  const getCaptcha = async () => {
-    const result = await userApi.captcha().then((res) => res.data);
-    setCaptcha(result as Captcha);
+  const reloadCaptcha = () => {
+    userApi.captcha().then((res) => {
+      setCaptcha(res.data);
+    });
   };
 
   return (
@@ -46,22 +47,28 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
           <Form
             onSubmit={async (data) => {
               setLoding(true);
-              const result = await authApi.login({
-                ...data,
-                captchaId: captcha?.captchaId,
-                tenant: tenantId,
-              });
-              if (result.code !== 200) {
-                await getCaptcha();
-              } else {
-                // 登陆成功
-                // 1.设置local storage
-                const token = result.data?.tokenValue || '';
-                local.set(headers.Authentication, token as string);
-                // 跳转至首页
-                navigate('/');
-              }
-              setLoding(false);
+              authApi
+                .login({
+                  ...data,
+                  captchaId: captcha?.captchaId,
+                  tenant: tenantId,
+                })
+                .then((res) => {
+                  if (res.code !== 200) {
+                    reloadCaptcha();
+                  } else {
+                    // 登陆成功
+                    // 1.设置local storage
+                    const token = res.data?.tokenValue || '';
+                    local.set(headers.Authentication, token as string);
+                    // 跳转至首页
+                    navigate('/');
+                  }
+                  setLoding(false);
+                })
+                .catch((err) => {
+                  setLoding(false);
+                });
             }}
             labelPosition="left"
             labelCol={{ span: 4, offset: 22 }}
@@ -92,7 +99,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                 <img
                   src={captcha?.base64 || ''}
                   className="w-24 h-12 ml-auto max-w-24"
-                  onClick={getCaptcha}
+                  onClick={reloadCaptcha}
                 />
               </Tooltip>
             </div>
