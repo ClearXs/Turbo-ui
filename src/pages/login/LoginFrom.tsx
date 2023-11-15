@@ -84,6 +84,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               type="password"
               label="密码"
               placeholder="请输入密码"
+              mode="password"
               rules={[{ required: true, message: '请输入密码' }]}
             />
             <div className="flex">

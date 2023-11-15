@@ -47,6 +47,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
+    "@testing-library/dom": "^9.3.3",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.0",
+    "@testing-library/user-event": "^14.5.1",
     "@types/lodash": "^4.14.200",
     "@types/react": "^18.2.29",
     "@types/react-dom": "^18.2.14",
@@ -61,6 +65,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-tailwindcss": "^3.13.0",
+    "jsdom": "^22.1.0",
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",
     "tailwindcss": "^3.3.3",

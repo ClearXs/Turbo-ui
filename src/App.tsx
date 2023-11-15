@@ -145,7 +145,7 @@ export default function App(): React.ReactNode {
           <aside className="flex items-center flex-col">
             <Divider />
             <p className="text-base text-center max-h-max">
-              Copyright © 2023 - All right reserved by uno ltd.
+              Copyright © 2023 - All right reserved by allio org.
             </p>
           </aside>
         </Footer>

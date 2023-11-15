@@ -28,12 +28,12 @@ export interface IconModel {
 export class SemiIconsModle implements IconModel {
   constructor(private icons: Map<string, Icon>) {
     // 从semi库里面导入UI组件
-    const semiIconImports = import.meta.glob(
+    const imports = import.meta.glob(
       '../../../node_modules/@douyinfe/semi-icons/lib/es/icons/*',
     );
-    Object.keys(semiIconImports)
-      .filter((iconFileName) => {
-        return iconFileName.match('Icon.*.js') !== null;
+    Object.keys(imports)
+      .filter((name) => {
+        return name.match('Icon.*.js') !== null;
       })
       .map((iconKey) => {
         // 形如../../../node_modules/@douyinfe/semi-icons/lib/es/icons/IconPieChart2Stroked.js形式
@@ -41,7 +41,7 @@ export class SemiIconsModle implements IconModel {
         const suffixIndex = iconKey.lastIndexOf('.js');
         // IconPieChart2Stroked ===> PieChart2Stroked
         const key = iconKey.substring(lastSlashIndex + 1, suffixIndex);
-        const component = lazy(semiIconImports[iconKey]);
+        const component = lazy(imports[iconKey]);
         return {
           key,
           component,
@@ -71,14 +71,26 @@ export class SemiIconsModle implements IconModel {
 
 export class SystemIconsModle implements IconModel {
   constructor(private icons: Map<string, Icon>) {
-    this.icons.set('IconMessage', {
-      key: 'IconMessage',
-      component: lazy(() => import('./IconMessage')),
-    });
-    this.icons.set('IconTheme', {
-      key: 'IconTheme',
-      component: lazy(() => import('./IconTheme')),
-    });
+    const imports = import.meta.glob('./*');
+    Object.keys(imports)
+      .filter((name) => {
+        return name.match('Icon.*.js') !== null;
+      })
+      .map((iconKey) => {
+        // 形如../../../node_modules/@douyinfe/semi-icons/lib/es/icons/IconPieChart2Stroked.js形式
+        const lastSlashIndex = iconKey.lastIndexOf('/Icon');
+        const suffixIndex = iconKey.lastIndexOf('.js');
+        // IconPieChart2Stroked ===> PieChart2Stroked
+        const key = iconKey.substring(lastSlashIndex + 1, suffixIndex);
+        const component = lazy(imports[iconKey]);
+        return {
+          key,
+          component,
+        } as Icon;
+      })
+      .forEach((icon) => {
+        this.icons.set(icon.key, icon);
+      });
   }
 
   getIconList(): Icon[] {

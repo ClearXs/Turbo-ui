@@ -2,3 +2,15 @@ body,
 body[theme-mode='default'] .semi-always-light {
   /* --semi-color-nav-bg: #ede3e7; */
 }
+
+.semi-card-body {
+  padding: 10px;
+}
+
+.semi-tabs-content {
+  padding: 0;
+}
+
+.semi-button {
+  font-size: 12px;
+}

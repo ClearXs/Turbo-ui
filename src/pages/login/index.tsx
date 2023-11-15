@@ -4,8 +4,8 @@ import { Button, Select, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { IconArrowLeft } from '@douyinfe/semi-icons';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
-import LoginForm from './LoginForm';
-import RegisterForm from './RegisterForm';
+import LoginFrom from './LoginFrom';
+import RegisterFrom from './RegisterFrom';
 import useTenantApi, { Tenant } from '@/api/tenant';
 
 const Login: React.FC = () => {
@@ -69,7 +69,7 @@ const Login: React.FC = () => {
             </div>
             {!switchReigster && (
               <>
-                <LoginForm tenantId={tenantId} />
+                <LoginFrom tenantId={tenantId} />
                 <div className="flex justify-center absolute bottom-5">
                   <Typography className="my-auto">没有账号？</Typography>
                   <Button
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
             )}
             {switchReigster && (
               <>
-                <RegisterForm tenantId={tenantId} />
+                <RegisterFrom tenantId={tenantId} />
                 <Tooltip content="返回">
                   <button
                     className="absolute right-10 top-10 h-8 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-gray-900 text-center align-middle font-sans text-xs font-medium uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"

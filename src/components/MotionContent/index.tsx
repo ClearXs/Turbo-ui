@@ -65,7 +65,7 @@ const MotionContent = React.memo(() => {
         })}
       </Tabs>
 
-      <Content className="bg-slate-50 p-2">
+      <Content className="bg-slate-50 p-2 ">
         <Card className="w-[100%] h-[100%]">
           <Outlet />
         </Card>

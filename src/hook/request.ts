@@ -20,7 +20,10 @@ interface InternalRequest {
     path: string,
     params?: Record<string, any>,
   ) => Promise<AxiosResponse<any, any>>;
-  delete: (path: string) => Promise<AxiosResponse<any, any>>;
+  delete: (
+    path: string,
+    params?: Record<string, any>,
+  ) => Promise<AxiosResponse<any, any>>;
 }
 
 // 创建默认使用的axios
@@ -58,7 +61,17 @@ function handleSuccess<T>(res: AxiosResponse): Promise<AxiosResponse> {
   const status = res.status;
   if (status === 200) {
     // 消息提示
-    return Promise.resolve(res);
+    const data = res.data;
+    if (data?.code !== 200) {
+      Notification.error({
+        duration: 3,
+        position: 'top',
+        content: data?.message,
+      });
+      return Promise.reject(res);
+    } else {
+      return Promise.resolve(res);
+    }
   } else {
     throw new Error('unonkw error');
   }
@@ -115,8 +128,12 @@ const internalRquest: InternalRequest = {
       data: params,
     });
   },
-  delete(path) {
-    return remote.delete(path);
+  delete(path, params) {
+    return remote.request({
+      url: path,
+      method: 'DELETE',
+      data: params,
+    });
   },
 };
 

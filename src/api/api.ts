@@ -10,7 +10,7 @@ export interface BaseEntity {
   /**
    * 主键
    */
-  id: number;
+  id: string;
 
   /**
    * 创建时间
@@ -49,4 +49,71 @@ export interface TenantEntity extends BaseEntity {
    * 租户
    */
   tenantId: string;
+}
+
+// 分页配置
+export interface Pagination<T> {
+  // 当前页
+  current: number;
+  // 页大小
+  size: number;
+  // 总数
+  total?: number;
+  // 数据
+  records?: T[];
+}
+
+/**
+ * 通用模板接口定义
+ */
+export interface GeneralApi<T> {
+  /**
+   * 保存
+   * @param entity 实体
+   * @returns true or false
+   */
+  save: (entity: T) => Promise<R<boolean>>;
+
+  /**
+   * 编辑
+   * @param entity 实体
+   * @returns true or false
+   */
+  edit: (entity: T) => Promise<R<boolean>>;
+
+  /**
+   * 保存
+   * @param entity 实体
+   * @returns true or false
+   */
+  saveOrUpdate: (entity: T) => Promise<R<boolean>>;
+
+  /**
+   * 删除
+   * @param id id
+   * @returns true or false
+   */
+  deleteEntity: (ids: string[]) => Promise<R<boolean>>;
+
+  /**
+   * 详情
+   * @param id id
+   * @returns 实体 or null
+   */
+  details: (string: string) => Promise<R<T>>;
+
+  /**
+   * 列表
+   * @param entity 用于过滤实体
+   * @returns list
+   */
+  list: (entity: T) => Promise<R<T[]>>;
+
+  /**
+   * 分页
+   * @param page 分页
+   * @param entity 实体
+   * @returns page
+   */
+  page: (page: Pagination<T>, entity: T) => Promise<R<Pagination<T>>>;
 }
