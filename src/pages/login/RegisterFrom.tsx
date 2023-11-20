@@ -15,7 +15,7 @@ import useUserApi from '@/api/user';
 const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
   const userApi = useUserApi();
-  const [loding, setLoding] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [registerTabKey, setRegisterKey] = useState<string>('default');
 
   return (
@@ -28,7 +28,7 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
         注册
       </Typography.Title>
       <div className="w-4/5">
-        <Spin spinning={loding}>
+        <Spin spinning={loading}>
           <Tabs
             type="line"
             activeKey={registerTabKey}
@@ -37,7 +37,7 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
             <TabPane tab="默认注册" itemKey="default">
               <Form
                 onSubmit={async (data) => {
-                  setLoding(true);
+                  setLoading(true);
                   userApi
                     .register({
                       ...data,
@@ -48,10 +48,10 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                         local.set(headers.Authentication, res.data?.tokenValue);
                         navigate('/');
                       }
-                      setLoding(false);
+                      setLoading(false);
                     })
                     .catch((err) => {
-                      setLoding(false);
+                      setLoading(false);
                     });
                 }}
                 labelPosition="left"

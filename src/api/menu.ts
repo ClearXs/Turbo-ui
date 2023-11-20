@@ -1,8 +1,7 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, Pagination, R } from './api';
+import { GeneralApi, Pagination, R, Tree } from './api';
 
-export interface Menu {
-  id: number;
+export interface Menu extends Tree {
   /**
    * 菜单编码
    */
@@ -26,7 +25,7 @@ export interface Menu {
   /**
    * 父级菜单
    */
-  parentId?: number;
+  parentId?: string;
 
   /**
    * 别名
@@ -42,11 +41,6 @@ export interface Menu {
    * icon
    */
   icon?: string;
-
-  /**
-   * 菜单所在层级
-   */
-  depth?: number;
 }
 
 export type MenuTree = Menu & {

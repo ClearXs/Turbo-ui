@@ -11,6 +11,7 @@ import {
 } from './TableCrud';
 import { Form, Tooltip } from '@douyinfe/semi-ui';
 import { importIcon } from '../Icon';
+import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
 export type ColumnType =
   | 'input'
@@ -41,6 +42,7 @@ export interface ColumnDecorator<T extends Record<string, any>> {
    * @param type 区分column是搜索还是表单渲染
    */
   render: (
+    tableContext: TableContext<T>,
     column: TableColumnProps,
     type: 'search' | 'form',
   ) => React.ReactNode | undefined;
@@ -50,7 +52,10 @@ export interface ColumnDecorator<T extends Record<string, any>> {
    * @param column table column props
    * @returns column props
    */
-  wrap: (column: TableColumnProps<T>) => ColumnProps<T>;
+  wrap: (
+    tableContext: TableContext<T>,
+    column: TableColumnProps<T>,
+  ) => ColumnProps<T>;
 }
 
 export interface Field<
@@ -61,13 +66,17 @@ export interface Field<
    * 通过把column渲染为Form组件
    * @param type 区分column是搜索还是表单渲染
    */
-  render: (column: K, type: 'search' | 'form') => React.ReactNode | undefined;
+  render: (
+    tableContext: TableContext<T>,
+    column: K,
+    type: 'search' | 'form',
+  ) => React.ReactNode | undefined;
 
   /**
    * 增强 table column props 并转换为column
    * @returns column props
    */
-  wrap: (column: K) => ColumnProps<T>;
+  wrap: (tableContext: TableContext<T>, column: K) => ColumnProps<T>;
 }
 
 abstract class BaseField<
@@ -114,6 +123,7 @@ export class InputField<T extends Record<string, any>> extends BaseField<
   TableInputColumnProps<T>
 > {
   render(
+    tableContext: TableContext<T>,
     column: TableInputColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
@@ -121,7 +131,10 @@ export class InputField<T extends Record<string, any>> extends BaseField<
     return <Form.Input {...props} />;
   }
 
-  wrap(column: TableInputColumnProps<T>): ColumnProps<T> {
+  wrap(
+    tableContext: TableContext<T>,
+    column: TableInputColumnProps<T>,
+  ): ColumnProps<T> {
     return { ...column };
   }
 }
@@ -131,6 +144,7 @@ export class NumberField<T extends Record<string, any>> extends BaseField<
   TableInputNumberColumnProps<T>
 > {
   render(
+    tableContext: TableContext<T>,
     column: TableInputNumberColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
@@ -138,7 +152,10 @@ export class NumberField<T extends Record<string, any>> extends BaseField<
     return <Form.InputNumber {...props} />;
   }
 
-  wrap(column: TableInputNumberColumnProps<T>): ColumnProps<T> {
+  wrap(
+    tableContext: TableContext<T>,
+    column: TableInputNumberColumnProps<T>,
+  ): ColumnProps<T> {
     return { ...column };
   }
 }
@@ -148,14 +165,25 @@ export class SelectField<T extends Record<string, any>> extends BaseField<
   TableSelectColumnProps<T>
 > {
   render(
+    tableContext: TableContext<T>,
     column: TableSelectColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
     const props = this.getGeneralProps(column, type);
-    return <Form.Select {...props} optionList={column.optionList} />;
+    return (
+      <Form.Select
+        {...props}
+        optionList={column.optionList}
+        filter={column.filter || true}
+        multiple={column.multiple}
+      />
+    );
   }
 
-  wrap(column: TableSelectColumnProps<T>): ColumnProps<T> {
+  wrap(
+    tableContext: TableContext<T>,
+    column: TableSelectColumnProps<T>,
+  ): ColumnProps<T> {
     const render = (text: string, record: T, index: number, options) => {
       const value = record[column.dataIndex];
 
@@ -174,14 +202,35 @@ export class TreeSelectField<T extends Record<string, any>> extends BaseField<
   TableTreeSelectColumnProps<T>
 > {
   render(
+    tableContext: TableContext<T>,
     column: TableTreeSelectColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
     const props = this.getGeneralProps(column, type);
-    return <Form.TreeSelect {...props} />;
+    let data = column.treeData;
+    if (typeof column.treeData === 'function') {
+      data = column.treeData(tableContext);
+    } else {
+      data = column.treeData as TreeNodeData[];
+    }
+
+    return (
+      <Form.TreeSelect
+        {...props}
+        treeData={data}
+        filterTreeNode={column.filterTreeNode}
+        multiple={column.multiple}
+        showClear={column.showClear || true}
+        showSearchClear={column.showSearchClear || true}
+        expandAll={column.expandAll}
+      />
+    );
   }
 
-  wrap(column: TableTreeSelectColumnProps<T>): ColumnProps<T> {
+  wrap(
+    tableContext: TableContext<T>,
+    column: TableTreeSelectColumnProps<T>,
+  ): ColumnProps<T> {
     return { ...column };
   }
 }
@@ -191,6 +240,7 @@ export class RadioField<T extends Record<string, any>> extends BaseField<
   TableRadioColumnProps<T>
 > {
   render(
+    tableContext: TableContext<T>,
     column: TableRadioColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
@@ -198,7 +248,10 @@ export class RadioField<T extends Record<string, any>> extends BaseField<
     return <Form.Radio {...props} />;
   }
 
-  wrap(column: TableRadioColumnProps<T>): ColumnProps<T> {
+  wrap(
+    tableContext: TableContext<T>,
+    column: TableRadioColumnProps<T>,
+  ): ColumnProps<T> {
     return { ...column };
   }
 }
@@ -208,6 +261,7 @@ export class TextAreaField<T extends Record<string, any>> extends BaseField<
   TableTextAreaColumnProps<T>
 > {
   render(
+    tableContext: TableContext<T>,
     column: TableTextAreaColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
@@ -215,7 +269,10 @@ export class TextAreaField<T extends Record<string, any>> extends BaseField<
     return <Form.TextArea {...props} />;
   }
 
-  wrap(column: TableTextAreaColumnProps<T>): ColumnProps<T> {
+  wrap(
+    tableContext: TableContext<T>,
+    column: TableTextAreaColumnProps<T>,
+  ): ColumnProps<T> {
     return { ...column };
   }
 }
@@ -225,14 +282,19 @@ export class IconField<T extends Record<string, any>> extends BaseField<
   TableColumnProps<T>
 > {
   render(
+    tableContext: TableContext<T>,
     column: TableColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
     const props = this.getGeneralProps(column, type);
+
     return <Form.TextArea {...props} />;
   }
 
-  wrap(column: TableTextAreaColumnProps<T>): ColumnProps<T> {
+  wrap(
+    tableContext: TableContext<T>,
+    column: TableTextAreaColumnProps<T>,
+  ): ColumnProps<T> {
     return {
       ...column,
       render: (text: string, record: T, index: number, options) => {
@@ -255,13 +317,17 @@ export class UndefinedField<T extends Record<string, any>> extends BaseField<
   any
 > {
   render(
+    tableContext: TableContext<T>,
     column: TableColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
     return undefined;
   }
 
-  wrap(column: TableColumnProps<T>): ColumnProps<T> {
+  wrap(
+    tableContext: TableContext<T>,
+    column: TableColumnProps<T>,
+  ): ColumnProps<T> {
     return { ...column };
   }
 }

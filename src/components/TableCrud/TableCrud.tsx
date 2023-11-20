@@ -23,7 +23,7 @@ import Table, {
   TableProps,
 } from '@douyinfe/semi-ui/lib/es/table';
 import TableHeader from './TableHeader';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import TableForm from './TableForm';
 import _ from 'lodash';
 import { useRecoilState } from 'recoil';
@@ -48,6 +48,7 @@ import {
   TreeSelectField,
   UndefinedField,
 } from './table';
+import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
 // ======================== props ========================
 
@@ -64,7 +65,7 @@ export type Toolbar<T extends Record<string, any>> = Bar<T> & {
 };
 
 // 操作列类型
-export type OpearteToolbar<T extends Record<string, any>> = Bar<T> & {
+export type OperateToolbar<T extends Record<string, any>> = Bar<T> & {
   onClick?: (tableContext: TableContext<T>, value: T) => void;
 };
 
@@ -79,7 +80,7 @@ export type TableCrudProps<T extends Record<string, any> = any> = Omit<
   toolbar?: Toolbar<T>[];
   columns?: TableColumnProps<T>[];
   // 操作列
-  opearteBar?: OpearteToolbar<T>[];
+  operateBar?: OperateToolbar<T>[];
   // table使用的api
   useApi: () => GeneralApi<T>;
   // 是否需要分页
@@ -107,6 +108,8 @@ export type TableColumnProps<T extends Record<string, any> = any> = {
   initValue?: any;
   // 表单文本拓展
   extraText?: string;
+  // 是否单独一行
+  line?: boolean;
   align?: Align;
   children?: Array<ColumnProps<T>>;
   className?: string;
@@ -151,12 +154,28 @@ export type TableInputNumberColumnProps<T extends Record<string, any> = any> =
 // Select 组件
 export type TableSelectColumnProps<T extends Record<string, any> = any> =
   TableColumnProps<T> & {
+    // 是否可搜索
+    filter?: boolean;
+    // 是否多选
+    multiple?: boolean;
     optionList?: Constant[];
   };
 
 // TreeSelect 组件
 export type TableTreeSelectColumnProps<T extends Record<string, any> = any> =
-  TableColumnProps<T> & {};
+  TableColumnProps<T> & {
+    treeData: TreeNodeData[] | ((tableContext: TableContext) => TreeNodeData[]);
+    // 是否支持多选
+    multiple?: boolean;
+    // 是否根据输入项进行筛选
+    filterTreeNode?: boolean;
+    // 当值不为空时，trigger 是否展示清除按钮
+    showClear?: boolean;
+    // 是否显示搜索框的清除按钮
+    showSearchClear?: boolean;
+    // 设置是否默认展开所有节点
+    expandAll?: boolean;
+  };
 
 // Radio 组件
 export type TableRadioColumnProps<T extends Record<string, any> = any> =
@@ -186,6 +205,8 @@ export type TableContext<T extends Record<string, any> = any> = {
   };
   form: FormContext<T>;
 
+  // table 数据源
+  dataSource: T[];
   newContext: (newTableContext: TableContext<T>) => void;
 };
 
@@ -203,7 +224,6 @@ function TableCrud<T extends Record<string, any> = Data>(
 ) {
   const [tableContext, setTableContext] = useRecoilState(TableContextState);
   const api = props.useApi && props.useApi();
-  const [dataSource, setDatasource] = useState<T[]>([]);
 
   // 初始化内容
   const tableApi = useMemo<TableApi<T>>(() => {
@@ -311,7 +331,6 @@ function TableCrud<T extends Record<string, any> = Data>(
               pageSize: data.size,
               total: data.total,
             };
-            setDatasource(data.records as T[]);
             const newTableContext = {
               ...tableContext,
               table: {
@@ -321,6 +340,7 @@ function TableCrud<T extends Record<string, any> = Data>(
             newTableContext.table.loading = false;
             newTableContext.table.selectedRowKeys = [];
             newTableContext.table.pagination = pageable;
+            newTableContext.dataSource = data.records as T[];
             setTableContext(newTableContext);
           } else {
             const newTableContext = {
@@ -350,16 +370,16 @@ function TableCrud<T extends Record<string, any> = Data>(
 
       tableContext.api &&
         tableContext.api.list(tableContext.search as T).then((res) => {
-          if (res.code === 200) {
-            const data = res.data;
-            setDatasource(data as T[]);
-          }
           const newTableContext = {
             ...tableContext,
             table: {
               ...tableContext.table,
             },
           };
+          if (res.code === 200) {
+            const data = res.data;
+            newTableContext.dataSource = data as T[];
+          }
           newTableContext.table.loading = false;
           newTableContext.table.selectedRowKeys = [];
           newTableContext.table.pagination = false;
@@ -415,13 +435,17 @@ function TableCrud<T extends Record<string, any> = Data>(
 
     return {
       render: (
+        tableContext: TableContext<T>,
         column: TableColumnProps<T>,
         type: 'search' | 'form',
       ): React.ReactNode | undefined => {
-        return fields[column.type]?.render(column, type);
+        return fields[column.type]?.render(tableContext, column, type);
       },
-      wrap: (column: TableColumnProps<T>): ColumnProps<T> => {
-        return fields[column.type || 'undefined']?.wrap(column);
+      wrap: (
+        tableContext: TableContext<T>,
+        column: TableColumnProps<T>,
+      ): ColumnProps<T> => {
+        return fields[column.type || 'undefined']?.wrap(tableContext, column);
       },
     };
   }, []);
@@ -471,7 +495,7 @@ function TableCrud<T extends Record<string, any> = Data>(
           });
         },
       },
-    ] as OpearteToolbar<T>[];
+    ] as OperateToolbar<T>[];
   }, []);
 
   useEffect(() => {
@@ -501,6 +525,7 @@ function TableCrud<T extends Record<string, any> = Data>(
         loading: false,
       },
       newContext: setTableContext,
+      dataSource: [],
     };
     setTableContext(tableContext);
 
@@ -515,14 +540,14 @@ function TableCrud<T extends Record<string, any> = Data>(
       align: 'center',
       type: 'undefined',
       render: (text, record) => {
-        const opearteBar = [...defaultOperateBar, ...(props.opearteBar || [])];
+        const operateBar = [...defaultOperateBar, ...(props.operateBar || [])];
         // 超过三个进行缩略展示
-        return opearteBar.length > 3 ? (
+        return operateBar.length > 3 ? (
           <Dropdown
             trigger="hover"
             render={
               <Dropdown.Menu>
-                {opearteBar.map((bar) => {
+                {operateBar.map((bar) => {
                   return (
                     <Dropdown.Item
                       icon={bar.icon}
@@ -547,7 +572,7 @@ function TableCrud<T extends Record<string, any> = Data>(
           </Dropdown>
         ) : (
           <Space spacing={2}>
-            {opearteBar.map((bar) => {
+            {operateBar.map((bar) => {
               return (
                 <Button
                   theme="borderless"
@@ -588,8 +613,10 @@ function TableCrud<T extends Record<string, any> = Data>(
         {...props}
         columns={tableColumns
           .filter((column) => column.table !== false)
-          .map((column) => columnDecorator.wrap(column))}
-        dataSource={dataSource}
+          .map((column) =>
+            columnDecorator.wrap(tableContext as TableContext, column),
+          )}
+        dataSource={tableContext?.dataSource}
         rowKey={'id'}
         pagination={tableContext?.table.pagination || false}
         loading={tableContext?.table.loading}

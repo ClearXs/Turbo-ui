@@ -33,11 +33,16 @@ export default function useAuthApi() {
    * 获取当前用户菜单
    */
   const getCurrentUserMenu = (): Promise<R<MenuTree[]>> => {
-    // mock
     return request.get('/api/auth/menus').then((res) => {
       return res.data;
     });
   };
 
-  return { login, getCurrentUser, getCurrentUserMenu };
+  const logout = (): Promise<R<boolean>> => {
+    return request.get('/api/auth/logout').then((res) => {
+      return res.data;
+    });
+  };
+
+  return { login, getCurrentUser, getCurrentUserMenu, logout };
 }

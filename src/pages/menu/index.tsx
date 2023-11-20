@@ -1,9 +1,25 @@
 import useMenuApi, { MenuTree } from '@/api/menu';
 import { useMemo } from 'react';
-import TableCrud, { TableColumnProps } from '@/components/TableCrud/TableCrud';
+import TableCrud, {
+  TableColumnProps,
+  TableTreeSelectColumnProps,
+} from '@/components/TableCrud/TableCrud';
 import { directGetIcon } from '@/components/Icon';
-import { MenuTypeList } from '@/constant/menutype';
+import { MENU_TYPE } from '@/constant/menutype';
 import _ from 'lodash';
+import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
+import { treeMap } from '@/util/tree';
+
+export const loadMenuTreeData = (menus: MenuTree[]): TreeNodeData[] => {
+  return treeMap(menus, (menu) => {
+    return {
+      key: menu.id,
+      value: menu.id,
+      label: menu.name,
+      icon: directGetIcon(menu.icon),
+    } as TreeNodeData;
+  });
+};
 
 const Menu = () => {
   const columns: TableColumnProps<MenuTree>[] = useMemo(() => {
@@ -40,7 +56,6 @@ const Menu = () => {
         ellipsis: true,
         align: 'center',
         type: 'input',
-        require: true,
       },
       {
         title: '类型',
@@ -48,7 +63,7 @@ const Menu = () => {
         ellipsis: true,
         type: 'select',
         align: 'center',
-        optionList: MenuTypeList,
+        optionList: MENU_TYPE,
         require: true,
         initValue: 'MENU',
       },
@@ -59,14 +74,18 @@ const Menu = () => {
         align: 'center',
         type: 'treeSelect',
         table: false,
-      },
+        filterTreeNode: true,
+        expandAll: true,
+        treeData: (tableContext) => {
+          return loadMenuTreeData(tableContext?.dataSource || []);
+        },
+      } as TableTreeSelectColumnProps,
       {
         title: '图标',
         dataIndex: 'icon',
         ellipsis: true,
         align: 'center',
         type: 'icon',
-        require: true,
       },
     ];
   }, []);
@@ -114,7 +133,7 @@ const Menu = () => {
             },
           },
         ]}
-        opearteBar={[
+        operateBar={[
           { name: '添加下级', type: 'primary' },
           { name: '添加同级', type: 'primary' },
         ]}

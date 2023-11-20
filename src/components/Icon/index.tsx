@@ -135,9 +135,12 @@ export const importIcon = (icon: string, type: IconSystem = 'semi') => {
  * @returns Component
  */
 export const directGetIcon = (
-  icon: string,
+  icon: string | undefined,
   type: IconSystem = 'semi',
 ): React.ReactNode => {
+  if (icon === undefined) {
+    return null;
+  }
   const iconModel = getIconModle(type);
   const IconComponent = iconModel.getIcon(icon)?.component;
   return IconComponent && <IconComponent />;

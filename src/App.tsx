@@ -5,6 +5,8 @@ import {
   Dropdown,
   Divider,
   Input,
+  Notification,
+  Modal,
 } from '@douyinfe/semi-ui';
 import { IconBell, IconLanguage, IconSearch } from '@douyinfe/semi-icons';
 import IconTheme from './components/Icon/IconTheme';
@@ -12,9 +14,9 @@ import './theme/default.css';
 import { useSetRecoilState } from 'recoil';
 import { CurrentUserRouteState, CurrentUserSelectTabState } from './store/menu';
 import { useEffect } from 'react';
-import { get } from './util/local';
+import { clear, get, remove } from './util/local';
 import { Authentication } from './util/headers';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import { TurboRoute, menuToRouterObject } from './router/router';
 import Sidebar from './components/Sidebar';
 import MotionContent from './components/MotionContent';
@@ -128,7 +130,29 @@ export default function App(): React.ReactNode {
                       个人档案
                     </Dropdown.Item>
                     <Dropdown.Item>修改密码</Dropdown.Item>
-                    <Dropdown.Item>退出登陆</Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => {
+                        Modal.confirm({
+                          content: '是否退出登陆',
+                          onOk: () => {
+                            authApi.logout().then((res) => {
+                              if (res.code === 200 && res.data) {
+                                // 1.清除token
+                                remove(Authentication);
+                                // 2.重定向
+                                redirect('/login');
+                              }
+                              Notification.success({
+                                position: 'top',
+                                content: res.message,
+                              });
+                            });
+                          },
+                        });
+                      }}
+                    >
+                      退出登陆
+                    </Dropdown.Item>
                   </Dropdown.Menu>
                 }
                 clickToHide

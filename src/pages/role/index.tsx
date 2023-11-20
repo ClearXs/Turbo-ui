@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
 import useRoleApi, { Role } from '@/api/role';
 import TableCrud from '@/components/TableCrud';
-import { OpearteToolbar } from '@/components/TableCrud/TableCrud';
+import {
+  OperateToolbar,
+  TableColumnProps,
+} from '@/components/TableCrud/TableCrud';
 
 const Role: React.FC = () => {
-  const roleColumns = useMemo(() => {
+  const roleColumns: TableColumnProps<Role>[] = useMemo(() => {
     return [
       {
         title: '角色名称',
@@ -43,10 +46,11 @@ const Role: React.FC = () => {
 
   return (
     <TableCrud<Role>
+      model="role"
       columns={roleColumns}
       useApi={useRoleApi}
       page={true}
-      opearteBar={
+      operateBar={
         [
           {
             name: '授权',
@@ -56,7 +60,7 @@ const Role: React.FC = () => {
               console.log(record);
             },
           },
-        ] as OpearteToolbar<Role>[]
+        ] as OperateToolbar<Role>[]
       }
     />
   );

@@ -2,7 +2,7 @@ import { Constant } from './interface';
 
 export type MenuType = Constant;
 
-export const MenuTypeList: MenuType[] = [
+export const MENU_TYPE: MenuType[] = [
   {
     value: 'MENU',
     label: '菜单',

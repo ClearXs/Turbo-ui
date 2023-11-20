@@ -17,6 +17,7 @@ export default function UserProfile() {
         onSubmit={(data) => {
           console.log(data);
         }}
+        initValues={currentUser}
       >
         <div className="flex">
           <div>
@@ -73,7 +74,6 @@ export default function UserProfile() {
             <Form.Input
               field="nickname"
               noLabel
-              initValue={currentUser?.nickname}
               style={{ width: '50%' }}
               disabled={!isSave}
             />
@@ -92,7 +92,6 @@ export default function UserProfile() {
               field="phone"
               disabled={!isSave}
               noLabel
-              initValue={currentUser?.phone}
               style={{ width: '50%' }}
             />
           </div>
@@ -108,7 +107,6 @@ export default function UserProfile() {
               type="email"
               field="email"
               noLabel
-              initValue={currentUser?.email}
               style={{ width: '50%' }}
               disabled={!isSave}
             />

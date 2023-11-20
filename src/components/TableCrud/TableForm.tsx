@@ -12,6 +12,15 @@ const formType: Record<string, string> = {
   details: '明细',
 };
 
+/**
+ * 表单布局样式
+ * @param columns columns
+ * @returns
+ */
+const formLayoutRender = (columns: TableColumnProps[]) => {
+  return <></>;
+};
+
 const TableForm: React.FC<{
   columns?: TableColumnProps[];
   tableApi: TableApi<any>;
@@ -67,7 +76,13 @@ const TableForm: React.FC<{
           >
             {columns
               .filter((column) => column.form !== false)
-              .map((col) => columnDecorator.render(col, 'form'))}
+              .map((col) =>
+                columnDecorator.render(
+                  tableContext as TableContext,
+                  col,
+                  'form',
+                ),
+              )}
           </Form>
         </Modal>
       </Spin>

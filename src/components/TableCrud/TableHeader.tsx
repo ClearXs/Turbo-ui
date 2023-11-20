@@ -25,7 +25,9 @@ const TableHeader: React.FC<{
     searchColumns.length > 0 && (
       <Form labelPosition="left" className="flex" getFormApi={setFormApi}>
         <Space>
-          {searchColumns?.map((col) => columnDecorator.render(col, 'search'))}
+          {searchColumns?.map((col) =>
+            columnDecorator.render(tableContext as TableContext, col, 'search'),
+          )}
         </Space>
         <Space className="ml-4">
           <Button

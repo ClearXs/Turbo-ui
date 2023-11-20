@@ -20,7 +20,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
   const userApi = useUserApi();
   const authApi = useAuthApi();
-  const [loding, setLoding] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [captcha, setCaptcha] = useState<Captcha | undefined>();
 
   useEffect(() => {
@@ -43,10 +43,10 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
         登陆
       </Typography.Title>
       <div className="w-4/5">
-        <Spin spinning={loding}>
+        <Spin spinning={loading}>
           <Form
             onSubmit={async (data) => {
-              setLoding(true);
+              setLoading(true);
               authApi
                 .login({
                   ...data,
@@ -64,10 +64,11 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                     // 跳转至首页
                     navigate('/');
                   }
-                  setLoding(false);
+                  setLoading(false);
                 })
                 .catch((err) => {
-                  setLoding(false);
+                  reloadCaptcha();
+                  setLoading(false);
                 });
             }}
             labelPosition="left"
@@ -92,8 +93,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                 field="captcha"
                 label="验证码"
                 placeholder="请输入验证码"
-                min={4}
-                max={4}
+                maxLength={4}
                 rules={[{ required: true, message: '请输入验证码' }]}
               ></Form.Input>
               <Tooltip content="刷新验证码">

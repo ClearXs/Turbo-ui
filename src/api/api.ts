@@ -43,6 +43,15 @@ export interface BaseEntity {
   version: number;
 }
 
+export interface Tree {
+  id: string;
+  depth: number;
+  leaf: boolean;
+  path: string;
+  parent: Tree;
+  children: Tree[];
+}
+
 // 包含租户的实体
 export interface TenantEntity extends BaseEntity {
   /**

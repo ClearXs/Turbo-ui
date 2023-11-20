@@ -9,7 +9,7 @@ import RegisterFrom from './RegisterFrom';
 import useTenantApi, { Tenant } from '@/api/tenant';
 
 const Login: React.FC = () => {
-  const [switchReigster, setSwitchRegister] = useState<boolean>(false);
+  const [switchRegister, setSwitchRegister] = useState<boolean>(false);
   const [tenantList, setTenantList] = useState<Tenant[]>([]);
   const [tenantId, setTenantId] = useState('');
   const tenantApi = useTenantApi();
@@ -67,7 +67,7 @@ const Login: React.FC = () => {
                   })}
               </Select>
             </div>
-            {!switchReigster && (
+            {!switchRegister && (
               <>
                 <LoginFrom tenantId={tenantId} />
                 <div className="flex justify-center absolute bottom-5">
@@ -81,7 +81,7 @@ const Login: React.FC = () => {
                 </div>
               </>
             )}
-            {switchReigster && (
+            {switchRegister && (
               <>
                 <RegisterFrom tenantId={tenantId} />
                 <Tooltip content="返回">
