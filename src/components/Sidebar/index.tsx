@@ -38,6 +38,8 @@ const Sidebar: React.FC<{ routes: TurboRoute[] }> = ({ routes }) => {
               text={route.name}
               icon={route.icon}
               onClick={() => {
+                // TODO 需要考虑iframe内嵌的页面
+                const path = route.path;
                 if (!_.isEmpty(route.path)) {
                   navigate(route.path as string);
                   addUserContentTab(route);

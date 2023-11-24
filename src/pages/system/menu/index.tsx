@@ -1,38 +1,19 @@
-import useMenuApi, { MenuTree } from '@/api/menu';
-import { useMemo } from 'react';
+import useMenuApi, { MenuTree } from '@/api/system/menu';
+import React, { useMemo } from 'react';
 import TableCrud, {
   TableColumnProps,
+  TableContext,
   TableTreeSelectColumnProps,
 } from '@/components/TableCrud/TableCrud';
 import { directGetIcon } from '@/components/Icon';
 import { MENU_TYPE } from '@/constant/menutype';
 import _ from 'lodash';
-import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
-import { treeMap } from '@/util/tree';
-
-export const loadMenuTreeData = (menus: MenuTree[]): TreeNodeData[] => {
-  return treeMap(menus, (menu) => {
-    return {
-      key: menu.id,
-      value: menu.id,
-      label: menu.name,
-      icon: directGetIcon(menu.icon),
-    } as TreeNodeData;
-  });
-};
+import { Tag } from '@douyinfe/semi-ui';
+import { loadMenuTreeData } from './MenuTree';
 
 const Menu = () => {
   const columns: TableColumnProps<MenuTree>[] = useMemo(() => {
     return [
-      {
-        title: '编码',
-        dataIndex: 'code',
-        type: 'input',
-        ellipsis: true,
-        align: 'center',
-        require: true,
-        extraText: '编码需要唯一',
-      },
       {
         title: '名称',
         dataIndex: 'name',
@@ -43,12 +24,21 @@ const Menu = () => {
         require: true,
       },
       {
-        title: '别名',
-        dataIndex: 'alias',
+        title: '编码',
+        dataIndex: 'code',
+        type: 'input',
         ellipsis: true,
         align: 'center',
-        type: 'input',
         require: true,
+        extraText: '编码需要唯一',
+      },
+      {
+        title: '图标',
+        dataIndex: 'icon',
+        ellipsis: true,
+        align: 'center',
+        type: 'icon',
+        line: true,
       },
       {
         title: '路径',
@@ -66,6 +56,26 @@ const Menu = () => {
         optionList: MENU_TYPE,
         require: true,
         initValue: 'MENU',
+        render: (text, record) => {
+          const menu = MENU_TYPE.find((v) => v.value === record.type);
+          return menu && <Tag color={menu.tag || 'amber'}>{menu.label}</Tag>;
+        },
+      },
+      {
+        title: '别名',
+        dataIndex: 'alias',
+        ellipsis: true,
+        align: 'center',
+        type: 'input',
+        require: true,
+      },
+      {
+        title: '序号',
+        dataIndex: 'sort',
+        ellipsis: true,
+        align: 'center',
+        type: 'number',
+        require: true,
       },
       {
         title: '上级菜单',
@@ -80,13 +90,6 @@ const Menu = () => {
           return loadMenuTreeData(tableContext?.dataSource || []);
         },
       } as TableTreeSelectColumnProps,
-      {
-        title: '图标',
-        dataIndex: 'icon',
-        ellipsis: true,
-        align: 'center',
-        type: 'icon',
-      },
     ];
   }, []);
 
@@ -134,8 +137,36 @@ const Menu = () => {
           },
         ]}
         operateBar={[
-          { name: '添加下级', type: 'primary' },
-          { name: '添加同级', type: 'primary' },
+          {
+            name: '添加下级',
+            type: 'primary',
+            onClick: (tableContext, record) => {
+              const newTableContext = {
+                ...tableContext,
+                form: {
+                  ...tableContext.form,
+                  visible: true,
+                  values: { parentId: record.id },
+                },
+              } as TableContext;
+              tableContext.newContext(newTableContext);
+            },
+          },
+          {
+            name: '添加同级',
+            type: 'primary',
+            onClick: (tableContext, record) => {
+              const newTableContext = {
+                ...tableContext,
+                form: {
+                  ...tableContext.form,
+                  visible: true,
+                  values: { parentId: record.parentId },
+                },
+              } as TableContext;
+              tableContext.newContext(newTableContext);
+            },
+          },
         ]}
       />
     </>

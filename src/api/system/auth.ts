@@ -1,4 +1,4 @@
-import { R } from './api';
+import { R } from '../api';
 import useRequest from '@/hook/request';
 import { LoginInfo, User } from './user';
 import { MenuTree } from './menu';
@@ -38,11 +38,47 @@ export default function useAuthApi() {
     });
   };
 
+  /**
+   * 登出
+   */
   const logout = (): Promise<R<boolean>> => {
     return request.get('/api/auth/logout').then((res) => {
       return res.data;
     });
   };
 
-  return { login, getCurrentUser, getCurrentUserMenu, logout };
+  /**
+   * 修改密码
+   * @returns token 信息
+   */
+  const changePassword = (
+    newPassword: string,
+  ): Promise<R<Record<string, any>>> => {
+    return request
+      .put('/api/auth/changePassword', { newPassword })
+      .then((res) => {
+        return res.data;
+      });
+  };
+
+  /**
+   * 修改用户信息
+   * @returns token 信息
+   */
+  const modify = (
+    user: Record<string, any>,
+  ): Promise<R<Record<string, any>>> => {
+    return request.put('/api/auth/modify', user).then((res) => {
+      return res.data;
+    });
+  };
+
+  return {
+    login,
+    getCurrentUser,
+    getCurrentUserMenu,
+    logout,
+    changePassword,
+    modify,
+  };
 }

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import TableCrud from '@/components/TableCrud';
 import { TableColumnProps } from '@/components/TableCrud/TableCrud';
 import { PROVIDER } from '@/constant/provider';
-import useAttachmentApi, { Attachment } from '@/api/attachment';
+import useAttachmentApi, { Attachment } from '@/api/system/attachment';
 import { directGetIcon } from '@/components/Icon';
 
 export default function (): React.ReactNode {

@@ -6,7 +6,7 @@ import { CS_TYPE } from '@/constant/cstype';
 import { ENABLE } from '@/constant/enable';
 import useCloudStorageConfigApi, {
   CloudStorageConfig,
-} from '@/api/cloudstorageconfig';
+} from '@/api/develop/cloudstorageconfig';
 
 export default function (): React.ReactNode {
   const columns: TableColumnProps<CloudStorageConfig>[] = useMemo(() => {
@@ -19,6 +19,7 @@ export default function (): React.ReactNode {
         search: true,
         type: 'input',
         require: true,
+        sorter: true,
       },
       {
         title: '云存储端点',

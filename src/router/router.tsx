@@ -11,9 +11,13 @@ import * as headers from '@/util/headers';
 import { isEmpty } from '@/util/utils';
 import { useRecoilValue } from 'recoil';
 import { CurrentUserRouteState } from '@/store/menu';
-import { MenuTree } from '@/api/menu';
+import { MenuTree } from '@/api/system/menu';
 import { importIcon } from '@/components/Icon';
 import _ from 'lodash';
+import Home from '@/pages/home';
+import Profile from '@/pages/profile';
+import App from '@/App';
+import Login from '@/pages/login';
 
 export type TurboRoute = RouteObject &
   Pick<MenuTree, 'code' | 'alias' | 'sort' | 'name' | 'depth'> & {
@@ -27,13 +31,8 @@ export type TurboRoute = RouteObject &
   };
 
 // 组件懒加载方式进行导入
-export const lazyLoader = (factory: () => Promise<any>) => {
-  const Module = lazy(factory);
-  return (
-    <Suspense>
-      <Module />
-    </Suspense>
-  );
+export const lazyLoader = (Module: React.ReactNode) => {
+  return <Suspense fallback={<div />}>{Module}</Suspense>;
 };
 
 /**
@@ -45,35 +44,36 @@ export const menuToRouterObject = (menus: MenuTree[]): TurboRoute[] => {
   if (isEmpty(menus)) {
     return [];
   }
-  return menus.map((m) => {
-    /* @vite-ignore */
-    // 目标route组件
-    const Component = _.isEmpty(m.route)
-      ? null
-      : lazyLoader(() => import('../pages' + `${m.route}`));
-    // 图标组件
-    const IconComponent = importIcon(m.icon as string);
-    return {
-      id: String(m.id),
-      element: Component,
-      children: menuToRouterObject(m.children),
-      path: m.route,
-      code: m.code,
-      alias: m.alias,
-      sort: m.sort,
-      icon: IconComponent && <IconComponent />,
-      name: m.name,
-      depth: m.depth,
-      type: 'custom',
-      clearable: true,
-    } as TurboRoute;
-  });
+  return menus
+    .filter((m) => m.type !== 'BUTTON')
+    .map((m) => {
+      /* @vite-ignore */
+      // 目标route组件
+      const Module = lazy(() => import('../pages' + `${m.route}`));
+      const Component = _.isEmpty(m.route) ? null : lazyLoader(<Module />);
+      // 图标组件
+      const IconComponent = importIcon(m.icon as string);
+      return {
+        id: String(m.id),
+        element: Component,
+        children: menuToRouterObject(m.children),
+        path: m.route,
+        code: m.code,
+        alias: m.alias,
+        sort: m.sort,
+        icon: IconComponent && <IconComponent />,
+        name: m.name,
+        depth: m.depth,
+        type: 'custom',
+        clearable: true,
+      } as TurboRoute;
+    });
 };
 
 const AppRouter: React.FC = () => {
   const userRoutes = useRecoilValue(CurrentUserRouteState);
   const IconHomeComponent = importIcon('IconHome');
-  const IconUserComnpoent = importIcon('IconUser');
+  const IconUserComponent = importIcon('IconUser');
   const renderRoutes = [
     {
       id: '/home',
@@ -81,7 +81,7 @@ const AppRouter: React.FC = () => {
       path: '/home',
       name: '首页',
       level: 2,
-      element: lazyLoader(() => import('@/pages/home')),
+      element: lazyLoader(<Home />),
       icon: IconHomeComponent && <IconHomeComponent />,
       clearable: false,
       type: 'system',
@@ -92,9 +92,9 @@ const AppRouter: React.FC = () => {
       path: '/profile',
       name: '个人档案',
       level: 2,
-      element: lazyLoader(() => import('@/pages/profile')),
+      element: lazyLoader(<Profile />),
       type: 'system',
-      icon: IconUserComnpoent && <IconUserComnpoent />,
+      icon: IconUserComponent && <IconUserComponent />,
       clearable: true,
       attribute: ['hide'],
     },
@@ -104,7 +104,7 @@ const AppRouter: React.FC = () => {
     {
       id: '/',
       path: '/',
-      element: lazyLoader(() => import('@/App')),
+      element: lazyLoader(<App />),
       errorElement: <Error />,
       loader: () => {
         if (isEmpty(local.get(headers.Authentication))) {
@@ -118,7 +118,7 @@ const AppRouter: React.FC = () => {
     {
       id: 'login',
       path: '/login',
-      element: lazyLoader(() => import('@/pages/login')),
+      element: lazyLoader(<Login />),
       loader: () => {
         if (isEmpty(local.get(headers.Authentication))) {
           return '';
@@ -128,6 +128,10 @@ const AppRouter: React.FC = () => {
       type: 'system',
     },
   ];
-  return <RouterProvider router={createBrowserRouter(routers)} />;
+  return (
+    <div key={location.key}>
+      <RouterProvider router={createBrowserRouter(routers)} />
+    </div>
+  );
 };
 export default AppRouter;

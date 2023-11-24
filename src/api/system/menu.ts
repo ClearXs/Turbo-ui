@@ -1,17 +1,7 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, Pagination, R, Tree } from './api';
+import { GeneralApi, GeneralParams, Pagination, R, Tree } from '../api';
 
 export interface Menu extends Tree {
-  /**
-   * 菜单编码
-   */
-  code?: string;
-
-  /**
-   * 菜单名称
-   */
-  name: string;
-
   /**
    * 菜单序号
    */
@@ -78,18 +68,18 @@ export default function useMenuApi(): GeneralApi<MenuTree> {
     });
   };
 
-  const list = (entity: MenuTree): Promise<R<MenuTree[]>> => {
-    return request.get('/api/sys/menu/tree', entity).then((res) => {
+  const list = (params: GeneralParams<MenuTree>): Promise<R<MenuTree[]>> => {
+    return request.get('/api/sys/menu/tree', params).then((res) => {
       return res.data;
     });
   };
 
   const page = (
     page: Pagination<MenuTree>,
-    entity: MenuTree,
+    params: GeneralParams<MenuTree>,
   ): Promise<R<Pagination<MenuTree>>> => {
     return request
-      .get('/api/sys/menu/page', { ...page, ...entity })
+      .get('/api/sys/menu/page', { ...page, ...params })
       .then((res) => {
         return res.data;
       });

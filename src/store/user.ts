@@ -1,5 +1,5 @@
-import useAuthApi from '@/api/auth';
-import useUserApi, { Captcha, User } from '@/api/user';
+import useAuthApi from '@/api/system/auth';
+import useUserApi, { Captcha, User } from '@/api/system/user';
 import _ from 'lodash';
 import { atom, selector } from 'recoil';
 
@@ -21,10 +21,13 @@ export const captchaState = atom({
   ],
 });
 
-export const CurrentUserState = selector<User | undefined>({
+export const CurrentUserState = atom<User | undefined>({
   key: `${namespace}:current:user`,
-  get: async ({}) => {
-    const res = await useAuthApi().getCurrentUser();
-    return res.data;
-  },
+  effects: [
+    ({ setSelf }) => {
+      useAuthApi()
+        .getCurrentUser()
+        .then((res) => setSelf(res.data));
+    },
+  ],
 });

@@ -11,17 +11,18 @@ import {
 import { IconBell, IconLanguage, IconSearch } from '@douyinfe/semi-icons';
 import IconTheme from './components/Icon/IconTheme';
 import './theme/default.css';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { CurrentUserRouteState, CurrentUserSelectTabState } from './store/menu';
 import { useEffect } from 'react';
-import { clear, get, remove } from './util/local';
+import { get, remove } from './util/local';
 import { Authentication } from './util/headers';
 import { redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import { TurboRoute, menuToRouterObject } from './router/router';
 import Sidebar from './components/Sidebar';
 import MotionContent from './components/MotionContent';
 import { useContentMenu, useFindUserRoute } from './hook/menu';
-import useAuthApi from './api/auth';
+import useAuthApi from './api/system/auth';
+import { CurrentUserState } from './store/user';
 
 export default function App(): React.ReactNode {
   const authApi = useAuthApi();
@@ -31,6 +32,7 @@ export default function App(): React.ReactNode {
   const navigate = useNavigate();
   const setSelectContentTab = useSetRecoilState(CurrentUserSelectTabState);
   const userRoutes = useLoaderData() as TurboRoute[];
+  const currentUser = useRecoilValue(CurrentUserState);
 
   useEffect(() => {
     authApi.getCurrentUserMenu().then((res) => {
@@ -118,7 +120,7 @@ export default function App(): React.ReactNode {
                 消息
               </Button>
               <Dropdown
-                trigger={'click'}
+                trigger={'hover'}
                 render={
                   <Dropdown.Menu>
                     <Dropdown.Item
@@ -157,9 +159,7 @@ export default function App(): React.ReactNode {
                 }
                 clickToHide
               >
-                <Avatar color="orange" size="small">
-                  YJ
-                </Avatar>
+                <Avatar color="orange" src={currentUser?.avatar} />
               </Dropdown>
             </div>
           </div>

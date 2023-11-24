@@ -13,8 +13,8 @@ import * as local from '@/util/local';
 import * as headers from '@/util/headers';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { IconGithubLogo, IconWeibo } from '@douyinfe/semi-icons';
-import useUserApi, { Captcha } from '@/api/user';
-import useAuthApi from '@/api/auth';
+import useUserApi, { Captcha } from '@/api/system/user';
+import useAuthApi from '@/api/system/auth';
 
 const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
@@ -57,8 +57,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                   if (res.code !== 200) {
                     reloadCaptcha();
                   } else {
-                    // 登陆成功
-                    // 1.设置local storage
+                    // 设置local storage
                     const token = res.data?.tokenValue || '';
                     local.set(headers.Authentication, token as string);
                     // 跳转至首页

@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { BaseEntity, GeneralApi, Pagination, R } from './api';
+import { BaseEntity, GeneralApi, GeneralParams, Pagination, R } from '../api';
 
 export interface Role extends BaseEntity {
   /**
@@ -23,7 +23,13 @@ export interface Role extends BaseEntity {
   sort: number;
 }
 
-const useRoleApi = (): GeneralApi<Role> => {
+export interface RoleApi extends GeneralApi<Role> {
+  grant: <P extends { roleId: string; menuId: string[] }>(
+    params: P,
+  ) => Promise<R<boolean>>;
+}
+
+const useRoleApi = (): RoleApi => {
   const request = useRequest();
 
   const save = (entity: Role): Promise<R<boolean>> => {
@@ -54,23 +60,29 @@ const useRoleApi = (): GeneralApi<Role> => {
       return res.data;
     });
   };
-  const list = (entity: Role): Promise<R<Role[]>> => {
-    return request.get('/api/sys/role/list', entity).then((res) => {
+  const list = (params: GeneralParams<Role>): Promise<R<Role[]>> => {
+    return request.post('/api/sys/role/list', { ...params }).then((res) => {
       return res.data;
     });
   };
   const page = (
     page: Pagination<Role>,
-    entity: Role,
+    params: GeneralParams<Role>,
   ): Promise<R<Pagination<Role>>> => {
     return request
-      .get('/api/sys/role/page', { ...page, ...entity })
+      .post('/api/sys/role/page', { page, ...params })
       .then((res) => {
         return res.data;
       });
   };
 
-  return { save, edit, saveOrUpdate, deleteEntity, details, list, page };
+  const grant = <P extends { roleId: string; menuId: string[] }>(
+    params: P,
+  ): Promise<R<boolean>> => {
+    return request.post('/api/sys/role/grant', params).then((res) => res.data);
+  };
+
+  return { save, edit, saveOrUpdate, deleteEntity, details, list, page, grant };
 };
 
 export default useRoleApi;

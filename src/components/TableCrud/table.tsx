@@ -9,9 +9,11 @@ import {
   TableTextAreaColumnProps,
   TableTreeSelectColumnProps,
 } from './TableCrud';
-import { Form, Tooltip } from '@douyinfe/semi-ui';
-import { importIcon } from '../Icon';
+import { Avatar, Form, Modal, Tooltip } from '@douyinfe/semi-ui';
+import { directGetIcon, importIcon } from '../Icon';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
+import { IconCamera } from '@douyinfe/semi-icons';
+import IconList from '@/pages/develop/icon';
 
 export type ColumnType =
   | 'input'
@@ -45,7 +47,7 @@ export interface ColumnDecorator<T extends Record<string, any>> {
     tableContext: TableContext<T>,
     column: TableColumnProps,
     type: 'search' | 'form',
-  ) => React.ReactNode | undefined;
+  ) => React.ReactNode;
 
   /**
    * 增强 table column props 并转换为column
@@ -95,6 +97,34 @@ abstract class BaseField<
     undefined: '请输入',
   };
 
+  public render(
+    tableContext: TableContext<T>,
+    column: K,
+    type: 'search' | 'form',
+  ): React.ReactNode | undefined {
+    // 表单通用属性实现
+
+    return this.doRender(tableContext, column, type);
+  }
+
+  // 子类实现
+  protected abstract doRender(
+    tableContext: TableContext<T>,
+    column: K,
+    type: 'search' | 'form',
+  ): React.ReactNode | undefined;
+
+  public wrap(tableContext: TableContext<T>, column: K): ColumnProps<T> {
+    // 表格通用属性实现
+
+    return this.doWrap(tableContext, column);
+  }
+
+  protected abstract doWrap(
+    tableContext: TableContext<T>,
+    column: K,
+  ): ColumnProps<T>;
+
   protected getGeneralProps(column: K, type: 'search' | 'form') {
     const label = column.title?.toString();
     const field = column.dataIndex || '';
@@ -122,7 +152,7 @@ export class InputField<T extends Record<string, any>> extends BaseField<
   T,
   TableInputColumnProps<T>
 > {
-  render(
+  doRender(
     tableContext: TableContext<T>,
     column: TableInputColumnProps<T>,
     type: 'search' | 'form',
@@ -131,7 +161,7 @@ export class InputField<T extends Record<string, any>> extends BaseField<
     return <Form.Input {...props} />;
   }
 
-  wrap(
+  doWrap(
     tableContext: TableContext<T>,
     column: TableInputColumnProps<T>,
   ): ColumnProps<T> {
@@ -143,7 +173,7 @@ export class NumberField<T extends Record<string, any>> extends BaseField<
   T,
   TableInputNumberColumnProps<T>
 > {
-  render(
+  doRender(
     tableContext: TableContext<T>,
     column: TableInputNumberColumnProps<T>,
     type: 'search' | 'form',
@@ -152,7 +182,7 @@ export class NumberField<T extends Record<string, any>> extends BaseField<
     return <Form.InputNumber {...props} />;
   }
 
-  wrap(
+  doWrap(
     tableContext: TableContext<T>,
     column: TableInputNumberColumnProps<T>,
   ): ColumnProps<T> {
@@ -164,7 +194,7 @@ export class SelectField<T extends Record<string, any>> extends BaseField<
   T,
   TableSelectColumnProps<T>
 > {
-  render(
+  doRender(
     tableContext: TableContext<T>,
     column: TableSelectColumnProps<T>,
     type: 'search' | 'form',
@@ -180,7 +210,7 @@ export class SelectField<T extends Record<string, any>> extends BaseField<
     );
   }
 
-  wrap(
+  doWrap(
     tableContext: TableContext<T>,
     column: TableSelectColumnProps<T>,
   ): ColumnProps<T> {
@@ -201,7 +231,7 @@ export class TreeSelectField<T extends Record<string, any>> extends BaseField<
   T,
   TableTreeSelectColumnProps<T>
 > {
-  render(
+  doRender(
     tableContext: TableContext<T>,
     column: TableTreeSelectColumnProps<T>,
     type: 'search' | 'form',
@@ -227,7 +257,7 @@ export class TreeSelectField<T extends Record<string, any>> extends BaseField<
     );
   }
 
-  wrap(
+  doWrap(
     tableContext: TableContext<T>,
     column: TableTreeSelectColumnProps<T>,
   ): ColumnProps<T> {
@@ -239,7 +269,7 @@ export class RadioField<T extends Record<string, any>> extends BaseField<
   T,
   TableRadioColumnProps<T>
 > {
-  render(
+  doRender(
     tableContext: TableContext<T>,
     column: TableRadioColumnProps<T>,
     type: 'search' | 'form',
@@ -248,7 +278,7 @@ export class RadioField<T extends Record<string, any>> extends BaseField<
     return <Form.Radio {...props} />;
   }
 
-  wrap(
+  doWrap(
     tableContext: TableContext<T>,
     column: TableRadioColumnProps<T>,
   ): ColumnProps<T> {
@@ -260,7 +290,7 @@ export class TextAreaField<T extends Record<string, any>> extends BaseField<
   T,
   TableTextAreaColumnProps<T>
 > {
-  render(
+  doRender(
     tableContext: TableContext<T>,
     column: TableTextAreaColumnProps<T>,
     type: 'search' | 'form',
@@ -269,7 +299,7 @@ export class TextAreaField<T extends Record<string, any>> extends BaseField<
     return <Form.TextArea {...props} />;
   }
 
-  wrap(
+  doWrap(
     tableContext: TableContext<T>,
     column: TableTextAreaColumnProps<T>,
   ): ColumnProps<T> {
@@ -281,17 +311,71 @@ export class IconField<T extends Record<string, any>> extends BaseField<
   T,
   TableColumnProps<T>
 > {
-  render(
+  doRender(
     tableContext: TableContext<T>,
     column: TableColumnProps<T>,
     type: 'search' | 'form',
   ): React.ReactNode {
     const props = this.getGeneralProps(column, type);
-
-    return <Form.TextArea {...props} />;
+    return (
+      <>
+        <Form.Slot label={props.label}>
+          <Avatar
+            alt="Alice Swift"
+            size="small"
+            shape="square"
+            onClick={() => {
+              const modal = Modal.info({
+                size: 'medium',
+                title: 'Icon Resources',
+                content: (
+                  <IconList
+                    chooseIcon={(icon) => {
+                      const values = { ...tableContext.form.values } || {};
+                      values[props.field] = icon;
+                      const newTableContext = {
+                        ...tableContext,
+                        form: {
+                          ...tableContext.form,
+                          values,
+                        },
+                      } as TableContext;
+                      values[props.field] = icon;
+                      newTableContext.form.values = values;
+                      tableContext.newContext(newTableContext);
+                      tableContext.form.formApi?.setValue(props.field, icon);
+                      modal.destroy();
+                    }}
+                    showName={false}
+                    splitNum={3}
+                  />
+                ),
+                footer: null,
+              });
+            }}
+            hoverMask={
+              <div
+                style={{
+                  backgroundColor: 'var(--semi-color-overlay-bg)',
+                  height: '100%',
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <IconCamera />
+              </div>
+            }
+          >
+            {directGetIcon(tableContext.form.values?.[props.field])}
+          </Avatar>
+        </Form.Slot>
+      </>
+    );
   }
 
-  wrap(
+  doWrap(
     tableContext: TableContext<T>,
     column: TableTextAreaColumnProps<T>,
   ): ColumnProps<T> {
@@ -316,7 +400,7 @@ export class UndefinedField<T extends Record<string, any>> extends BaseField<
   T,
   any
 > {
-  render(
+  doRender(
     tableContext: TableContext<T>,
     column: TableColumnProps<T>,
     type: 'search' | 'form',
@@ -324,7 +408,7 @@ export class UndefinedField<T extends Record<string, any>> extends BaseField<
     return undefined;
   }
 
-  wrap(
+  doWrap(
     tableContext: TableContext<T>,
     column: TableColumnProps<T>,
   ): ColumnProps<T> {

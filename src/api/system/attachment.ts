@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, Pagination, R, TenantEntity } from './api';
+import { GeneralApi, GeneralParams, Pagination, R, TenantEntity } from '../api';
 
 export interface Attachment extends TenantEntity {
   /**
@@ -56,18 +56,22 @@ export default function useAttachmentApi(): AttachmentApi {
     });
   };
 
-  const list = (entity: Attachment): Promise<R<Attachment[]>> => {
-    return request.get('/api/sys/attachment/tree', entity).then((res) => {
-      return res.data;
-    });
+  const list = (
+    params: GeneralParams<Attachment>,
+  ): Promise<R<Attachment[]>> => {
+    return request
+      .post('/api/sys/attachment/list', { ...params })
+      .then((res) => {
+        return res.data;
+      });
   };
 
   const page = (
     page: Pagination<Attachment>,
-    entity: Attachment,
+    params: GeneralParams<Attachment>,
   ): Promise<R<Pagination<Attachment>>> => {
     return request
-      .get('/api/sys/attachment/page', { ...page, ...entity })
+      .post('/api/sys/attachment/page', { page, ...params })
       .then((res) => {
         return res.data;
       });

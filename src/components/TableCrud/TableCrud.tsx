@@ -19,6 +19,8 @@ import Table, {
   OnFilterDropdownVisibleChange,
   OnHeaderCell,
   RenderFilterDropdownItem,
+  SortOrder,
+  Sorter,
   TablePagination,
   TableProps,
 } from '@douyinfe/semi-ui/lib/es/table';
@@ -28,10 +30,16 @@ import TableForm from './TableForm';
 import _ from 'lodash';
 import { useRecoilState } from 'recoil';
 import { TableContextState } from '@/hook/table';
-import { GeneralApi, Pagination } from '@/api/api';
+import {
+  GeneralApi,
+  GeneralParams,
+  IdEntity,
+  Order,
+  Pagination,
+} from '@/api/api';
 import TableToolbar from './TableToolbar';
 import { directGetIcon } from '../Icon';
-import { RuleItem } from '@douyinfe/semi-ui/lib/es/form';
+import { FormApi, RuleItem } from '@douyinfe/semi-ui/lib/es/form';
 import { Constant } from '@/constant/interface';
 import { DropdownProps } from '@douyinfe/semi-ui/lib/es/dropdown';
 import {
@@ -89,6 +97,7 @@ export type TableCrudProps<T extends Record<string, any> = any> = Omit<
 
 export type TableColumnProps<T extends Record<string, any> = any> = {
   [x: string]: any;
+  // ==================== 通用 ====================
   dataIndex: string;
   // 字段类型
   type: ColumnType;
@@ -98,18 +107,21 @@ export type TableColumnProps<T extends Record<string, any> = any> = {
   form?: boolean;
   // 是否支持搜索，如果true则把column展示在搜索栏中，默认false
   search?: boolean;
+  // ==================== 表格 ====================
+  // ==================== 表单props ====================
   // 快捷的表单必填项，如果search = true，则默认 = false
   require?: boolean | ((record: T) => boolean);
   // 表格表单校验规则
   rules?: RuleItem[];
-  // 该字段是否进行排序
-  sort?: boolean;
   // 表单字段初始值
   initValue?: any;
   // 表单文本拓展
   extraText?: string;
+  // 行分割的数目，默认为12
+  span?: 6 | 12 | 24;
   // 是否单独一行
   line?: boolean;
+  // ==================== 原生 ====================
   align?: Align;
   children?: Array<ColumnProps<T>>;
   className?: string;
@@ -128,6 +140,8 @@ export type TableColumnProps<T extends Record<string, any> = any> = {
   render?: ColumnRender<T>;
   renderFilterDropdownItem?: RenderFilterDropdownItem;
   sortChildrenRecord?: boolean;
+  sortOrder?: SortOrder;
+  sorter?: Sorter<T>;
   title?: ColumnTitle;
   useFullRender?: boolean;
   width?: string | number;
@@ -202,6 +216,8 @@ export type TableContext<T extends Record<string, any> = any> = {
     pagination?: TablePagination;
     // 行选择keys
     selectedRowKeys: string[];
+    // 排序
+    orders?: Order[];
   };
   form: FormContext<T>;
 
@@ -210,18 +226,17 @@ export type TableContext<T extends Record<string, any> = any> = {
   newContext: (newTableContext: TableContext<T>) => void;
 };
 
-export type FormContext<T> = {
+export type FormContext<T extends Record<string, any> = Data> = {
   // 弹窗类型
   type: 'add' | 'edit' | 'details' | undefined;
   visible: boolean;
   // 表单加载
   loading: boolean;
   values?: T;
+  formApi?: FormApi;
 };
 
-function TableCrud<T extends Record<string, any> = Data>(
-  props: TableCrudProps<T>,
-) {
+function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
   const [tableContext, setTableContext] = useRecoilState(TableContextState);
   const api = props.useApi && props.useApi();
 
@@ -319,11 +334,15 @@ function TableCrud<T extends Record<string, any> = Data>(
         },
       };
       newTableContext.table.loading = true;
-
       setTableContext(newTableContext);
-      // 执行分页操作
+
+      // 调用接口
+      const params: GeneralParams<T> = {
+        entity: tableContext.search as T,
+        orders: tableContext.table.orders,
+      };
       tableContext.api &&
-        tableContext.api.page(page, tableContext?.search as T).then((res) => {
+        tableContext.api.page(page, params).then((res) => {
           if (res.code === 200) {
             const data = res.data;
             const pageable: TablePagination = {
@@ -368,8 +387,13 @@ function TableCrud<T extends Record<string, any> = Data>(
       newTableContext.table.loading = true;
       setTableContext(newTableContext);
 
+      // 调用接口
+      const params: GeneralParams<T> = {
+        entity: tableContext.search as T,
+        orders: tableContext.table.orders,
+      };
       tableContext.api &&
-        tableContext.api.list(tableContext.search as T).then((res) => {
+        tableContext.api.list(params).then((res) => {
           const newTableContext = {
             ...tableContext,
             table: {
@@ -621,7 +645,7 @@ function TableCrud<T extends Record<string, any> = Data>(
         pagination={tableContext?.table.pagination || false}
         loading={tableContext?.table.loading}
         expandAllRows={tableContext?.props.expandAllRows}
-        scroll={{ y: '50vh' }}
+        scroll={{ y: '100%' }}
         rowSelection={{
           selectedRowKeys: tableContext?.table.selectedRowKeys,
           onSelect: (record, selected) => {
@@ -656,8 +680,30 @@ function TableCrud<T extends Record<string, any> = Data>(
             setTableContext(newTableContext);
           },
         }}
-        onChange={({ pagination }) => {
-          tableApi.page(tableContext as TableContext, pagination);
+        onChange={({ pagination, filters, sorter, extra }) => {
+          const newTableContext = {
+            ...tableContext,
+            table: { ...tableContext?.table },
+          } as TableContext;
+          // 排序
+          if (sorter) {
+            const orders: Order[] = [
+              {
+                direction: sorter.sortOrder === 'ascend' ? 'ASC' : 'DESC',
+                property: sorter.dataIndex,
+              },
+            ];
+            newTableContext.table.orders = orders;
+          }
+          // 过滤
+          if (!_.isEmpty(filters)) {
+          }
+
+          if (pagination) {
+            tableApi.page(newTableContext, pagination);
+          } else {
+            tableApi.list(newTableContext);
+          }
         }}
       />
       <TableForm

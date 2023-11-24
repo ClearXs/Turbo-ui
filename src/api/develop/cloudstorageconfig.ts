@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { BaseEntity, GeneralApi, Pagination, R } from './api';
+import { BaseEntity, GeneralApi, GeneralParams, Pagination, R } from '../api';
 
 export interface CloudStorageConfig extends BaseEntity {
   /**
@@ -89,10 +89,10 @@ export default function useCloudStorageConfigApi(): CloudStorageConfigApi {
   };
 
   const list = (
-    entity: CloudStorageConfig,
+    params: GeneralParams<CloudStorageConfig>,
   ): Promise<R<CloudStorageConfig[]>> => {
     return request
-      .get('/api/sys/cloud-storage-config/tree', entity)
+      .post('/api/sys/cloud-storage-config/list', { ...params })
       .then((res) => {
         return res.data;
       });
@@ -100,10 +100,10 @@ export default function useCloudStorageConfigApi(): CloudStorageConfigApi {
 
   const page = (
     page: Pagination<CloudStorageConfig>,
-    entity: CloudStorageConfig,
+    params: GeneralParams<CloudStorageConfig>,
   ): Promise<R<Pagination<CloudStorageConfig>>> => {
     return request
-      .get('/api/sys/cloud-storage-config/page', { ...page, ...entity })
+      .post('/api/sys/cloud-storage-config/page', { page, ...params })
       .then((res) => {
         return res.data;
       });
@@ -114,7 +114,7 @@ export default function useCloudStorageConfigApi(): CloudStorageConfigApi {
     enable: 'ENABLE' | 'DISABLE',
   ): Promise<R<boolean>> => {
     return request
-      .put('/api/sys/cloud-storage-config/enbale', { id, enable })
+      .put('/api/sys/cloud-storage-config/enable', { id, enable })
       .then((res) => {
         return res.data;
       });

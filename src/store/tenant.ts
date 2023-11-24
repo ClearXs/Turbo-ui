@@ -1,4 +1,4 @@
-import TenantApi, { Tenant, TenantParams } from '@/api/tenant';
+import TenantApi, { Tenant, TenantParams } from '@/api/system/tenant';
 import { atom, atomFamily, selectorFamily, useRecoilValue } from 'recoil';
 
 const namespace = 'tenant';

@@ -4,7 +4,7 @@ import * as local from '@/util/local';
 import { R } from '@/api/api';
 import { Notification } from '@douyinfe/semi-ui';
 import * as headers from '@/util/headers';
-import { NavigateFunction, redirect, useNavigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import { useEffect } from 'react';
 
 interface InternalRequest {
@@ -15,6 +15,7 @@ interface InternalRequest {
   post: (
     path: string,
     params?: Record<string, any>,
+    headers?: Record<string, string>,
   ) => Promise<AxiosResponse<any, any>>;
   put: (
     path: string,
@@ -73,19 +74,15 @@ function handleSuccess<T>(res: AxiosResponse): Promise<AxiosResponse> {
       return Promise.resolve(res);
     }
   } else {
-    throw new Error('unonkw error');
+    throw new Error('unkonwn error');
   }
 }
 
 /**
- * reponse错误处理，包含消息提示
+ * response错误处理，包含消息提示
  * @param err
  */
-function handleResError<T>(
-  err: AxiosError,
-  errorValue?: R<T>,
-  naviate?: NavigateFunction,
-) {
+function handleResError<T>(err: AxiosError, errorValue?: R<T>) {
   // 错误消息展示
   const msg = err.response?.data?.message || err.response?.statusText;
   Notification.error({
@@ -106,7 +103,7 @@ function handleResError<T>(
   }
 }
 
-const internalRquest: InternalRequest = {
+const internalRequest: InternalRequest = {
   get(path, params) {
     return remote.request({
       url: path,
@@ -114,11 +111,12 @@ const internalRquest: InternalRequest = {
       params,
     });
   },
-  post(path, params) {
+  post(path, params, headers) {
     return remote.request({
       url: path,
       method: 'POST',
       data: params,
+      headers,
     });
   },
   put(path, params) {
@@ -141,8 +139,6 @@ const internalRquest: InternalRequest = {
 // 为什么使用request hook，因为需要错误处理的跳转，而期望又只能有一个实例，所以使用useEffect，
 // 但useEffect的渲染将晚于使用它的组件，故报null。考虑创建全局axios的一个实例
 const useRequest = () => {
-  const naviate = useNavigate();
-
   useEffect(() => {
     // 清除存在的响应拦截器
     remote.interceptors.response.clear();
@@ -152,7 +148,7 @@ const useRequest = () => {
       },
       (err) => {
         if (err instanceof AxiosError) {
-          return handleResError(err, undefined, naviate);
+          return handleResError(err, undefined);
         } else {
           return Promise.reject(err);
         }
@@ -160,7 +156,7 @@ const useRequest = () => {
     );
   }, []);
 
-  return internalRquest;
+  return internalRequest;
 };
 
 export default useRequest;

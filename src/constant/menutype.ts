@@ -6,9 +6,11 @@ export const MENU_TYPE: MenuType[] = [
   {
     value: 'MENU',
     label: '菜单',
+    tag: 'blue',
   },
   {
     value: 'BUTTON',
     label: '按钮',
+    tag: 'cyan',
   },
 ];

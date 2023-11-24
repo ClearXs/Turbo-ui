@@ -31,6 +31,8 @@ const TableToolbar: React.FC<{
           };
           newTableContext.form.visible = true;
           newTableContext.form.loading = false;
+          newTableContext.form.type = 'add';
+          newTableContext.form.values = {};
           setTableContext(newTableContext);
         },
       },

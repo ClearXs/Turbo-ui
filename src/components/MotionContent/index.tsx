@@ -66,9 +66,9 @@ const MotionContent = React.memo(() => {
       </Tabs>
 
       <Content className="bg-slate-50 p-2 ">
-        <Card className="w-[100%] h-[100%]">
+        <div className="w-[100%] h-[100%] box-border border-[1px] border-solid border-[var(--semi-color-border)] m-0 p-2 rounded-[var(--semi-border-radius-medium)] overflow-hidden bg-[var(--semi-color-bg-0)]">
           <Outlet />
-        </Card>
+        </div>
       </Content>
     </>
   );
