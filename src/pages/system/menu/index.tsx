@@ -1,22 +1,23 @@
 import useMenuApi, { MenuTree } from '@/api/system/menu';
-import React, { useMemo } from 'react';
-import TableCrud, {
-  TableColumnProps,
-  TableContext,
-  TableTreeSelectColumnProps,
-} from '@/components/TableCrud/TableCrud';
+import { useMemo } from 'react';
+import TableCrud from '@/components/TableCrud/TableCrud';
 import { directGetIcon } from '@/components/Icon';
 import { MENU_TYPE } from '@/constant/menutype';
 import _ from 'lodash';
 import { Tag } from '@douyinfe/semi-ui';
 import { loadMenuTreeData } from './MenuTree';
+import {
+  TableColumnProps,
+  TableTreeSelectColumnProps,
+} from '@/components/TableCrud/interface';
+import { FormContext } from '@/components/TForm/interface';
 
 const Menu = () => {
   const columns: TableColumnProps<MenuTree>[] = useMemo(() => {
     return [
       {
-        title: '名称',
-        dataIndex: 'name',
+        label: '名称',
+        field: 'name',
         ellipsis: true,
         align: 'center',
         search: true,
@@ -24,8 +25,8 @@ const Menu = () => {
         require: true,
       },
       {
-        title: '编码',
-        dataIndex: 'code',
+        label: '编码',
+        field: 'code',
         type: 'input',
         ellipsis: true,
         align: 'center',
@@ -33,23 +34,23 @@ const Menu = () => {
         extraText: '编码需要唯一',
       },
       {
-        title: '图标',
-        dataIndex: 'icon',
+        label: '图标',
+        field: 'icon',
         ellipsis: true,
         align: 'center',
         type: 'icon',
         line: true,
       },
       {
-        title: '路径',
-        dataIndex: 'route',
+        label: '路径',
+        field: 'route',
         ellipsis: true,
         align: 'center',
         type: 'input',
       },
       {
-        title: '类型',
-        dataIndex: 'type',
+        label: '类型',
+        field: 'type',
         ellipsis: true,
         type: 'select',
         align: 'center',
@@ -62,24 +63,24 @@ const Menu = () => {
         },
       },
       {
-        title: '别名',
-        dataIndex: 'alias',
+        label: '别名',
+        field: 'alias',
         ellipsis: true,
         align: 'center',
         type: 'input',
-        require: true,
       },
       {
-        title: '序号',
-        dataIndex: 'sort',
+        label: '序号',
+        field: 'sort',
         ellipsis: true,
         align: 'center',
         type: 'number',
         require: true,
+        initValue: 0,
       },
       {
-        title: '上级菜单',
-        dataIndex: 'parentId',
+        label: '上级菜单',
+        field: 'parentId',
         ellipsis: true,
         align: 'center',
         type: 'treeSelect',
@@ -89,85 +90,88 @@ const Menu = () => {
         treeData: (tableContext) => {
           return loadMenuTreeData(tableContext?.dataSource || []);
         },
-      } as TableTreeSelectColumnProps,
+      } as TableTreeSelectColumnProps<MenuTree>,
     ];
   }, []);
 
   return (
     <>
       <TableCrud<MenuTree>
-        model="menu"
+        model="tree"
         columns={columns}
         useApi={useMenuApi}
-        page={false}
-        toolbar={[
-          {
-            name: '展开所有',
-            type: 'primary',
-            position: 'right',
-            icon: directGetIcon('IconExpand'),
-            onClick: (tableContext) => {
-              const props = tableContext.props;
-              const newTableContext = {
-                ...tableContext,
-                props: {
-                  ...props,
-                },
-              };
-              newTableContext.props.expandAllRows = true;
-              tableContext.newContext(newTableContext);
+        toolbar={{
+          append: [
+            {
+              name: '展开所有',
+              type: 'primary',
+              position: 'right',
+              icon: directGetIcon('IconExpand'),
+              onClick: (tableContext) => {
+                const props = tableContext.props;
+                const newTableContext = {
+                  ...tableContext,
+                  props: {
+                    ...props,
+                  },
+                };
+                newTableContext.props.expandAllRows = true;
+                tableContext.newContext(newTableContext);
+              },
             },
-          },
-          {
-            name: '缩放所有',
-            type: 'primary',
-            position: 'right',
-            icon: directGetIcon('IconShrink'),
-            onClick: (tableContext) => {
-              const props = tableContext.props;
-              const newTableContext = {
-                ...tableContext,
-                props: {
-                  ...props,
-                },
-              };
-              newTableContext.props.expandAllRows = false;
-              tableContext.newContext(newTableContext);
+            {
+              name: '缩放所有',
+              type: 'primary',
+              position: 'right',
+              icon: directGetIcon('IconShrink'),
+              onClick: (tableContext) => {
+                const props = tableContext.props;
+                const newTableContext = {
+                  ...tableContext,
+                  props: {
+                    ...props,
+                  },
+                };
+                newTableContext.props.expandAllRows = false;
+                tableContext.newContext(newTableContext);
+              },
             },
-          },
-        ]}
-        operateBar={[
-          {
-            name: '添加下级',
-            type: 'primary',
-            onClick: (tableContext, record) => {
-              const newTableContext = {
-                ...tableContext,
-                form: {
-                  ...tableContext.form,
+          ],
+        }}
+        operateBar={{
+          append: [
+            {
+              name: '添加下级',
+              type: 'primary',
+              onClick: (tableContext, formContext, record) => {
+                const newFormContext = {
+                  ...formContext,
                   visible: true,
-                  values: { parentId: record.id },
-                },
-              } as TableContext;
-              tableContext.newContext(newTableContext);
+                  values: Object.assign(
+                    { parentId: record.id },
+                    formContext.getDefaultValues(),
+                  ),
+                };
+                formContext.newContext(newFormContext as FormContext<MenuTree>);
+              },
             },
-          },
-          {
-            name: '添加同级',
-            type: 'primary',
-            onClick: (tableContext, record) => {
-              const newTableContext = {
-                ...tableContext,
-                form: {
-                  ...tableContext.form,
+            {
+              name: '添加同级',
+              type: 'primary',
+              onClick: (tableContext, formContext, record) => {
+                const newFormContext = {
+                  ...formContext,
                   visible: true,
-                  values: { parentId: record.parentId },
-                },
-              } as TableContext;
-              tableContext.newContext(newTableContext);
+                  values: Object.assign(
+                    { parentId: record.parentId },
+                    formContext.getDefaultValues(),
+                  ),
+                };
+                formContext.newContext(newFormContext as FormContext<MenuTree>);
+              },
             },
-          },
-        ]}
+          ],
+        }}
       />
     </>
   );

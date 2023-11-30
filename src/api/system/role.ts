@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { BaseEntity, GeneralApi, GeneralParams, Pagination, R } from '../api';
+import { BaseEntity, GeneralApi, GeneralApiImpl, R } from '../interface';
 
 export interface Role extends BaseEntity {
   /**
@@ -29,60 +29,19 @@ export interface RoleApi extends GeneralApi<Role> {
   ) => Promise<R<boolean>>;
 }
 
+class RoleApiImpl extends GeneralApiImpl<Role> implements RoleApi {
+  grant<P extends { roleId: string; menuId: string[] }>(
+    params: P,
+  ): Promise<R<boolean>> {
+    return this.request
+      .post(this.apiPath + '/grant', params)
+      .then((res) => res.data);
+  }
+}
+
 const useRoleApi = (): RoleApi => {
   const request = useRequest();
-
-  const save = (entity: Role): Promise<R<boolean>> => {
-    return request.post('/api/sys/role/save', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const edit = (entity: Role): Promise<R<boolean>> => {
-    return request.put('/api/sys/role/edit', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const saveOrUpdate = (entity: Role): Promise<R<boolean>> => {
-    return request.put('/api/sys/role/save-or-update', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const deleteEntity = (ids: string[]): Promise<R<boolean>> => {
-    return request.delete('/api/sys/role/delete', ids).then((res) => {
-      return res.data;
-    });
-  };
-  const details = (id: string): Promise<R<Role>> => {
-    return request.get('/api/sys/role/details', { id }).then((res) => {
-      return res.data;
-    });
-  };
-  const list = (params: GeneralParams<Role>): Promise<R<Role[]>> => {
-    return request.post('/api/sys/role/list', { ...params }).then((res) => {
-      return res.data;
-    });
-  };
-  const page = (
-    page: Pagination<Role>,
-    params: GeneralParams<Role>,
-  ): Promise<R<Pagination<Role>>> => {
-    return request
-      .post('/api/sys/role/page', { page, ...params })
-      .then((res) => {
-        return res.data;
-      });
-  };
-
-  const grant = <P extends { roleId: string; menuId: string[] }>(
-    params: P,
-  ): Promise<R<boolean>> => {
-    return request.post('/api/sys/role/grant', params).then((res) => res.data);
-  };
-
-  return { save, edit, saveOrUpdate, deleteEntity, details, list, page, grant };
+  return new RoleApiImpl('/api/sys/role', request);
 };
 
 export default useRoleApi;

@@ -1,249 +1,154 @@
-import { ColumnProps, TablePagination } from '@douyinfe/semi-ui/lib/es/table';
+import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
+import { Form, Tag, Tooltip } from '@douyinfe/semi-ui';
+import { importIcon } from '../Icon';
+import { IdEntity } from '@/api/interface';
 import {
   TableColumnProps,
   TableContext,
+  TableDateColumnProps,
   TableInputColumnProps,
-  TableInputNumberColumnProps,
+  TableNumberColumnProps,
   TableRadioColumnProps,
   TableSelectColumnProps,
   TableTextAreaColumnProps,
   TableTreeSelectColumnProps,
-} from './TableCrud';
-import { Avatar, Form, Modal, Tooltip } from '@douyinfe/semi-ui';
-import { directGetIcon, importIcon } from '../Icon';
+} from './interface';
+import { ColumnType, FormColumnProps, FormContext } from '../TForm/interface';
+import {
+  BaseFormField,
+  FormColumnDecorator,
+  FormColumnFactory,
+  FormField,
+} from '../TForm/form';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
-import { IconCamera } from '@douyinfe/semi-icons';
-import IconList from '@/pages/develop/icon';
+import { ReactNode } from 'react';
+import Text from '@douyinfe/semi-ui/lib/es/typography/text';
+import { parse } from '@/util/date';
 
-export type ColumnType =
-  | 'input'
-  | 'number'
-  | 'select'
-  | 'treeSelect'
-  | 'radio'
-  | 'textarea'
-  | 'icon'
-  | 'undefined';
-
-export interface TableApi<T extends Record<string, any>> {
-  saveOrUpdate: (tableContext: TableContext<T>, entity: T) => void;
-  remove: (tableContext: TableContext<T>, ids: string[]) => void;
-  list: (tableContext: TableContext<T>) => void;
-  page: (tableContext: TableContext<T>, pageable?: TablePagination) => void;
-  pageOrList: (
-    tableContext: TableContext<T>,
-    pageable?: TablePagination,
-  ) => void;
-  details: (tableContext: TableContext<T>, id: string) => void;
-}
-
-export interface ColumnDecorator<T extends Record<string, any>> {
-  /**
-   * 通过把column渲染为Form组件
-   * @param column table字段实体
-   * @param type 区分column是搜索还是表单渲染
-   */
-  render: (
-    tableContext: TableContext<T>,
-    column: TableColumnProps,
-    type: 'search' | 'form',
-  ) => React.ReactNode;
-
+export interface TableColumnDecorator<T extends IdEntity>
+  extends FormColumnDecorator<T> {
   /**
    * 增强 table column props 并转换为column
    * @param column table column props
    * @returns column props
    */
-  wrap: (
-    tableContext: TableContext<T>,
-    column: TableColumnProps<T>,
-  ) => ColumnProps<T>;
+  wrap(column: TableColumnProps<T>): ColumnProps<T>;
+
+  /**
+   * 获取table context
+   */
+  getTableContext(): TableContext<T> | undefined;
+
+  /**
+   * 重新设置table context
+   */
+  setTableContext(tableContext: TableContext<T>): void;
 }
 
-export interface Field<
-  T extends Record<string, any>,
-  K extends TableColumnProps<T>,
-> {
-  /**
-   * 通过把column渲染为Form组件
-   * @param type 区分column是搜索还是表单渲染
-   */
-  render: (
-    tableContext: TableContext<T>,
-    column: K,
-    type: 'search' | 'form',
-  ) => React.ReactNode | undefined;
-
+export interface TableField<T extends IdEntity, K extends TableColumnProps<T>>
+  extends FormField<T, K> {
   /**
    * 增强 table column props 并转换为column
    * @returns column props
    */
-  wrap: (tableContext: TableContext<T>, column: K) => ColumnProps<T>;
+  wrap: (column: K) => ColumnProps<T>;
 }
 
-abstract class BaseField<
-  T extends Record<string, any>,
-  K extends TableColumnProps<T>,
-> implements Field<T, K>
+abstract class BaseTableField<T extends IdEntity, K extends FormColumnProps<T>>
+  extends BaseFormField<T, K>
+  implements TableField<T, K>
 {
-  private placeholderPrefix: Record<ColumnType, string> = {
-    input: '请输入',
-    number: '请输入',
-    select: '请选择',
-    treeSelect: '请选择',
-    radio: '请选择',
-    textarea: '请输入',
-    icon: '请上传',
-    undefined: '请输入',
-  };
-
-  public render(
-    tableContext: TableContext<T>,
-    column: K,
-    type: 'search' | 'form',
-  ): React.ReactNode | undefined {
-    // 表单通用属性实现
-
-    return this.doRender(tableContext, column, type);
+  constructor(protected decorator: TableColumnDecorator<T>) {
+    super(decorator);
   }
 
-  // 子类实现
-  protected abstract doRender(
-    tableContext: TableContext<T>,
-    column: K,
-    type: 'search' | 'form',
-  ): React.ReactNode | undefined;
-
-  public wrap(tableContext: TableContext<T>, column: K): ColumnProps<T> {
-    // 表格通用属性实现
-
-    return this.doWrap(tableContext, column);
-  }
-
-  protected abstract doWrap(
-    tableContext: TableContext<T>,
-    column: K,
-  ): ColumnProps<T>;
-
-  protected getGeneralProps(column: K, type: 'search' | 'form') {
-    const label = column.title?.toString();
-    const field = column.dataIndex || '';
-    const placeholder = `${this.placeholderPrefix[column.type]}${label}!`;
-    const rules = [
-      ...(column.rules || []),
-      {
-        required: column.require && type === 'form',
-        message: `请输入${placeholder}!`,
-      },
-    ];
-
-    return {
-      key: field,
-      label,
-      field,
-      rules,
-      placeholder,
-      extraText: column.extraText,
-    };
-  }
-}
-
-export class InputField<T extends Record<string, any>> extends BaseField<
-  T,
-  TableInputColumnProps<T>
-> {
-  doRender(
-    tableContext: TableContext<T>,
-    column: TableInputColumnProps<T>,
-    type: 'search' | 'form',
-  ): React.ReactNode {
-    const props = this.getGeneralProps(column, type);
-    return <Form.Input {...props} />;
-  }
-
-  doWrap(
-    tableContext: TableContext<T>,
-    column: TableInputColumnProps<T>,
-  ): ColumnProps<T> {
-    return { ...column };
-  }
-}
-
-export class NumberField<T extends Record<string, any>> extends BaseField<
-  T,
-  TableInputNumberColumnProps<T>
-> {
-  doRender(
-    tableContext: TableContext<T>,
-    column: TableInputNumberColumnProps<T>,
-    type: 'search' | 'form',
-  ): React.ReactNode {
-    const props = this.getGeneralProps(column, type);
-    return <Form.InputNumber {...props} />;
-  }
-
-  doWrap(
-    tableContext: TableContext<T>,
-    column: TableInputNumberColumnProps<T>,
-  ): ColumnProps<T> {
-    return { ...column };
-  }
-}
-
-export class SelectField<T extends Record<string, any>> extends BaseField<
-  T,
-  TableSelectColumnProps<T>
-> {
-  doRender(
-    tableContext: TableContext<T>,
-    column: TableSelectColumnProps<T>,
-    type: 'search' | 'form',
-  ): React.ReactNode {
-    const props = this.getGeneralProps(column, type);
-    return (
-      <Form.Select
-        {...props}
-        optionList={column.optionList}
-        filter={column.filter || true}
-        multiple={column.multiple}
-      />
+  doRender(column: K, type: 'search' | 'form'): React.ReactNode | undefined {
+    return FormColumnFactory.get(this.getType(), this.decorator).render(
+      column,
+      type,
     );
   }
 
-  doWrap(
-    tableContext: TableContext<T>,
-    column: TableSelectColumnProps<T>,
-  ): ColumnProps<T> {
-    const render = (text: string, record: T, index: number, options) => {
-      const value = record[column.dataIndex];
+  public wrap(column: K): ColumnProps<T> {
+    // 表格通用属性实现
+    return this.doWrap(column);
+  }
 
-      return (
-        column.optionList?.filter((c) => c.value === value).pop()?.label ||
-        value
-      );
-    };
+  protected abstract doWrap(column: K): ColumnProps<T>;
+}
 
-    return { ...column, render: column.render || render };
+export class InputTableField<T extends IdEntity> extends BaseTableField<
+  T,
+  TableInputColumnProps<T>
+> {
+  doWrap(column: TableInputColumnProps<T>): ColumnProps<T> {
+    return { ...column };
+  }
+
+  public getType(): ColumnType {
+    return 'input';
   }
 }
 
-export class TreeSelectField<T extends Record<string, any>> extends BaseField<
+export class NumberTableField<T extends IdEntity> extends BaseTableField<
+  T,
+  TableNumberColumnProps<T>
+> {
+  doWrap(column: TableNumberColumnProps<T>): ColumnProps<T> {
+    return { ...column };
+  }
+
+  public getType(): ColumnType {
+    return 'number';
+  }
+}
+
+export class SelectTableField<T extends IdEntity> extends BaseTableField<
+  T,
+  TableSelectColumnProps<T>
+> {
+  doWrap(column: TableSelectColumnProps<T>): ColumnProps<T> {
+    const render = (text: string, record: T, index: number) => {
+      const value = record[column.field];
+      let dic;
+      if (column.dic) {
+        const formContext = this.decorator.getFormContext();
+        const dics = formContext?.dicValues[column.dic] || [];
+        dic = dics.find((dic) => dic.value === value);
+      } else {
+        dic = column.optionList?.filter((c) => c.value === value).pop();
+      }
+      return dic ? (
+        <Tag color={dic.tag} prefixIcon={dic.icon}>
+          {dic.label}
+        </Tag>
+      ) : (
+        value
+      );
+    };
+    return { ...column, render: column.render || render };
+  }
+
+  public getType(): ColumnType {
+    return 'select';
+  }
+}
+
+export class TreeSelectTableField<T extends IdEntity> extends BaseTableField<
   T,
   TableTreeSelectColumnProps<T>
 > {
   doRender(
-    tableContext: TableContext<T>,
     column: TableTreeSelectColumnProps<T>,
     type: 'search' | 'form',
-  ): React.ReactNode {
+  ): React.ReactNode | undefined {
     const props = this.getGeneralProps(column, type);
     let data = column.treeData;
     if (typeof column.treeData === 'function') {
-      data = column.treeData(tableContext);
+      data = column.treeData(this.decorator.getTableContext());
     } else {
       data = column.treeData as TreeNodeData[];
     }
-
     return (
       <Form.TreeSelect
         {...props}
@@ -257,161 +162,189 @@ export class TreeSelectField<T extends Record<string, any>> extends BaseField<
     );
   }
 
-  doWrap(
-    tableContext: TableContext<T>,
-    column: TableTreeSelectColumnProps<T>,
-  ): ColumnProps<T> {
+  doWrap(column: TableTreeSelectColumnProps<T>): ColumnProps<T> {
     return { ...column };
+  }
+
+  public getType(): ColumnType {
+    return 'treeSelect';
   }
 }
 
-export class RadioField<T extends Record<string, any>> extends BaseField<
+export class RadioTableField<T extends IdEntity> extends BaseTableField<
   T,
   TableRadioColumnProps<T>
 > {
-  doRender(
-    tableContext: TableContext<T>,
-    column: TableRadioColumnProps<T>,
-    type: 'search' | 'form',
-  ): React.ReactNode {
-    const props = this.getGeneralProps(column, type);
-    return <Form.Radio {...props} />;
+  doWrap(column: TableRadioColumnProps<T>): ColumnProps<T> {
+    return { ...column };
   }
 
-  doWrap(
-    tableContext: TableContext<T>,
-    column: TableRadioColumnProps<T>,
-  ): ColumnProps<T> {
-    return { ...column };
+  public getType(): ColumnType {
+    return 'radio';
   }
 }
 
-export class TextAreaField<T extends Record<string, any>> extends BaseField<
+export class TextAreaTableField<T extends IdEntity> extends BaseTableField<
   T,
   TableTextAreaColumnProps<T>
 > {
-  doRender(
-    tableContext: TableContext<T>,
-    column: TableTextAreaColumnProps<T>,
-    type: 'search' | 'form',
-  ): React.ReactNode {
-    const props = this.getGeneralProps(column, type);
-    return <Form.TextArea {...props} />;
+  doWrap(column: TableTextAreaColumnProps<T>): ColumnProps<T> {
+    return { ...column };
   }
 
-  doWrap(
-    tableContext: TableContext<T>,
-    column: TableTextAreaColumnProps<T>,
-  ): ColumnProps<T> {
-    return { ...column };
+  public getType(): ColumnType {
+    return 'textarea';
   }
 }
 
-export class IconField<T extends Record<string, any>> extends BaseField<
+export class IconTableField<T extends IdEntity> extends BaseTableField<
   T,
   TableColumnProps<T>
 > {
-  doRender(
-    tableContext: TableContext<T>,
-    column: TableColumnProps<T>,
-    type: 'search' | 'form',
-  ): React.ReactNode {
-    const props = this.getGeneralProps(column, type);
-    return (
-      <>
-        <Form.Slot label={props.label}>
-          <Avatar
-            alt="Alice Swift"
-            size="small"
-            shape="square"
-            onClick={() => {
-              const modal = Modal.info({
-                size: 'medium',
-                title: 'Icon Resources',
-                content: (
-                  <IconList
-                    chooseIcon={(icon) => {
-                      const values = { ...tableContext.form.values } || {};
-                      values[props.field] = icon;
-                      const newTableContext = {
-                        ...tableContext,
-                        form: {
-                          ...tableContext.form,
-                          values,
-                        },
-                      } as TableContext;
-                      values[props.field] = icon;
-                      newTableContext.form.values = values;
-                      tableContext.newContext(newTableContext);
-                      tableContext.form.formApi?.setValue(props.field, icon);
-                      modal.destroy();
-                    }}
-                    showName={false}
-                    splitNum={3}
-                  />
-                ),
-                footer: null,
-              });
-            }}
-            hoverMask={
-              <div
-                style={{
-                  backgroundColor: 'var(--semi-color-overlay-bg)',
-                  height: '100%',
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <IconCamera />
-              </div>
-            }
-          >
-            {directGetIcon(tableContext.form.values?.[props.field])}
-          </Avatar>
-        </Form.Slot>
-      </>
-    );
+  doWrap(column: TableColumnProps<T>): ColumnProps<T> {
+    const render: ColumnRender<T> = (
+      text: string,
+      record: T,
+      index: number,
+    ) => {
+      const iconName = record[column.field];
+      const Icon = importIcon(iconName);
+      return Icon ? (
+        <Tooltip position="top" content={iconName}>
+          <Icon />
+        </Tooltip>
+      ) : (
+        <Text>{iconName}</Text>
+      );
+    };
+    return { ...column, render: column.render || render };
   }
 
-  doWrap(
-    tableContext: TableContext<T>,
-    column: TableTextAreaColumnProps<T>,
-  ): ColumnProps<T> {
-    return {
-      ...column,
-      render: (text: string, record: T, index: number, options) => {
-        const iconName = record[column.dataIndex];
-        const Icon = importIcon(iconName);
-        return Icon ? (
-          <Tooltip position="top" content={iconName}>
-            <Icon />
-          </Tooltip>
-        ) : (
-          { iconName }
-        );
-      },
-    };
+  public getType(): ColumnType {
+    return 'icon';
   }
 }
 
-export class UndefinedField<T extends Record<string, any>> extends BaseField<
+export class ColorTableField<T extends IdEntity> extends BaseTableField<
+  T,
+  TableColumnProps<T>
+> {
+  protected doWrap(column: TableColumnProps<T>): ColumnProps<T> {
+    const render: ColumnRender<T> = (text, record) => {
+      const color = record[column.field];
+      return (
+        color && (
+          <Tag
+            color={color}
+            shape="circle"
+            type="solid"
+            style={{ padding: '2px 10px' }}
+          />
+        )
+      );
+    };
+
+    return { ...column, render: column.render || render };
+  }
+  public getType(): ColumnType {
+    return 'color';
+  }
+}
+
+export class DateTableField<T extends IdEntity> extends BaseTableField<
+  T,
+  TableDateColumnProps<T>
+> {
+  protected doWrap(column: TableDateColumnProps<T>): ColumnProps<T> {
+    const render: ColumnRender<T> = (text, record) => {
+      const value = record[column.field];
+      return parse(value);
+    };
+
+    return { ...column, render: column.render || render };
+  }
+  public getType(): ColumnType {
+    return 'date';
+  }
+}
+
+export class UndefinedTableField<T extends IdEntity> extends BaseTableField<
   T,
   any
 > {
-  doRender(
-    tableContext: TableContext<T>,
-    column: TableColumnProps<T>,
-    type: 'search' | 'form',
-  ): React.ReactNode {
-    return undefined;
-  }
-
-  doWrap(
-    tableContext: TableContext<T>,
-    column: TableColumnProps<T>,
-  ): ColumnProps<T> {
+  doWrap(column: TableColumnProps<T>): ColumnProps<T> {
     return { ...column };
   }
+
+  public getType(): ColumnType {
+    return 'undefined';
+  }
+}
+
+export class TableColumnFactory {
+  public static get<T extends IdEntity, K extends FormColumnProps<T>>(
+    type: ColumnType,
+    decorator: TableColumnDecorator<T>,
+  ): TableField<T, K> {
+    switch (type) {
+      case 'input':
+        return new InputTableField<T>(decorator);
+      case 'number':
+        return new NumberTableField<T>(decorator);
+      case 'select':
+        return new SelectTableField<T>(decorator);
+      case 'treeSelect':
+        return new TreeSelectTableField<T>(decorator);
+      case 'radio':
+        return new RadioTableField<T>(decorator);
+      case 'textarea':
+        return new TextAreaTableField<T>(decorator);
+      case 'icon':
+        return new IconTableField<T>(decorator);
+      case 'color':
+        return new ColorTableField<T>(decorator);
+      case 'date':
+        return new DateTableField<T>(decorator);
+      case 'undefined':
+        return new UndefinedTableField<T>(decorator);
+      default:
+        return new UndefinedTableField<T>(decorator);
+    }
+  }
+}
+
+class TableColumnDecoratorImpl<T extends IdEntity>
+  implements TableColumnDecorator<T>
+{
+  constructor(
+    private tableContext?: TableContext<T>,
+    private formContext?: FormContext<T>,
+  ) {}
+
+  render(column: FormColumnProps<T>, type: 'search' | 'form'): ReactNode {
+    return TableColumnFactory.get(column.type, this).render(column, type);
+  }
+  wrap(column: TableColumnProps<T>): ColumnProps<T> {
+    return TableColumnFactory.get(column.type, this).wrap(column);
+  }
+
+  getTableContext(): TableContext<T> | undefined {
+    return this.tableContext;
+  }
+  setTableContext(tableContext: TableContext<T>): void {
+    this.tableContext = tableContext;
+  }
+  getFormContext(): FormContext<T> | undefined {
+    return this.formContext;
+  }
+  setFormContext(formContext: FormContext<T>): void {
+    this.formContext = formContext;
+  }
+}
+
+export function getTableDecorator<T extends IdEntity>(
+  tableContext?: TableContext<T>,
+  formContext?: FormContext<T>,
+): TableColumnDecorator<T> {
+  return new TableColumnDecoratorImpl<T>(tableContext, formContext);
 }

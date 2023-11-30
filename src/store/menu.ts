@@ -4,7 +4,9 @@ import { atom } from 'recoil';
 
 const namespace = 'menu';
 
-export type UserTab = Omit<TabPaneProps, 'className' | 'children' | 'style'>;
+export type UserTab = Omit<TabPaneProps, 'className' | 'children' | 'style'> & {
+  path: string;
+};
 
 export const CurrentUserRouteState = atom({
   key: `${namespace}:current:router:state`,

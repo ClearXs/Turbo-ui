@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 import TableCrud from '@/components/TableCrud';
-import { TableColumnProps } from '@/components/TableCrud/TableCrud';
 import { PROVIDER } from '@/constant/provider';
 import { CS_TYPE } from '@/constant/cstype';
 import { ENABLE } from '@/constant/enable';
 import useCloudStorageConfigApi, {
   CloudStorageConfig,
 } from '@/api/develop/cloudstorageconfig';
+import { TableColumnProps } from '@/components/TableCrud/interface';
 
 export default function (): React.ReactNode {
   const columns: TableColumnProps<CloudStorageConfig>[] = useMemo(() => {
     return [
       {
-        title: '云存储配置名称',
-        dataIndex: 'name',
+        field: 'name',
+        label: '云存储配置名称',
         ellipsis: true,
         align: 'center',
         search: true,
@@ -22,16 +22,16 @@ export default function (): React.ReactNode {
         sorter: true,
       },
       {
-        title: '云存储端点',
-        dataIndex: 'endpoint',
+        field: 'endpoint',
+        label: '云存储端点',
         ellipsis: true,
         align: 'center',
         type: 'input',
         require: true,
       },
       {
-        title: '云存储供应商',
-        dataIndex: 'provider',
+        field: 'provider',
+        label: '云存储供应商',
         ellipsis: true,
         align: 'center',
         type: 'select',
@@ -39,8 +39,8 @@ export default function (): React.ReactNode {
         require: true,
       },
       {
-        title: '云存储类型',
-        dataIndex: 'csType',
+        field: 'csType',
+        label: '云存储类型',
         ellipsis: true,
         align: 'center',
         type: 'select',
@@ -48,32 +48,32 @@ export default function (): React.ReactNode {
         require: true,
       },
       {
-        title: '存储空间',
-        dataIndex: 'bucket',
+        field: 'bucket',
+        label: '存储空间',
         ellipsis: true,
         align: 'center',
         type: 'input',
         require: true,
       },
       {
-        title: '访问ID',
-        dataIndex: 'accessId',
+        field: 'accessId',
+        label: '访问ID',
         ellipsis: true,
         align: 'center',
         type: 'input',
         require: true,
       },
       {
-        title: '访问密钥',
-        dataIndex: 'accessKey',
+        field: 'accessKey',
+        label: '访问密钥',
         ellipsis: true,
         align: 'center',
         type: 'input',
         require: true,
       },
       {
-        title: '是否启用',
-        dataIndex: 'enable',
+        field: 'enable',
+        label: '是否启用',
         ellipsis: true,
         align: 'center',
         type: 'select',
@@ -85,10 +85,9 @@ export default function (): React.ReactNode {
 
   return (
     <TableCrud<CloudStorageConfig>
-      model="cloudstorageconfig"
+      model="page"
       columns={columns}
       useApi={useCloudStorageConfigApi}
-      page={true}
     />
   );
 }

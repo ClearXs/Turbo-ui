@@ -1,5 +1,7 @@
-import { Expand, Tree } from '@/api/api';
+import { Expand, Tree } from '@/api/interface';
 import _ from 'lodash';
+
+const EMPTY = new Object();
 
 /**
  * 给定一颗原有的树转换为另外一颗树
@@ -10,12 +12,19 @@ import _ from 'lodash';
 export const treeMap = <T extends Tree, K extends { children?: K[] }>(
   tree: T[] = [],
   map: (node: T) => K,
+  depth?: number,
 ): K[] => {
+  if (_.isEmpty(tree)) {
+    return [] as K[];
+  }
   return tree.map((node) => {
+    if (depth === 0 && node.depth > depth) {
+      return EMPTY as K;
+    }
     const other = map(node);
     if (!_.isEmpty(node.children)) {
-      const children = treeMap(node.children as T[], map);
-      other.children = children;
+      const children = treeMap(node.children as T[], map, depth);
+      other.children = children.filter((o) => o !== EMPTY);
     }
     return other;
   });

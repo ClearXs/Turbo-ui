@@ -1,13 +1,13 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import sysconfig from '@/config/config';
 import * as local from '@/util/local';
-import { R } from '@/api/api';
+import { R } from '@/api/interface';
 import { Notification } from '@douyinfe/semi-ui';
 import * as headers from '@/util/headers';
 import { redirect } from 'react-router-dom';
 import { useEffect } from 'react';
 
-interface InternalRequest {
+export interface InternalRequest {
   get: (
     path: string,
     params?: Record<string, any>,

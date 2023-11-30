@@ -1,4 +1,4 @@
-import { GeneralApi, GeneralParams, Pagination, R, TenantEntity } from '../api';
+import { GeneralApi, GeneralApiImpl, R, TenantEntity } from '../interface';
 import useRequest from '@/hook/request';
 
 export type User = TenantEntity & {
@@ -9,107 +9,59 @@ export type User = TenantEntity & {
   phone: number;
   nickname: string;
   avatar: string;
-};
-
-export type LoginInfo = {
-  captchaId: string;
-  username: string;
-  password: string;
-  tenant?: string;
-  captcha: string;
-};
-
-export type Captcha = {
-  captchaId: string;
-  base64: string;
+  status: string;
 };
 
 export interface UserApi extends GeneralApi<User> {
-  register: (user: User) => Promise<R<Record<string, any>>>;
+  /**
+   * 锁定
+   * @param id 用户id
+   */
+  lock: (id: User['id']) => Promise<R<Boolean>>;
 
   /**
-   * 获取验证码
-   * @returns promise for captcha
+   * 激活
+   * @param id 用户id
    */
-  captcha: () => Promise<R<Captcha>>;
+  active: (id: User['id']) => Promise<R<Boolean>>;
+
+  /**
+   * 更改密码
+   * @param id 用户id
+   * @param newPassword 新密码
+   */
+  changePassword: (
+    id: User['id'],
+    newPassword: User['password'],
+  ) => Promise<R<Boolean>>;
+}
+
+class UserApiImpl extends GeneralApiImpl<User> implements UserApi {
+  lock(id: string): Promise<Boolean> {
+    return this.request.get(this.apiPath + '/lock', { id }).then((res) => {
+      return res.data;
+    });
+  }
+  active(id: string): Promise<Boolean> {
+    return this.request.get(this.apiPath + '/active', { id }).then((res) => {
+      return res.data;
+    });
+  }
+  changePassword(id: string, newPassword: string): Promise<Boolean> {
+    return this.request
+      .post(this.apiPath + '/change-password', {
+        id,
+        newPassword,
+      })
+      .then((res) => {
+        return res.data;
+      });
+  }
 }
 
 function useUserApi(): UserApi {
   const request = useRequest();
-
-  const save = (entity: User): Promise<R<boolean>> => {
-    return request.post('/api/sys/user/save', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const edit = (entity: User): Promise<R<boolean>> => {
-    return request.put('/api/sys/user/edit', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const saveOrUpdate = (entity: User): Promise<R<boolean>> => {
-    return request.put('/api/sys/user/save-or-update', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const deleteEntity = (ids: string[]): Promise<R<boolean>> => {
-    return request.delete('/api/sys/user/delete', ids).then((res) => {
-      return res.data;
-    });
-  };
-  const details = (id: string): Promise<R<User>> => {
-    return request.get('/api/sys/user/details', { id }).then((res) => {
-      return res.data;
-    });
-  };
-
-  const list = (params: GeneralParams<User>): Promise<R<User[]>> => {
-    return request.post('/api/sys/user/list', { ...params }).then((res) => {
-      return res.data;
-    });
-  };
-
-  const page = (
-    page: Pagination<User>,
-    params: GeneralParams<User>,
-  ): Promise<R<Pagination<User>>> => {
-    return request
-      .post('/api/sys/user/page', { page, ...params })
-      .then((res) => {
-        return res.data;
-      });
-  };
-
-  const register = (user: User): Promise<R<Record<string, any>>> => {
-    return request.post('/api/auth/register', user).then((res) => {
-      return res.data;
-    });
-  };
-
-  /**
-   * 获取验证码
-   * @returns promise for captcha
-   */
-  const captcha = (): Promise<R<Captcha>> => {
-    return request.get('/api/auth/captcha').then((res) => {
-      return res.data || ({} as R<Captcha>);
-    });
-  };
-
-  return {
-    save,
-    edit,
-    saveOrUpdate,
-    deleteEntity,
-    details,
-    list,
-    page,
-    register,
-    captcha,
-  };
+  return new UserApiImpl('/api/sys/user', request);
 }
 
 export default useUserApi;

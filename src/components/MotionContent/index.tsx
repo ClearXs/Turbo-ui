@@ -2,7 +2,7 @@ import {
   CurrentUserSelectTabState,
   CurrentUserMenuTabsState,
 } from '@/store/menu';
-import { Card, Layout, TabPane, Tabs } from '@douyinfe/semi-ui';
+import { Layout, TabPane, Tabs } from '@douyinfe/semi-ui';
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -20,8 +20,9 @@ const MotionContent = React.memo(() => {
       <Tabs
         type="card"
         onTabClick={(activeKey) => {
+          const tab = userTabs.find((tab) => tab.itemKey === activeKey);
           // 跳转
-          navigate(activeKey);
+          tab && navigate(tab.path);
           // 设置active
           setSelectTab(activeKey);
         }}
@@ -34,14 +35,14 @@ const MotionContent = React.memo(() => {
           // 判断当前关闭的key是否为激活的key，如果不是则不重新设置激活key
           if (tabKey === selectTab) {
             // 判断当前关闭是否为最后一个，如果是则取上一个，如果不是则取下一个
-            const nextActiveKey =
+            const nextTab =
               userTabs[
                 closeTabIndex === userTabs.length - 1
                   ? closeTabIndex - 1
                   : closeTabIndex + 1
-              ]?.itemKey;
-            setSelectTab(nextActiveKey as string);
-            navigate(nextActiveKey as string);
+              ];
+            setSelectTab(nextTab.itemKey as string);
+            navigate(nextTab.path as string);
           }
           const newTabs = [
             ...userTabs.slice(0, closeTabIndex),

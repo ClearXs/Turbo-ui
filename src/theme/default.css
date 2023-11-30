@@ -14,3 +14,9 @@ body[theme-mode='default'] .semi-always-light {
 .semi-button {
   font-size: 12px;
 }
+
+/* 修复spin 动画元素没有居中问题 */
+.semi-spin-block .semi-spin-wrapper {
+  display: flex;
+  justify-content: center;
+}

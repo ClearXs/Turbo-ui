@@ -1,75 +1,126 @@
 import useDicApi, { Dic } from '@/api/system/dic';
-import { directGetIcon } from '@/components/Icon';
-import { loadTreeData } from '@/components/Tree';
+import { FormColumnProps } from '@/components/TForm/interface';
+import TableCrud from '@/components/TableCrud';
+import { TreePanel } from '@/components/Tree';
 import { DIC_TYPE } from '@/constant/dictype';
-import {
-  Button,
-  ButtonGroup,
-  Divider,
-  Space,
-  Tag,
-  Tooltip,
-  Tree,
-} from '@douyinfe/semi-ui';
-import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
+import { Divider, Empty, Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
 
 const Dictionary: React.FC = () => {
-  const dicApi = useDicApi();
+  const [dicId, setDicId] = useState<string>();
 
-  const [dicTree, setDicTree] = useState<TreeNodeData[]>([]);
-
-  useEffect(() => {
-    dicApi.list().then((res) => {
-      if (res.code === 200) {
-        const tree = loadTreeData(res.data, (node: Dic) => {
-          const type = DIC_TYPE.find((v) => v.value === node.type);
-          return (
-            <>
-              <div className="flex">
-                <Space>
-                  <Text type="secondary">{node.name}</Text>
-                  <Tag color={type?.tag}>{type?.label}</Tag>
-                  <Text type="quaternary">{node.code}</Text>
-                </Space>
-                <ButtonGroup className="ml-auto">
-                  <Tooltip content="编辑">
-                    <Button icon={directGetIcon('IconEdit')} />
-                  </Tooltip>
-                  <Tooltip content="删除">
-                    <Button icon={directGetIcon('IconDelete')} />
-                  </Tooltip>
-                </ButtonGroup>
-              </div>
-            </>
-          );
-        });
-        setDicTree(tree);
-      }
-    });
-  }, []);
+  const columns: FormColumnProps<Dic>[] = useMemo(() => {
+    return [
+      {
+        label: '名称',
+        field: 'name',
+        ellipsis: true,
+        align: 'center',
+        search: true,
+        type: 'input',
+        require: true,
+      },
+      {
+        label: '编码',
+        field: 'code',
+        ellipsis: true,
+        align: 'center',
+        type: 'input',
+        require: true,
+      },
+      {
+        label: '类型',
+        field: 'type',
+        ellipsis: true,
+        align: 'center',
+        type: 'select',
+        optionList: DIC_TYPE,
+        require: true,
+        initValue: 'SYSTEM',
+      },
+      {
+        label: '排序',
+        field: 'sort',
+        ellipsis: true,
+        align: 'center',
+        type: 'number',
+        initValue: 0,
+      },
+      {
+        label: '描述',
+        field: 'des',
+        ellipsis: true,
+        align: 'center',
+        type: 'textarea',
+        line: true,
+      },
+      {
+        label: '颜色',
+        field: 'color',
+        ellipsis: true,
+        align: 'center',
+        type: 'color',
+        line: true,
+        form: (formContext) => {
+          return formContext.props.model !== 'tree';
+        },
+      },
+      {
+        label: '',
+        field: 'parentId',
+        ellipsis: true,
+        form: false,
+        table: false,
+        align: 'center',
+        type: 'textarea',
+      },
+    ];
+  }, [dicId]);
 
   return (
     <>
       <div className="flex h-[100%]">
         <div className="w-[25%] p-2 overflow-auto">
-          <Button icon={directGetIcon('IconCopyAdd')}>新增</Button>
-          <Tree
-            treeData={dicTree}
-            filterTreeNode
-            showClear
-            searchPlaceholder="输入字典项或者编码"
-            icon={null}
+          <TreePanel
+            columns={columns}
+            useApi={useDicApi}
+            onChange={setDicId}
+            depth={0}
+            label={(tree) => {
+              const type = DIC_TYPE.find((v) => v.value === tree.type);
+              return (
+                <Space>
+                  <Text type="secondary">{tree.name}</Text>
+                  <Tag color={type?.tag}>{type?.label}</Tag>
+                  <Text type="quaternary">{tree.code}</Text>
+                </Space>
+              );
+            }}
           />
         </div>
         <Divider layout="vertical" style={{ height: '100%' }} />
-        <div className="w-[70%] p-2 overflow-auto">right</div>
+        <div className="w-[70%] p-2 overflow-auto">
+          {dicId ? (
+            <TableCrud<Dic>
+              model="page"
+              columns={columns}
+              useApi={useDicApi}
+              page
+              params={{ parentId: dicId }}
+            />
+          ) : (
+            <Empty
+              className="h-[100%] justify-center"
+              image={<IllustrationConstruction />}
+              description={<Text type="quaternary">暂无数据</Text>}
+            />
+          )}
+        </div>
       </div>
     </>
   );
 };
-
-const DicList: React.FC = () => {};
 
 export default Dictionary;

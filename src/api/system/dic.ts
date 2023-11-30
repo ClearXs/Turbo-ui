@@ -1,5 +1,7 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, GeneralParams, Pagination, R, Tree } from '../api';
+import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '../interface';
+import { Constant } from '@/constant/interface';
+import { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
 
 export interface Dic extends Tree {
   /**
@@ -33,63 +35,19 @@ export interface Dic extends Tree {
   color: string;
 }
 
-interface DicApi extends GeneralApi<Dic> {}
+interface DicApi extends TreeGeneralApi<Dic> {}
 
 export default function useDicApi(): DicApi {
   const request = useRequest();
-  const save = (entity: Dic): Promise<R<boolean>> => {
-    return request.post('/api/sys/dic/save', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const edit = (entity: Dic): Promise<R<boolean>> => {
-    return request.put('/api/sys/dic/edit', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const saveOrUpdate = (entity: Dic): Promise<R<boolean>> => {
-    return request.put('/api/sys/dic/save-or-update', entity).then((res) => {
-      return res.data;
-    });
-  };
-
-  const deleteEntity = (ids: string[]): Promise<R<boolean>> => {
-    return request.delete('/api/sys/dic/delete', ids).then((res) => {
-      return res.data;
-    });
-  };
-  const details = (id: string): Promise<R<Dic>> => {
-    return request.get('/api/sys/dic/details', { id }).then((res) => {
-      return res.data;
-    });
-  };
-
-  const list = (params: GeneralParams<Dic>): Promise<R<Dic[]>> => {
-    return request.post('/api/sys/dic/list', { ...params }).then((res) => {
-      return res.data;
-    });
-  };
-
-  const page = (
-    page: Pagination<Dic>,
-    params: GeneralParams<Dic>,
-  ): Promise<R<Pagination<Dic>>> => {
-    return request
-      .post('/api/sys/dic/page', { page, ...params })
-      .then((res) => {
-        return res.data;
-      });
-  };
-
-  return {
-    save,
-    edit,
-    saveOrUpdate,
-    deleteEntity,
-    details,
-    list,
-    page,
-  };
+  return new TreeGeneralApiImpl<Dic>('/api/sys/dic', request);
 }
+
+export const format = (dics: Dic[]): Constant[] => {
+  return dics.map((dic) => {
+    return {
+      value: dic.code,
+      label: dic.name,
+      tag: dic.color as TagColor,
+    };
+  });
+};

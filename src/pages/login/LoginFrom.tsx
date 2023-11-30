@@ -13,22 +13,20 @@ import * as local from '@/util/local';
 import * as headers from '@/util/headers';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { IconGithubLogo, IconWeibo } from '@douyinfe/semi-icons';
-import useUserApi, { Captcha } from '@/api/system/user';
-import useAuthApi from '@/api/system/auth';
+import useAuthApi, { Captcha } from '@/api/system/auth';
 
 const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
-  const userApi = useUserApi();
   const authApi = useAuthApi();
   const [loading, setLoading] = useState<boolean>(false);
   const [captcha, setCaptcha] = useState<Captcha | undefined>();
 
   useEffect(() => {
-    userApi.captcha().then((res) => setCaptcha(res.data as Captcha));
+    authApi.captcha().then((res) => setCaptcha(res.data as Captcha));
   }, []);
 
   const reloadCaptcha = () => {
-    userApi.captcha().then((res) => {
+    authApi.captcha().then((res) => {
       setCaptcha(res.data);
     });
   };

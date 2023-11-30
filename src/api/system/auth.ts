@@ -1,7 +1,20 @@
-import { R } from '../api';
+import { R } from '../interface';
 import useRequest from '@/hook/request';
-import { LoginInfo, User } from './user';
+import { User } from './user';
 import { MenuTree } from './menu';
+
+export type LoginInfo = {
+  captchaId: string;
+  username: string;
+  password: string;
+  tenant?: string;
+  captcha: string;
+};
+
+export type Captcha = {
+  captchaId: string;
+  base64: string;
+};
 
 export default function useAuthApi() {
   const request = useRequest();
@@ -73,6 +86,27 @@ export default function useAuthApi() {
     });
   };
 
+  /**
+   * 获取验证码
+   * @returns promise for captcha
+   */
+  const captcha = (): Promise<R<Captcha>> => {
+    return request.get('/api/auth/captcha').then((res) => {
+      return res.data || ({} as R<Captcha>);
+    });
+  };
+
+  /**
+   * 注册
+   * @param user 用户信息
+   * @returns
+   */
+  const register = (user: User): Promise<R<Record<string, any>>> => {
+    return request.post('/api/auth/register', user).then((res) => {
+      return res.data;
+    });
+  };
+
   return {
     login,
     getCurrentUser,
@@ -80,5 +114,7 @@ export default function useAuthApi() {
     logout,
     changePassword,
     modify,
+    captcha,
+    register,
   };
 }

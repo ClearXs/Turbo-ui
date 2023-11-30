@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import TableCrud from '@/components/TableCrud';
-import { TableColumnProps } from '@/components/TableCrud/TableCrud';
 import { PROVIDER } from '@/constant/provider';
 import useAttachmentApi, { Attachment } from '@/api/system/attachment';
 import { directGetIcon } from '@/components/Icon';
+import { TableColumnProps } from '@/components/TableCrud/interface';
 
 export default function (): React.ReactNode {
   const columns: TableColumnProps<Attachment>[] = useMemo(() => {
     return [
       {
-        title: '文件名称',
-        dataIndex: 'filename',
+        label: '文件名称',
+        field: 'filename',
         ellipsis: true,
         align: 'center',
         search: true,
@@ -18,16 +18,16 @@ export default function (): React.ReactNode {
         require: true,
       },
       {
-        title: '文件地址',
-        dataIndex: 'filepath',
+        label: '文件地址',
+        field: 'filepath',
         ellipsis: true,
         align: 'center',
         type: 'input',
         require: true,
       },
       {
-        title: '云存储供应商',
-        dataIndex: 'provider',
+        label: '云存储供应商',
+        field: 'provider',
         ellipsis: true,
         align: 'center',
         type: 'select',
@@ -39,20 +39,23 @@ export default function (): React.ReactNode {
 
   return (
     <TableCrud<Attachment>
-      model="attachment"
+      model="page"
       columns={columns}
       useApi={useAttachmentApi}
-      page={true}
-      operateBar={[
-        {
-          name: '预览',
-          type: 'primary',
-          icon: directGetIcon('IconEyeOpened'),
-          onClick: (tableContext, record) => {
-            window.open(record.filepath);
+      toolbar={{ showAdd: false }}
+      operateBar={{
+        showEdit: false,
+        append: [
+          {
+            name: '预览',
+            type: 'primary',
+            icon: directGetIcon('IconEyeOpened'),
+            onClick: (tableContext, formContext, record) => {
+              window.open(record.filepath);
+            },
           },
-        },
-      ]}
+        ],
+      }}
     />
   );
 }

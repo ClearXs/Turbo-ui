@@ -1,13 +1,11 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import useRoleApi, { Role } from '@/api/system/role';
 import TableCrud from '@/components/TableCrud';
-import {
-  OperateToolbar,
-  TableColumnProps,
-} from '@/components/TableCrud/TableCrud';
 import { Button, Modal, Notification, Space } from '@douyinfe/semi-ui';
 import MenuTree, { MenuTreeApi } from '../menu/MenuTree';
 import useRoleMenuApi from '@/api/system/rolemenu';
+import { OperateToolbar } from '@/components/TableCrud/interface';
+import RoleHelper from './helper';
 
 const Role: React.FC = () => {
   const roleMenuApi = useRoleMenuApi();
@@ -17,51 +15,19 @@ const Role: React.FC = () => {
   const [roleMenu, setRoleMenu] = useState<string[]>([]);
   const role = useRef<Role>();
 
-  const roleColumns: TableColumnProps<Role>[] = useMemo(() => {
-    return [
-      {
-        title: '角色名称',
-        dataIndex: 'name',
-        ellipsis: true,
-        align: 'center',
-        search: true,
-        type: 'input',
-        require: true,
-      },
-      {
-        title: '角色编码',
-        dataIndex: 'code',
-        ellipsis: true,
-        align: 'center',
-        type: 'input',
-        require: true,
-      },
-      {
-        title: '角色描述',
-        dataIndex: 'des',
-        ellipsis: true,
-        align: 'center',
-        type: 'textarea',
-        form: true,
-        line: true,
-      },
-    ];
-  }, []);
-
   return (
     <>
       <TableCrud<Role>
-        model="role"
-        columns={roleColumns}
+        model="page"
+        columns={RoleHelper.getColumns()}
         useApi={useRoleApi}
-        page={true}
-        operateBar={
-          [
+        operateBar={{
+          append: [
             {
               name: '授权',
               type: 'primary',
               size: 'small',
-              onClick: (tableContext, record) => {
+              onClick: (tableContext, formContext, record) => {
                 roleMenuApi.list({ roleId: record.id }).then((res) => {
                   if (res.code === 200) {
                     setRoleMenu(res.data.map((r) => r.menuId));
@@ -71,8 +37,8 @@ const Role: React.FC = () => {
                 setShowGrant(true);
               },
             },
-          ] as OperateToolbar<Role>[]
-        }
+          ] as OperateToolbar<Role>[],
+        }}
       />
 
       <Modal

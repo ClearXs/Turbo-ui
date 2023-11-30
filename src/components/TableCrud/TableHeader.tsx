@@ -1,45 +1,55 @@
 import { Button, Form, Space } from '@douyinfe/semi-ui';
-import { TableColumnProps, TableContext } from './TableCrud';
 import { directGetIcon } from '../Icon';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
-import { TableContextState } from '@/hook/table';
-import { useRecoilValue } from 'recoil';
-import { ColumnDecorator, TableApi } from './table';
+import { TableApi, TableContext, TableCrudProps } from './interface';
+import { IdEntity } from '@/api/interface';
+import { TableColumnDecorator } from './table';
 
-const TableHeader: React.FC<{
-  columns?: TableColumnProps[];
-  tableApi: TableApi<any>;
-  columnDecorator: ColumnDecorator<any>;
-}> = ({ columns = [], tableApi, columnDecorator }) => {
-  const [searchColumns, setSearchColumns] = useState<TableColumnProps[]>([]);
+type Props<T extends IdEntity> = {
+  tableContext: TableContext<T>;
+  tableApi: TableApi<T>;
+  columnDecorator: TableColumnDecorator<T>;
+  params: TableCrudProps<T>['params'];
+};
+
+function TableHeader<T extends IdEntity>({
+  tableContext,
+  tableApi,
+  columnDecorator,
+  params,
+}: Props<T>) {
   const [formApi, setFormApi] = useState<FormApi | undefined>(undefined);
-  const tableContext = useRecoilValue(TableContextState);
 
-  useEffect(() => {
-    const searchColumns = columns.filter((col) => col.search);
-    setSearchColumns(searchColumns);
-  }, []);
+  const searchColumns = (tableContext?.props.columns || []).filter((col) => {
+    return typeof col.search === 'function'
+      ? col.search(tableContext as TableContext<T>)
+      : col.search;
+  });
 
   return (
     searchColumns.length > 0 && (
-      <Form labelPosition="left" className="flex" getFormApi={setFormApi}>
+      <Form
+        labelPosition="left"
+        className="flex"
+        getFormApi={setFormApi}
+        initValues={tableContext?.search}
+      >
         <Space>
-          {searchColumns?.map((col) =>
-            columnDecorator.render(tableContext as TableContext, col, 'search'),
-          )}
+          {searchColumns?.map((col) => columnDecorator.render(col, 'search'))}
         </Space>
         <Space className="ml-4">
           <Button
             type="primary"
             icon={directGetIcon('IconSearch')}
             onClick={() => {
-              const values = formApi?.getValues();
+              // 相同key 默认值的优先级 > 表单值
+              const values = Object.assign(formApi?.getValues(), params);
               const newTableContext = {
                 ...tableContext,
                 search: values,
-              } as TableContext;
-              tableApi.pageOrList(newTableContext);
+              } as TableContext<T>;
+              tableApi.listOrPageOrTree(newTableContext);
             }}
           >
             搜索
@@ -51,9 +61,9 @@ const TableHeader: React.FC<{
               formApi?.reset();
               const newTableContext = {
                 ...tableContext,
-                search: {},
-              } as TableContext;
-              tableApi.pageOrList(newTableContext);
+                search: params || {},
+              } as TableContext<T>;
+              tableApi.listOrPageOrTree(newTableContext);
             }}
           >
             重制
@@ -62,5 +72,5 @@ const TableHeader: React.FC<{
       </Form>
     )
   );
-};
+}
 export default TableHeader;
