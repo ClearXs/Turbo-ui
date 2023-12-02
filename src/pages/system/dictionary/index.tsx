@@ -64,7 +64,7 @@ const Dictionary: React.FC = () => {
         type: 'color',
         line: true,
         form: (formContext) => {
-          return formContext.props.model !== 'tree';
+          return formContext?.props.model !== 'tree';
         },
       },
       {

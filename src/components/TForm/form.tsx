@@ -162,7 +162,6 @@ export class SelectFormField<T extends IdEntity> extends BaseFormField<
   ): React.ReactNode {
     const props = this.getGeneralProps(column, type);
     const formContext = this.decorator.getFormContext();
-
     const dic = column.dic;
     if (dic) {
       const dics = formContext?.dicValues[dic] || [];

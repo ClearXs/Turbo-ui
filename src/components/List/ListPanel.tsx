@@ -153,12 +153,12 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
           if (code === 200) {
             const list = data.map((entity) => {
               const operateBar = getOperateBar(props, listApi, entity);
-              const treeNode = props.wrap(entity);
+              const treeNode = props.wrap?.(entity);
               return {
                 ...treeNode,
                 label: (
                   <div className="flex">
-                    {treeNode.label}
+                    {treeNode?.label}
                     <ButtonGroup className="ml-auto" theme="borderless">
                       {operateBar.map((bar, index) => {
                         return (
@@ -180,7 +180,6 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
                 ),
               };
             });
-
             // 是否选中第一条数据
             // 不是多选并且需要要选中第一条数据
             const { multiple, first = true } = props;
@@ -241,13 +240,14 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
   useEffect(() => {
     const { multiple = false, initValues = [], initValue } = props;
     if (multiple) {
-      setSelectKeys(initValues.map((v) => v.id));
+      setSelectKeys(initValues);
     } else if (initValue) {
-      setSelectKey(initValue.id);
+      setSelectKey(initValue);
     }
-  }, []);
+  }, [props.initValue, props.initValues]);
 
   const toolbar = getToolbar(props, formContext as FormContext<T>, listApi);
+  props.getListPanelApi?.(listApi);
 
   return (
     <>

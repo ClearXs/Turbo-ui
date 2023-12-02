@@ -180,7 +180,7 @@ export interface GeneralApi<T extends IdEntity> {
    * @param id id
    * @returns 实体 or null
    */
-  details: (string: string) => Promise<R<T>>;
+  details: (string: string) => Promise<R<T & { [key: string]: any }>>;
 
   /**
    * 列表
@@ -236,7 +236,7 @@ export class GeneralApiImpl<T extends IdEntity> implements GeneralApi<T> {
       return res.data;
     });
   }
-  details(id: string): Promise<R<T>> {
+  details(id: string): Promise<R<T & { [key: string]: any }>> {
     return this.request.get(this.apiPath + '/details', { id }).then((res) => {
       return res.data;
     });

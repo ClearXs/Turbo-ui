@@ -145,7 +145,10 @@ export class TreeSelectTableField<T extends IdEntity> extends BaseTableField<
     const props = this.getGeneralProps(column, type);
     let data = column.treeData;
     if (typeof column.treeData === 'function') {
-      data = column.treeData(this.decorator.getTableContext());
+      data = column.treeData(
+        this.decorator.getTableContext(),
+        this.decorator.getFormContext(),
+      );
     } else {
       data = column.treeData as TreeNodeData[];
     }

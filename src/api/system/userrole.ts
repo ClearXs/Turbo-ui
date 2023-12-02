@@ -5,12 +5,12 @@ export interface UserRole extends IdEntity {
   /**
    * 用户id
    */
-  userId: number;
+  userId: string;
 
   /**
    * 角色id
    */
-  roleId: number;
+  roleId: string;
 }
 
 const useUserRoleApi = (): GeneralApi<UserRole> => {

@@ -25,18 +25,18 @@ export interface ListPanelProps<T extends IdEntity> {
   };
   // 是否多选
   multiple?: boolean;
-  // 开启multiple时生效
-  initValues?: T[];
+  // 初始值（list key值），开启multiple时生效
+  initValues?: string[];
   // 是否自动选取接口第一条数据
   first?: boolean;
   // 当multiple = false时启用，如果该值为null，则取接口第一条数据 @see first
-  initValue?: T;
+  initValue?: string;
   // api
   useApi: () => GeneralApi<T>;
   // 当选中结点时回调
   onChange?: (value?: string) => void;
   // 每个实体转换为TreeNodeData
-  wrap: (entity: T) => TreeNodeData;
+  wrap?: (entity: T) => TreeNodeData;
   getListPanelApi?: (api: ListPanelApi<T>) => void;
 }
 

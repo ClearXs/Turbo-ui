@@ -7,8 +7,11 @@ import useCloudStorageConfigApi, {
   CloudStorageConfig,
 } from '@/api/develop/cloudstorageconfig';
 import { TableColumnProps } from '@/components/TableCrud/interface';
+import { Notification } from '@douyinfe/semi-ui';
 
 export default function (): React.ReactNode {
+  const api = useCloudStorageConfigApi();
+
   const columns: TableColumnProps<CloudStorageConfig>[] = useMemo(() => {
     return [
       {
@@ -88,6 +91,58 @@ export default function (): React.ReactNode {
       model="page"
       columns={columns}
       useApi={useCloudStorageConfigApi}
+      operateBar={{
+        append: [
+          (record) => {
+            if (record.enable === 'DISABLE') {
+              return {
+                name: '启用',
+                type: 'primary',
+                onClick: (tableContext) => {
+                  api.enable(record.id, 'ENABLE').then((res) => {
+                    if (res.code === 200 && res.data) {
+                      Notification.success({
+                        position: 'top',
+                        content: res.message,
+                      });
+                      tableContext?.refresh();
+                    } else {
+                      Notification.error({
+                        position: 'top',
+                        content: res.message,
+                      });
+                    }
+                  });
+                },
+              };
+            }
+          },
+          (record) => {
+            if (record.enable === 'ENABLE') {
+              return {
+                name: '禁用',
+                type: 'primary',
+                onClick: (tableContext) => {
+                  api.enable(record.id, 'DISABLE').then((res) => {
+                    if (res.code === 200 && res.data) {
+                      Notification.success({
+                        position: 'top',
+                        content: res.message,
+                      });
+                      tableContext?.refresh();
+                    } else {
+                      Notification.error({
+                        position: 'top',
+                        content: res.message,
+                      });
+                    }
+                  });
+                },
+              };
+            }
+          },
+        ],
+      }}
     />
   );
 }

@@ -3,6 +3,8 @@ export interface SiderProps {
   title?: string;
   // 是否可见
   visible?: boolean;
+  // 是否加载
+  loading?: boolean;
   children: React.ReactNode;
   // 确认回调
   onConfirm?: () => void;

@@ -1,5 +1,5 @@
 import useOrgApi, { Org } from '@/api/system/org';
-import useUserApi, { User as UserEntity } from '@/api/system/user';
+import useUserApi, { UserApi, User as UserEntity } from '@/api/system/user';
 import Sider from '@/components/Sider';
 import TableCrud from '@/components/TableCrud';
 import { TableContext } from '@/components/TableCrud/interface';
@@ -8,20 +8,28 @@ import { Divider, Notification } from '@douyinfe/semi-ui';
 import { useRef, useState } from 'react';
 import UserHelper from './helper';
 import OrgHelper from '../org/helper';
-import ListPanel from '@/components/List';
-import RoleHelper from '../role/helper';
-import useRoleApi, { Role } from '@/api/system/role';
+import { Role } from '@/api/system/role';
 import { ListPanelApi } from '@/components/List/interface';
 import { TreePanelApi } from '@/components/Tree/interface';
+import RoleList from '../role/RoleList';
+import _ from 'lodash';
+import PostList from '../post/PostList';
+import Post from '../post';
+import ChangePasswordForm from './ChangePassword';
 
 export const User: React.FC = () => {
   const userApi = useUserApi();
   const [orgId, setOrgId] = useState<string>();
   const [showBindingRole, setShowBindingRole] = useState<boolean>(false);
   const [showBindingOrg, setShowBindingOrg] = useState<boolean>(false);
+  const [showBindingPost, setShowBindingPost] = useState<boolean>(false);
+
+  const [showChangePassword, setShowChangePassword] = useState<boolean>(false);
+
   const tableContextRef = useRef<TableContext<UserEntity>>();
-  const roleListApiRef = useRef<ListPanelApi<Role>>();
-  const orgTreeApiRef = useRef<TreePanelApi<Org>>();
+
+  // 当前选中用户，用于更新用户组织、角色
+  const selectUserRef = useRef<UserEntity>();
 
   return (
     <>
@@ -46,10 +54,17 @@ export const User: React.FC = () => {
             getTableContext={(tableContext) => {
               tableContextRef.current = tableContext;
             }}
-            params={orgId ? { orgId } : {}}
+            params={orgId ? { orgId } : null}
             operateBar={{
               append: [
-                { name: '修改密码', type: 'primary' },
+                {
+                  name: '修改密码',
+                  type: 'primary',
+                  onClick(tableContext, formContext, value) {
+                    selectUserRef.current = value;
+                    setShowChangePassword(true);
+                  },
+                },
                 (record) => {
                   if (record.status === 'LOCK') {
                     return {
@@ -77,7 +92,7 @@ export const User: React.FC = () => {
                 (record) => {
                   if (record.status === 'ENABLE') {
                     return {
-                      name: '禁用',
+                      name: '锁定',
                       type: 'primary',
                       onClick: (tableContext) => {
                         userApi.lock(record.id).then((res) => {
@@ -101,15 +116,25 @@ export const User: React.FC = () => {
                 {
                   name: '绑定角色',
                   type: 'primary',
-                  onClick: () => {
+                  onClick: (tableContext, formContext, record) => {
                     setShowBindingRole(true);
+                    selectUserRef.current = record;
+                  },
+                },
+                {
+                  name: '绑定岗位',
+                  type: 'primary',
+                  onClick: (tableContext, formContext, record) => {
+                    setShowBindingPost(true);
+                    selectUserRef.current = record;
                   },
                 },
                 {
                   name: '绑定组织',
                   type: 'primary',
-                  onClick: () => {
+                  onClick: (tableContext, formContext, record) => {
                     setShowBindingOrg(true);
+                    selectUserRef.current = record;
                   },
                 },
               ],
@@ -118,43 +143,185 @@ export const User: React.FC = () => {
         </div>
       </div>
 
-      <Sider
-        title="绑定角色"
-        visible={showBindingRole}
-        onCancel={() => setShowBindingRole(false)}
-        onConfirm={() => {}}
-      >
-        <ListPanel
-          columns={RoleHelper.getColumns()}
-          useApi={useRoleApi}
-          wrap={RoleHelper.wrap}
-          multiple
-          toolbar={{ showAdd: false }}
-          operateBar={{ showEdit: false, showDelete: false }}
-          getListPanelApi={(api) => {
-            roleListApiRef.current = api;
+      {selectUserRef.current && (
+        <RoleListSider
+          visible={showBindingRole}
+          user={selectUserRef.current}
+          userApi={userApi}
+          onClose={() => setShowBindingRole(false)}
+        />
+      )}
+      {selectUserRef.current && (
+        <PostListSider
+          visible={showBindingPost}
+          user={selectUserRef.current}
+          userApi={userApi}
+          onClose={() => setShowBindingPost(false)}
+        />
+      )}
+      {selectUserRef.current && (
+        <OrgTreeSider
+          visible={showBindingOrg}
+          user={selectUserRef.current}
+          userApi={userApi}
+          onClose={() => setShowBindingOrg(false)}
+        />
+      )}
+      {showChangePassword && (
+        <ChangePasswordForm
+          onOk={(formContext) => {
+            console.log(formContext);
           }}
         />
-      </Sider>
-
-      <Sider
-        title="绑定组织"
-        visible={showBindingOrg}
-        onCancel={() => setShowBindingOrg(false)}
-      >
-        <TreePanel
-          columns={OrgHelper.getColumns()}
-          first={false}
-          useApi={useOrgApi}
-          toolbar={{ showAdd: false }}
-          operateBar={{ showEdit: false, showDelete: false }}
-          expandAll
-          getTreePanelApi={(treePanelApi) => {
-            orgTreeApiRef.current = treePanelApi;
-          }}
-        />
-      </Sider>
+      )}
     </>
+  );
+};
+
+const RoleListSider: React.FC<{
+  visible: boolean;
+  user: UserEntity;
+  userApi: UserApi;
+  onClose: () => void;
+}> = ({ visible, user, userApi, onClose }) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const listRef = useRef<ListPanelApi<Role>>();
+  return (
+    <Sider
+      title="绑定角色"
+      visible={visible}
+      loading={loading}
+      onCancel={() => onClose()}
+      onConfirm={() => {
+        const roleIds = listRef.current?.getSelectKeys();
+        if (_.isEmpty(roleIds)) {
+          Notification.error({ position: 'top', content: '请选择角色' });
+          return;
+        }
+        setLoading(true);
+        userApi
+          .bindingRole(user.id, listRef.current?.getSelectKeys() || [])
+          .then((res) => {
+            const { code, data, message } = res;
+            if (code === 200 && data) {
+              Notification.success({ position: 'top', content: message });
+              onClose();
+            } else {
+              Notification.error({ position: 'top', content: message });
+            }
+            setLoading(false);
+          })
+          .catch((err) => {
+            setLoading(false);
+          });
+      }}
+    >
+      <RoleList
+        userId={user.id}
+        getListPanelApi={(api) => (listRef.current = api)}
+      />
+    </Sider>
+  );
+};
+
+const PostListSider: React.FC<{
+  visible: boolean;
+  user: UserEntity;
+  userApi: UserApi;
+  onClose: () => void;
+}> = ({ visible, user, userApi, onClose }) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const listRef = useRef<ListPanelApi<Post>>();
+  return (
+    <Sider
+      title="绑定岗位"
+      visible={visible}
+      loading={loading}
+      onCancel={() => onClose()}
+      onConfirm={() => {
+        const roleIds = listRef.current?.getSelectKeys();
+        if (_.isEmpty(roleIds)) {
+          Notification.error({ position: 'top', content: '请选择岗位' });
+          return;
+        }
+        setLoading(true);
+        userApi
+          .bindingPost(user.id, listRef.current?.getSelectKeys() || [])
+          .then((res) => {
+            const { code, data, message } = res;
+            if (code === 200 && data) {
+              Notification.success({ position: 'top', content: message });
+              onClose();
+            } else {
+              Notification.error({ position: 'top', content: message });
+            }
+            setLoading(false);
+          })
+          .catch((err) => {
+            setLoading(false);
+          });
+      }}
+    >
+      <PostList
+        userId={user.id}
+        getListPanelApi={(api) => (listRef.current = api)}
+      />
+    </Sider>
+  );
+};
+
+const OrgTreeSider: React.FC<{
+  visible: boolean;
+  user: UserEntity;
+  userApi: UserApi;
+  onClose: () => void;
+}> = ({ visible, user, userApi, onClose }) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const treeRef = useRef<TreePanelApi<Org>>();
+
+  return (
+    <Sider
+      title="绑定组织"
+      visible={visible}
+      loading={loading}
+      onCancel={() => onClose()}
+      onConfirm={() => {
+        const orgId = treeRef.current?.getSelectKey();
+        if (_.isEmpty(orgId)) {
+          Notification.error({ position: 'top', content: '请选择组织' });
+          return;
+        }
+        setLoading(false);
+        userApi
+          .bindingOrg(user.id, orgId)
+          .then((res) => {
+            const { code, data, message } = res;
+            if (code === 200 && data) {
+              Notification.success({ position: 'top', content: message });
+              onClose();
+            } else {
+              Notification.error({ position: 'top', content: message });
+            }
+            setLoading(false);
+          })
+          .catch((err) => {
+            setLoading(false);
+          });
+      }}
+    >
+      <TreePanel
+        columns={OrgHelper.getColumns()}
+        first={false}
+        useApi={useOrgApi}
+        toolbar={{ showAdd: false }}
+        initValue={user.orgId}
+        operateBar={{ showEdit: false, showDelete: false }}
+        expandAll
+        getTreePanelApi={(treePanelApi) => {
+          treeRef.current = treePanelApi;
+        }}
+      />
+    </Sider>
   );
 };
 

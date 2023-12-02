@@ -25,7 +25,7 @@ export type TreePanelProps<T extends Tree> = {
   // 是否选中第一个
   first?: boolean;
   // 初始化值
-  initValue?: T;
+  initValue?: Tree['id'];
   // api
   useApi: () => TreeGeneralApi<T>;
   // 当选中结点时回调

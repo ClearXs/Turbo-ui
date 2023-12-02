@@ -25,8 +25,10 @@ export type FormProps<T extends IdEntity> = {
   decorator?: FormColumnDecorator<T>;
   // 父级传递
   params?: T;
+  // 是否立即显示
+  immediateVisible?: boolean;
   // api
-  useApi: () => GeneralApi<T>;
+  useApi?: () => GeneralApi<T>;
   // 操作完成的回调
   onOk?: (formContext: FormContext<T>) => void;
   // 发生错误时回调
@@ -34,7 +36,9 @@ export type FormProps<T extends IdEntity> = {
   // 取消时回调
   onCancel?: (formContext: FormContext<T>) => void;
   // 获取表单上下文
-  getFormContext?: (formContext: FormContext<T>) => void;
+  getFormContext?: (formContext?: FormContext<T>) => void;
+
+  validateFields?: (values: Record<string, any>) => string;
 };
 
 export type FormColumnProps<T extends IdEntity> = {
@@ -134,4 +138,8 @@ export type FormContext<T extends IdEntity> = {
   newContext: (context: FormContext<T>) => void;
   // 获取字段绑定的默认值
   getDefaultValues: () => Record<string, any>;
+  // 开启form弹窗
+  open: () => void;
+  // 关闭form弹窗
+  close: () => void;
 };

@@ -1,9 +1,10 @@
-import { Button, ButtonGroup, SideSheet, Space } from '@douyinfe/semi-ui';
+import { Button, SideSheet, Space, Spin } from '@douyinfe/semi-ui';
 import { SiderProps } from './interface';
 
 const Sider: React.FC<SiderProps> = ({
   title = '',
   visible = true,
+  loading = false,
   children,
   onCancel,
   onConfirm,
@@ -14,6 +15,7 @@ const Sider: React.FC<SiderProps> = ({
       visible={visible}
       closeOnEsc
       onCancel={() => onCancel?.()}
+      zIndex={2000}
       footer={
         <>
           <Space>
@@ -27,7 +29,7 @@ const Sider: React.FC<SiderProps> = ({
         </>
       }
     >
-      {children}
+      <Spin spinning={loading}>{children}</Spin>
     </SideSheet>
   );
 };

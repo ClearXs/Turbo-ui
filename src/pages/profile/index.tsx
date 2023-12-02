@@ -21,7 +21,8 @@ const Profile = () => {
         </TabPane>
         <TabPane itemKey="password" tab="安全"></TabPane>
         <TabPane itemKey="role" tab="角色"></TabPane>
-        <TabPane itemKey="group" tab="组织"></TabPane>
+        <TabPane itemKey="post" tab="岗位"></TabPane>
+        <TabPane itemKey="org" tab="组织"></TabPane>
         <TabPane itemKey="message" tab="消息"></TabPane>
       </Tabs>
     </>

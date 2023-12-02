@@ -22,7 +22,10 @@ const UserHelper: Helper<User> = {
         align: 'center',
         type: 'input',
         table: false,
-        form: false,
+        require: true,
+        form: (formContext) => {
+          return formContext?.type === 'add';
+        },
       },
       {
         label: '邮箱',

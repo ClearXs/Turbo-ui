@@ -9,10 +9,11 @@ import {
   Tree as SemiTree,
   Space,
   Spin,
+  Tag,
   Tooltip,
 } from '@douyinfe/semi-ui';
 import { directGetIcon } from '../Icon';
-import { FormContext } from '../TForm/interface';
+import { FormContext, FormSelectColumnProps } from '../TForm/interface';
 import { useEffect, useState } from 'react';
 import TForm from '../TForm';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
@@ -123,9 +124,38 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
               res.data,
               (tree) => {
                 const operateBar = getOperateBar(props, treePanelApi, tree);
+                // 尝试读取columns中 类型为select的数据，使用其用作label渲染
+                const { columns } = props;
+                const constants = columns
+                  .filter((c) => c.type === 'select')
+                  .map((c) => {
+                    const selectColumn = c as FormSelectColumnProps<T>;
+                    const { dic, optionList, field } = selectColumn;
+                    if (dic) {
+                      return formContext?.dicValues?.[dic]?.find(
+                        (d) => d.value === tree[field],
+                      );
+                    } else if (optionList) {
+                      return optionList.find((o) => o.value === tree[field]);
+                    } else {
+                      return undefined;
+                    }
+                  })
+                  .filter((c) => c !== undefined);
                 return (
                   <div className="flex">
-                    {props.label?.(tree) || tree.name}
+                    {props.label?.(tree) || (
+                      <Space>
+                        {tree.name}
+                        {constants.map((c) => {
+                          return (
+                            <Tag color={c?.tag} prefixIcon={c?.icon}>
+                              {c?.label}
+                            </Tag>
+                          );
+                        })}
+                      </Space>
+                    )}
                     <ButtonGroup className="ml-auto" theme="borderless">
                       {operateBar.map((bar, index) => {
                         return (
@@ -197,12 +227,12 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
   useEffect(() => {
     const { initValue } = props;
     if (initValue) {
-      setSelectKey(initValue.id);
+      setSelectKey(initValue);
     }
-    props.getTreePanelApi?.(treePanelApi);
   }, []);
 
   const toolbar = getToolbar(props, formContext as FormContext<T>);
+  props.getTreePanelApi?.(treePanelApi);
 
   return (
     <>

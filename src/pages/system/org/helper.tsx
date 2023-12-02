@@ -2,6 +2,7 @@ import { Org } from '@/api/system/org';
 import { TableTreeSelectColumnProps } from '@/components/TableCrud/interface';
 import { Helper } from '@/pages/interface';
 import { treeMap } from '@/util/tree';
+import { Tag } from '@douyinfe/semi-ui';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
 const OrgHelper: Helper<Org> = {
@@ -37,7 +38,7 @@ const OrgHelper: Helper<Org> = {
         dic: 'org',
       },
       {
-        label: '上级菜单',
+        label: '上级组织',
         field: 'parentId',
         ellipsis: true,
         align: 'center',
@@ -45,12 +46,19 @@ const OrgHelper: Helper<Org> = {
         table: false,
         filterTreeNode: true,
         expandAll: true,
-        treeData: (tableContext) => {
+        treeData: (tableContext, formContext) => {
           return treeMap(tableContext?.dataSource || [], (org) => {
+            const dic = formContext?.dicValues?.['org']?.find(
+              (dic) => dic.value === org.type,
+            );
             return {
               key: org.code,
               value: org.id,
-              label: org.name,
+              label: (
+                <>
+                  {org.name} {dic && <Tag color={dic.tag}>{dic.label}</Tag>}
+                </>
+              ),
             } as TreeNodeData;
           });
         },

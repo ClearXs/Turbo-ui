@@ -8,6 +8,7 @@ import { Tag } from '@douyinfe/semi-ui';
 import { loadMenuTreeData } from './MenuTree';
 import {
   TableColumnProps,
+  TableContext,
   TableTreeSelectColumnProps,
 } from '@/components/TableCrud/interface';
 import { FormContext } from '@/components/TForm/interface';
@@ -100,6 +101,7 @@ const Menu = () => {
         model="tree"
         columns={columns}
         useApi={useMenuApi}
+        expandAllRows
         toolbar={{
           append: [
             {
@@ -108,7 +110,7 @@ const Menu = () => {
               position: 'right',
               icon: directGetIcon('IconExpand'),
               onClick: (tableContext) => {
-                const props = tableContext.props;
+                const props = tableContext?.props;
                 const newTableContext = {
                   ...tableContext,
                   props: {
@@ -116,7 +118,9 @@ const Menu = () => {
                   },
                 };
                 newTableContext.props.expandAllRows = true;
-                tableContext.newContext(newTableContext);
+                tableContext?.newContext(
+                  newTableContext as TableContext<MenuTree>,
+                );
               },
             },
             {
@@ -125,7 +129,7 @@ const Menu = () => {
               position: 'right',
               icon: directGetIcon('IconShrink'),
               onClick: (tableContext) => {
-                const props = tableContext.props;
+                const props = tableContext?.props;
                 const newTableContext = {
                   ...tableContext,
                   props: {
@@ -133,7 +137,9 @@ const Menu = () => {
                   },
                 };
                 newTableContext.props.expandAllRows = false;
-                tableContext.newContext(newTableContext);
+                tableContext?.newContext(
+                  newTableContext as TableContext<MenuTree>,
+                );
               },
             },
           ],
@@ -149,10 +155,12 @@ const Menu = () => {
                   visible: true,
                   values: Object.assign(
                     { parentId: record.id },
-                    formContext.getDefaultValues(),
+                    formContext?.getDefaultValues(),
                   ),
                 };
-                formContext.newContext(newFormContext as FormContext<MenuTree>);
+                formContext?.newContext(
+                  newFormContext as FormContext<MenuTree>,
+                );
               },
             },
             {
@@ -164,10 +172,12 @@ const Menu = () => {
                   visible: true,
                   values: Object.assign(
                     { parentId: record.parentId },
-                    formContext.getDefaultValues(),
+                    formContext?.getDefaultValues(),
                   ),
                 };
-                formContext.newContext(newFormContext as FormContext<MenuTree>);
+                formContext?.newContext(
+                  newFormContext as FormContext<MenuTree>,
+                );
               },
             },
           ],

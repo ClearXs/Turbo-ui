@@ -28,7 +28,6 @@ const formTypeList: Record<string, Constant> = {
 
 function TForm<T extends IdEntity>(props: FormProps<T>) {
   const [formContext, setFormContext] = useState<FormContext<T>>();
-  const [showColumns, setShowColumns] = useState<FormColumnProps<T>[]>([]);
   const api = props.useApi?.();
   const dicApi = useDicApi();
 
@@ -41,12 +40,12 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
     const formContext = {
       type: 'add',
       props,
-      visible: false,
+      visible: props.immediateVisible || false,
       loading: false,
       decorator,
       dicApi,
       dicValues: {},
-      getDefaultValues: () => {
+      getDefaultValues() {
         // 1.父级传递的params
         // 2.column上默认值
         const columnValues = props.columns
@@ -60,22 +59,20 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
           );
         return Object.assign({}, props.params, columnValues);
       },
-      newContext: (context: FormContext<T>) => {
+      newContext(context: FormContext<T>) {
         decorator.setFormContext(context);
-        props.getFormContext?.(context);
         setFormContext(context);
+        props.getFormContext?.(formContext);
+      },
+      open() {
+        const newFormContext = { ...this, visible: true };
+        this.newContext(newFormContext);
+      },
+      close() {
+        const newFormContext = { ...this, visible: false };
+        this.newContext(newFormContext);
       },
     } as FormContext<T>;
-    const showColumns =
-      props.columns.filter((column) => {
-        let showForm;
-        if (typeof column.form === 'function') {
-          showForm = column.form(formContext as FormContext<T>);
-        } else {
-          showForm = column.form;
-        }
-        return column.type !== 'undefined' && showForm !== false;
-      }) || [];
 
     // 初始化字典项
     const combine = props.columns
@@ -103,11 +100,20 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
         formContext.newContext(newFormContext);
       });
     }
-
     // 值设置
     formContext.newContext(formContext);
-    setShowColumns(showColumns);
   }, []);
+
+  const showColumns =
+    props.columns.filter((column) => {
+      let showForm;
+      if (typeof column.form === 'function') {
+        showForm = column.form(formContext as FormContext<T>);
+      } else {
+        showForm = column.form;
+      }
+      return column.type !== 'undefined' && showForm !== false;
+    }) || [];
 
   return (
     <>
@@ -123,44 +129,48 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
             formContext?.formApi
               ?.validate()
               .then((data) => {
-                const newContext = {
-                  ...formContext,
-                  loading: true,
-                } as FormContext<T>;
-                formContext.newContext(newContext);
-                // 相同key优先级 默认值 > 表单值
-                const values = Object.assign(data, props.params);
-                api
-                  .saveOrUpdate(values)
-                  .then((res) => {
-                    const newContext = {
-                      ...formContext,
-                      loading: false,
-                      visible: false,
-                    } as FormContext<T>;
-                    if (res.code === 200 && res.data) {
-                      Notification.success({
-                        position: 'top',
-                        content: res.message,
-                      });
-                      props.onOk?.(newContext);
-                    } else {
-                      Notification.error({
-                        position: 'top',
-                        content: res.message,
-                      });
-                      props.onError?.(new Error(res.message), newContext);
-                    }
-                    formContext.newContext(newContext);
-                  })
-                  .catch((err) => {
-                    const newContext = {
-                      ...formContext,
-                      loading: false,
-                    } as FormContext<T>;
-                    formContext.newContext(newContext);
-                    props.onError?.(err, formContext);
-                  });
+                if (api) {
+                  const newContext = {
+                    ...formContext,
+                    loading: true,
+                  } as FormContext<T>;
+                  formContext.newContext(newContext);
+                  // 相同key优先级 默认值 > 表单值
+                  const values = Object.assign(data, props.params);
+                  api
+                    .saveOrUpdate(values)
+                    .then((res) => {
+                      const newContext = {
+                        ...formContext,
+                        loading: false,
+                        visible: false,
+                      } as FormContext<T>;
+                      if (res.code === 200 && res.data) {
+                        Notification.success({
+                          position: 'top',
+                          content: res.message,
+                        });
+                        props.onOk?.(newContext);
+                      } else {
+                        Notification.error({
+                          position: 'top',
+                          content: res.message,
+                        });
+                        props.onError?.(new Error(res.message), newContext);
+                      }
+                      formContext.newContext(newContext);
+                    })
+                    .catch((err) => {
+                      const newContext = {
+                        ...formContext,
+                        loading: false,
+                      } as FormContext<T>;
+                      formContext.newContext(newContext);
+                      props.onError?.(err, formContext);
+                    });
+                } else {
+                  props.onOk?.(formContext);
+                }
               })
               .catch((err) => {
                 Notification.error({
@@ -180,6 +190,7 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
           <Form
             labelPosition="left"
             labelAlign="right"
+            validateFields={props.validateFields}
             getFormApi={(formApi) => {
               const newFormContext = {
                 ...formContext,

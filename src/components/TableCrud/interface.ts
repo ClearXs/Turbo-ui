@@ -114,7 +114,10 @@ export type TableTreeSelectColumnProps<T extends IdEntity> =
     Omit<FormTreeSelectColumnProps<T>, 'treeData'> & {
       treeData:
         | TreeNodeData[]
-        | ((tableContext?: TableContext<T>) => TreeNodeData[]);
+        | ((
+            tableContext?: TableContext<T>,
+            formContext?: FormContext<T>,
+          ) => TreeNodeData[]);
     };
 
 // Radio 组件
