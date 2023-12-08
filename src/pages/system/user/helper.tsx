@@ -23,6 +23,7 @@ const UserHelper: Helper<User> = {
         type: 'input',
         table: false,
         require: true,
+        rules: [{ min: 6, message: '至少输入6位' }],
         form: (formContext) => {
           return formContext?.type === 'add';
         },

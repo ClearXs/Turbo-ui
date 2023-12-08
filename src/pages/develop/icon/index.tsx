@@ -1,10 +1,17 @@
 // 基于semi的icon提供列表
-import { Icon, IconSystem, getIconModle } from '@/components/Icon';
-import { Col, Notification, Row, TabPane, Tabs } from '@douyinfe/semi-ui';
+import { Icon, IconSystem, getIconModel } from '@/components/Icon';
+import {
+  Col,
+  Empty,
+  Notification,
+  Row,
+  TabPane,
+  Tabs,
+} from '@douyinfe/semi-ui';
 import { useEffect, useState } from 'react';
 import _ from 'lodash';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import NoData from '../../error/NoData';
+import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
 
 export type IconViewProps = {
   // 是否显示名称
@@ -22,13 +29,13 @@ const IconList: React.FC<IconViewProps> = ({
     Notification.info({ position: 'top', content: key });
   },
 }) => {
-  const iconSystem = ['semi', 'system'];
+  const iconSystem = ['semi', 'iconoir', 'system'];
 
   const [iconTab, setIconTab] = useState<IconSystem>('semi');
   const [iconViews, setIconViews] = useState<Icon[][]>([]);
 
   useEffect(() => {
-    const iconModel = getIconModle(iconTab);
+    const iconModel = getIconModel(iconTab);
     const icons = iconModel.getIconList();
     // 按照切分数量把其切分各个区块
     const iconChunk = _.chunk(icons, splitNum);
@@ -65,9 +72,9 @@ function renderIconViews(
   return (
     <>
       {iconViews.length > 0 ? (
-        iconViews.map((icons) => {
-          return (
-            <>
+        <div className="h-[75vh] overflow-y-auto overflow-x-hidden">
+          {iconViews.map((icons) => {
+            return (
               <Row gutter={24}>
                 {icons.map((icon) => {
                   const IconComponent = icon.component;
@@ -89,11 +96,15 @@ function renderIconViews(
                   );
                 })}
               </Row>
-            </>
-          );
-        })
+            );
+          })}
+        </div>
       ) : (
-        <NoData />
+        <Empty
+          className="h-[100%] justify-center"
+          image={<IllustrationConstruction />}
+          description={<Text type="quaternary">暂无数据</Text>}
+        />
       )}
     </>
   );

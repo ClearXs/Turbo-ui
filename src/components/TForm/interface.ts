@@ -20,13 +20,21 @@ export type ColumnType =
 export type FormProps<T extends IdEntity> = {
   // 表单模型标识
   model: 'tree' | 'table' | string;
+  // 表单标题
+  title?: string;
   // 字段集合
   columns: FormColumnProps<T>[];
+  // 表单弹出框大小
+  size?: 'small' | 'medium' | 'large' | 'full-width';
   decorator?: FormColumnDecorator<T>;
   // 父级传递
   params?: T;
   // 是否立即显示
   immediateVisible?: boolean;
+  // 是否显示表单验证提示消息
+  showValidateErrorNotification?: boolean;
+  // 表单级字段验证
+  validateFields?: (values: T) => string;
   // api
   useApi?: () => GeneralApi<T>;
   // 操作完成的回调
@@ -37,8 +45,6 @@ export type FormProps<T extends IdEntity> = {
   onCancel?: (formContext: FormContext<T>) => void;
   // 获取表单上下文
   getFormContext?: (formContext?: FormContext<T>) => void;
-
-  validateFields?: (values: Record<string, any>) => string;
 };
 
 export type FormColumnProps<T extends IdEntity> = {
@@ -62,6 +68,15 @@ export type FormColumnProps<T extends IdEntity> = {
   line?: boolean;
   // 当前column是否在form中显示，默认为true
   form?: boolean | ((formContext: FormContext<T>) => boolean);
+  // 触发校验的时机 触发校验的时机，可选值:blur/change/custom/mount，或以上值的组合['blur','change']
+  // 1、设置为 custom 时，仅会由 formApi/fieldApi 触发校验时被触发
+  // 2、mount（挂载时即触发一次校验）
+  validateTrigger?: 'blur' | 'change' | 'custom' | 'mount' | Array<string>;
+  // 自定义校验
+  validate?: (
+    fieldValue: any,
+    values: Record<string, any>,
+  ) => string | Promise<string>;
 };
 
 // Input 组件
@@ -138,6 +153,8 @@ export type FormContext<T extends IdEntity> = {
   newContext: (context: FormContext<T>) => void;
   // 获取字段绑定的默认值
   getDefaultValues: () => Record<string, any>;
+  // 获取表单绑定的值
+  getValues: () => T;
   // 开启form弹窗
   open: () => void;
   // 关闭form弹窗

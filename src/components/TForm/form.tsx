@@ -101,7 +101,6 @@ export abstract class BaseFormField<
         message: `请输入${placeholder}`,
       },
     ];
-
     return {
       key: field,
       label,
@@ -109,6 +108,8 @@ export abstract class BaseFormField<
       rules,
       placeholder,
       extraText: column.extraText,
+      validate: column.validate,
+      trigger: column.validateTrigger,
     };
   }
 

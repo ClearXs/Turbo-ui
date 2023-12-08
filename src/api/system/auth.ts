@@ -2,6 +2,9 @@ import { R } from '../interface';
 import useRequest from '@/hook/request';
 import { User } from './user';
 import { MenuTree } from './menu';
+import { Org } from './org';
+import { Role } from './role';
+import { Post } from './post';
 
 export type LoginInfo = {
   captchaId: string;
@@ -65,10 +68,12 @@ export default function useAuthApi() {
    * @returns token 信息
    */
   const changePassword = (
+    id: string,
+    rawPassword: string,
     newPassword: string,
   ): Promise<R<Record<string, any>>> => {
     return request
-      .put('/api/auth/changePassword', { newPassword })
+      .put('/api/auth/changePassword', { id, rawPassword, newPassword })
       .then((res) => {
         return res.data;
       });
@@ -107,6 +112,33 @@ export default function useAuthApi() {
     });
   };
 
+  /**
+   * 获取当前用户组织
+   */
+  const currentUserOrg = (): Promise<R<Org>> => {
+    return request.get('/api/auth/current-user-org').then((res) => {
+      return res.data;
+    });
+  };
+
+  /**
+   * 获取当前用户角色
+   */
+  const currentUserRole = (): Promise<R<Role[]>> => {
+    return request.get('/api/auth/current-user-role').then((res) => {
+      return res.data;
+    });
+  };
+
+  /**
+   * 获取当前用户岗位
+   */
+  const currentUserPost = (): Promise<R<Post[]>> => {
+    return request.get('/api/auth/current-user-post').then((res) => {
+      return res.data;
+    });
+  };
+
   return {
     login,
     getCurrentUser,
@@ -116,5 +148,8 @@ export default function useAuthApi() {
     modify,
     captcha,
     register,
+    currentUserOrg,
+    currentUserRole,
+    currentUserPost,
   };
 }

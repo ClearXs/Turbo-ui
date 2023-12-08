@@ -46,7 +46,7 @@ export const User: React.FC = () => {
           />
         </div>
         <Divider layout="vertical" style={{ height: '100%' }} />
-        <div className="w-[70%] p-2 overflow-auto">
+        <div className="w-[75%] p-2 overflow-auto">
           <TableCrud<UserEntity>
             model="page"
             columns={UserHelper.getColumns()}
@@ -170,8 +170,31 @@ export const User: React.FC = () => {
       {showChangePassword && (
         <ChangePasswordForm
           onOk={(formContext) => {
-            console.log(formContext);
+            if (!selectUserRef.current) {
+              Notification.error({ position: 'top', content: '未选择用户' });
+              return;
+            }
+            const changePassword = formContext.getValues();
+            userApi
+              .changePassword(
+                selectUserRef.current.id,
+                changePassword.rawPassword,
+                changePassword.newPassword,
+              )
+              .then((res) => {
+                const { code, data, message } = res;
+                if (code === 200) {
+                  Notification.success({ position: 'top', content: message });
+                  setShowChangePassword(false);
+                } else {
+                  Notification.error({ position: 'top', content: message });
+                }
+              });
           }}
+          onCancel={() => {
+            setShowChangePassword(false);
+          }}
+          hiddenRawPassword
         />
       )}
     </>

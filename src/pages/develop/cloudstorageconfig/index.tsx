@@ -22,7 +22,6 @@ export default function (): React.ReactNode {
         search: true,
         type: 'input',
         require: true,
-        sorter: true,
       },
       {
         field: 'endpoint',
@@ -99,7 +98,7 @@ export default function (): React.ReactNode {
                 name: '启用',
                 type: 'primary',
                 onClick: (tableContext) => {
-                  api.enable(record.id, 'ENABLE').then((res) => {
+                  api.enable(record.id).then((res) => {
                     if (res.code === 200 && res.data) {
                       Notification.success({
                         position: 'top',
@@ -121,20 +120,15 @@ export default function (): React.ReactNode {
             if (record.enable === 'ENABLE') {
               return {
                 name: '禁用',
-                type: 'primary',
+                type: 'danger',
                 onClick: (tableContext) => {
-                  api.enable(record.id, 'DISABLE').then((res) => {
+                  api.disable(record.id).then((res) => {
                     if (res.code === 200 && res.data) {
                       Notification.success({
                         position: 'top',
                         content: res.message,
                       });
                       tableContext?.refresh();
-                    } else {
-                      Notification.error({
-                        position: 'top',
-                        content: res.message,
-                      });
                     }
                   });
                 },

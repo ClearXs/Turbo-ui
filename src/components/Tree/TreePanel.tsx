@@ -14,20 +14,26 @@ import {
 } from '@douyinfe/semi-ui';
 import { directGetIcon } from '../Icon';
 import { FormContext, FormSelectColumnProps } from '../TForm/interface';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import TForm from '../TForm';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import _ from 'lodash';
 import { loadTreeData } from './tree';
 import { OperateToolbar, Toolbar } from '../TableCrud/interface';
+import { expand } from '@/util/tree';
 
 const getToolbar = <T extends Tree>(
   props: TreePanelProps<T>,
   formContext: FormContext<T>,
+  treeApi: TreePanelApi<T>,
 ) => {
   const bar: Toolbar<T>[] = [];
-  const { toolbar = {} } = props;
-  const { showAdd = true } = toolbar;
+  const { toolbar = {}, multiple } = props;
+  const {
+    showAdd = true,
+    showSelectAll = true,
+    showUnSelectAll = true,
+  } = toolbar;
   showAdd &&
     bar.push({
       name: '新增',
@@ -45,6 +51,31 @@ const getToolbar = <T extends Tree>(
         formContext?.newContext(newFormContext);
       },
     });
+
+  showSelectAll &&
+    multiple &&
+    bar.push({
+      name: '全选',
+      position: 'left',
+      type: 'primary',
+      icon: directGetIcon('IconCheckList'),
+      onClick: () => {
+        treeApi.selectAll();
+      },
+    });
+
+  showUnSelectAll &&
+    multiple &&
+    bar.push({
+      name: '取消全选',
+      position: 'left',
+      type: 'primary',
+      icon: directGetIcon('IconCheckChoiceStroked'),
+      onClick: () => {
+        treeApi.unSelectAll();
+      },
+    });
+
   bar.push(...(props.toolbar?.append || []));
   return bar;
 };
@@ -111,7 +142,9 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
   const [formContext, setFormContext] = useState<FormContext<T>>();
   const [tree, setTree] = useState<TreeNodeData[]>([]);
   const [selectKey, setSelectKey] = useState<string>();
+  const [selectKeys, setSelectKeys] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const allKeys = useRef<string[]>([]);
 
   const treePanelApi = {
     tree(formContext) {
@@ -120,6 +153,7 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
         .tree()
         .then((res) => {
           if (res.code === 200) {
+            // 转换树型数据
             const treeData = loadTreeData(
               res.data,
               (tree) => {
@@ -185,6 +219,8 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
               setSelectKey(firstKey);
             }
             setTree(treeData);
+            // 设置全选数据
+            allKeys.current = expand(res.data, 'id');
           }
           setLoading(false);
         })
@@ -222,16 +258,31 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
     getSelectKey() {
       return selectKey;
     },
+    getSelectKeys() {
+      return selectKeys;
+    },
+    selectAll() {
+      setSelectKeys(allKeys.current);
+    },
+    unSelectAll() {
+      setSelectKeys([]);
+    },
   } as TreePanelApi<T>;
 
   useEffect(() => {
-    const { initValue } = props;
-    if (initValue) {
+    const { multiple = false, initValues = [], initValue } = props;
+    if (multiple) {
+      setSelectKeys(initValues);
+    } else if (initValue) {
       setSelectKey(initValue);
     }
-  }, []);
+  }, [props.initValue, props.initValues]);
 
-  const toolbar = getToolbar(props, formContext as FormContext<T>);
+  const toolbar = getToolbar(
+    props,
+    formContext as FormContext<T>,
+    treePanelApi,
+  );
   props.getTreePanelApi?.(treePanelApi);
 
   return (
@@ -256,16 +307,27 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
         <SemiTree
           {...props}
           treeData={tree}
-          value={selectKey}
+          multiple={props.multiple}
+          value={props.multiple === true ? selectKeys : selectKey}
           filterTreeNode
           showClear
           searchPlaceholder="请输入!"
           motion
           expandAll={props.expandAll}
           onSearch={(sunInput: string, filteredExpandedKeys: string[]) => {}}
-          onChange={(value) => {
-            value && setSelectKey(value.toString());
-            value && props.onChange?.(value.toString());
+          onSelect={(selectKey, selected) => {
+            if (props.multiple) {
+              let keys = [...selectKeys];
+              if (selected) {
+                keys.push(selectKey);
+              } else {
+                keys = keys.filter((key) => key !== selectKey);
+              }
+              setSelectKeys(keys);
+            } else {
+              setSelectKey(selectKey);
+              selectKey && props.onChange?.(selectKey);
+            }
           }}
         />
         <TForm<T>

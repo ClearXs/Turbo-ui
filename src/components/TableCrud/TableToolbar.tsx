@@ -62,11 +62,21 @@ const renderableToolbar = <T extends IdEntity>(
       },
     });
 
+  toolbar.push({
+    name: '刷新',
+    position: 'right',
+    type: 'primary',
+    icon: directGetIcon('IconRefresh'),
+    onClick: (tableContext) => {
+      tableApi.listOrPageOrTree(tableContext);
+    },
+  });
+
   showImport &&
     toolbar.push({
       name: '导入',
       position: 'right',
-      type: 'secondary',
+      type: 'primary',
       icon: directGetIcon('IconDescend2'),
     });
 
@@ -74,7 +84,7 @@ const renderableToolbar = <T extends IdEntity>(
     toolbar.push({
       name: '导出',
       position: 'right',
-      type: 'secondary',
+      type: 'primary',
       icon: directGetIcon('IconDownloadStroked'),
     });
   // 添加追加的菜单栏按钮
@@ -128,7 +138,7 @@ function TableToolbar<T extends IdEntity>({
             .filter((bar) => bar.position === 'right')
             .map((bar, index) => {
               return (
-                <Tooltip content={bar.name}>
+                <Tooltip content={bar.name} position="leftTop">
                   <Button
                     key={index}
                     type={bar.type}

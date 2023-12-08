@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import sysconfig from '@/config/config';
 import * as local from '@/util/local';
 import { R } from '@/api/interface';
-import { Notification } from '@douyinfe/semi-ui';
+import { Modal, Notification } from '@douyinfe/semi-ui';
 import * as headers from '@/util/headers';
 import { redirect } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -83,6 +83,7 @@ function handleSuccess<T>(res: AxiosResponse): Promise<AxiosResponse> {
  * @param err
  */
 function handleResError<T>(err: AxiosError, errorValue?: R<T>) {
+  const errCode = err.response?.status || err.status;
   // 错误消息展示
   const msg = err.response?.data?.message || err.response?.statusText;
   Notification.error({
@@ -90,11 +91,9 @@ function handleResError<T>(err: AxiosError, errorValue?: R<T>) {
     position: 'top',
     content: msg,
   });
-  const errCode = err.response?.status || err.status;
   // 认证失败
   if (errCode === 401) {
     local.remove(headers.Authentication);
-    redirect('/login');
     return Promise.reject(err);
     // 服务错误或者权限认证失败
   } else if (errCode === 403 || errCode === 500) {

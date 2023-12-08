@@ -1,28 +1,16 @@
-import {
-  Layout,
-  Button,
-  Avatar,
-  Dropdown,
-  Divider,
-  Input,
-  Notification,
-  Modal,
-} from '@douyinfe/semi-ui';
-import { IconBell, IconLanguage, IconSearch } from '@douyinfe/semi-icons';
-import IconTheme from './components/Icon/IconTheme';
+import { Layout } from '@douyinfe/semi-ui';
 import './theme/default.css';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { CurrentUserRouteState, CurrentUserSelectTabState } from './store/menu';
 import { useEffect } from 'react';
-import { get, remove } from './util/local';
+import { get } from './util/local';
 import { Authentication } from './util/headers';
-import { redirect, useLoaderData, useNavigate } from 'react-router-dom';
-import { TurboRoute, menuToRouterObject } from './router/router';
-import Sidebar from './components/Sidebar';
+import { useNavigate } from 'react-router-dom';
+import { menuToRouterObject } from './router';
 import MotionContent from './components/MotionContent';
 import { useContentMenu, useFindUserRoute } from './hook/menu';
 import useAuthApi from './api/system/auth';
-import { CurrentUserState } from './store/user';
+import MotionHeader from './components/MotionHeader';
 
 export default function App(): React.ReactNode {
   const authApi = useAuthApi();
@@ -31,8 +19,6 @@ export default function App(): React.ReactNode {
   const setUserRouters = useSetRecoilState(CurrentUserRouteState);
   const navigate = useNavigate();
   const setSelectContentTab = useSetRecoilState(CurrentUserSelectTabState);
-  const userRoutes = useLoaderData() as TurboRoute[];
-  const currentUser = useRecoilValue(CurrentUserState);
 
   useEffect(() => {
     authApi.getCurrentUserMenu().then((res) => {
@@ -42,7 +28,7 @@ export default function App(): React.ReactNode {
     const route = findUserRoute('home');
     if (route) {
       // 1.加上content tabs的页签
-      addUserContentTab(route);
+      addUserContentTab(route, 'home');
       // 2.navigate to home
       navigate(route.path as string);
       // 3.设置content选中的面板
@@ -51,129 +37,10 @@ export default function App(): React.ReactNode {
     // 重新加载组件需要重新考虑变更条件
   }, [get(Authentication)]);
 
-  const { Header, Footer } = Layout;
   return (
     <Layout className="h-100vh w-100vw">
-      <Sidebar routes={userRoutes} />
-      <Layout>
-        <Header className="h-16 w-[100%] bg-slate-50">
-          <div className="flex items-center h-[100%]">
-            <div className="max-w-lg ml-10">
-              <Input
-                prefix={<IconSearch />}
-                showClear
-                placeholder="输入内容,快捷获取"
-              />
-            </div>
-            <div className="ml-auto mr-10">
-              <Dropdown
-                trigger="click"
-                render={
-                  <Dropdown.Menu>
-                    <Dropdown.Item type="primary">默认</Dropdown.Item>
-                    <Dropdown.Item>暗色</Dropdown.Item>
-                  </Dropdown.Menu>
-                }
-                clickToHide
-              >
-                <Button
-                  theme="borderless"
-                  icon={<IconTheme size="large" />}
-                  style={{
-                    color: 'var(--semi-color-text-2)',
-                    marginRight: '12px',
-                  }}
-                >
-                  主题
-                </Button>
-              </Dropdown>
-              <Dropdown
-                trigger="click"
-                render={
-                  <Dropdown.Menu>
-                    <Dropdown.Item type="primary">中文</Dropdown.Item>
-                    <Dropdown.Item>English</Dropdown.Item>
-                    <Dropdown.Item>日本語</Dropdown.Item>
-                  </Dropdown.Menu>
-                }
-                clickToHide
-              >
-                <Button
-                  theme="borderless"
-                  icon={<IconLanguage size="large" />}
-                  style={{
-                    color: 'var(--semi-color-text-2)',
-                    marginRight: '12px',
-                  }}
-                >
-                  国际化
-                </Button>
-              </Dropdown>
-              <Button
-                theme="borderless"
-                icon={<IconBell size="large" />}
-                style={{
-                  color: 'var(--semi-color-text-2)',
-                  marginRight: '12px',
-                }}
-              >
-                消息
-              </Button>
-              <Dropdown
-                trigger={'hover'}
-                render={
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() => {
-                        const route = findUserRoute('profile');
-                        route && addUserContentTab(route);
-                      }}
-                    >
-                      个人档案
-                    </Dropdown.Item>
-                    <Dropdown.Item>修改密码</Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => {
-                        Modal.confirm({
-                          content: '是否退出登陆',
-                          onOk: () => {
-                            authApi.logout().then((res) => {
-                              if (res.code === 200 && res.data) {
-                                // 1.清除token
-                                remove(Authentication);
-                                // 2.重定向
-                                redirect('/login');
-                              }
-                              Notification.success({
-                                position: 'top',
-                                content: res.message,
-                              });
-                            });
-                          },
-                        });
-                      }}
-                    >
-                      退出登陆
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                }
-                clickToHide
-              >
-                <Avatar color="orange" src={currentUser?.avatar} />
-              </Dropdown>
-            </div>
-          </div>
-        </Header>
-        <MotionContent />
-        <Footer className="h-12">
-          <aside className="flex items-center flex-col">
-            <Divider />
-            <p className="text-base text-center max-h-max">
-              Copyright © 2023 - All right reserved by allio org.
-            </p>
-          </aside>
-        </Footer>
-      </Layout>
+      <MotionHeader />
+      <MotionContent />
     </Layout>
   );
 }

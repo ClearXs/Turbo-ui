@@ -232,7 +232,7 @@ export class GeneralApiImpl<T extends IdEntity> implements GeneralApi<T> {
       });
   }
   deleteEntity(ids: string[]): Promise<R<boolean>> {
-    return this.request.delete(this.apiPath + '/remove', ids).then((res) => {
+    return this.request.delete(this.apiPath + '/delete', ids).then((res) => {
       return res.data;
     });
   }

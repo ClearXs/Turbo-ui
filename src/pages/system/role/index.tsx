@@ -1,19 +1,19 @@
 import { useRef, useState } from 'react';
 import useRoleApi, { Role } from '@/api/system/role';
 import TableCrud from '@/components/TableCrud';
-import { Button, Modal, Notification, Space } from '@douyinfe/semi-ui';
-import MenuTree, { MenuTreeApi } from '../menu/MenuTree';
-import useRoleMenuApi from '@/api/system/rolemenu';
+import { Modal, Notification } from '@douyinfe/semi-ui';
+import MenuTree from '../menu/MenuTree';
 import { OperateToolbar } from '@/components/TableCrud/interface';
 import RoleHelper from './helper';
+import { TreePanelApi } from '@/components/Tree/interface';
+import { MenuTree as MenuEntity } from '@/api/system/menu';
+import _ from 'lodash';
 
 const Role: React.FC = () => {
-  const roleMenuApi = useRoleMenuApi();
   const roleApi = useRoleApi();
   const [showGrant, setShowGrant] = useState<boolean>(false);
-  const [menuTreeApi, setMenuTreeApi] = useState<MenuTreeApi>();
-  const [roleMenu, setRoleMenu] = useState<string[]>([]);
-  const role = useRef<Role>();
+  const roleRef = useRef<Role>();
+  const treeApiRef = useRef<TreePanelApi<MenuEntity>>();
 
   return (
     <>
@@ -28,12 +28,7 @@ const Role: React.FC = () => {
               type: 'primary',
               size: 'small',
               onClick: (tableContext, formContext, record) => {
-                roleMenuApi.list({ roleId: record.id }).then((res) => {
-                  if (res.code === 200) {
-                    setRoleMenu(res.data.map((r) => r.menuId));
-                  }
-                });
-                role.current = record;
+                roleRef.current = record;
                 setShowGrant(true);
               },
             },
@@ -46,18 +41,27 @@ const Role: React.FC = () => {
         icon={null}
         size="medium"
         onOk={() => {
+          if (!roleRef.current) {
+            Notification.error({ position: 'top', content: '角色信息不存在!' });
+            return;
+          }
+          const menuIds = treeApiRef.current?.getSelectKeys();
+          if (_.isEmpty(menuIds)) {
+            Notification.error({ position: 'top', content: '未选择任何数据!' });
+            return;
+          }
           roleApi
             .grant({
-              roleId: role.current?.id,
-              menuId: menuTreeApi?.getSelected(),
+              roleId: roleRef.current.id,
+              menuId: treeApiRef.current?.getSelectKeys() || [],
             })
             .then((res) => {
               if (res.code === 200 && res.data) {
                 Notification.success({ position: 'top', content: res.message });
+                setShowGrant(false);
               } else {
                 Notification.error({ position: 'top', content: res.message });
               }
-              setShowGrant(false);
             })
             .catch((err) => {
               setShowGrant(false);
@@ -66,15 +70,10 @@ const Role: React.FC = () => {
         onCancel={() => setShowGrant(false)}
         visible={showGrant}
       >
-        <div className="max-h-96 overflow-auto">
-          <Space className="ml-auto">
-            <Button onClick={() => menuTreeApi?.selectAll()}>全选</Button>
-            <Button onClick={() => menuTreeApi?.cancelSelectAll()}>
-              取消全选
-            </Button>
-          </Space>
-          <MenuTree initValue={roleMenu} getMenuTreeApi={setMenuTreeApi} />
-        </div>
+        <MenuTree
+          roleId={roleRef.current?.id}
+          getTreeApi={(api) => (treeApiRef.current = api)}
+        />
       </Modal>
     </>
   );

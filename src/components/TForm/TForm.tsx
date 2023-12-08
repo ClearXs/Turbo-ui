@@ -32,7 +32,8 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
   const dicApi = useDicApi();
 
   const formType = formTypeList[formContext?.type || 'add'];
-  const title = formType.label;
+  // 表单标题，优先使用配置项
+  const title = props.title || formType.label;
 
   useEffect(() => {
     const decorator = props.decorator || getFormColumnDecorator<T>();
@@ -63,6 +64,9 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
         decorator.setFormContext(context);
         setFormContext(context);
         props.getFormContext?.(formContext);
+      },
+      getValues() {
+        return this.formApi?.getValues();
       },
       open() {
         const newFormContext = { ...this, visible: true };
@@ -123,11 +127,26 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
           icon={directGetIcon(formType.icon)}
           visible={formContext?.visible}
           closeOnEsc={true}
-          size="large"
+          size={props.size || 'large'}
           okButtonProps={{ disabled: formContext?.type === 'details' }}
           onOk={() => {
+            // 构建需要校验的字段
+            const { columns } = props;
+            const validateField = columns
+              .filter((c) => {
+                // 判断是否含有require、rules、validate
+                const { require, rules, validate } = c;
+                if (require || rules || validate) {
+                  return true;
+                }
+                return false;
+              })
+              .map((c) => {
+                return c.field;
+              });
+
             formContext?.formApi
-              ?.validate()
+              ?.validate(validateField)
               .then((data) => {
                 if (api) {
                   const newContext = {
@@ -173,18 +192,39 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
                 }
               })
               .catch((err) => {
-                Notification.error({
-                  content: err.name,
-                  position: 'top',
-                });
+                const { showValidateErrorNotification = false } = props;
+                if (!showValidateErrorNotification) {
+                  return;
+                }
+                // 提示表单错误信息
+                let formErrorMessage = '';
+                if (err.name) {
+                  formErrorMessage = err.name;
+                } else if (typeof err === 'object') {
+                  formErrorMessage = Object.keys(err)
+                    .map((eKey) => {
+                      return err[eKey];
+                    })
+                    .join(',');
+                }
+                if (!_.isEmpty(formErrorMessage)) {
+                  Notification.error({
+                    content: formErrorMessage,
+                    position: 'top',
+                  });
+                }
               });
           }}
           onCancel={() => {
-            const newFormContext = {
-              ...formContext,
-              visible: false,
-            } as FormContext<T>;
-            formContext?.newContext(newFormContext as FormContext<T>);
+            if (props.onCancel) {
+              props.onCancel(formContext as FormContext<T>);
+            } else {
+              const newFormContext = {
+                ...formContext,
+                visible: false,
+              } as FormContext<T>;
+              formContext?.newContext(newFormContext as FormContext<T>);
+            }
           }}
         >
           <Form

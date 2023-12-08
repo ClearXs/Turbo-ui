@@ -20,3 +20,7 @@ body[theme-mode='default'] .semi-always-light {
   display: flex;
   justify-content: center;
 }
+
+.semi-table-tbody > .semi-table-row > .semi-table-row-cell {
+  padding: 12px;
+}

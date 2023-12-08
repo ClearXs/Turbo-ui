@@ -7,6 +7,10 @@ export type TreePanelProps<T extends Tree> = {
   toolbar?: {
     // 是否显示增加按钮
     showAdd?: boolean;
+    // 是否显示全选按钮，当属性multiple = true时生效
+    showSelectAll?: boolean;
+    // 是否显示取消全选按钮，当属性multiple = true时生效
+    showUnSelectAll?: boolean;
     // 自定义追加
     append?: Toolbar<T>[];
   };
@@ -22,6 +26,10 @@ export type TreePanelProps<T extends Tree> = {
   expandAll?: boolean;
   // 需求树结点深度，如果不传默认所有
   depth?: number;
+  // 是否多选
+  multiple?: boolean;
+  // 初始值（list key值），开启multiple时生效
+  initValues?: string[];
   // 是否选中第一个
   first?: boolean;
   // 初始化值
@@ -40,7 +48,12 @@ export interface TreePanelApi<T extends Tree> {
   details: (formContext: FormContext<T> | undefined, record: T) => void;
   edit: (formContext: FormContext<T> | undefined, record: T) => void;
   remove: (formContext: FormContext<T> | undefined, ids: string[]) => void;
-
-  // 获取选中的key
+  // 单选情况下获取选中的key
   getSelectKey: () => string;
+  // 多选情况下获取选中的所有值
+  getSelectKeys: () => string[];
+  // 多选情况下，全选
+  selectAll: () => void;
+  // 多选情况下，取消全选
+  unSelectAll: () => void;
 }

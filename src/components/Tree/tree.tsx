@@ -14,7 +14,7 @@ export const loadTreeData = <T extends Tree>(
     (treeNode) => {
       return {
         ...tree,
-        key: treeNode.code,
+        key: treeNode.id,
         value: treeNode.id,
         label: labelRender?.(treeNode) || treeNode.name,
         icon: directGetIcon(treeNode.icon),

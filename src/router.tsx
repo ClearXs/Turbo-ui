@@ -16,8 +16,22 @@ import { importIcon } from '@/components/Icon';
 import _ from 'lodash';
 import Home from '@/pages/home';
 import Profile from '@/pages/profile';
-import App from '@/App';
 import Login from '@/pages/login';
+import { Skeleton } from '@douyinfe/semi-ui';
+import App from '@/App';
+
+const PageComponents = import.meta.glob('./pages/**/index.tsx');
+
+const getInnerPageComponent = (route: string) => {
+  const findPage = Object.keys(PageComponents).find((pageName) => {
+    return pageName.match(route);
+  });
+  if (findPage) {
+    return PageComponents[findPage];
+  } else {
+    return () => Promise.resolve(<Error />);
+  }
+};
 
 export type TurboRoute = RouteObject &
   Pick<MenuTree, 'code' | 'alias' | 'sort' | 'name' | 'depth'> & {
@@ -32,7 +46,22 @@ export type TurboRoute = RouteObject &
 
 // 组件懒加载方式进行导入
 export const lazyLoader = (Module: React.ReactNode) => {
-  return <Suspense fallback={<div />}>{Module}</Suspense>;
+  return (
+    <Suspense
+      fallback={
+        <Skeleton>
+          <div>
+            <Skeleton.Title
+              style={{ width: 120, marginBottom: 12, marginTop: 12 }}
+            />
+            <Skeleton.Paragraph style={{ width: 240 }} rows={3} />
+          </div>
+        </Skeleton>
+      }
+    >
+      {Module}
+    </Suspense>
+  );
 };
 
 /**
@@ -49,7 +78,7 @@ export const menuToRouterObject = (menus: MenuTree[]): TurboRoute[] => {
     .map((m) => {
       /* @vite-ignore */
       // 目标route组件
-      const Module = lazy(() => import('../pages' + `${m.route}`));
+      const Module = lazy(getInnerPageComponent(m.route));
       const Component = _.isEmpty(m.route) ? null : lazyLoader(<Module />);
       // 图标组件
       const IconComponent = importIcon(m.icon as string);
@@ -72,6 +101,7 @@ export const menuToRouterObject = (menus: MenuTree[]): TurboRoute[] => {
 
 const AppRouter: React.FC = () => {
   const userRoutes = useRecoilValue(CurrentUserRouteState);
+
   const IconHomeComponent = importIcon('IconHome');
   const IconUserComponent = importIcon('IconUser');
   const renderRoutes = [
@@ -81,7 +111,7 @@ const AppRouter: React.FC = () => {
       path: '/home',
       name: '首页',
       level: 2,
-      element: lazyLoader(<Home />),
+      element: <Home />,
       icon: IconHomeComponent && <IconHomeComponent />,
       clearable: false,
       type: 'system',
@@ -92,7 +122,7 @@ const AppRouter: React.FC = () => {
       path: '/profile',
       name: '个人档案',
       level: 2,
-      element: lazyLoader(<Profile />),
+      element: <Profile />,
       type: 'system',
       icon: IconUserComponent && <IconUserComponent />,
       clearable: true,
@@ -118,7 +148,7 @@ const AppRouter: React.FC = () => {
     {
       id: 'login',
       path: '/login',
-      element: lazyLoader(<Login />),
+      element: <Login />,
       loader: () => {
         if (isEmpty(local.get(headers.Authentication))) {
           return '';
@@ -129,9 +159,7 @@ const AppRouter: React.FC = () => {
     },
   ];
   return (
-    <div key={location.key}>
-      <RouterProvider router={createBrowserRouter(routers)} />
-    </div>
+    <RouterProvider router={createBrowserRouter(routers, { basename: '/' })} />
   );
 };
 export default AppRouter;

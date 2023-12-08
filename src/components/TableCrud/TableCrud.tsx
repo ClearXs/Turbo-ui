@@ -4,6 +4,7 @@ import {
   Modal,
   Notification,
   Space,
+  Spin,
 } from '@douyinfe/semi-ui';
 import Table, { TablePagination } from '@douyinfe/semi-ui/lib/es/table';
 import TableHeader from './TableHeader';
@@ -42,7 +43,6 @@ class TableColumnsBuilder<T extends IdEntity> {
     const bars: OperateToolbar<T>[] = [];
     const {
       showEdit = true,
-      showDetails = true,
       showDelete = true,
       append = [],
     } = this.operateBar || {};
@@ -56,21 +56,6 @@ class TableColumnsBuilder<T extends IdEntity> {
         icon: directGetIcon('IconEditStroked'),
         onClick: (tableContext, formContext, record) => {
           this.tableApi.edit(tableContext, formContext, record.id);
-        },
-      });
-    }
-    // 明细
-    if (
-      (typeof showDetails === 'function' && showDetails(record)) ||
-      showDetails
-    ) {
-      bars.push({
-        name: '明细',
-        type: 'primary',
-        size: 'small',
-        icon: directGetIcon('IconIssueStroked'),
-        onClick: (tableContext, formContext, record) => {
-          this.tableApi.details(tableContext, formContext, record.id);
         },
       });
     }
@@ -132,68 +117,76 @@ class TableColumnsBuilder<T extends IdEntity> {
     const columns = [
       ...this.columns,
       {
-        title: '操作列',
+        title: '操作栏',
         dataIndex: 'operate',
         field: 'operate',
         align: 'center',
         type: 'undefined',
+        fixed: true,
+        width: '25%',
         render: (text, record) => {
           const bars = this.innerBarBuild(record);
-          // 超过三个进行缩略展示
-          return bars.length > 3 ? (
-            <Dropdown
-              trigger="hover"
-              render={
-                <Dropdown.Menu>
-                  {bars.map((bar) => {
-                    return (
-                      <Dropdown.Item
-                        icon={bar.icon}
-                        type={bar.type}
-                        onClick={() =>
-                          bar.onClick?.(
-                            this.tableContext as TableContext<T>,
-                            this.formContext as FormContext<T>,
-                            record,
-                          )
-                        }
-                      >
-                        {bar.name}
-                      </Dropdown.Item>
-                    );
-                  })}
-                </Dropdown.Menu>
-              }
-            >
-              <Button
-                theme="borderless"
-                icon={directGetIcon('IconMoreStroked')}
-                type="secondary"
-              />
-            </Dropdown>
-          ) : (
-            <Space spacing={2}>
-              {bars.map((bar) => {
-                return (
-                  <Button
-                    theme="borderless"
-                    size={bar.size}
-                    icon={bar.icon}
-                    type={bar.type}
-                    onClick={() =>
-                      bar.onClick?.(
-                        this.tableContext as TableContext<T>,
-                        this.formContext as FormContext<T>,
-                        record,
-                      )
-                    }
-                  >
-                    {bar.name}
-                  </Button>
-                );
-              })}
-            </Space>
+          const renderBars = [];
+          const defaultShowBars = bars.splice(0, 2);
+          renderBars.push(
+            defaultShowBars.map((bar) => {
+              return (
+                <Button
+                  theme="borderless"
+                  size={bar.size}
+                  icon={bar.icon}
+                  type={bar.type}
+                  onClick={() =>
+                    bar.onClick?.(
+                      this.tableContext as TableContext<T>,
+                      this.formContext as FormContext<T>,
+                      record,
+                    )
+                  }
+                >
+                  {bar.name}
+                </Button>
+              );
+            }),
           );
+          // 超过两个进行缩略展示
+          const abbreviateBars = bars.slice(0);
+          if (!_.isEmpty(abbreviateBars)) {
+            renderBars.push(
+              <Dropdown
+                trigger="hover"
+                position="leftTop"
+                render={
+                  <Dropdown.Menu>
+                    {abbreviateBars.map((bar) => {
+                      return (
+                        <Dropdown.Item
+                          icon={bar.icon}
+                          type={bar.type}
+                          onClick={() =>
+                            bar.onClick?.(
+                              this.tableContext as TableContext<T>,
+                              this.formContext as FormContext<T>,
+                              record,
+                            )
+                          }
+                        >
+                          {bar.name}
+                        </Dropdown.Item>
+                      );
+                    })}
+                  </Dropdown.Menu>
+                }
+              >
+                <Button
+                  theme="borderless"
+                  icon={directGetIcon('IconMoreStroked')}
+                  type="primary"
+                />
+              </Dropdown>,
+            );
+          }
+          return <Space spacing={0}>{renderBars}</Space>;
         },
       } as TableColumnProps<T>,
     ];
@@ -513,11 +506,15 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
             (column) => tableContext?.decorator.wrap(column),
           )}
           dataSource={tableContext?.dataSource}
-          rowKey={'id'}
-          pagination={tableContext?.table.pagination || false}
           loading={tableContext?.table.loading}
+          rowKey={'id'}
+          sticky
+          pagination={tableContext?.table.pagination || false}
           expandAllRows={tableContext?.props.expandAllRows}
-          scroll={{ y: '100%' }}
+          bordered
+          scroll={{
+            y: tableContext?.table.pagination || false ? '58vh' : '65vh',
+          }}
           rowSelection={{
             selectedRowKeys: tableContext?.table.selectedRowKeys,
             onSelect: (record, selected) => {

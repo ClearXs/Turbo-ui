@@ -21,6 +21,7 @@ const TenantHelper: Helper<Tenant> = {
         align: 'center',
         type: 'date',
         search: true,
+        form: false,
       },
       {
         field: 'createdBy',

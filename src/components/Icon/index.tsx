@@ -5,7 +5,7 @@ export type Icon = {
   component: any;
 };
 
-export type IconSystem = 'semi' | 'system';
+export type IconSystem = 'semi' | 'system' | 'iconoir';
 
 export interface IconModel {
   /**
@@ -25,7 +25,7 @@ export interface IconModel {
   getIcon(key: string): Icon | undefined;
 }
 
-export class SemiIconsModle implements IconModel {
+export class SemiIconsModel implements IconModel {
   constructor(private icons: Map<string, Icon>) {
     // 从semi库里面导入UI组件
     const imports = import.meta.glob(
@@ -69,7 +69,7 @@ export class SemiIconsModle implements IconModel {
   }
 }
 
-export class SystemIconsModle implements IconModel {
+export class SystemIconsModel implements IconModel {
   constructor(private icons: Map<string, Icon>) {
     const imports = import.meta.glob('./*');
     Object.keys(imports)
@@ -110,11 +110,32 @@ export class SystemIconsModle implements IconModel {
   }
 }
 
-const SemiIcons = new SemiIconsModle(new Map());
-const SystemIcons = new SystemIconsModle(new Map());
+export class IconoirModel implements IconModel {
+  constructor(private icons: Map<string, Icon>) {}
 
-export const getIconModle = (type: IconSystem = 'semi'): IconModel => {
-  return type === 'semi' ? SemiIcons : SystemIcons;
+  getIcons(): Map<string, Icon> {
+    throw new Error('Method not implemented.');
+  }
+  getIconList(): Icon[] {
+    throw new Error('Method not implemented.');
+  }
+  getIcon(key: string): Icon | undefined {
+    throw new Error('Method not implemented.');
+  }
+}
+
+const SemiIcons = new SemiIconsModel(new Map());
+const SystemIcons = new SystemIconsModel(new Map());
+const IconoirIcons = new SystemIconsModel(new Map());
+
+const IconModels: Record<IconSystem, IconModel> = {
+  semi: SemiIcons,
+  system: SystemIcons,
+  iconoir: IconoirIcons,
+};
+
+export const getIconModel = (type: IconSystem = 'semi'): IconModel => {
+  return IconModels[type];
 };
 
 /**
@@ -124,7 +145,7 @@ export const getIconModle = (type: IconSystem = 'semi'): IconModel => {
  * @returns
  */
 export const importIcon = (icon: string, type: IconSystem = 'semi') => {
-  const iconModel = getIconModle(type);
+  const iconModel = getIconModel(type);
   return iconModel.getIcon(icon)?.component;
 };
 
@@ -141,7 +162,7 @@ export const directGetIcon = (
   if (icon === undefined) {
     return null;
   }
-  const iconModel = getIconModle(type);
+  const iconModel = getIconModel(type);
   const IconComponent = iconModel.getIcon(icon)?.component;
   return IconComponent && <IconComponent />;
 };

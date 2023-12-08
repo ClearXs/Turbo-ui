@@ -44,19 +44,23 @@ export interface CloudStorageConfig extends BaseEntity {
 }
 
 export interface CloudStorageConfigApi extends GeneralApi<CloudStorageConfig> {
-  enable: (id: string, enable: 'ENABLE' | 'DISABLE') => Promise<R<boolean>>;
+  enable: (id: string) => Promise<R<boolean>>;
+  disable: (id: string) => Promise<R<boolean>>;
 }
 
 class CloudStorageConfigApiImpl
   extends GeneralApiImpl<CloudStorageConfig>
   implements CloudStorageConfigApi
 {
-  enable(id: string, enable: 'ENABLE' | 'DISABLE'): Promise<R<boolean>> {
-    return this.request
-      .put(this.apiPath + '/enable', { id, enable })
-      .then((res) => {
-        return res.data;
-      });
+  enable(id: string): Promise<R<boolean>> {
+    return this.request.put(this.apiPath + `/enable/${id}`).then((res) => {
+      return res.data;
+    });
+  }
+  disable(id: string): Promise<R<boolean>> {
+    return this.request.put(this.apiPath + `/disable/${id}`).then((res) => {
+      return res.data;
+    });
   }
 }
 

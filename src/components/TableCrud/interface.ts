@@ -67,8 +67,6 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   operateBar?: {
     // 是否显示编辑操作
     showEdit?: boolean | ((record: T) => boolean);
-    // 是否显示详情操作
-    showDetails?: boolean | ((record: T) => boolean);
     // 是否显示删除操作
     showDelete?: boolean | ((record: T) => boolean);
     // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加

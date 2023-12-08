@@ -1,6 +1,8 @@
 import { TabPane, Tabs } from '@douyinfe/semi-ui';
 import { useState } from 'react';
 import UserProfile from './UserProfile';
+import MyRole from './MyRole';
+import MyPost from './MyPost';
 
 const Profile = () => {
   const [profileKey, setProfileKey] = useState('profile');
@@ -20,10 +22,14 @@ const Profile = () => {
           <UserProfile />
         </TabPane>
         <TabPane itemKey="password" tab="安全"></TabPane>
-        <TabPane itemKey="role" tab="角色"></TabPane>
-        <TabPane itemKey="post" tab="岗位"></TabPane>
-        <TabPane itemKey="org" tab="组织"></TabPane>
-        <TabPane itemKey="message" tab="消息"></TabPane>
+        <TabPane itemKey="role" tab="我的角色">
+          <MyRole />
+        </TabPane>
+        <TabPane itemKey="post" tab="我的岗位">
+          <MyPost />
+        </TabPane>
+        <TabPane itemKey="org" tab="我的组织"></TabPane>
+        <TabPane itemKey="message" tab="我的消息"></TabPane>
       </Tabs>
     </>
   );

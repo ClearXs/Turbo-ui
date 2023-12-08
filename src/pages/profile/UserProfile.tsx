@@ -55,7 +55,7 @@ export default function UserProfile() {
           <div className="flex">
             <div>
               <Title heading={4}>个人信息</Title>
-              <Text type="quaternary">更新你的头像与详细的信息</Text>
+              <Text type="quaternary">更新你个人的详细信息</Text>
             </div>
             <div className="ml-auto mr-5">
               {isSave ? (
@@ -89,6 +89,18 @@ export default function UserProfile() {
             </div>
           </div>
           <Divider />
+          <div className="flex">
+            <Title heading={4}>用户名</Title>
+            <div className="text-center w-[70%] ml-auto">
+              <Form.Input
+                field="username"
+                noLabel
+                style={{ width: '50%' }}
+                disabled
+              />
+            </div>
+          </div>
+          <Divider />
           <div className="flex mr-[50%]">
             <div>
               <Title heading={4}>头像</Title>
@@ -110,7 +122,10 @@ export default function UserProfile() {
                 }}
                 accept="image/*"
                 showUploadList={false}
-                headers={{ 'X-Authentication': local.get('X-Authentication') }}
+                headers={{
+                  'X-Authentication': local.get(headers.Authentication),
+                  'X-Tenant': local.get(headers.Tenant),
+                }}
                 disabled={!isSave}
               >
                 <Avatar

@@ -101,7 +101,7 @@ const Dictionary: React.FC = () => {
           />
         </div>
         <Divider layout="vertical" style={{ height: '100%' }} />
-        <div className="w-[70%] p-2 overflow-auto">
+        <div className="w-[75%] p-2 overflow-auto">
           {dicId ? (
             <TableCrud<Dic>
               model="page"
