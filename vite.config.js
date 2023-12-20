@@ -14,9 +14,10 @@ export default defineConfig(({ command, mode }) => {
       sourcemap: false,
     },
     resolve: {
-      alias: {
-        '@': resolve(__dirname, 'src'),
-      },
+      alias: [
+        { find: /^~/, replacement: "" },
+        { find: "@", replacement: resolve(__dirname, "src") },
+      ],
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     },
     server: {
@@ -25,6 +26,20 @@ export default defineConfig(({ command, mode }) => {
           target: apiUrl,
           changeOrigin: true,
           rewrite: (apiPath) => apiPath.replace(/^\/api/, ''),
+        },
+      },
+    },
+    /**
+     * [plugin:vite:css] Inline JavaScript is not enabled. Is it set in your options?
+     *
+     * Ref:
+     *   https://blog.csdn.net/baobao_123456789/article/details/113986961
+     *   https://stackoverflow.com/questions/46729091/enable-inline-javascript-in-less
+     */
+    css: {
+      preprocessorOptions: {
+        less: {
+          javascriptEnabled: true,
         },
       },
     },
