@@ -1,40 +1,41 @@
-[English](./README.md) | 简体中文
+English | [简体中文](./README.md)
 
 <h1 align="center">Turbo-ui</h1>
 
-<h2 align="center">简约 · 实用 · 前沿 · 创新</h2>
+<h2 align="center">Simple · Practical · Leading Edge · Innovation</h2>
 
-## 概要
+## Overview
 
-这是一个简约风的后台管理ui框子，👉[[Turbo]后端](https://github.com/ClearXs/Turbo.git)
+Here is a minimalist-style backend management UI framework.
+👉[[Turbo]back-end](https://github.com/ClearXs/Turbo.git)
 
-## 特性
+## Features
 
-- 👊 简约：使用semi-ui提供清爽的界面风格
-- 💢 前沿：内置基于alibab的designable二开的表单设计器
-- 🥮 状态管理：使用recoil对内置进行状态管理
-- 🏟 实用：除了提供的表单设计器，还拥有大量易于使用的组件
+- 👊 Simple: Incorporating Semi-UI for a crisp and refreshing interface style.
+- 💢 Leading Edge: The built-in form designer based on Alibaba's Designable for secondary development.
+- 🥮 State Manager: Utilizing Recoil for internal state management of the built-in components.
+- 🏟 Practical: In addition to the provided form designer, it also boasts a wide array of user-friendly components.
 - ...
 
-## 安装
+## Install
 
 ```bash
 npm install
 ```
 
-## 运行
+## Run
 
 ```bash
 npm run dev
 ```
 
-## 打包
+## Package
 
 ```bash
 npm run build
 ```
 
-## 界面预览
+## Preview
 
 <table>
     <tr>
