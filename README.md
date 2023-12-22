@@ -1,6 +1,6 @@
 [English](./README.en-US.md) | 简体中文
 
-<h1 align="center">Turbo-ui</h1>
+<img src="./docs/logo.png" >
 
 <h2 align="center">简约 · 实用 · 前沿 · 创新</h2>
 
