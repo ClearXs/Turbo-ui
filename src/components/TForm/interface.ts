@@ -15,6 +15,7 @@ export type ColumnType =
   | 'icon'
   | 'color'
   | 'date'
+  | 'checkbox'
   | 'undefined';
 
 export type FormProps<T extends IdEntity> = {
@@ -132,6 +133,11 @@ export type FormDateColumnProps<T extends IdEntity> = FormColumnProps<T> & {
     | 'dateTime'
     | 'dateTimeRange'
     | 'monthRange';
+};
+
+export type FormCheckboxColumnProps<T extends IdEntity> = FormColumnProps<T> & {
+  options?: Constant[];
+  extraText?: string;
 };
 
 export type FormContext<T extends IdEntity> = {

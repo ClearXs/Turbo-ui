@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import "antd/dist/antd.less";
+import React, { useEffect, useMemo } from 'react';
+import 'antd/dist/antd.less';
 import {
   Designer,
   Workbench,
@@ -15,16 +15,16 @@ import {
   ViewportPanel,
   SettingsPanel,
   HistoryWidget,
-} from "@designable/react";
-import { SettingsForm } from "@designable/react-settings-form";
-import { observer } from "@formily/react";
+} from '@designable/react';
+import { SettingsForm } from '@designable/react-settings-form';
+import { observer } from '@formily/react';
 import {
   createDesigner,
   createBehavior,
   GlobalRegistry,
   Shortcut,
   KeyCode,
-} from "@designable/core";
+} from '@designable/core';
 import {
   Input,
   Password,
@@ -49,47 +49,46 @@ import {
   ArrayCards,
   ArrayTable,
   Text,
-} from "@designable/formily-semi";
-import { Content } from "./Content";
-import { SemiPreviewWidget } from "./SemiPreviewWidget";
-import { SemiSchemaEditorWidget } from "./SemiSchemaEditorWidget";
+} from '@designable/formily-semi';
+import { Content } from './Content';
+import { SemiPreviewWidget } from './SemiPreviewWidget';
+import { SemiSchemaEditorWidget } from './SemiSchemaEditorWidget';
 import {
   Button,
   Space as SemiSpace,
   Radio as SemiRadio,
-} from "@douyinfe/semi-ui";
+} from '@douyinfe/semi-ui';
 //import { Sandbox } from '@designable/react-sandbox'
 
 GlobalRegistry.registerDesignerLocales({
-  "zh-CN": {
+  'zh-CN': {
     sources: {
-      Inputs: "输入控件",
-      Displays: "展示控件",
-      Feedbacks: "反馈控件",
+      Inputs: '输入控件',
+      Displays: '展示控件',
+      Feedbacks: '反馈控件',
     },
   },
-  "en-US": {
+  'en-US': {
     sources: {
-      Inputs: "Inputs",
-      Displays: "Displays",
-      Feedbacks: "Feedbacks",
+      Inputs: 'Inputs',
+      Displays: 'Displays',
+      Feedbacks: 'Feedbacks',
     },
   },
-  "ko-KR": {
+  'ko-KR': {
     sources: {
-      Inputs: "입력",
-      Displays: "디스플레이",
-      Feedbacks: "피드백",
+      Inputs: '입력',
+      Displays: '디스플레이',
+      Feedbacks: '피드백',
     },
   },
 });
 
-
 const Actions = observer(() => {
-  const supportLocales = ["zh-cn", "en-us", "ko-kr"];
+  const supportLocales = ['zh-cn', 'en-us', 'ko-kr'];
   useEffect(() => {
     if (!supportLocales.includes(GlobalRegistry.getDesignerLanguage())) {
-      GlobalRegistry.setDesignerLanguage("zh-cn");
+      GlobalRegistry.setDesignerLanguage('zh-cn');
     }
   }, []);
 
@@ -98,9 +97,9 @@ const Actions = observer(() => {
       <SemiRadio.Group
         value={GlobalRegistry.getDesignerLanguage()}
         options={[
-          { label: "English", value: "en-us" },
-          { label: "简体中文", value: "zh-cn" },
-          { label: "한국어", value: "ko-kr" },
+          { label: 'English', value: 'en-us' },
+          { label: '简体中文', value: 'zh-cn' },
+          { label: '한국어', value: 'ko-kr' },
         ]}
         onChange={(e) => {
           GlobalRegistry.setDesignerLanguage(e.target.value);
@@ -112,7 +111,7 @@ const Actions = observer(() => {
   );
 });
 
-const SemiEditor = () => {
+const Editor = () => {
   const engine = useMemo(
     () =>
       createDesigner({
@@ -125,15 +124,15 @@ const SemiEditor = () => {
             handler(ctx) {},
           }),
         ],
-        rootComponentName: "Form",
+        rootComponentName: 'Form',
       }),
-    []
+    [],
   );
 
   return (
     <Designer engine={engine}>
       <Workbench>
-        <StudioPanel  actions={<Actions />}>
+        <StudioPanel actions={<Actions />}>
           <CompositePanel>
             <CompositePanel.Item title="panels.Component" icon="Component">
               <ResourceWidget
@@ -182,7 +181,7 @@ const SemiEditor = () => {
           <WorkspacePanel>
             <ToolbarPanel>
               <DesignerToolsWidget />
-              <ViewToolsWidget use={["DESIGNABLE", "JSONTREE", "PREVIEW"]} />
+              <ViewToolsWidget use={['DESIGNABLE', 'JSONTREE', 'PREVIEW']} />
             </ToolbarPanel>
             <ViewportPanel>
               <ViewPanel type="DESIGNABLE">{() => <Content />}</ViewPanel>
@@ -207,4 +206,4 @@ const SemiEditor = () => {
   );
 };
 
-export default SemiEditor;
+export default Editor;

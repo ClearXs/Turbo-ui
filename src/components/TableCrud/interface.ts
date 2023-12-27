@@ -5,6 +5,8 @@ import {
   TableProps,
 } from '@douyinfe/semi-ui/lib/es/table';
 import {
+  FormCheckBoxColumnProps,
+  FormCheckboxColumnProps,
   FormColumnProps,
   FormContext,
   FormDateColumnProps,
@@ -130,6 +132,9 @@ export type TableTextAreaColumnProps<T extends IdEntity> = TableColumnProps<T> &
 export type TableDateColumnProps<T extends IdEntity> = TableColumnProps<T> &
   FormDateColumnProps<T> & {};
 
+// checkbox组件
+export type TableCheckboxColumnProps<T extends IdEntity> = TableColumnProps<T> &
+  FormCheckboxColumnProps<T> & {};
 // ======================== operate ========================
 
 // 联系Table crud组件，进行数据操作传输

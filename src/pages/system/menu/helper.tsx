@@ -2,11 +2,15 @@ import { MenuTree } from '@/api/system/menu';
 import { MENU_TYPE } from '@/constant/menutype';
 import { Helper } from '@/pages/interface';
 import { Space, Tag } from '@douyinfe/semi-ui';
-import { TableTreeSelectColumnProps } from '@/components/TableCrud/interface';
+import {
+  TableCheckboxColumnProps,
+  TableTreeSelectColumnProps,
+} from '@/components/TableCrud/interface';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { treeMap } from '@/util/tree';
 import { directGetIcon } from '@/components/Icon';
+import { MENU_ATTR } from '@/constant/MenuAttr';
 
 const loadMenuTreeData = (
   menus: MenuTree[],
@@ -109,6 +113,16 @@ const MenuHelper: Helper<MenuTree> = {
           return loadMenuTreeData(tableContext?.dataSource || []);
         },
       } as TableTreeSelectColumnProps<MenuTree>,
+      {
+        label: '高级属性',
+        field: 'attrs',
+        ellipsis: true,
+        align: 'center',
+        type: 'checkbox',
+        table: false,
+        line: true,
+        options: MENU_ATTR,
+      } as TableCheckboxColumnProps<MenuTree>,
     ];
   },
 };

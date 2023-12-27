@@ -3,6 +3,7 @@ import { Form, Tag, Tooltip } from '@douyinfe/semi-ui';
 import { importIcon } from '../Icon';
 import { IdEntity } from '@/api/interface';
 import {
+  TableCheckboxColumnProps,
   TableColumnProps,
   TableContext,
   TableDateColumnProps,
@@ -271,6 +272,18 @@ export class DateTableField<T extends IdEntity> extends BaseTableField<
   }
 }
 
+export class CheckboxTableField<T extends IdEntity> extends BaseTableField<
+  T,
+  TableCheckboxColumnProps<T>
+> {
+  protected doWrap(column: TableCheckboxColumnProps<T>): ColumnProps<T> {
+    return { ...column };
+  }
+  public getType(): ColumnType {
+    return 'checkbox';
+  }
+}
+
 export class UndefinedTableField<T extends IdEntity> extends BaseTableField<
   T,
   any
@@ -308,6 +321,8 @@ export class TableColumnFactory {
         return new ColorTableField<T>(decorator);
       case 'date':
         return new DateTableField<T>(decorator);
+      case 'checkbox':
+        return new CheckboxTableField<T>(decorator);
       case 'undefined':
         return new UndefinedTableField<T>(decorator);
       default:

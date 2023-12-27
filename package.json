@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/ClearXs/Turbo-ui#readme",
   "scripts": {
-    "dev": "vite --open --mode dev --port 5173",
-    "start": "vite --open --mode dev --port 5173",
+    "dev": "vite --open --mode dev --port 5673",
+    "start": "vite --open --mode dev --port 5673",
     "host": "vite --open --host",
     "build": "vite build --mode prod -d",
     "preview": "vite preview",

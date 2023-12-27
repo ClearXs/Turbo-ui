@@ -1,6 +1,7 @@
 import { IdEntity } from '@/api/interface';
 import {
   ColumnType,
+  FormCheckboxColumnProps,
   FormColumnProps,
   FormContext,
   FormDateColumnProps,
@@ -21,7 +22,7 @@ import {
   Space,
   Tag,
 } from '@douyinfe/semi-ui';
-import IconList from '@/pages/develop/icon';
+import IconList from '@/pages/developer/icon';
 import { IconCamera } from '@douyinfe/semi-icons';
 import { directGetIcon } from '../Icon';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
@@ -514,6 +515,41 @@ export class DateFormField<T extends IdEntity> extends BaseFormField<
   }
 }
 
+export class CheckboxFormField<T extends IdEntity> extends BaseFormField<
+  T,
+  FormCheckboxColumnProps<T>
+> {
+  protected doRender(
+    column: FormCheckboxColumnProps<T>,
+    type: 'search' | 'form',
+  ): ReactNode {
+    const props = this.getGeneralProps(column, type);
+    return (
+      <Form.CheckboxGroup
+        {...props}
+        direction="horizontal"
+        extraText={column.extraText}
+        options={column.options}
+        onChange={(value) => {
+          const formContext = this.decorator.getFormContext();
+          const values = { ...formContext?.values } || {};
+          values[props.field] = value;
+          const newContext = {
+            ...formContext,
+            visible: true,
+            values,
+          };
+          formContext?.newContext(newContext as FormContext<T>);
+          formContext?.formApi?.setValue(props.field, value);
+        }}
+      />
+    );
+  }
+  public getType(): ColumnType {
+    return 'checkbox';
+  }
+}
+
 export class UndefinedFormField<T extends IdEntity> extends BaseFormField<
   T,
   any
@@ -551,6 +587,8 @@ export class FormColumnFactory {
         return new ColorFormField<T>(decorator);
       case 'date':
         return new DateFormField<T>(decorator);
+      case 'checkbox':
+        return new CheckboxFormField<T>(decorator);
       case 'undefined':
         return new UndefinedFormField<T>(decorator);
       default:

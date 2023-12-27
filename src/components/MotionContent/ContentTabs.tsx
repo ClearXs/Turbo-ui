@@ -10,7 +10,7 @@ import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { directGetIcon } from '../Icon';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { TurboRoute } from '@/router';
+import { TurboRoute } from '@/route/AppRouter';
 import _ from 'lodash';
 
 const ContentTabs = () => {
@@ -191,6 +191,9 @@ const ContentTabs = () => {
                         onClick={() => closeAllTab()}
                       >
                         关闭全部
+                      </Dropdown.Item>
+                      <Dropdown.Item icon={directGetIcon('IconStar')}>
+                        收藏
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   }

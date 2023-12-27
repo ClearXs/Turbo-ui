@@ -2,9 +2,8 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import sysconfig from '@/config/config';
 import * as local from '@/util/local';
 import { R } from '@/api/interface';
-import { Modal, Notification } from '@douyinfe/semi-ui';
+import { Notification } from '@douyinfe/semi-ui';
 import * as headers from '@/util/headers';
-import { redirect } from 'react-router-dom';
 import { useEffect } from 'react';
 
 export interface InternalRequest {

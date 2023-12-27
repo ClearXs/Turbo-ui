@@ -1,35 +1,40 @@
 import {
   Avatar,
+  Badge,
   Button,
   Dropdown,
   Image,
+  Input,
   Modal,
   Nav,
   Notification,
+  TabPane,
+  Tabs,
 } from '@douyinfe/semi-ui';
 import Header from '@douyinfe/semi-ui/lib/es/navigation/Header';
 import IconTheme from '../Icon/IconTheme';
 import { IconBell, IconLanguage } from '@douyinfe/semi-icons';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-import { useContentMenu, useFindUserRoute, useRenderMenu } from '@/hook/menu';
+import { useClearCurrentUserMenuResources, useRenderMenu } from '@/hook/menu';
 import { CurrentUserState } from '@/store/user';
 import { useRecoilValue } from 'recoil';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import useAuthApi from '@/api/system/auth';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
 import ChangePasswordForm from '@/pages/system/user/ChangePassword';
 import Brand from '../../../public/vite.svg';
-import { TurboRoute } from '@/router';
+import { TurboRoute } from '@/route/AppRouter';
 import { CurrentUserSelectTabState } from '@/store/menu';
+import { directGetIcon } from '../Icon';
 
 const MotionHeader = () => {
   const authApi = useAuthApi();
-  const findUserRoute = useFindUserRoute();
-  const [addUserContentTab] = useContentMenu();
   const currentUser = useRecoilValue(CurrentUserState);
   const [showChangePassword, setShowChangePassword] = useState<boolean>(false);
+
   const navigate = useNavigate();
+  const clearMenuResources = useClearCurrentUserMenuResources();
 
   // 取depth = 0的菜单项进行渲染
   const userRoutes = useLoaderData() as TurboRoute[];
@@ -39,12 +44,19 @@ const MotionHeader = () => {
   const renderMenu = useRenderMenu();
   const selectTab = useRecoilValue(CurrentUserSelectTabState);
 
+  const clearResources = useMemo(() => {
+    return () => {
+      // 1. 清理菜单资源
+      clearMenuResources();
+    };
+  }, []);
+
   return (
     <>
-      <Header className="h-[8%] w-[100%]">
+      <Header className="h-16 w-[100%]">
         <Nav
           mode="horizontal"
-          selectedKeys={[selectTab]}
+          selectedKeys={[selectTab || '']}
           style={{ height: '100%' }}
         >
           <Nav.Header
@@ -54,14 +66,56 @@ const MotionHeader = () => {
           {renderMenu(topMenus, 'top')}
           <Nav.Footer>
             <Dropdown
-              trigger="click"
+              key="message"
+              trigger="hover"
+              clickToHide
+              render={
+                <div className="w-96 h-80 max-h-80 overflow-y-auto border-r-2">
+                  <div className="w-[100%] h-[90%]">
+                    <Tabs type="button" size="small">
+                      <TabPane tab="文档" itemKey="1">
+                        文档
+                      </TabPane>
+                      <TabPane tab="快速起步" itemKey="2">
+                        快速起步
+                      </TabPane>
+                      <TabPane tab="帮助" itemKey="3">
+                        帮助
+                      </TabPane>
+                    </Tabs>
+                  </div>
+                  <div className="w-[100%] h-[10%]">
+                    <Button block theme="borderless" type="tertiary">
+                      查看更多
+                    </Button>
+                  </div>
+                </div>
+              }
+            >
+              <Badge type="danger" count={2}>
+                <Button
+                  theme="borderless"
+                  icon={<IconBell size="large" />}
+                  style={{
+                    color: 'var(--semi-color-text-2)',
+                    marginRight: '12px',
+                  }}
+                >
+                  消息
+                </Button>
+              </Badge>
+            </Dropdown>
+
+            <Dropdown
+              key="theme"
+              trigger="hover"
+              clickToHide
               render={
                 <Dropdown.Menu>
                   <Dropdown.Item type="primary">默认</Dropdown.Item>
                   <Dropdown.Item>暗色</Dropdown.Item>
                 </Dropdown.Menu>
               }
-              clickToHide
             >
               <Button
                 theme="borderless"
@@ -75,7 +129,9 @@ const MotionHeader = () => {
               </Button>
             </Dropdown>
             <Dropdown
-              trigger="click"
+              key="internationalization"
+              trigger="hover"
+              clickToHide
               render={
                 <Dropdown.Menu>
                   <Dropdown.Item type="primary">中文</Dropdown.Item>
@@ -83,7 +139,6 @@ const MotionHeader = () => {
                   <Dropdown.Item>日本語</Dropdown.Item>
                 </Dropdown.Menu>
               }
-              clickToHide
             >
               <Button
                 theme="borderless"
@@ -96,36 +151,16 @@ const MotionHeader = () => {
                 国际化
               </Button>
             </Dropdown>
-            <Button
-              theme="borderless"
-              icon={<IconBell size="large" />}
-              style={{
-                color: 'var(--semi-color-text-2)',
-                marginRight: '12px',
-              }}
-            >
-              消息
-            </Button>
             <Dropdown
+              key={'profile'}
               trigger={'hover'}
               render={
                 <Dropdown.Menu>
-                  <Dropdown.Item
-                    onClick={() => {
-                      navigate('/home');
-                      const route = findUserRoute('home');
-                      route && addUserContentTab(route, 'home');
-                    }}
-                  >
+                  <Dropdown.Item onClick={() => navigate('/home')}>
                     首页
                   </Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item
-                    onClick={() => {
-                      const route = findUserRoute('profile');
-                      route && addUserContentTab(route, selectTab);
-                    }}
-                  >
+                  <Dropdown.Item onClick={() => navigate('/profile')}>
                     个人档案
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => setShowChangePassword(true)}>
@@ -139,9 +174,11 @@ const MotionHeader = () => {
                         onOk: () => {
                           authApi.logout().then((res) => {
                             if (res.code === 200 && res.data) {
-                              // 1.清除token
+                              // 1.资源清理
+                              clearResources();
+                              // 2.清除token
                               local.remove(headers.Authentication);
-                              // 2.重定向
+                              // 3.重定向
                               navigate('/login');
                             }
                             Notification.success({

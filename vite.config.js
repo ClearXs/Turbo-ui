@@ -15,8 +15,8 @@ export default defineConfig(({ command, mode }) => {
     },
     resolve: {
       alias: [
-        { find: /^~/, replacement: "" },
-        { find: "@", replacement: resolve(__dirname, "src") },
+        { find: /^~/, replacement: '' },
+        { find: '@', replacement: resolve(__dirname, 'src') },
       ],
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     },

@@ -1,4 +1,4 @@
-import { TurboRoute } from '@/router';
+import { TurboRoute } from '@/route/AppRouter';
 import { TabPaneProps } from '@douyinfe/semi-ui/lib/es/tabs';
 import { atom } from 'recoil';
 
@@ -21,15 +21,15 @@ export const CurrentUserMenuTabsState = atom({
 });
 
 // 当前用户选择的tab标签
-export const CurrentUserSelectTabState = atom({
+export const CurrentUserSelectTabState = atom<string | undefined>({
   key: `${namespace}:current:user:tabs:select`,
   default: 'home',
 });
 
 // 当前用户侧边栏选中的tab
-export const CurrentUserSidebarSelectTabState = atom({
+export const CurrentUserSidebarSelectTabState = atom<string | undefined>({
   key: `${namespace}:current:user:side:bar:select`,
-  default: '',
+  default: undefined,
 });
 
 // 当前用户sidebar菜单集
@@ -41,5 +41,11 @@ export const CurrentUserSidebarMenusState = atom<
   | undefined
 >({
   key: `${namespace}:current:user:side:bar:menus`,
+  default: undefined,
+});
+
+// 当系统运行过程中发生与菜单有关的错误通过该state进行设置（发布信号量至处理端进行处理）
+export const MenuErrorState = atom<Error | undefined>({
+  key: `${namespace}:menu:error`,
   default: undefined,
 });
