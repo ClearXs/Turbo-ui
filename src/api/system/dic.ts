@@ -35,7 +35,7 @@ export interface Dic extends Tree {
   color: string;
 }
 
-interface DicApi extends TreeGeneralApi<Dic> {}
+export interface DicApi extends TreeGeneralApi<Dic> {}
 
 export default function useDicApi(): DicApi {
   const request = useRequest();

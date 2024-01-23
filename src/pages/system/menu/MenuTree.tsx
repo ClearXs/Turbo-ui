@@ -3,10 +3,10 @@ import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { MENU_TYPE } from '@/constant/menutype';
 import { TreePanelApi } from '@/components/Tree/interface';
-import { TreePanel } from '@/components/Tree';
 import MenuHelper from './helper';
 import useRoleMenuApi from '@/api/system/rolemenu';
 import { useEffect, useState } from 'react';
+import TreePanel from '@/components/Tree/TreePanel';
 
 const MenuTree: React.FC<{
   roleId?: string;
@@ -34,7 +34,7 @@ const MenuTree: React.FC<{
         first={false}
         useApi={useMenuApi}
         toolbar={{ showAdd: false }}
-        operateBar={{ showEdit: false, showDelete: false }}
+        operateBar={{ showEdit: false, showDelete: false, showAdd: false }}
         expandAll
         getTreePanelApi={(treePanelApi) => {
           getTreeApi(treePanelApi);

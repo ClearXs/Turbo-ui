@@ -5,7 +5,7 @@ import TenantHelper from './helper';
 const Tenant: React.FC = () => {
   return (
     <TableCrud<Tenant>
-      model="page"
+      mode="page"
       columns={TenantHelper.getColumns()}
       useApi={useTenantApi}
     />

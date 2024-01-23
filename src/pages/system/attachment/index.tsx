@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import TableCrud from '@/components/TableCrud';
 import { PROVIDER } from '@/constant/provider';
 import useAttachmentApi, { Attachment } from '@/api/system/attachment';
-import { directGetIcon } from '@/components/Icon';
+import { directGetIcon } from '@/components/Icon/shared';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 
 export default function (): React.ReactNode {
@@ -39,7 +39,7 @@ export default function (): React.ReactNode {
 
   return (
     <TableCrud<Attachment>
-      model="page"
+      mode="page"
       columns={columns}
       useApi={useAttachmentApi}
       toolbar={{ showAdd: false }}
@@ -47,6 +47,7 @@ export default function (): React.ReactNode {
         showEdit: false,
         append: [
           {
+            code: 'preview',
             name: '预览',
             type: 'primary',
             icon: directGetIcon('IconEyeOpened'),

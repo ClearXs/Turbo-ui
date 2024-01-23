@@ -1,5 +1,5 @@
 import { Org } from '@/api/system/org';
-import { TableTreeSelectColumnProps } from '@/components/TableCrud/interface';
+import { TableTreeSelectColumnProps } from '@/components/TableCrud/components';
 import { Helper } from '@/pages/interface';
 import { treeMap } from '@/util/tree';
 import { Tag } from '@douyinfe/semi-ui';
@@ -35,7 +35,7 @@ const OrgHelper: Helper<Org> = {
         align: 'center',
         require: true,
         search: true,
-        dic: 'org',
+        dictionary: 'org',
       },
       {
         label: '上级组织',
@@ -48,7 +48,7 @@ const OrgHelper: Helper<Org> = {
         expandAll: true,
         treeData: (tableContext, formContext) => {
           return treeMap(tableContext?.dataSource || [], (org) => {
-            const dic = formContext?.dicValues?.['org']?.find(
+            const dic = formContext?.dataSet?.['org']?.find(
               (dic) => dic.value === org.type,
             );
             return {

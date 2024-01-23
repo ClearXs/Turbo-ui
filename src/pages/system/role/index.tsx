@@ -18,7 +18,7 @@ const Role: React.FC = () => {
   return (
     <>
       <TableCrud<Role>
-        model="page"
+        mode="page"
         columns={RoleHelper.getColumns()}
         useApi={useRoleApi}
         operateBar={{
@@ -27,7 +27,7 @@ const Role: React.FC = () => {
               name: '授权',
               type: 'primary',
               size: 'small',
-              onClick: (tableContext, formContext, record) => {
+              onClick: (tableContext, record) => {
                 roleRef.current = record;
                 setShowGrant(true);
               },
@@ -43,11 +43,6 @@ const Role: React.FC = () => {
         onOk={() => {
           if (!roleRef.current) {
             Notification.error({ position: 'top', content: '角色信息不存在!' });
-            return;
-          }
-          const menuIds = treeApiRef.current?.getSelectKeys();
-          if (_.isEmpty(menuIds)) {
-            Notification.error({ position: 'top', content: '未选择任何数据!' });
             return;
           }
           roleApi

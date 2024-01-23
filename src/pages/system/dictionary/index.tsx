@@ -1,12 +1,12 @@
 import useDicApi, { Dic } from '@/api/system/dic';
 import { FormColumnProps } from '@/components/TForm/interface';
 import TableCrud from '@/components/TableCrud';
-import { TreePanel } from '@/components/Tree';
 import { DIC_TYPE } from '@/constant/dictype';
 import { Divider, Empty, Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { useMemo, useState } from 'react';
 import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
+import TreePanel from '@/components/Tree/TreePanel';
 
 const Dictionary: React.FC = () => {
   const [dicId, setDicId] = useState<string>();
@@ -64,7 +64,7 @@ const Dictionary: React.FC = () => {
         type: 'color',
         line: true,
         form: (formContext) => {
-          return formContext?.props.model !== 'tree';
+          return formContext?.props.mode !== 'tree';
         },
       },
       {
@@ -86,14 +86,15 @@ const Dictionary: React.FC = () => {
           <TreePanel
             columns={columns}
             useApi={useDicApi}
-            onChange={setDicId}
+            onSelectChange={setDicId}
             depth={0}
+            expandAll
             label={(tree) => {
               const type = DIC_TYPE.find((v) => v.value === tree.type);
               return (
                 <Space>
                   <Text type="secondary">{tree.name}</Text>
-                  <Tag color={type?.tag}>{type?.label}</Tag>
+                  {type?.tag && <Tag color={type?.tag}>{type?.label}</Tag>}
                   <Text type="quaternary">{tree.code}</Text>
                 </Space>
               );
@@ -104,10 +105,9 @@ const Dictionary: React.FC = () => {
         <div className="w-[75%] p-2 overflow-auto">
           {dicId ? (
             <TableCrud<Dic>
-              model="page"
+              mode="page"
               columns={columns}
               useApi={useDicApi}
-              page
               params={{ parentId: dicId }}
             />
           ) : (

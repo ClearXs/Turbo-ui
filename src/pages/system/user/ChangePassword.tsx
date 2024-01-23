@@ -1,5 +1,5 @@
 import { IdEntity } from '@/api/interface';
-import TForm from '@/components/TForm';
+import TForm from '@/components/TForm/TForm';
 import { FormColumnProps, FormContext } from '@/components/TForm/interface';
 
 export type ChangePasswordType = IdEntity & {
@@ -47,7 +47,7 @@ const ChangePasswordForm: React.FC<{
   ];
   return (
     <TForm<ChangePasswordType>
-      model=""
+      mode="simply"
       title="修改密码"
       columns={columns}
       size="small"

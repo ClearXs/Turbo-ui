@@ -1,35 +1,40 @@
 import {
   Avatar,
+  Badge,
   Button,
   Dropdown,
   Image,
   Modal,
   Nav,
   Notification,
+  TabPane,
+  Tabs,
 } from '@douyinfe/semi-ui';
 import Header from '@douyinfe/semi-ui/lib/es/navigation/Header';
 import IconTheme from '../Icon/IconTheme';
 import { IconBell, IconLanguage } from '@douyinfe/semi-icons';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-import { useContentMenu, useFindUserRoute, useRenderMenu } from '@/hook/menu';
+import { useClearCurrentUserMenuResources, useRenderMenu } from '@/hook/menu';
 import { CurrentUserState } from '@/store/user';
 import { useRecoilValue } from 'recoil';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import useAuthApi from '@/api/system/auth';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
 import ChangePasswordForm from '@/pages/system/user/ChangePassword';
 import Brand from '../../../public/vite.svg';
-import { TurboRoute } from '@/router';
+import { TurboRoute } from '@/route/AppRouter';
 import { CurrentUserSelectTabState } from '@/store/menu';
+import { SUPPORT_LOCALES } from './Locales';
+import { GlobalRegistry } from '@designable/core';
+import { TextWidget } from '@designable/react';
 
 const MotionHeader = () => {
   const authApi = useAuthApi();
-  const findUserRoute = useFindUserRoute();
-  const [addUserContentTab] = useContentMenu();
   const currentUser = useRecoilValue(CurrentUserState);
   const [showChangePassword, setShowChangePassword] = useState<boolean>(false);
   const navigate = useNavigate();
+  const clearMenuResources = useClearCurrentUserMenuResources();
 
   // 取depth = 0的菜单项进行渲染
   const userRoutes = useLoaderData() as TurboRoute[];
@@ -39,12 +44,18 @@ const MotionHeader = () => {
   const renderMenu = useRenderMenu();
   const selectTab = useRecoilValue(CurrentUserSelectTabState);
 
+  const clearResources = useMemo(() => {
+    return () => {
+      clearMenuResources();
+    };
+  }, []);
+
   return (
     <>
-      <Header className="h-[8%] w-[100%]">
+      <Header className="h-16 w-[100%]">
         <Nav
           mode="horizontal"
-          selectedKeys={[selectTab]}
+          selectedKeys={[selectTab || '']}
           style={{ height: '100%' }}
         >
           <Nav.Header
@@ -54,14 +65,56 @@ const MotionHeader = () => {
           {renderMenu(topMenus, 'top')}
           <Nav.Footer>
             <Dropdown
-              trigger="click"
+              key="message"
+              trigger="hover"
+              clickToHide
+              render={
+                <div className="w-96 h-80 max-h-80 overflow-y-auto border-r-2">
+                  <div className="w-[100%] h-[90%]">
+                    <Tabs type="button" size="small">
+                      <TabPane tab="文档" itemKey="1">
+                        文档
+                      </TabPane>
+                      <TabPane tab="快速起步" itemKey="2">
+                        快速起步
+                      </TabPane>
+                      <TabPane tab="帮助" itemKey="3">
+                        帮助
+                      </TabPane>
+                    </Tabs>
+                  </div>
+                  <div className="w-[100%] h-[10%]">
+                    <Button block theme="borderless" type="tertiary">
+                      查看更多
+                    </Button>
+                  </div>
+                </div>
+              }
+            >
+              <Badge type="danger" count={2}>
+                <Button
+                  theme="borderless"
+                  icon={<IconBell size="large" />}
+                  style={{
+                    color: 'var(--semi-color-text-2)',
+                    marginRight: '12px',
+                  }}
+                >
+                  <TextWidget token={'headers.Message'} />
+                </Button>
+              </Badge>
+            </Dropdown>
+
+            <Dropdown
+              key="theme"
+              trigger="hover"
+              clickToHide
               render={
                 <Dropdown.Menu>
                   <Dropdown.Item type="primary">默认</Dropdown.Item>
                   <Dropdown.Item>暗色</Dropdown.Item>
                 </Dropdown.Menu>
               }
-              clickToHide
             >
               <Button
                 theme="borderless"
@@ -71,19 +124,37 @@ const MotionHeader = () => {
                   marginRight: '12px',
                 }}
               >
-                主题
+                <TextWidget token={'headers.Theme'} />
               </Button>
             </Dropdown>
             <Dropdown
-              trigger="click"
+              key="internationalization"
+              trigger="hover"
+              clickToHide
               render={
                 <Dropdown.Menu>
-                  <Dropdown.Item type="primary">中文</Dropdown.Item>
-                  <Dropdown.Item>English</Dropdown.Item>
-                  <Dropdown.Item>日本語</Dropdown.Item>
+                  {SUPPORT_LOCALES.map((locales) => {
+                    return (
+                      <Dropdown.Item
+                        type={
+                          GlobalRegistry.getDesignerLanguage() === locales.value
+                            ? 'primary'
+                            : 'tertiary'
+                        }
+                        active={
+                          GlobalRegistry.getDesignerLanguage() === locales.value
+                        }
+                        key={locales.value}
+                        onClick={(e) => {
+                          GlobalRegistry.setDesignerLanguage(locales.value);
+                        }}
+                      >
+                        {locales.label}
+                      </Dropdown.Item>
+                    );
+                  })}
                 </Dropdown.Menu>
               }
-              clickToHide
             >
               <Button
                 theme="borderless"
@@ -93,43 +164,23 @@ const MotionHeader = () => {
                   marginRight: '12px',
                 }}
               >
-                国际化
+                <TextWidget token={'headers.Locales'} />
               </Button>
             </Dropdown>
-            <Button
-              theme="borderless"
-              icon={<IconBell size="large" />}
-              style={{
-                color: 'var(--semi-color-text-2)',
-                marginRight: '12px',
-              }}
-            >
-              消息
-            </Button>
             <Dropdown
+              key={'profile'}
               trigger={'hover'}
               render={
                 <Dropdown.Menu>
-                  <Dropdown.Item
-                    onClick={() => {
-                      navigate('/home');
-                      const route = findUserRoute('home');
-                      route && addUserContentTab(route, 'home');
-                    }}
-                  >
-                    首页
+                  <Dropdown.Item onClick={() => navigate('/home')}>
+                    <TextWidget token={'headers.Index'} />
                   </Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item
-                    onClick={() => {
-                      const route = findUserRoute('profile');
-                      route && addUserContentTab(route, selectTab);
-                    }}
-                  >
-                    个人档案
+                  <Dropdown.Item onClick={() => navigate('/profile')}>
+                    <TextWidget token={'headers.Profile'} />
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => setShowChangePassword(true)}>
-                    修改密码
+                    <TextWidget token={'headers.ChangePassword'} />
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Item
@@ -139,9 +190,11 @@ const MotionHeader = () => {
                         onOk: () => {
                           authApi.logout().then((res) => {
                             if (res.code === 200 && res.data) {
-                              // 1.清除token
+                              // 1.资源清理
+                              clearResources();
+                              // 2.清除token
                               local.remove(headers.Authentication);
-                              // 2.重定向
+                              // 3.重定向
                               navigate('/login');
                             }
                             Notification.success({
@@ -153,7 +206,7 @@ const MotionHeader = () => {
                       });
                     }}
                   >
-                    退出登陆
+                    <TextWidget token={'headers.Logout'} />
                   </Dropdown.Item>
                 </Dropdown.Menu>
               }

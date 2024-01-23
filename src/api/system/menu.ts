@@ -3,6 +3,11 @@ import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '../interface';
 
 export interface Menu extends Tree {
   /**
+   * 菜单域
+   */
+  scope: string;
+
+  /**
    * 菜单序号
    */
   sort: number;
@@ -26,6 +31,11 @@ export interface Menu extends Tree {
    * icon
    */
   icon?: string;
+
+  /**
+   * 菜单属性
+   */
+  attrs: string[];
 }
 
 export type MenuTree = Menu & {

@@ -32,14 +32,6 @@ const TenantHelper: Helper<Tenant> = {
         form: false,
       },
       {
-        field: 'createdBy',
-        label: '创建人',
-        ellipsis: true,
-        align: 'center',
-        type: 'input',
-        form: false,
-      },
-      {
         field: 'updatedTime',
         label: '更新时间',
         ellipsis: true,
@@ -49,7 +41,7 @@ const TenantHelper: Helper<Tenant> = {
       },
       {
         field: 'updatedBy',
-        label: '创建人',
+        label: '更新人',
         ellipsis: true,
         align: 'center',
         type: 'input',

@@ -24,7 +24,7 @@ export interface BaseEntity extends IdEntity {
   /**
    * 创建人
    */
-  createdBy: number;
+  createdBy: string;
 
   /**
    * 更新时间
@@ -34,7 +34,7 @@ export interface BaseEntity extends IdEntity {
   /**
    * 更新人
    */
-  updatedBy: number;
+  updatedBy: string;
 
   /**
    * 逻辑删除
@@ -45,6 +45,14 @@ export interface BaseEntity extends IdEntity {
    * 版本号
    */
   version: number;
+}
+
+// 分类实体
+export interface CategoryEntity extends BaseEntity {
+  /**
+   * 分类Id
+   */
+  categoryId: string;
 }
 
 interface TreeNode extends IdEntity {
@@ -110,18 +118,18 @@ export interface TenantEntity extends BaseEntity {
 // 分页配置
 export interface Pagination<T> {
   // 当前页
-  current: number;
+  current: string;
   // 页大小
-  size: number;
+  size: string;
   // 总数
-  total?: number;
+  total?: string;
   // 数据
   records?: T[];
 }
 
 // 通用查询参数
 export interface GeneralParams<T extends IdEntity> {
-  entity?: T;
+  entity?: Partial<T>;
   orders?: Order[];
 }
 
@@ -162,11 +170,18 @@ export interface GeneralApi<T extends IdEntity> {
   edit: (entity: T) => Promise<R<boolean>>;
 
   /**
-   * 保存
+   * 保存或者更新
    * @param entity 实体
    * @returns true or false
    */
   saveOrUpdate: (entity: T) => Promise<R<boolean>>;
+
+  /**
+   * 批量保存或者更新
+   * @param entity 实体
+   * @returns true or false
+   */
+  batchSaveOrUpdate: (entity: T[]) => Promise<R<boolean>>;
 
   /**
    * 删除
@@ -183,11 +198,25 @@ export interface GeneralApi<T extends IdEntity> {
   details: (string: string) => Promise<R<T & { [key: string]: any }>>;
 
   /**
+   * 导入
+   * @param id id
+   * @returns true or false
+   */
+  import: (file: any) => Promise<R<boolean>>;
+
+  /**
+   * 导出
+   * @param id id
+   * @returns 实体 or null
+   */
+  export: (params?: GeneralParams<T>) => Promise<any>;
+
+  /**
    * 列表
    * @param entity 用于过滤实体
    * @returns list
    */
-  list: (params: GeneralParams<T>) => Promise<R<T[]>>;
+  list: (params?: GeneralParams<T>) => Promise<R<T[]>>;
 
   /**
    * 分页
@@ -197,7 +226,7 @@ export interface GeneralApi<T extends IdEntity> {
    */
   page: (
     page: Pagination<T>,
-    params: GeneralParams<T>,
+    params?: GeneralParams<T>,
   ) => Promise<R<Pagination<T>>>;
 }
 
@@ -219,11 +248,13 @@ export class GeneralApiImpl<T extends IdEntity> implements GeneralApi<T> {
       return res.data;
     });
   }
+
   edit(entity: T): Promise<R<boolean>> {
     return this.request.put(this.apiPath + '/edit', entity).then((res) => {
       return res.data;
     });
   }
+
   saveOrUpdate(entity: T): Promise<R<boolean>> {
     return this.request
       .post(this.apiPath + '/save-or-update', entity)
@@ -231,17 +262,49 @@ export class GeneralApiImpl<T extends IdEntity> implements GeneralApi<T> {
         return res.data;
       });
   }
+
+  batchSaveOrUpdate(entity: T[]): Promise<R<boolean>> {
+    return this.request
+      .post(this.apiPath + '/batch-save-or-update', entity)
+      .then((res) => {
+        return res.data;
+      });
+  }
+
   deleteEntity(ids: string[]): Promise<R<boolean>> {
     return this.request.delete(this.apiPath + '/delete', ids).then((res) => {
       return res.data;
     });
   }
+
   details(id: string): Promise<R<T & { [key: string]: any }>> {
     return this.request.get(this.apiPath + '/details', { id }).then((res) => {
       return res.data;
     });
   }
-  list(params: GeneralParams<T>): Promise<R<T[]>> {
+
+  /**
+   * 导入
+   * @param id id
+   * @returns true or false
+   */
+  import(file: any): Promise<R<boolean>> {
+    return this.request.post(this.apiPath + '/import', { file }).then((res) => {
+      return res.data;
+    });
+  }
+
+  /**
+   * 导出
+   * @param id id
+   * @returns 实体 or null
+   */
+  export(params?: GeneralParams<T>): Promise<any> {
+    const queryParam = this.buildRemoteQueryParam(params);
+    return this.request.post(this.apiPath + '/export', { ...queryParam });
+  }
+
+  list(params?: GeneralParams<T>): Promise<R<T[]>> {
     const queryParam = this.buildRemoteQueryParam(params);
     return this.request
       .post(this.apiPath + '/list', { ...queryParam })
@@ -251,7 +314,7 @@ export class GeneralApiImpl<T extends IdEntity> implements GeneralApi<T> {
   }
   page(
     page: Pagination<T>,
-    params: GeneralParams<T>,
+    params?: GeneralParams<T>,
   ): Promise<R<Pagination<T>>> {
     const queryParam = this.buildRemoteQueryParam(params);
     return this.request
@@ -268,8 +331,8 @@ export class GeneralApiImpl<T extends IdEntity> implements GeneralApi<T> {
     const entity = general?.entity;
     if (entity) {
       for (const key in entity) {
-        if (Object.prototype.hasOwnProperty.call(entity, key)) {
-          const value = entity[key];
+        const value = entity[key];
+        if (!_.isEmpty(value)) {
           terms.push({ field: key, value });
         }
       }

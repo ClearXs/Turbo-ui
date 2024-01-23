@@ -24,3 +24,9 @@ body[theme-mode='default'] .semi-always-light {
 .semi-table-tbody > .semi-table-row > .semi-table-row-cell {
   padding: 12px;
 }
+
+.semi-cascader-option-lists ul > li {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 8px;
+}

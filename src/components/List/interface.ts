@@ -2,6 +2,7 @@ import { GeneralApi, IdEntity } from '@/api/interface';
 import { FormColumnProps, FormContext } from '../TForm/interface';
 import { OperateToolbar, Toolbar } from '../TableCrud/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
+import { ListItemProps, ListProps } from '@douyinfe/semi-ui/lib/es/list';
 
 export interface ListPanelProps<T extends IdEntity> {
   columns: FormColumnProps<T>[];
@@ -54,3 +55,23 @@ export interface ListPanelApi<T extends IdEntity> {
   // 多选情况下获取选中的实体id列表
   getSelectKeys: () => string[];
 }
+
+export type RenderOperatorBarType<T extends IdEntity> = (
+  record: T,
+  operateBar: ListPanelProps<T>['operateBar'],
+  listApi: ListPanelApi<T>,
+) => OperateToolbar<T>[];
+
+// drag
+export type DraggableListProps<T extends DraggableItemProps> =
+  ListProps<T> & {};
+
+export type DraggableItemProps = IdEntity & {
+  index?: number;
+  children: React.ReactNode;
+  onHover: (
+    dragItem: DraggableItemProps,
+    hoverItem: DraggableItemProps,
+  ) => void;
+  onDrop: (item: DraggableItemProps) => void;
+};
