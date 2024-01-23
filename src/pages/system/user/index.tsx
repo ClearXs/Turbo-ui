@@ -3,8 +3,7 @@ import useUserApi, { UserApi, User as UserEntity } from '@/api/system/user';
 import Sider from '@/components/Sider';
 import TableCrud from '@/components/TableCrud';
 import { TableContext } from '@/components/TableCrud/interface';
-import { TreePanel } from '@/components/Tree';
-import { Divider, Notification } from '@douyinfe/semi-ui';
+import { Notification } from '@douyinfe/semi-ui';
 import { useRef, useState } from 'react';
 import UserHelper from './helper';
 import OrgHelper from '../org/helper';
@@ -16,6 +15,8 @@ import _ from 'lodash';
 import PostList from '../post/PostList';
 import Post from '../post';
 import ChangePasswordForm from './ChangePassword';
+import TreePanel from '@/components/Tree/TreePanel';
+import Binary from '@/components/Binary';
 
 export const User: React.FC = () => {
   const userApi = useUserApi();
@@ -33,34 +34,40 @@ export const User: React.FC = () => {
 
   return (
     <>
-      <div className="flex h-[100%]">
-        <div className="w-[25%] p-2 overflow-auto">
+      <Binary
+        LeftComponent={
           <TreePanel<Org>
             columns={OrgHelper.getColumns()}
             useApi={useOrgApi}
-            onChange={setOrgId}
+            onSelectChange={setOrgId}
             toolbar={{ showAdd: false }}
-            operateBar={{ showEdit: false, showDelete: false }}
+            operateBar={{
+              showEdit: false,
+              showDelete: false,
+              showAdd: false,
+              showDetails: false,
+            }}
             first={false}
             expandAll
+            root="系统组织"
           />
-        </div>
-        <Divider layout="vertical" style={{ height: '100%' }} />
-        <div className="w-[75%] p-2 overflow-auto">
+        }
+        RightComponent={
           <TableCrud<UserEntity>
-            model="page"
+            mode="page"
             columns={UserHelper.getColumns()}
             useApi={useUserApi}
             getTableContext={(tableContext) => {
               tableContextRef.current = tableContext;
             }}
-            params={orgId ? { orgId } : null}
+            params={{ orgId }}
             operateBar={{
               append: [
                 {
+                  code: 'changPassword',
                   name: '修改密码',
                   type: 'primary',
-                  onClick(tableContext, formContext, value) {
+                  onClick(tableContext, value) {
                     selectUserRef.current = value;
                     setShowChangePassword(true);
                   },
@@ -68,6 +75,7 @@ export const User: React.FC = () => {
                 (record) => {
                   if (record.status === 'LOCK') {
                     return {
+                      code: 'enable',
                       name: '启用',
                       type: 'primary',
                       onClick: (tableContext) => {
@@ -92,6 +100,7 @@ export const User: React.FC = () => {
                 (record) => {
                   if (record.status === 'ENABLE') {
                     return {
+                      code: 'lock',
                       name: '锁定',
                       type: 'primary',
                       onClick: (tableContext) => {
@@ -114,25 +123,28 @@ export const User: React.FC = () => {
                   }
                 },
                 {
+                  code: 'bindingRole',
                   name: '绑定角色',
                   type: 'primary',
-                  onClick: (tableContext, formContext, record) => {
+                  onClick: (tableContext, record) => {
                     setShowBindingRole(true);
                     selectUserRef.current = record;
                   },
                 },
                 {
+                  code: 'bindingPost',
                   name: '绑定岗位',
                   type: 'primary',
-                  onClick: (tableContext, formContext, record) => {
+                  onClick: (tableContext, record) => {
                     setShowBindingPost(true);
                     selectUserRef.current = record;
                   },
                 },
                 {
+                  code: 'bindingOrg',
                   name: '绑定组织',
                   type: 'primary',
-                  onClick: (tableContext, formContext, record) => {
+                  onClick: (tableContext, record) => {
                     setShowBindingOrg(true);
                     selectUserRef.current = record;
                   },
@@ -140,8 +152,8 @@ export const User: React.FC = () => {
               ],
             }}
           />
-        </div>
-      </div>
+        }
+      />
 
       {selectUserRef.current && (
         <RoleListSider
@@ -338,7 +350,12 @@ const OrgTreeSider: React.FC<{
         useApi={useOrgApi}
         toolbar={{ showAdd: false }}
         initValue={user.orgId}
-        operateBar={{ showEdit: false, showDelete: false }}
+        operateBar={{
+          showEdit: false,
+          showDelete: false,
+          showAdd: false,
+          showDetails: false,
+        }}
         expandAll
         getTreePanelApi={(treePanelApi) => {
           treeRef.current = treePanelApi;

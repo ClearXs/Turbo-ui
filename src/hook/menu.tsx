@@ -191,6 +191,7 @@ const useRenderMenu = () => {
       .map((route) => {
         const Tab = (
           <Nav.Item
+            key={route.code}
             itemKey={route.code}
             text={route.name}
             icon={route.icon}
@@ -260,7 +261,12 @@ const useRenderMenu = () => {
         } else {
           if (source === 'side') {
             return (
-              <Nav.Sub itemKey={route.code} text={route.name} icon={route.icon}>
+              <Nav.Sub
+                key={route.code}
+                itemKey={route.code}
+                text={route.name}
+                icon={route.icon}
+              >
                 {renderMenu(route.children as TurboRoute[], source, topMenuKey)}
               </Nav.Sub>
             );

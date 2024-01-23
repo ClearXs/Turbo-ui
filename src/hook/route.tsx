@@ -1,7 +1,7 @@
 // route相关的hook操作，包括route的获取即变换等等
 import useAuthApi from '@/api/system/auth';
 import { MenuTree } from '@/api/system/menu';
-import { importIcon } from '@/components/Icon';
+import { importIcon } from '@/components/Icon/shared';
 import { TurboRoute } from '@/route/AppRouter';
 import { CurrentUserRouteState, MenuErrorState } from '@/store/menu';
 import { isEmpty } from '@/util/utils';
@@ -69,7 +69,7 @@ export const menuToRouterObject = (
         element: Component,
         children: menuToRouterObject(
           m.children,
-          m.depth === 0 ? m.code : undefined,
+          m.depth === 0 ? m.code : topRouteKey,
         ),
         path: m.route,
         code: m.code,

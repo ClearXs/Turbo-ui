@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse, Method } from 'axios';
 import sysconfig from '@/config/config';
 import * as local from '@/util/local';
 import { R } from '@/api/interface';
@@ -7,6 +7,12 @@ import * as headers from '@/util/headers';
 import { useEffect } from 'react';
 
 export interface InternalRequest {
+  request: (
+    path: string,
+    method: Method,
+    params?: Record<string, any>,
+    headers?: Record<string, any>,
+  ) => Promise<AxiosResponse<any, any>>;
   get: (
     path: string,
     params?: Record<string, any>,
@@ -26,14 +32,14 @@ export interface InternalRequest {
   ) => Promise<AxiosResponse<any, any>>;
 }
 
-// 创建默认使用的axios
-const remote = axios.create();
-remote.defaults.baseURL = sysconfig.request.baseUrl;
-remote.defaults.timeout = sysconfig.request.timeout;
-remote.defaults.headers.post['Content-Type'] = 'application/json';
+// 创建内部remote
+const internalRemote = axios.create();
+internalRemote.defaults.baseURL = sysconfig.request.baseUrl;
+internalRemote.defaults.timeout = sysconfig.request.timeout;
+internalRemote.defaults.headers.post['Content-Type'] = 'application/json';
 
 // 请求拦截器
-remote.interceptors.request.use((config) => {
+internalRemote.interceptors.request.use((config) => {
   // 设置请求头
   config.headers.set(
     headers.Authentication,
@@ -44,7 +50,7 @@ remote.interceptors.request.use((config) => {
 });
 
 // 响应拦截器
-remote.interceptors.response.use(
+internalRemote.interceptors.response.use(
   (res) => {
     return handleSuccess(res);
   },
@@ -101,37 +107,60 @@ function handleResError<T>(err: AxiosError, errorValue?: R<T>) {
   }
 }
 
-const internalRequest: InternalRequest = {
-  get(path, params) {
-    return remote.request({
+class InternalRequestImpl implements InternalRequest {
+  constructor(private axiosRequest: AxiosInstance) {}
+
+  request(
+    path: string,
+    method: Method,
+    params?: Record<string, any>,
+    headers?: Record<string, any>,
+  ) {
+    if (method === 'GET') {
+      return this.axiosRequest.request({ url: path, method, params, headers });
+    } else {
+      return this.axiosRequest.request({
+        url: path,
+        method,
+        data: params,
+        headers,
+      });
+    }
+  }
+  get(path: string, params?: Record<string, any>) {
+    return this.axiosRequest.request({
       url: path,
       method: 'GET',
       params,
     });
-  },
-  post(path, params, headers) {
-    return remote.request({
+  }
+  post(
+    path: string,
+    params?: Record<string, any>,
+    headers?: Record<string, string>,
+  ) {
+    return this.axiosRequest.request({
       url: path,
       method: 'POST',
       data: params,
       headers,
     });
-  },
-  put(path, params) {
-    return remote.request({
+  }
+  put(path: string, params?: Record<string, any>) {
+    return this.axiosRequest.request({
       url: path,
       method: 'PUT',
       data: params,
     });
-  },
-  delete(path, params) {
-    return remote.request({
+  }
+  delete(path: string, params?: Record<string, any>) {
+    return this.axiosRequest.request({
       url: path,
       method: 'DELETE',
       data: params,
     });
-  },
-};
+  }
+}
 
 // issue：
 // 为什么使用request hook，因为需要错误处理的跳转，而期望又只能有一个实例，所以使用useEffect，
@@ -139,8 +168,8 @@ const internalRequest: InternalRequest = {
 const useRequest = () => {
   useEffect(() => {
     // 清除存在的响应拦截器
-    remote.interceptors.response.clear();
-    remote.interceptors.response.use(
+    internalRemote.interceptors.response.clear();
+    internalRemote.interceptors.response.use(
       (res) => {
         return handleSuccess(res);
       },
@@ -154,7 +183,12 @@ const useRequest = () => {
     );
   }, []);
 
-  return internalRequest;
+  return new InternalRequestImpl(internalRemote);
+};
+
+export const createRequest = () => {
+  const axiosRequest = axios.create();
+  return new InternalRequestImpl(axiosRequest);
 };
 
 export default useRequest;

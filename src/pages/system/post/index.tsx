@@ -5,7 +5,7 @@ import PostHelper from './helper';
 const Post = () => {
   return (
     <TableCrud<Post>
-      model="page"
+      mode="page"
       useApi={usePostApi}
       columns={PostHelper.getColumns()}
     />

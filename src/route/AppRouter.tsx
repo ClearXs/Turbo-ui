@@ -10,7 +10,7 @@ import * as headers from '@/util/headers';
 import { useRecoilValue } from 'recoil';
 import { CurrentUserRouteState } from '@/store/menu';
 import { MenuTree } from '@/api/system/menu';
-import { importIcon } from '@/components/Icon';
+import { importIcon } from '@/components/Icon/shared';
 import _ from 'lodash';
 import Home from '@/pages/home';
 import Login from '@/pages/login';

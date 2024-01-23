@@ -1,100 +1,43 @@
-import {
-  Button,
-  Dropdown,
-  Modal,
-  Notification,
-  Space,
-  Spin,
-} from '@douyinfe/semi-ui';
-import Table, { TablePagination } from '@douyinfe/semi-ui/lib/es/table';
+import Table from '@douyinfe/semi-ui/lib/es/table';
 import TableHeader from './TableHeader';
 import { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
-import {
-  GeneralParams,
-  IdEntity,
-  Order,
-  Pagination,
-  TreeGeneralApi,
-} from '@/api/interface';
+import { IdEntity } from '@/api/interface';
 import TableToolbar from './TableToolbar';
-import { directGetIcon } from '../Icon';
 import {
-  OperateToolbar,
-  TableApi,
+  RenderOperatorBarType,
   TableColumnProps,
   TableContext,
   TableCrudProps,
 } from './interface';
-import { FormContext } from '../TForm/interface';
-import TForm from '../TForm';
 import { getTableDecorator } from './table';
+import CardPage from './CardPage';
+import TForm from '../TForm/TForm';
+import OperatorButtonSet from './OperatorButtonSet';
+import useTableCrudOperatorBar from './TableCrudOperatorBar';
+import useTableApi from './TableApi';
+import TablePagination from './TablePagination';
+import { TableCrudContext } from './context';
+import { FormContext } from '../TForm/interface';
+import { TFormContext } from '../TForm/context';
+import { observable } from '@formily/reactive';
+import { observer } from '@formily/reactive-react';
+
+type ObserverTableCrudProps<T extends IdEntity> = {
+  tableProps: TableCrudProps<T>;
+  tableContext: TableContext<T>;
+};
 
 class TableColumnsBuilder<T extends IdEntity> {
   constructor(
     private columns: TableColumnProps<T>[],
-    private operateBar: TableCrudProps<T>['operateBar'] = {},
-    private tableApi: TableApi<T>,
-    private formContext?: FormContext<T>,
-    private tableContext?: TableContext<T>,
+    private tableContext: TableContext<T>,
+    private props: TableCrudProps<T>,
   ) {}
-
-  private innerBarBuild(record: T): OperateToolbar<T>[] {
-    const bars: OperateToolbar<T>[] = [];
-    const {
-      showEdit = true,
-      showDelete = true,
-      append = [],
-    } = this.operateBar || {};
-
-    // 编辑
-    if ((typeof showEdit === 'function' && showEdit(record)) || showEdit) {
-      bars.push({
-        name: '编辑',
-        type: 'primary',
-        size: 'small',
-        icon: directGetIcon('IconEditStroked'),
-        onClick: (tableContext, formContext, record) => {
-          this.tableApi.edit(tableContext, formContext, record.id);
-        },
-      });
-    }
-    // 删除
-    if (
-      (typeof showDelete === 'function' && showDelete(record)) ||
-      showDelete
-    ) {
-      bars.push({
-        name: '删除',
-        type: 'danger',
-        size: 'small',
-        icon: directGetIcon('IconDeleteStroked'),
-        onClick: (tableContext, formContext, record) => {
-          Modal.warning({
-            title: '是否确定删除?',
-            onOk: () => {
-              this.tableApi.remove(tableContext, [record.id]);
-            },
-          });
-        },
-      });
-    }
-    append.forEach((bar) => {
-      if (typeof bar === 'function') {
-        const maybeBar = bar(record);
-        if (maybeBar) {
-          bars.push(maybeBar);
-        }
-      } else {
-        bars.push(bar);
-      }
-    });
-    return bars;
-  }
 
   // form与table字段的同步
   public sync(): TableColumnsBuilder<T> {
-    this.columns = this.columns.map((column) => {
+    this.columns = this.columns.map((column, i) => {
       const newColumn = { ...column };
       if (newColumn.dataIndex) {
         newColumn.field = newColumn.dataIndex;
@@ -104,338 +47,81 @@ class TableColumnsBuilder<T extends IdEntity> {
       if (newColumn.label) {
         newColumn.title = newColumn.label;
       }
+      // 排序
+      if (!newColumn.index) {
+        newColumn.index = i;
+      }
       return newColumn;
     });
     return this;
   }
 
   // table crud columns transfer semi table columns
-  public build(): TableColumnProps<T>[] {
+  public build(
+    renderOperatorBars: RenderOperatorBarType<T>,
+    exclusiveOperate: boolean = false,
+    immediateFilter: boolean = true,
+  ): TableColumnProps<T>[] {
     if (_.isEmpty(this.columns)) {
       return [];
     }
-    const columns = [
-      ...this.columns,
-      {
+    const columns = [...this.columns];
+    if (!exclusiveOperate) {
+      columns.push({
         title: '操作栏',
+        index: Number.MAX_VALUE,
         dataIndex: 'operate',
         field: 'operate',
         align: 'center',
         type: 'undefined',
         fixed: true,
-        width: '25%',
+        width: '30%',
         render: (text, record) => {
-          const bars = this.innerBarBuild(record);
-          const renderBars = [];
-          const defaultShowBars = bars.splice(0, 2);
-          renderBars.push(
-            defaultShowBars.map((bar) => {
-              return (
-                <Button
-                  theme="borderless"
-                  size={bar.size}
-                  icon={bar.icon}
-                  type={bar.type}
-                  onClick={() =>
-                    bar.onClick?.(
-                      this.tableContext as TableContext<T>,
-                      this.formContext as FormContext<T>,
-                      record,
-                    )
-                  }
-                >
-                  {bar.name}
-                </Button>
-              );
-            }),
+          const bars = renderOperatorBars(
+            record,
+            this.props.operateBar,
+            this.tableContext.tableApi,
           );
-          // 超过两个进行缩略展示
-          const abbreviateBars = bars.slice(0);
-          if (!_.isEmpty(abbreviateBars)) {
-            renderBars.push(
-              <Dropdown
-                trigger="hover"
-                position="leftTop"
-                render={
-                  <Dropdown.Menu>
-                    {abbreviateBars.map((bar) => {
-                      return (
-                        <Dropdown.Item
-                          icon={bar.icon}
-                          type={bar.type}
-                          onClick={() =>
-                            bar.onClick?.(
-                              this.tableContext as TableContext<T>,
-                              this.formContext as FormContext<T>,
-                              record,
-                            )
-                          }
-                        >
-                          {bar.name}
-                        </Dropdown.Item>
-                      );
-                    })}
-                  </Dropdown.Menu>
-                }
-              >
-                <Button
-                  theme="borderless"
-                  icon={directGetIcon('IconMoreStroked')}
-                  type="primary"
-                />
-              </Dropdown>,
-            );
-          }
-          return <Space spacing={0}>{renderBars}</Space>;
+          return (
+            <OperatorButtonSet<T>
+              bars={bars}
+              record={record}
+              mode="composite"
+              showButtonName={true}
+              className="justify-center items-center"
+            />
+          );
         },
-      } as TableColumnProps<T>,
-    ];
-    // 过滤与渲染
-    return columns.filter((column) => {
-      return (
-        (typeof column.table === 'function'
-          ? column.table(this.tableContext as TableContext<T>)
-          : column.table) !== false
-      );
-    });
+      } as TableColumnProps<T>);
+    }
+    // 过滤
+    const filterColumns = immediateFilter
+      ? columns.filter((column) => {
+          return (
+            (typeof column.table === 'function'
+              ? column.table(this.tableContext)
+              : column.table) !== false
+          );
+        })
+      : columns;
+
+    return filterColumns.sort(
+      (col1, col2) => (col1.index || 0) - (col2.index || 0),
+    );
   }
 }
 
 function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
-  const [tableContext, setTableContext] = useState<TableContext<T>>();
-  const [formContext, setFormContext] = useState<FormContext<T> | undefined>();
   const api = props.useApi && props.useApi();
+  const renderOperatorBars = useTableCrudOperatorBar<T>();
   // 初始化内容
-  const tableApi = useMemo<TableApi<T>>(() => {
-    const check = (tableContext?: TableContext<T>) => {
-      if (tableContext === undefined) {
-        Notification.error({ position: 'top', content: '未完成初始化' });
-        return true;
-      }
-      if (tableContext.api === undefined) {
-        Notification.error({ position: 'top', content: '请提供api接口' });
-        return true;
-      }
-      return false;
-    };
+  const tableApi = useTableApi<T>(props.mode);
 
-    return {
-      remove(tableContext, ids) {
-        if (check(tableContext)) {
-          return;
-        }
-        const checkedContext = tableContext as TableContext<T>;
-        checkedContext.api?.deleteEntity(ids).then((res) => {
-          if (res.code === 200 && res.data) {
-            Notification.success({
-              position: 'top',
-              content: '删除成功!',
-            });
-            this.listOrPageOrTree(tableContext as TableContext<T>);
-          } else {
-            Notification.error({
-              position: 'top',
-              content: res.message,
-            });
-          }
-        });
-      },
-      page(tableContext, pageable) {
-        if (check(tableContext)) {
-          return;
-        }
-        const checkedContext = tableContext as TableContext<T>;
-        const searchPage = (pageable ||
-          checkedContext.table.pagination) as TablePagination;
-        const page = {
-          current: searchPage?.currentPage,
-          size: searchPage?.pageSize,
-        } as Pagination<T>;
-        const newTableContext = {
-          ...tableContext,
-          table: {
-            ...checkedContext.table,
-          },
-        };
-        newTableContext.table.loading = true;
-        checkedContext.newContext(newTableContext as TableContext<T>);
-
-        // 调用接口
-        const params: GeneralParams<T> = {
-          entity: checkedContext.search as T,
-          orders: checkedContext.table.orders,
-        };
-        checkedContext.api?.page(page, params).then((res) => {
-          if (res.code === 200) {
-            const data = res.data;
-            const pageable: TablePagination = {
-              currentPage: data.current,
-              pageSize: data.size,
-              total: data.total,
-            };
-            const newTableContext = {
-              ...tableContext,
-              table: {
-                ...checkedContext.table,
-              },
-            };
-            newTableContext.table.loading = false;
-            newTableContext.table.selectedRowKeys = [];
-            newTableContext.table.pagination = pageable;
-            newTableContext.dataSource = data.records as T[];
-            checkedContext.newContext(newTableContext as TableContext<T>);
-          } else {
-            const newTableContext = {
-              ...tableContext,
-              table: {
-                ...checkedContext.table,
-              },
-            };
-            newTableContext.table.loading = false;
-            newTableContext.table.selectedRowKeys = [];
-            checkedContext.newContext(newTableContext as TableContext<T>);
-          }
-        });
-      },
-      list(tableContext: TableContext<T>) {
-        if (check(tableContext)) {
-          return;
-        }
-        const checkedContext = tableContext as TableContext<T>;
-
-        const newTableContext = {
-          ...tableContext,
-          table: {
-            ...checkedContext.table,
-          },
-        };
-        newTableContext.table.loading = true;
-        checkedContext.newContext(newTableContext);
-
-        // 调用接口
-        const params: GeneralParams<T> = {
-          entity: checkedContext.search as T,
-          orders: checkedContext.table.orders,
-        };
-        checkedContext.api?.list(params).then((res) => {
-          const newTableContext = {
-            ...tableContext,
-            table: {
-              ...tableContext.table,
-            },
-          };
-          if (res.code === 200) {
-            const data = res.data;
-            newTableContext.dataSource = data as T[];
-          }
-          newTableContext.table.loading = false;
-          newTableContext.table.selectedRowKeys = [];
-          newTableContext.table.pagination = false;
-          checkedContext.newContext(newTableContext);
-        });
-      },
-      tree(tableContext: TableContext<T>) {
-        if (check(tableContext)) {
-          return;
-        }
-        const newTableContext = {
-          ...tableContext,
-          table: {
-            ...tableContext.table,
-          },
-        };
-        newTableContext.table.loading = true;
-        tableContext.newContext(newTableContext);
-        const params: GeneralParams<T> = {
-          entity: tableContext.search as T,
-        };
-        (tableContext.api as TreeGeneralApi<T>).tree(params).then((res) => {
-          const newTableContext = {
-            ...tableContext,
-            table: {
-              ...tableContext.table,
-            },
-          };
-          if (res.code === 200) {
-            newTableContext.dataSource = res.data as T[];
-          }
-          newTableContext.table.loading = false;
-          newTableContext.table.selectedRowKeys = [];
-          newTableContext.table.pagination = false;
-          tableContext.newContext(newTableContext);
-        });
-      },
-      listOrPageOrTree(
-        tableContext: TableContext<T>,
-        pageable?: TablePagination,
-      ) {
-        if (tableContext.props.model === 'list') {
-          this.list(tableContext);
-        } else if (tableContext.props.model === 'page') {
-          this.page(tableContext, pageable);
-        } else if (tableContext.props.model === 'tree') {
-          this.tree(tableContext);
-        } else {
-          Notification.error({
-            position: 'top',
-            content: '确定表单模式 list|page|tree',
-          });
-        }
-      },
-      edit(
-        tableContext: TableContext<T>,
-        formContext: FormContext<T>,
-        id: string,
-      ) {
-        if (check(tableContext)) {
-          return;
-        }
-        tableContext.api?.details(id).then((res) => {
-          if (res.code === 200 && res.data) {
-            const newFormContext = {
-              ...formContext,
-              visible: true,
-              type: 'edit',
-              values: res.data,
-            } as FormContext<T>;
-            formContext.newContext(newFormContext);
-          } else {
-            Notification.error({ position: 'top', content: res.message });
-          }
-        });
-      },
-      details(
-        tableContext: TableContext<T>,
-        formContext: FormContext<T>,
-        id: string,
-      ) {
-        if (check(tableContext)) {
-          return;
-        }
-        tableContext.api?.details(id).then((res) => {
-          if (res.code === 200) {
-            const newFormContext = {
-              ...formContext,
-              visible: true,
-              type: 'details',
-              values: res.data,
-            } as FormContext<T>;
-            formContext.newContext(newFormContext);
-          } else {
-            Notification.error({ position: 'top', content: res.message });
-          }
-        });
-      },
-    };
-  }, []);
-
-  useEffect(() => {
-    // ============ context init ============
-
+  const tableContext = useMemo(() => {
     const decorator = getTableDecorator<T>();
     // table
     const pageable: TablePagination =
-      props.model === 'page'
+      props.mode === 'page'
         ? {
             currentPage: 1,
             pageSize: 10,
@@ -445,150 +131,155 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
           }
         : false;
     const tableContext: TableContext<T> = {
+      mode: props.mode,
       api,
-      props,
+      tableApi,
+      tableColumns: props.columns,
       table: {
         loading: false,
         pagination: pageable,
         selectedRowKeys: [],
       },
+      tree: {
+        expandAllRows: props.expandAllRows,
+      },
       search: props.params || {},
       decorator,
       dataSource: [],
-      newContext: (context) => {
-        decorator.setTableContext(context);
-        setTableContext(context);
-      },
       refresh: () => {
         tableApi.listOrPageOrTree(tableContext, pageable);
       },
+      getTableColumns(exclusiveOperate = false, immediateFilter = true) {
+        return new TableColumnsBuilder(this.tableColumns || [], this, props)
+          .sync()
+          .build(renderOperatorBars, exclusiveOperate, immediateFilter);
+      },
+      setTableColumns(columns) {
+        this.tableColumns = columns;
+      },
     };
-    props.getTableContext?.(tableContext);
-    tableContext.newContext(tableContext);
-    tableApi.listOrPageOrTree(tableContext, pageable);
-  }, [props.model, props.params]);
+    const observerTableContext = observable(tableContext);
+    decorator.setTableContext(observerTableContext);
+    return observerTableContext;
+  }, [props.params]);
 
-  const tableColumns: TableColumnProps<T>[] = new TableColumnsBuilder(
-    props.columns || [],
-    props.operateBar,
-    tableApi,
-    formContext,
-    tableContext,
-  )
-    .sync()
-    .build();
+  useEffect(() => {
+    tableApi.listOrPageOrTree(tableContext);
+  }, [props.params]);
 
-  return (
-    <>
-      <header>
-        {tableContext && (
-          <TableHeader<T>
-            key="TableHeader"
-            tableContext={tableContext}
-            tableApi={tableApi}
-            columnDecorator={tableContext.decorator}
-            params={props.params}
-          />
-        )}
-        {tableContext && formContext && (
-          <TableToolbar<T>
-            key="TableToolbar"
-            tableContext={tableContext}
-            formContext={formContext}
-            tableApi={tableApi}
-          />
-        )}
-      </header>
-      {tableContext && formContext && (
-        <Table<T>
-          {...props}
-          columns={tableColumns.map(
-            (column) => tableContext?.decorator.wrap(column),
-          )}
-          dataSource={tableContext?.dataSource}
-          loading={tableContext?.table.loading}
-          rowKey={'id'}
-          sticky
-          pagination={tableContext?.table.pagination || false}
-          expandAllRows={tableContext?.props.expandAllRows}
-          bordered
-          scroll={{
-            y: tableContext?.table.pagination || false ? '58vh' : '65vh',
-          }}
-          rowSelection={{
-            selectedRowKeys: tableContext?.table.selectedRowKeys,
-            onSelect: (record, selected) => {
-              let selectedRowKeys = [
-                ...(tableContext?.table.selectedRowKeys || []),
-              ];
-              if (selected && record?.id) {
-                selectedRowKeys.push(record?.id);
-              } else {
-                selectedRowKeys = selectedRowKeys.filter(
-                  (key) => key !== record?.id,
-                );
-              }
-              const newTableContext = {
-                ...tableContext,
-                table: {
-                  ...tableContext?.table,
-                },
-              } as TableContext<T>;
-              newTableContext.table.selectedRowKeys = selectedRowKeys;
-              tableContext.newContext(newTableContext);
-              setTableContext(newTableContext);
-            },
-            onSelectAll: (selected, selectedRows) => {
-              const newTableContext = {
-                ...tableContext,
-                table: {
-                  ...tableContext?.table,
-                },
-              } as TableContext<T>;
-              newTableContext.table.selectedRowKeys =
-                selectedRows?.map((row) => row?.id) || [];
-              tableContext.newContext(newTableContext);
-            },
-          }}
-          onChange={({ pagination, filters, sorter, extra }) => {
-            const newTableContext = {
-              ...tableContext,
-              table: { ...tableContext?.table },
-            } as TableContext<T>;
-            // 排序
-            if (sorter) {
-              const orders: Order[] = [
-                {
-                  direction: sorter.sortOrder === 'ascend' ? 'ASC' : 'DESC',
-                  property: sorter.dataIndex,
-                },
-              ];
-              newTableContext.table.orders = orders;
-            }
+  // tableContext.decorator.setTableContext(tableContext);
+  props.getTableContext?.(tableContext);
 
-            if (pagination) {
-              tableApi.page(newTableContext, pagination);
+  return <ObserverTableCrud tableProps={props} tableContext={tableContext} />;
+}
+
+const useViewTable = <T extends IdEntity>({
+  tableContext,
+  tableProps,
+}: ObserverTableCrudProps<any>) => {
+  const { mode, tableApi } = tableContext;
+  if (mode === 'cardPage') {
+    return <CardPage tableProps={tableProps} />;
+  } else {
+    return (
+      <Table<T>
+        columns={tableContext
+          .getTableColumns()
+          .map((column) => tableContext.decorator.wrap(column))}
+        dataSource={tableContext.dataSource}
+        loading={tableContext.table.loading}
+        sticky
+        key="id"
+        rowKey="id"
+        pagination={tableContext.table.pagination || false}
+        renderPagination={(props) => {
+          const { pageSize = 10, currentPage = 1, total = 0 } = props;
+          return (
+            <div className="fixed bottom-5">
+              <TablePagination<T>
+                total={total}
+                pageSize={pageSize}
+                currentPage={currentPage}
+              />
+            </div>
+          );
+        }}
+        expandAllRows={tableContext.tree.expandAllRows}
+        bordered
+        scroll={{
+          y: tableContext.table.pagination || false ? '58vh' : '65vh',
+        }}
+        rowSelection={{
+          selectedRowKeys: tableContext.table.selectedRowKeys,
+          onSelect: (record, selected) => {
+            let selectedRowKeys = [
+              ...(tableContext?.table.selectedRowKeys || []),
+            ];
+            if (selected && record?.id) {
+              selectedRowKeys.push(record?.id);
             } else {
-              tableApi.list(newTableContext);
+              selectedRowKeys = selectedRowKeys.filter(
+                (key) => key !== record?.id,
+              );
             }
-          }}
-        />
-      )}
-      {tableContext && (
+            tableContext.table.selectedRowKeys = selectedRowKeys;
+          },
+          onSelectAll: (selected, selectedRows) => {
+            tableContext.table.selectedRowKeys =
+              selectedRows?.map((row) => row?.id) || [];
+          },
+        }}
+        onChange={({ pagination, filters, sorter, extra }) => {
+          // 排序
+          if (pagination) {
+            tableContext.table.pagination = pagination;
+          }
+          if (sorter) {
+            tableApi.sort(tableContext, {
+              property: sorter.dataIndex,
+              order: sorter.sortOrder,
+              sorted: sorter.sorter,
+            });
+          } else {
+            tableApi.listOrPageOrTree(tableContext);
+          }
+        }}
+      />
+    );
+  }
+};
+
+const ObserverTableCrud: React.FC<ObserverTableCrudProps<any>> = observer(
+  <T extends IdEntity>(props: ObserverTableCrudProps<T>) => {
+    const { tableProps, tableContext } = props;
+    const { tableApi } = tableContext;
+    const [formContext, setFormContext] = useState<FormContext<T>>();
+    const ViewTable = useViewTable({ tableProps, tableContext });
+    return (
+      <TableCrudContext.Provider value={tableContext}>
+        {formContext && (
+          <TFormContext.Provider value={formContext}>
+            <header>
+              <TableHeader<T> key="TableHeader" tableProps={tableProps} />
+              <TableToolbar<T> key="TableToolbar" tableProps={tableProps} />
+            </header>
+            {ViewTable}
+          </TFormContext.Provider>
+        )}
         <TForm<T>
-          model="table"
-          columns={props.columns || []}
-          useApi={props.useApi}
+          mode="table"
+          columns={tableProps.columns || []}
+          useApi={tableProps.useApi}
           onOk={() => {
-            tableApi.listOrPageOrTree(tableContext as TableContext<T>);
+            tableApi.listOrPageOrTree(tableContext);
           }}
           getFormContext={setFormContext}
           decorator={tableContext.decorator}
-          params={props.params}
+          params={tableProps.params}
         />
-      )}
-    </>
-  );
-}
+      </TableCrudContext.Provider>
+    );
+  },
+);
 
 export default TableCrud;

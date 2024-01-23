@@ -4,7 +4,6 @@ import {
   Button,
   Dropdown,
   Image,
-  Input,
   Modal,
   Nav,
   Notification,
@@ -26,13 +25,14 @@ import ChangePasswordForm from '@/pages/system/user/ChangePassword';
 import Brand from '../../../public/vite.svg';
 import { TurboRoute } from '@/route/AppRouter';
 import { CurrentUserSelectTabState } from '@/store/menu';
-import { directGetIcon } from '../Icon';
+import { SUPPORT_LOCALES } from './Locales';
+import { GlobalRegistry } from '@designable/core';
+import { TextWidget } from '@designable/react';
 
 const MotionHeader = () => {
   const authApi = useAuthApi();
   const currentUser = useRecoilValue(CurrentUserState);
   const [showChangePassword, setShowChangePassword] = useState<boolean>(false);
-
   const navigate = useNavigate();
   const clearMenuResources = useClearCurrentUserMenuResources();
 
@@ -46,7 +46,6 @@ const MotionHeader = () => {
 
   const clearResources = useMemo(() => {
     return () => {
-      // 1. 清理菜单资源
       clearMenuResources();
     };
   }, []);
@@ -101,7 +100,7 @@ const MotionHeader = () => {
                     marginRight: '12px',
                   }}
                 >
-                  消息
+                  <TextWidget token={'headers.Message'} />
                 </Button>
               </Badge>
             </Dropdown>
@@ -125,7 +124,7 @@ const MotionHeader = () => {
                   marginRight: '12px',
                 }}
               >
-                主题
+                <TextWidget token={'headers.Theme'} />
               </Button>
             </Dropdown>
             <Dropdown
@@ -134,9 +133,26 @@ const MotionHeader = () => {
               clickToHide
               render={
                 <Dropdown.Menu>
-                  <Dropdown.Item type="primary">中文</Dropdown.Item>
-                  <Dropdown.Item>English</Dropdown.Item>
-                  <Dropdown.Item>日本語</Dropdown.Item>
+                  {SUPPORT_LOCALES.map((locales) => {
+                    return (
+                      <Dropdown.Item
+                        type={
+                          GlobalRegistry.getDesignerLanguage() === locales.value
+                            ? 'primary'
+                            : 'tertiary'
+                        }
+                        active={
+                          GlobalRegistry.getDesignerLanguage() === locales.value
+                        }
+                        key={locales.value}
+                        onClick={(e) => {
+                          GlobalRegistry.setDesignerLanguage(locales.value);
+                        }}
+                      >
+                        {locales.label}
+                      </Dropdown.Item>
+                    );
+                  })}
                 </Dropdown.Menu>
               }
             >
@@ -148,7 +164,7 @@ const MotionHeader = () => {
                   marginRight: '12px',
                 }}
               >
-                国际化
+                <TextWidget token={'headers.Locales'} />
               </Button>
             </Dropdown>
             <Dropdown
@@ -157,14 +173,14 @@ const MotionHeader = () => {
               render={
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => navigate('/home')}>
-                    首页
+                    <TextWidget token={'headers.Index'} />
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Item onClick={() => navigate('/profile')}>
-                    个人档案
+                    <TextWidget token={'headers.Profile'} />
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => setShowChangePassword(true)}>
-                    修改密码
+                    <TextWidget token={'headers.ChangePassword'} />
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Item
@@ -190,7 +206,7 @@ const MotionHeader = () => {
                       });
                     }}
                   >
-                    退出登陆
+                    <TextWidget token={'headers.Logout'} />
                   </Dropdown.Item>
                 </Dropdown.Menu>
               }

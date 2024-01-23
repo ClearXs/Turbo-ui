@@ -1,33 +1,48 @@
 import { GeneralApi, IdEntity, Order } from '@/api/interface';
 import {
   ColumnProps,
+  SortOrder,
   TablePagination,
   TableProps,
 } from '@douyinfe/semi-ui/lib/es/table';
-import {
-  FormCheckBoxColumnProps,
-  FormCheckboxColumnProps,
-  FormColumnProps,
-  FormContext,
-  FormDateColumnProps,
-  FormInputColumnProps,
-  FormNumberColumnProps,
-  FormRadioColumnProps,
-  FormSelectColumnProps,
-  FormTextAreaColumnProps,
-  FormTreeSelectColumnProps,
-} from '../TForm/interface';
-import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
+import { FormColumnProps, FormContext } from '../TForm/interface';
 import { TableColumnDecorator } from './table';
+import { PopoverProps } from '@douyinfe/semi-ui/lib/es/popover';
+
+export type ViewModel =
+  // 无分页列表
+  | 'list'
+  // 分页列表
+  | 'page'
+  // 树
+  | 'tree'
+  // 分页卡片
+  | 'cardPage'
+  // 无限滚动的列表
+  | 'scrollingList';
 
 export type Bar<T extends IdEntity> = {
+  code:
+    | 'add'
+    | 'delete'
+    | 'edit'
+    | 'selectAll'
+    | 'unselectAll'
+    | 'import'
+    | 'export'
+    | 'refresh'
+    | string;
   name: string;
   type: 'warning' | 'primary' | 'tertiary' | 'secondary' | 'danger';
   size?: 'default' | 'small' | 'large';
   icon?: React.ReactNode;
+  // 当popoverContent存在时，该位置参数生效。
+  popoverPosition?: PopoverProps['position'];
+  // popover内容组件，如果存在的话则增加Popover组件在Bar的最外层
+  popoverContent?: React.ReactNode;
   onClick?: (
-    tableContext: TableContext<T> | undefined,
-    formContext: FormContext<T> | undefined,
+    tableContext: TableContext<T>,
+    formContext: FormContext<T>,
   ) => void;
 };
 
@@ -37,9 +52,11 @@ export type Toolbar<T extends IdEntity> = Bar<T> & {
 
 // 操作列类型
 export type OperateToolbar<T extends IdEntity> = Omit<Bar<T>, 'onClick'> & {
+  // 是否是内置提供的按钮
+  internal?: boolean;
   onClick?: (
-    tableContext: TableContext<T> | undefined,
-    formContext: FormContext<T> | undefined,
+    tableContext: TableContext<T>,
+    formContext: FormContext<T>,
     value: T,
   ) => void;
 };
@@ -48,9 +65,8 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   TableProps<T>,
   'columns' | 'pagination'
 > & {
-  // ⚠️表示当前crud关键标识
-  // 具有三个可选项 list page tree。三个类型对应成为三种table的表现形式
-  model: 'list' | 'page' | 'tree';
+  // table 视图模式
+  mode: ViewModel;
   columns: TableColumnProps<T>[];
   // table工具栏，组件中包含默认的工具栏，可以自定义添加
   toolbar?: {
@@ -62,6 +78,10 @@ export type TableCrudProps<T extends IdEntity> = Omit<
     showExport?: boolean;
     // 是否显示导入按钮
     showImport?: boolean;
+    // 是否展示显示列
+    showColumns?: boolean;
+    // 是否展示排序
+    showOrdered?: boolean;
     // 自定义追加
     append?: Toolbar<T>[];
   };
@@ -71,6 +91,8 @@ export type TableCrudProps<T extends IdEntity> = Omit<
     showEdit?: boolean | ((record: T) => boolean);
     // 是否显示删除操作
     showDelete?: boolean | ((record: T) => boolean);
+    // 是否显示详情
+    showDetails?: boolean | ((record: T) => boolean);
     // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
     append?: (
       | OperateToolbar<T>
@@ -78,17 +100,30 @@ export type TableCrudProps<T extends IdEntity> = Omit<
     )[];
   };
   // 使用方传入，触发初始化的筛选
-  params?: T;
+  params?: Partial<T>;
+  // 卡片模式下生效
+  card?: {
+    // 卡片点击
+    onClick?: (record: T) => void;
+    // 渲染卡片标题，如果没有则为空
+    renderTitle?: (record: T) => React.ReactNode;
+    // 渲染卡片内容，如果没有则为空
+    renderContent?: (record: T) => React.ReactNode;
+    // 渲染卡片页脚，如果没有则为空
+    renderFooter?: (record: T) => React.ReactNode;
+  };
   // table使用的api
   useApi: () => GeneralApi<T>;
   // 获取table context实例
   getTableContext?: (tableContext: TableContext<T>) => void;
 };
 
+// table column 属性
 export type TableColumnProps<T extends IdEntity> = FormColumnProps<T> &
   ColumnProps<T> & {
     [x: string]: any;
     // ==================== 通用 ====================
+    // 数据字段
     dataIndex?: string;
     // 当前column是否在table中显示，默认为true
     table?: boolean | ((tableContext: TableContext<T>) => boolean);
@@ -96,51 +131,30 @@ export type TableColumnProps<T extends IdEntity> = FormColumnProps<T> &
     search?: boolean | ((tableContext: TableContext<T>) => boolean);
   };
 
-// Input 组件
-export type TableInputColumnProps<T extends IdEntity> = TableColumnProps<T> &
-  FormInputColumnProps<T> & {};
+// card column 属性
+export type CardColumnProps<T extends IdEntity> = TableColumnProps<T> & {
+  // 是否为card标题字段
+  cardTitle?: boolean;
+};
 
-// InputNumber 组件
-export type TableNumberColumnProps<T extends IdEntity> = TableColumnProps<T> &
-  FormNumberColumnProps<T> & {};
+export type SortColumn = {
+  property: string;
+  order: SortOrder;
+  sorted: boolean;
+};
 
-// Select 组件
-export type TableSelectColumnProps<T extends IdEntity> = TableColumnProps<T> &
-  FormSelectColumnProps<T> & {};
-
-// TreeSelect 组件
-export type TableTreeSelectColumnProps<T extends IdEntity> =
-  TableColumnProps<T> &
-    Omit<FormTreeSelectColumnProps<T>, 'treeData'> & {
-      treeData:
-        | TreeNodeData[]
-        | ((
-            tableContext?: TableContext<T>,
-            formContext?: FormContext<T>,
-          ) => TreeNodeData[]);
-    };
-
-// Radio 组件
-export type TableRadioColumnProps<T extends IdEntity> = TableColumnProps<T> &
-  FormRadioColumnProps<T> & {};
-
-// textarea 组件
-export type TableTextAreaColumnProps<T extends IdEntity> = TableColumnProps<T> &
-  FormTextAreaColumnProps<T> & {};
-
-// date 组件
-export type TableDateColumnProps<T extends IdEntity> = TableColumnProps<T> &
-  FormDateColumnProps<T> & {};
-
-// checkbox组件
-export type TableCheckboxColumnProps<T extends IdEntity> = TableColumnProps<T> &
-  FormCheckboxColumnProps<T> & {};
 // ======================== operate ========================
 
 // 联系Table crud组件，进行数据操作传输
 export type TableContext<T extends IdEntity> = {
-  api: GeneralApi<T> | undefined;
-  props: TableCrudProps<T>;
+  // table 模式
+  mode: TableCrudProps<T>['mode'];
+  // entity api
+  api: GeneralApi<T>;
+  // table api
+  tableApi: TableApi<T>;
+  // table columns
+  tableColumns: TableColumnProps<T>[];
   // 表头搜索值
   search: {
     [key: string]: any;
@@ -155,34 +169,66 @@ export type TableContext<T extends IdEntity> = {
     // 排序
     orders?: Order[];
   };
+  tree: {
+    // 是否展开所有
+    expandAllRows?: boolean;
+  };
   // table 数据源
   dataSource: T[];
+  // table columns decorator
   decorator: TableColumnDecorator<T>;
-  newContext: (newTableContext: TableContext<T>) => void;
   // 刷新table，使其重新调用接口（TODO 可能会出现预想不到情况）
   refresh: () => void;
+  /**
+   * 内置对columns的二次处理的返回
+   * @param exclusiveOperate 排序操作列
+   * @param immediateFilter 是否使用{@code TableColumnProps#table}参数对返回结果进行过滤
+   * @return 返回基于{@code TableColumnProps#index}排序后的columns
+   */
+  getTableColumns(
+    exclusiveOperate?: boolean,
+    immediateFilter?: boolean,
+  ): TableColumnProps<T>[];
+  // 设置columns
+  setTableColumns(columns: TableColumnProps<T>[]): void;
 };
 
 export interface TableApi<T extends IdEntity> {
-  remove(tableContext: TableContext<T> | undefined, ids: string[]): void;
-  list(tableContext: TableContext<T> | undefined): void;
-  page(
-    tableContext: TableContext<T> | undefined,
-    pageable?: TablePagination,
-  ): void;
-  tree(tableContext: TableContext<T> | undefined): void;
+  // 移除table数据
+  remove(tableContext: TableContext<T>, ids: string[]): void;
+  // list table数据
+  list(tableContext: TableContext<T>): void;
+  // page table数据
+  page(tableContext: TableContext<T>, pageable?: TablePagination): void;
+  // tree table数据
+  tree(tableContext: TableContext<T>): void;
   listOrPageOrTree(
-    tableContext: TableContext<T> | undefined,
+    tableContext: TableContext<T>,
     pageable?: TablePagination,
   ): void;
+  // 数据详情
   details(
-    tableContext: TableContext<T> | undefined,
-    formContext: FormContext<T> | undefined,
+    tableContext: TableContext<T>,
+    formContext: FormContext<T>,
     id: string,
   ): void;
+  // 编辑
   edit(
-    tableContext: TableContext<T> | undefined,
-    formContext: FormContext<T> | undefined,
+    tableContext: TableContext<T>,
+    formContext: FormContext<T>,
     id: string,
+  ): void;
+  // sort 排序
+  sort(tableContext: TableContext<T>, sortColumn: SortColumn): void;
+  // 切换table模式
+  switchMode(
+    tableContext: TableContext<T>,
+    mode: TableCrudProps<T>['mode'],
   ): void;
 }
+
+export type RenderOperatorBarType<T extends IdEntity> = (
+  record: T,
+  operateBar?: TableCrudProps<T>['operateBar'],
+  tableApi?: TableApi<T>,
+) => OperateToolbar<T>[];

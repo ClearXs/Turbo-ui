@@ -8,7 +8,7 @@ import {
 import { Dropdown, Notification, TabPane, Tabs } from '@douyinfe/semi-ui';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { directGetIcon } from '../Icon';
+import { directGetIcon } from '../Icon/shared';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { TurboRoute } from '@/route/AppRouter';
 import _ from 'lodash';

@@ -2,15 +2,15 @@ import { MenuTree } from '@/api/system/menu';
 import { MENU_TYPE } from '@/constant/menutype';
 import { Helper } from '@/pages/interface';
 import { Space, Tag } from '@douyinfe/semi-ui';
-import {
-  TableCheckboxColumnProps,
-  TableTreeSelectColumnProps,
-} from '@/components/TableCrud/interface';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { treeMap } from '@/util/tree';
-import { directGetIcon } from '@/components/Icon';
+import { directGetIcon } from '@/components/Icon/shared';
 import { MENU_ATTR } from '@/constant/MenuAttr';
+import {
+  TableCheckboxColumnProps,
+  TableTreeSelectColumnProps,
+} from '@/components/TableCrud/components';
 
 const loadMenuTreeData = (
   menus: MenuTree[],

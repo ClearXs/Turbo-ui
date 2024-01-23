@@ -5,7 +5,7 @@ import { CS_TYPE } from '@/constant/cstype';
 import { ENABLE } from '@/constant/enable';
 import useCloudStorageConfigApi, {
   CloudStorageConfig,
-} from '@/api/develop/cloudstorageconfig';
+} from '@/api/developer/cloudstorageconfig';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { Notification } from '@douyinfe/semi-ui';
 
@@ -87,7 +87,7 @@ export default function (): React.ReactNode {
 
   return (
     <TableCrud<CloudStorageConfig>
-      model="page"
+      mode="page"
       columns={columns}
       useApi={useCloudStorageConfigApi}
       operateBar={{
@@ -95,6 +95,7 @@ export default function (): React.ReactNode {
           (record) => {
             if (record.enable === 'DISABLE') {
               return {
+                code: 'enable',
                 name: '启用',
                 type: 'primary',
                 onClick: (tableContext) => {
@@ -119,6 +120,7 @@ export default function (): React.ReactNode {
           (record) => {
             if (record.enable === 'ENABLE') {
               return {
+                code: 'disable',
                 name: '禁用',
                 type: 'danger',
                 onClick: (tableContext) => {

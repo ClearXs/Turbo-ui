@@ -1,3 +1,2 @@
-import TForm from './TForm';
-
-export default TForm;
+export * from './TForm';
+export * from './form';

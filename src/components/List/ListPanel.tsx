@@ -1,20 +1,15 @@
 import { IdEntity } from '@/api/interface';
 import { ListPanelApi, ListPanelProps } from './interface';
 import { FormContext } from '../TForm/interface';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Tree, { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
-import {
-  Button,
-  ButtonGroup,
-  Modal,
-  Notification,
-  Space,
-  Spin,
-  Tooltip,
-} from '@douyinfe/semi-ui';
-import TForm from '../TForm';
-import { OperateToolbar, Toolbar } from '../TableCrud/interface';
-import { directGetIcon } from '../Icon';
+import { Button, Notification, Space, Spin } from '@douyinfe/semi-ui';
+import { Toolbar } from '../TableCrud/interface';
+import { directGetIcon } from '../Icon/shared';
+import TForm from '../TForm/TForm';
+import useListOperatorBar from './ListOperatorBar';
+import OperatorButtonSet from '../TableCrud/OperatorButtonSet';
+import _ from 'lodash';
 
 const getToolbar = <T extends IdEntity>(
   props: ListPanelProps<T>,
@@ -33,6 +28,7 @@ const getToolbar = <T extends IdEntity>(
 
   showAdd &&
     bar.push({
+      code: 'add',
       name: '新增',
       position: 'left',
       type: 'primary',
@@ -52,6 +48,7 @@ const getToolbar = <T extends IdEntity>(
   showSelectAll &&
     multiple &&
     bar.push({
+      code: 'selectAll',
       name: '全选',
       position: 'left',
       type: 'primary',
@@ -64,6 +61,7 @@ const getToolbar = <T extends IdEntity>(
   showUnSelectAll &&
     multiple &&
     bar.push({
+      code: 'unselectAll',
       name: '取消全选',
       position: 'left',
       type: 'primary',
@@ -77,71 +75,15 @@ const getToolbar = <T extends IdEntity>(
   return bar;
 };
 
-const getOperateBar = <T extends IdEntity>(
-  props: ListPanelProps<T>,
-  api: ListPanelApi<T>,
-  record: T,
-) => {
-  const bars: OperateToolbar<T>[] = [];
-  const {
-    showEdit = true,
-    showDelete = true,
-    append = [],
-  } = props.operateBar || {};
-
-  // 编辑
-  if ((typeof showEdit === 'function' && showEdit(record)) || showEdit) {
-    bars.push({
-      name: '编辑',
-      type: 'primary',
-      size: 'small',
-      icon: directGetIcon('IconEditStroked'),
-      onClick: (tableContext, formContext, record) => {
-        api.edit(formContext, record);
-      },
-    });
-  }
-
-  // 删除
-  if ((typeof showDelete === 'function' && showDelete(record)) || showDelete) {
-    bars.push({
-      name: '删除',
-      type: 'danger',
-      size: 'small',
-      icon: directGetIcon('IconDeleteStroked'),
-      onClick: (tableContext, formContext, record) => {
-        Modal.warning({
-          title: '是否确定删除?',
-          onOk: () => {
-            api.remove(formContext, [record.id]);
-          },
-        });
-      },
-    });
-  }
-  append.forEach((bar) => {
-    if (typeof bar === 'function') {
-      const maybeBar = bar(record);
-      if (maybeBar) {
-        bars.push(maybeBar);
-      }
-    } else {
-      bars.push(bar);
-    }
-  });
-
-  return bars;
-};
-
 // 基于Tree的列表面板
-
 const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
   const api = props.useApi();
   const [loading, setLoading] = useState<boolean>(false);
-  const [formContext, setFormContext] = useState<FormContext<T>>();
+  const formContextRef = useRef<FormContext<T>>();
   const [list, setList] = useState<TreeNodeData[]>([]);
   const [selectKeys, setSelectKeys] = useState<string[]>([]);
   const [selectKey, setSelectKey] = useState<string>();
+  const renderOperatorBar = useListOperatorBar<T>();
 
   const listApi = {
     list(formContext) {
@@ -152,30 +94,21 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
           const { code, data } = res;
           if (code === 200) {
             const list = data.map((entity) => {
-              const operateBar = getOperateBar(props, listApi, entity);
+              const bars = renderOperatorBar(entity, props.operateBar, listApi);
               const treeNode = props.wrap?.(entity);
               return {
                 ...treeNode,
                 label: (
                   <div className="flex">
                     {treeNode?.label}
-                    <ButtonGroup className="ml-auto" theme="borderless">
-                      {operateBar.map((bar, index) => {
-                        return (
-                          <Tooltip content={bar.name} key={index}>
-                            <Button
-                              icon={bar.icon}
-                              type={bar.type}
-                              size={bar.size}
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                bar.onClick?.(undefined, formContext, entity);
-                              }}
-                            />
-                          </Tooltip>
-                        );
-                      })}
-                    </ButtonGroup>
+                    <OperatorButtonSet
+                      formContext={formContext}
+                      bars={bars}
+                      mode="direct"
+                      record={entity}
+                      className="ml-auto"
+                      showButtonName={false}
+                    />
                   </div>
                 ),
               };
@@ -246,7 +179,11 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
     }
   }, [props.initValue, props.initValues]);
 
-  const toolbar = getToolbar(props, formContext as FormContext<T>, listApi);
+  const toolbar = getToolbar(
+    props,
+    formContextRef.current as FormContext<T>,
+    listApi,
+  );
   props.getListPanelApi?.(listApi);
 
   return (
@@ -260,7 +197,9 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
                   key={index}
                   type={bar.type}
                   icon={bar.icon}
-                  onClick={() => bar.onClick?.(undefined, formContext)}
+                  onClick={() =>
+                    bar.onClick?.(undefined, formContextRef.current)
+                  }
                 >
                   {bar.name}
                 </Button>
@@ -292,12 +231,14 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
           }}
         />
         <TForm<T>
-          model="tree"
+          mode="tree"
           useApi={props.useApi}
           columns={props.columns}
           getFormContext={(formContext) => {
-            setFormContext(formContext);
-            listApi.list(formContext);
+            if (_.isEmpty(formContextRef.current)) {
+              listApi.list(formContext);
+            }
+            formContextRef.current = formContext;
           }}
           onOk={(formContext) => listApi.list(formContext)}
         />
