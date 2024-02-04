@@ -1,19 +1,19 @@
 import useBoApi from '@/api/developer/bo';
-import { Form } from '@/api/developer/form';
-import useDicApi, { Dic } from '@/api/system/dic';
-import { Dictionary } from '@designable/core/lib/models/Dictionary';
-import { transformToTreeNode } from '@designable/formily-transformer';
+import useFormApi, { Form } from '@/api/developer/form';
+import useDicApi from '@/api/system/dic';
 import { useDesigner } from '@designable/react';
 import { Notification } from '@douyinfe/semi-ui';
 import _ from 'lodash';
+import { DesignableProps } from '../Editor';
+import { useKernel } from '../kernel';
 
-export const useInitializeSchema = () => {
+export const useInitialize = () => {
+  const kernel = useKernel();
   const boApi = useBoApi();
   const dicApi = useDicApi();
-  const engine = useDesigner();
 
   // 初始化boschema、form schema、dics数据
-  return (form: Form) => {
+  return (form: Form, designableProps: DesignableProps) => {
     Promise.all([
       boApi.schema(form.boId),
       dicApi.tree(),
@@ -22,30 +22,39 @@ export const useInitializeSchema = () => {
       .then((combine) => {
         const bo = combine[0];
         if (bo.code === 200) {
-          engine.setBoTree(bo.data);
+          kernel.setBoTree(bo.data);
         }
 
         const dics = combine[1];
         if (dics.code === 200) {
-          const formatterDictionary = (dic: Dic): Dictionary => {
-            return {
-              id: dic.id,
-              value: dic.code,
-              key: dic.code,
-              label: dic.name,
-              children: dic.children.map(formatterDictionary),
-            };
-          };
-          const dictionary = dics.data.map(formatterDictionary);
-          engine.setDictionary(dictionary);
+          kernel.setDictionary(dics.data);
         }
         const formSchema = combine[2];
         if (!_.isEmpty(formSchema)) {
-          engine.setCurrentTree(transformToTreeNode(JSON.parse(formSchema)));
+          kernel.setISchema(formSchema);
         }
+        const dataView = kernel.createDefaultDataView();
+        kernel.setDataView(dataView);
+        designableProps.loading = false;
       })
       .catch((err) => {
         Notification.error({ content: err });
+        designableProps.loading = false;
       });
+  };
+};
+
+export const useSaveSchema = () => {
+  const boApi = useBoApi();
+  const formApi = useFormApi();
+  const engine = useDesigner();
+
+  return (form: Form) => {
+    Promise.all([
+      formApi.saveOrUpdate(form),
+      boApi.saveSchema(engine.getBoSchema()),
+    ]).catch((err) => {
+      Notification.error({ content: err });
+    });
   };
 };

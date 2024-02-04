@@ -197,9 +197,6 @@ export default function useTableApi<T extends IdEntity>(
         tableContext.table.orders = orders;
         this.listOrPageOrTree(tableContext);
       },
-      switchMode(tableContext, value) {
-        tableContext.mode = value;
-      },
     };
   }, []);
 }

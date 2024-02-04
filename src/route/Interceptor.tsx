@@ -1,11 +1,14 @@
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
 import { TurboRoute } from './AppRouter';
 import _ from 'lodash';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
 import { Notification, Typography } from '@douyinfe/semi-ui';
-import { useEffect, useMemo } from 'react';
-import { useContentMenu } from '@/hook/menu';
+import { useEffect, useMemo, useRef } from 'react';
+import { RouteContext } from './context';
+import { findRoute } from './util';
+import { useRecoilValue } from 'recoil';
+import { CurrentUserRouteState } from '@/store/menu';
 
 export type RouteInterceptor = {
   // 优先级
@@ -30,11 +33,6 @@ export type RouteInterceptor = {
 export type InterceptorContext = {
   route: TurboRoute;
   navigate: NavigateFunction;
-  addUserContentTab: (
-    route: TurboRoute,
-    topMenuKey: string,
-    navigateTo?: boolean,
-  ) => void;
 };
 
 /**
@@ -79,26 +77,11 @@ const AuthenticationInterceptor: RouteInterceptor = {
 
   match: (route: TurboRoute, path?: string): boolean => {
     // 排除鉴权验证的route path
-    const exclusive: string[] = ['/login'];
+    const exclusive: string[] = [''];
     if (_.isEmpty(path)) {
       return false;
     }
     return !exclusive.includes(path as string);
-  },
-};
-
-const RouteChangedInterceptor: RouteInterceptor = {
-  order: 0,
-  intercept: (context: InterceptorContext): boolean => {
-    context.addUserContentTab(
-      context.route,
-      context.route.topRouteKey as string,
-      false,
-    );
-    return true;
-  },
-  match: (route: TurboRoute, path: string): boolean => {
-    return _.isEqual(route.path, path);
   },
 };
 
@@ -108,32 +91,39 @@ export const withInterceptorComponent = (
 ) => {
   return (): React.ReactNode => {
     const navigate = useNavigate();
-    const addUserContentTab = useContentMenu();
+    const userRoutes = useRecoilValue(CurrentUserRouteState);
+    const backRoute = useRef<TurboRoute | undefined>(undefined);
+
+    const location = useLocation();
     const interceptor = useMemo(() => {
-      return [
-        AuthenticationInterceptor,
-        RouteChangedInterceptor,
-        new InnerRouteInterceptor(route),
-      ].sort((a, b) => {
-        return a.order < b.order;
-      });
+      return [AuthenticationInterceptor, new InnerRouteInterceptor(route)].sort(
+        (a, b) => {
+          return a.order < b.order;
+        },
+      );
     }, []);
 
     useEffect(() => {
-      const { pathname } = window.location;
+      const { pathname } = location;
       for (const intcp of interceptor) {
         const nextExecute =
           intcp.match(route, pathname) &&
           intcp.intercept({
             route,
             navigate,
-            addUserContentTab,
           });
         if (!nextExecute) {
           break;
         }
       }
-    }, []);
-    return Element;
+      backRoute.current = findRoute(pathname, userRoutes || []);
+    }, [location.pathname]);
+    return (
+      <RouteContext.Provider
+        value={{ current: route, back: backRoute.current }}
+      >
+        {Element}
+      </RouteContext.Provider>
+    );
   };
 };

@@ -3,8 +3,6 @@ import { convertIcon } from '@douyinfe/semi-icons';
 function SvgComponent(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      t="1698914408367"
-      class="icon"
       viewBox="0 0 1024 1024"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
@@ -24,5 +22,4 @@ function SvgComponent(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-const IconMessage = convertIcon(SvgComponent, 'align_center_vertical');
-export default IconMessage;
+export const IconMessage = convertIcon(SvgComponent, 'align_center_vertical');

@@ -1,4 +1,6 @@
 import { lazy } from 'react';
+import * as systemIcons from './collection';
+import { IconProps } from '@douyinfe/semi-icons';
 
 export type Icon = {
   key: string;
@@ -71,26 +73,10 @@ export class SemiIconsModel implements IconModel {
 
 export class SystemIconsModel implements IconModel {
   constructor(private icons: Map<string, Icon>) {
-    const imports = import.meta.glob('./*');
-    Object.keys(imports)
-      .filter((name) => {
-        return name.match('Icon.*.js') !== null;
-      })
-      .map((iconKey) => {
-        // 形如../../../node_modules/@douyinfe/semi-icons/lib/es/icons/IconPieChart2Stroked.js形式
-        const lastSlashIndex = iconKey.lastIndexOf('/Icon');
-        const suffixIndex = iconKey.lastIndexOf('.js');
-        // IconPieChart2Stroked ===> PieChart2Stroked
-        const key = iconKey.substring(lastSlashIndex + 1, suffixIndex);
-        const component = lazy(imports[iconKey]);
-        return {
-          key,
-          component,
-        } as Icon;
-      })
-      .forEach((icon) => {
-        this.icons.set(icon.key, icon);
-      });
+    for (const key in systemIcons) {
+      const icon = systemIcons[key];
+      this.icons.set(key, { key, component: icon });
+    }
   }
 
   getIconList(): Icon[] {
@@ -158,11 +144,12 @@ export const importIcon = (icon: string, type: IconSystem = 'semi') => {
 export const directGetIcon = (
   icon: string | undefined,
   type: IconSystem = 'semi',
+  props: Partial<IconProps> = {},
 ): React.ReactNode => {
   if (icon === undefined) {
     return null;
   }
   const iconModel = getIconModel(type);
   const IconComponent = iconModel.getIcon(icon)?.component;
-  return IconComponent && <IconComponent />;
+  return IconComponent && <IconComponent {...props} />;
 };

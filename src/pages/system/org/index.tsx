@@ -1,4 +1,4 @@
-import useOrgApi, { Org } from '@/api/system/org';
+import { Org } from '@/api/system/org';
 import TableCrud from '@/components/TableCrud';
 import OrgHelper from './helper';
 import { directGetIcon } from '@/components/Icon/shared';
@@ -7,7 +7,7 @@ const Org: React.FC = () => {
   return (
     <TableCrud<Org>
       mode="tree"
-      useApi={useOrgApi}
+      useApi={OrgHelper.getApi}
       columns={OrgHelper.getColumns()}
       expandAllRows
       toolbar={{

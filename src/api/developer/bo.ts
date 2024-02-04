@@ -35,13 +35,41 @@ export interface BoApi extends GeneralApi<Bo> {
    * 获取bo schema
    */
   schema: (boId: string) => Promise<R<BoSchema>>;
+
+  /**
+   * 保存bo schema
+   * @param boSchema bo schema
+   * @returns
+   */
+  saveSchema: (boSchema: BoSchema) => Promise<R<Boolean>>;
+
+  /**
+   * 物化
+   * @param boId bo id
+   * @returns true if success
+   */
+  materialize: (boId: string) => Promise<R<Boolean>>;
 }
 
 class BoApiImpl extends GeneralApiImpl<Bo> implements BoApi {
+  materialize(boId: string): Promise<R<Boolean>> {
+    return this.request
+      .get(this.apiPath + `/materialize/${boId}`)
+      .then((res) => {
+        return res.data;
+      });
+  }
   schema(boId: string): Promise<R<BoSchema>> {
     return this.request.get(this.apiPath + `/schema/${boId}`).then((res) => {
       return res.data;
     });
+  }
+  saveSchema(boSchema: BoSchema): Promise<R<Boolean>> {
+    return this.request
+      .post(this.apiPath + '/save-schema', boSchema)
+      .then((res) => {
+        return res.data;
+      });
   }
 }
 

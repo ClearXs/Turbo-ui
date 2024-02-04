@@ -56,7 +56,7 @@ export const User: React.FC = () => {
           <TableCrud<UserEntity>
             mode="page"
             columns={UserHelper.getColumns()}
-            useApi={useUserApi}
+            useApi={UserHelper.getApi}
             getTableContext={(tableContext) => {
               tableContextRef.current = tableContext;
             }}
@@ -67,7 +67,7 @@ export const User: React.FC = () => {
                   code: 'changPassword',
                   name: '修改密码',
                   type: 'primary',
-                  onClick(tableContext, value) {
+                  onClick(tableContext, formContext, value) {
                     selectUserRef.current = value;
                     setShowChangePassword(true);
                   },
@@ -126,7 +126,7 @@ export const User: React.FC = () => {
                   code: 'bindingRole',
                   name: '绑定角色',
                   type: 'primary',
-                  onClick: (tableContext, record) => {
+                  onClick: (tableContext, formContext, record) => {
                     setShowBindingRole(true);
                     selectUserRef.current = record;
                   },
@@ -135,7 +135,7 @@ export const User: React.FC = () => {
                   code: 'bindingPost',
                   name: '绑定岗位',
                   type: 'primary',
-                  onClick: (tableContext, record) => {
+                  onClick: (tableContext, formContext, record) => {
                     setShowBindingPost(true);
                     selectUserRef.current = record;
                   },
@@ -144,7 +144,7 @@ export const User: React.FC = () => {
                   code: 'bindingOrg',
                   name: '绑定组织',
                   type: 'primary',
-                  onClick: (tableContext, record) => {
+                  onClick: (tableContext, formContext, record) => {
                     setShowBindingOrg(true);
                     selectUserRef.current = record;
                   },

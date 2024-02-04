@@ -1,8 +1,8 @@
-import { Post } from '@/api/system/post';
+import usePostApi, { Post, PostApi } from '@/api/system/post';
 import { TableColumnProps } from '@/components/TableCrud/interface';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 
-const PostHelper: Helper<Post> = {
+const PostHelper: Helper<Post, PostApi> = {
   getColumns: () => {
     return [
       {
@@ -48,6 +48,7 @@ const PostHelper: Helper<Post> = {
       label: entity.name,
     };
   },
+  getApi: usePostApi,
 };
 
 export default PostHelper;

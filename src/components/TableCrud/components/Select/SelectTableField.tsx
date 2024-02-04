@@ -4,6 +4,7 @@ import { BaseTableField, TableSelectColumnProps } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';
 import { findConstant } from '@/constant/util';
+import { RelationComponent } from '../RelationField';
 
 export class SelectTableField<T extends IdEntity> extends BaseTableField<
   T,
@@ -11,20 +12,33 @@ export class SelectTableField<T extends IdEntity> extends BaseTableField<
 > {
   doWrap(column: TableSelectColumnProps<T>): ColumnProps<T> {
     const render = (text: string, record: T, index: number) => {
-      const value = record[column.field];
+      const { field, remote, dictionary, optionList } = column;
+
+      const decorator = this.decorator;
+      const value = record[field];
       let constant;
-      if (column.remote) {
-        const formContext = this.decorator.getFormContext();
-        const constants = formContext?.dataSet[column.field] || [];
+      if (remote) {
+        const formContext = decorator.getFormContext();
+        const constants = formContext?.dataSet[field] || [];
         constant = findConstant(value, constants);
-      } else if (column.dictionary) {
-        const formContext = this.decorator.getFormContext();
-        const constants = formContext?.dataSet[column.dictionary] || [];
+      } else if (dictionary) {
+        const formContext = decorator.getFormContext();
+        const constants = formContext?.dataSet[dictionary] || [];
         constant = findConstant(value, constants);
       } else {
-        constant = column.optionList?.filter((c) => c.value === value).pop();
+        constant = optionList?.filter((c) => c.value === value).pop();
       }
-      return constant ? <ConstantTag constant={constant} /> : value;
+      const Display = constant ? (
+        <RelationComponent
+          column={column}
+          record={record}
+          decorator={decorator}
+          Display={<ConstantTag constant={constant} />}
+        />
+      ) : (
+        <ConstantTag constant={{ value, label: 'undefined', tag: 'red' }} />
+      );
+      return Display;
     };
     return { ...column, render: column.render || render };
   }

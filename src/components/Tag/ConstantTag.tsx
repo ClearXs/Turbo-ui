@@ -28,7 +28,7 @@ const ConstantTag = (props: ConstantTagProps) => {
       {label}
     </Tag>
   ) : (
-    <Typography.Text>{label}</Typography.Text>
+    <Typography.Text ellipsis={{ showTooltip: true }}>{label}</Typography.Text>
   );
 };
 

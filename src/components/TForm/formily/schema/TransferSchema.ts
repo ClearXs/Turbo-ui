@@ -3,33 +3,27 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormTransferColumnProps } from '../../components';
 
 const TransferSchema: SchemaColumn<FormTransferColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(column, formContext, 'Transfer', 'string[]'),
+      ...baseOnColumnCreateISchema(column, formContext, 'Transfer', 'string[]'),
       'x-component-props': {
         ..._.omit(column, [...ExclusiveColumnKeyProps]),
       },
     };
   },
-  reverse: (field, span, schema) => {
+  reverse: (index, schema) => {
     return {
-      field,
-      index: schema['x-index'],
+      ...baseOnBoAttrSchemaCreateColumn(index, schema),
       type: 'transfer',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
     };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('transfer', TransferSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping('Transfer', 'transfer');

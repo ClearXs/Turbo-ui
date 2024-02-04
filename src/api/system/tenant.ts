@@ -28,7 +28,9 @@ export interface Tenant extends IdEntity {
   updatedBy: string;
 }
 
-export default function useTenantApi(): GeneralApi<Tenant> {
+export interface TenantApi extends GeneralApi<Tenant> {}
+
+export default function useTenantApi(): TenantApi {
   const request = useRequest();
   return new GeneralApiImpl<Tenant>('/api/sys/tenant', request);
 }

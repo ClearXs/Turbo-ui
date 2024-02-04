@@ -1,11 +1,19 @@
-import { Bo } from '@/api/developer/bo';
-import { BoAttributeTree } from '@/api/developer/boattribute';
+import useBoApi, { Bo, BoApi } from '@/api/developer/bo';
+import useBoAttributeApi, {
+  BoAttributeApi,
+  BoAttributeTree,
+} from '@/api/developer/boattribute';
 import { TableColumnProps } from '@/components/TableCrud/interface';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 import { BoAttributeTypes } from './boattributetype';
 import { toTreeNode } from '@/components/Tag/ConstantTag';
+import {
+  TableSelectColumnProps,
+  TableTreeSelectColumnProps,
+} from '@/components/TableCrud/components';
+import DataSourceHelper from '../datasource/helper';
 
-const BoHelper: Helper<Bo> = {
+const BoHelper: Helper<Bo, BoApi> = {
   getColumns: () => {
     return [
       {
@@ -31,9 +39,22 @@ const BoHelper: Helper<Bo> = {
         ellipsis: true,
         align: 'center',
         type: 'select',
+        require: true,
         remote: {
           url: '/api/dev/datasource/list',
         },
+        showClear: true,
+        relation: {
+          helper: DataSourceHelper,
+        },
+      } as TableSelectColumnProps<Bo>,
+      {
+        label: '是否物化',
+        field: 'materialize',
+        ellipsis: true,
+        align: 'center',
+        type: 'switch',
+        form: false,
       },
       {
         label: '备注',
@@ -46,9 +67,10 @@ const BoHelper: Helper<Bo> = {
       },
     ] as TableColumnProps<Bo>[];
   },
+  getApi: useBoApi,
 };
 
-const BoTableHelper: Helper<BoAttributeTree> = {
+const BoTableHelper: Helper<BoAttributeTree, BoAttributeApi> = {
   getColumns: () => {
     return [
       {
@@ -87,9 +109,10 @@ const BoTableHelper: Helper<BoAttributeTree> = {
       },
     ] as TableColumnProps<BoAttributeTree>[];
   },
+  getApi: useBoAttributeApi,
 };
 
-const BoAttributeHelper: Helper<BoAttributeTree> = {
+const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
   getColumns: () => {
     return [
       {
@@ -149,7 +172,7 @@ const BoAttributeHelper: Helper<BoAttributeTree> = {
       },
       {
         label: '是否主键',
-        field: 'isPk',
+        field: 'pk',
         ellipsis: true,
         align: 'center',
         type: 'switch',
@@ -157,7 +180,7 @@ const BoAttributeHelper: Helper<BoAttributeTree> = {
       },
       {
         label: '是否外键',
-        field: 'isFk',
+        field: 'fk',
         ellipsis: true,
         align: 'center',
         type: 'switch',
@@ -165,7 +188,7 @@ const BoAttributeHelper: Helper<BoAttributeTree> = {
       },
       {
         label: '是否非空',
-        field: 'isNonNull',
+        field: 'nonNull',
         ellipsis: true,
         align: 'center',
         type: 'switch',
@@ -173,7 +196,7 @@ const BoAttributeHelper: Helper<BoAttributeTree> = {
       },
       {
         label: '是否唯一',
-        field: 'isUnique',
+        field: 'unique',
         ellipsis: true,
         align: 'center',
         type: 'switch',
@@ -199,6 +222,7 @@ const BoAttributeHelper: Helper<BoAttributeTree> = {
       },
     ] as TableColumnProps<BoAttributeTree>[];
   },
+  getApi: useBoAttributeApi,
 };
 
 export { BoTableHelper, BoAttributeHelper };

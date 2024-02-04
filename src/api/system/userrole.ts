@@ -13,7 +13,9 @@ export interface UserRole extends IdEntity {
   roleId: string;
 }
 
-const useUserRoleApi = (): GeneralApi<UserRole> => {
+interface UserRoleApi extends GeneralApi<UserRole> {}
+
+const useUserRoleApi = (): UserRoleApi => {
   const request = useRequest();
 
   return new GeneralApiImpl<UserRole>('/api/sys/user-role', request);

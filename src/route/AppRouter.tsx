@@ -14,9 +14,8 @@ import { importIcon } from '@/components/Icon/shared';
 import _ from 'lodash';
 import Home from '@/pages/home';
 import Login from '@/pages/login';
-import App from '@/App';
-import useTurboRoute, { lazyLoader } from '../hook/route';
-import MenuError from '../pages/error/MenuError';
+import { lazyLoader, slowLazy, useLoadRoutes } from '../hook/route';
+import Loading from '../pages/Loading';
 import { withInterceptorComponent } from './Interceptor';
 import Profile from '@/pages/profile';
 
@@ -36,7 +35,7 @@ export type TurboRoute = RouteObject &
 
 const AppRouter: React.FC = () => {
   const userRoutes = useRecoilValue(CurrentUserRouteState);
-  const { loadCurrentUserRoute } = useTurboRoute();
+  const loadCurrentUserRoute = useLoadRoutes();
 
   useEffect(() => {
     const authentication = local.get(headers.Authentication);
@@ -96,7 +95,7 @@ const AppRouter: React.FC = () => {
       path: '/profile',
       name: '个人档案',
       level: 2,
-      element: lazyLoader(<Profile />),
+      element: <Profile />,
       type: 'system',
       icon: IconUserComponent && <IconUserComponent />,
       clearable: true,
@@ -109,13 +108,18 @@ const AppRouter: React.FC = () => {
     {
       id: '/',
       path: '/',
-      element: lazyLoader(<App />),
-      errorElement: <MenuError />,
+      element: lazyLoader(() => slowLazy(import('@/App')), true),
+      errorElement: <Loading />,
       loader: () => renderRoutes,
       type: 'system',
       children: renderRoutes,
       intercept: (navigate: NavigateFunction) => {
-        navigate('/home');
+        const authentication = local.get(headers.Authentication);
+        if (_.isEmpty(authentication)) {
+          navigate('/login');
+        } else {
+          navigate('/home');
+        }
         return false;
       },
     },

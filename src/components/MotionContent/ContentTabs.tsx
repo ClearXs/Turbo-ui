@@ -1,29 +1,20 @@
-import {
-  CurrentUserMenuTabsState,
-  CurrentUserSelectTabState,
-  CurrentUserSidebarMenusState,
-  CurrentUserSidebarSelectTabState,
-  UserTab,
-} from '@/store/menu';
 import { Dropdown, Notification, TabPane, Tabs } from '@douyinfe/semi-ui';
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 import { directGetIcon } from '../Icon/shared';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { TurboRoute } from '@/route/AppRouter';
 import _ from 'lodash';
+import { useContext, useEffect } from 'react';
+import { AppContext } from '@/context';
+import { findRoute } from '@/route/util';
+import { createContentTab } from './util';
+import { observer } from '@formily/reactive-react';
+import { UserTab } from './interface';
 
-const ContentTabs = () => {
-  const [userTabs, setCurrentUserTabs] = useRecoilState(
-    CurrentUserMenuTabsState,
-  );
-  const [sidebarSelectTab, setSidebarSelectTab] = useRecoilState(
-    CurrentUserSidebarSelectTabState,
-  );
-  const [topMenu, setTopMenu] = useRecoilState(CurrentUserSelectTabState);
+const ContentTabs = observer(() => {
+  const app = useContext(AppContext);
+  const { userRoutes, userTabs, selectTopKey, selectTabKey, selectSideKey } =
+    app;
   const navigate = useNavigate();
-  const userRoutes = useLoaderData() as TurboRoute[];
-  const setSidebarMenus = useSetRecoilState(CurrentUserSidebarMenusState);
 
   const closeTab = (tabKey: string) => {
     // 去除关闭的menu tab
@@ -32,7 +23,7 @@ const ContentTabs = () => {
       return tab.itemKey === tabKey;
     });
     // 判断当前关闭的key是否为激活的key，如果不是则不重新设置激活key
-    if (tabKey === sidebarSelectTab) {
+    if (tabKey === selectSideKey) {
       // 判断当前关闭是否为最后一个，如果是则取上一个，如果不是则取下一个
       const nextTab =
         userTabs[
@@ -45,16 +36,15 @@ const ContentTabs = () => {
         toHome();
         return;
       }
-
-      setSidebarSelectTab(nextTab.itemKey as string);
+      app.selectSideKey = nextTab.itemKey;
       navigate(nextTab.path as string);
       onceMoreRenderSideMenu(nextTab);
     }
-    const newTabs = [
+    const newUserTabs = [
       ...userTabs.slice(0, closeTabIndex),
       ...userTabs.slice(closeTabIndex + 1, userTabs.length),
     ];
-    setCurrentUserTabs(newTabs);
+    app.userTabs = newUserTabs;
   };
 
   const closeOtherTab = (tab: UserTab) => {
@@ -68,11 +58,11 @@ const ContentTabs = () => {
     // 判断当前是否是选中
     // 如果是，则不需要设置选中项
     // 如果不是，则需要设置选中项，以当前结点作为选中项并跳转
-    if (sidebarSelectTab !== tab.itemKey) {
-      setSidebarSelectTab(tab.itemKey as string);
+    if (selectSideKey !== tab.itemKey) {
+      app.selectSideKey = tab.itemKey;
       navigate(tab.path as string);
     }
-    setCurrentUserTabs(newUserTabs);
+    app.userTabs = newUserTabs;
   };
 
   const closeAllTab = () => {
@@ -80,11 +70,11 @@ const ContentTabs = () => {
     const homeTab = userTabs.find((tab) => tab.itemKey === 'home');
     if (homeTab) {
       // 跳转到home
-      setTopMenu(homeTab.itemKey as string);
+      app.selectTopKey = homeTab.itemKey as string;
       navigate(homeTab.path as string);
-      setCurrentUserTabs([homeTab]);
+      app.userTabs = [homeTab];
     } else {
-      setCurrentUserTabs([]);
+      app.userTabs = [];
     }
   };
 
@@ -105,8 +95,8 @@ const ContentTabs = () => {
         navigate(tab.path);
       }
       // 设置active
-      setSidebarSelectTab(activeKey);
-
+      app.selectTabKey = activeKey;
+      app.selectSideKey = activeKey;
       onceMoreRenderSideMenu(tab);
     }
   };
@@ -114,22 +104,28 @@ const ContentTabs = () => {
   // 再次渲染 side menu
   const onceMoreRenderSideMenu = (tab: UserTab) => {
     // 避免重复渲染
-    if (topMenu !== tab.topMenuKey) {
-      setTopMenu(tab.topMenuKey);
-      // 重新设置sidebar
-      const topMenu = userRoutes.find((route) => route.code === tab.topMenuKey);
-      topMenu &&
-        setSidebarMenus({
-          topMenuKey: tab.topMenuKey,
-          sideMenus: topMenu.children as TurboRoute[],
-        });
+    if (selectTopKey !== tab.topMenuKey) {
+      app.selectTopKey = tab.topMenuKey;
     }
   };
 
   const toHome = () => {
     navigate('/home');
-    setTopMenu('home');
+    app.selectTopKey = 'home';
   };
+
+  useEffect(() => {
+    const homeRoute = findRoute('/home', userRoutes);
+    if (homeRoute) {
+      const newTabs = createContentTab(userTabs, homeRoute, 'home');
+      if (app.selectTabKey === undefined) {
+        app.selectTabKey = 'home';
+      }
+      if (newTabs) {
+        app.userTabs = newTabs;
+      }
+    }
+  }, []);
 
   return (
     <Tabs
@@ -137,7 +133,7 @@ const ContentTabs = () => {
       type="card"
       onTabClick={(activeKey) => tabClick(activeKey)}
       onTabClose={(tabKey) => closeTab(tabKey)}
-      activeKey={sidebarSelectTab}
+      activeKey={selectTabKey}
       renderTabBar={(props, Bar) => {
         return (
           <>
@@ -152,55 +148,53 @@ const ContentTabs = () => {
           <TabPane
             key={tab.itemKey}
             tab={
-              <>
-                <Dropdown
-                  trigger="contextMenu"
-                  position="bottom"
-                  clickToHide
-                  render={
-                    <Dropdown.Menu>
-                      {tab.itemKey !== 'home' && (
-                        <Dropdown.Item
-                          icon={directGetIcon('IconRefresh')}
-                          onClick={() => {
-                            navigate(tab.path);
-                            // 设置active
-                            setSidebarSelectTab(tab.itemKey as string);
-                          }}
-                        >
-                          刷新
-                        </Dropdown.Item>
-                      )}
+              <Dropdown
+                trigger="contextMenu"
+                position="bottom"
+                clickToHide
+                render={
+                  <Dropdown.Menu>
+                    {tab.itemKey !== 'home' && (
+                      <Dropdown.Item
+                        icon={directGetIcon('IconRefresh')}
+                        onClick={() => {
+                          navigate(tab.path);
+                          // 设置active
+                          app.selectSideKey = tab.itemKey as string;
+                        }}
+                      >
+                        刷新
+                      </Dropdown.Item>
+                    )}
 
-                      {tab.itemKey !== 'home' && (
-                        <Dropdown.Item
-                          icon={directGetIcon('IconClose')}
-                          onClick={() => closeTab(tab.itemKey as string)}
-                        >
-                          关闭
-                        </Dropdown.Item>
-                      )}
+                    {tab.itemKey !== 'home' && (
                       <Dropdown.Item
-                        icon={directGetIcon('IconMinusCircleStroked')}
-                        onClick={() => closeOtherTab(tab)}
+                        icon={directGetIcon('IconClose')}
+                        onClick={() => closeTab(tab.itemKey as string)}
                       >
-                        关闭其他
+                        关闭
                       </Dropdown.Item>
-                      <Dropdown.Item
-                        icon={directGetIcon('IconClear')}
-                        onClick={() => closeAllTab()}
-                      >
-                        关闭全部
-                      </Dropdown.Item>
-                      <Dropdown.Item icon={directGetIcon('IconStar')}>
-                        收藏
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  }
-                >
-                  <Text>{tab.tab}</Text>
-                </Dropdown>
-              </>
+                    )}
+                    <Dropdown.Item
+                      icon={directGetIcon('IconMinusCircleStroked')}
+                      onClick={() => closeOtherTab(tab)}
+                    >
+                      关闭其他
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      icon={directGetIcon('IconClear')}
+                      onClick={() => closeAllTab()}
+                    >
+                      关闭全部
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={directGetIcon('IconStar')}>
+                      收藏
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Text>{tab.tab}</Text>
+              </Dropdown>
             }
             tabIndex={index}
             itemKey={tab.itemKey}
@@ -211,5 +205,6 @@ const ContentTabs = () => {
       })}
     </Tabs>
   );
-};
+});
+
 export default ContentTabs;

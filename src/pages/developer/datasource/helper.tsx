@@ -1,10 +1,11 @@
-import { DataSource } from '@/api/developer/datasource';
-import {
-  TableColumnProps,
-  TableTreeSelectColumnProps,
-} from '@/components/TableCrud/interface';
+import useDataSourceApi, {
+  DataSource,
+  DataSourceApi,
+} from '@/api/developer/datasource';
+import { TableTreeSelectColumnProps } from '@/components/TableCrud/components';
+import { TableColumnProps } from '@/components/TableCrud/interface';
 import { Constant } from '@/constant';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 import { Space, Tag } from '@douyinfe/semi-ui';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
@@ -144,6 +145,12 @@ export const DBType: (Constant & {
   },
 ];
 
+export const DbStatus: Constant[] = [
+  { value: 'lived', label: '正常', tag: 'green' },
+  { value: 'dead', label: '断开', tag: 'red' },
+  { value: 'blocked', label: '异常', tag: 'orange' },
+];
+
 const getDbTypeTree = (): TreeNodeData[] => {
   const group = _.groupBy(DBType, (d) => d.category);
   const treeNode: TreeNodeData[] = [];
@@ -179,7 +186,7 @@ const getDbTypeTree = (): TreeNodeData[] => {
   return treeNode;
 };
 
-const DataSourceHelper: Helper<DataSource> = {
+const DataSourceHelper: Helper<DataSource, DataSourceApi> = {
   getColumns: () => {
     return [
       {
@@ -192,7 +199,16 @@ const DataSourceHelper: Helper<DataSource> = {
         require: true,
       },
       {
-        field: 'url',
+        field: 'key',
+        label: '数据源key',
+        ellipsis: true,
+        align: 'center',
+        search: true,
+        type: 'input',
+        require: true,
+      },
+      {
+        field: 'address',
         label: '数据源连接地址',
         ellipsis: true,
         align: 'center',
@@ -207,14 +223,25 @@ const DataSourceHelper: Helper<DataSource> = {
         align: 'center',
         type: 'input',
         table: false,
+        require: true,
       },
       {
         field: 'password',
         label: '连接密码',
         ellipsis: true,
         align: 'center',
+        type: 'password',
+        table: false,
+        require: true,
+      },
+      {
+        field: 'database',
+        label: '数据库',
+        ellipsis: true,
+        align: 'center',
         type: 'input',
         table: false,
+        require: true,
       },
       {
         field: 'engine',
@@ -222,6 +249,7 @@ const DataSourceHelper: Helper<DataSource> = {
         ellipsis: true,
         align: 'center',
         type: 'treeSelect',
+        require: true,
         table: true,
         filterTreeNode: true,
         expandAll: true,
@@ -229,7 +257,18 @@ const DataSourceHelper: Helper<DataSource> = {
           return getDbTypeTree();
         },
       } as TableTreeSelectColumnProps<DataSource>,
+      {
+        field: 'status',
+        label: '状态',
+        ellipsis: true,
+        align: 'center',
+        type: 'select',
+        optionList: DbStatus,
+        table: true,
+        form: false,
+      },
     ] as TableColumnProps<DataSource>[];
   },
+  getApi: useDataSourceApi,
 };
 export default DataSourceHelper;

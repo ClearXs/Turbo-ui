@@ -23,9 +23,11 @@ export interface Post extends TenantEntity {
   sort: number;
 }
 
-class PostApiImpl extends GeneralApiImpl<Post> {}
+export interface PostApi extends GeneralApi<Post> {}
 
-export default function usePostApi(): GeneralApi<Post> {
+class PostApiImpl extends GeneralApiImpl<Post> implements PostApi {}
+
+export default function usePostApi(): PostApi {
   const request = useRequest();
   return new PostApiImpl('/api/sys/post', request);
 }

@@ -3,7 +3,8 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormTreeSelectColumnProps } from '../../components';
 
@@ -11,26 +12,22 @@ import { FormTreeSelectColumnProps } from '../../components';
 const TreeSelectSchema: SchemaColumn<FormTreeSelectColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(column, formContext, 'TreeSelect', 'string'),
+      ...baseOnColumnCreateISchema(column, formContext, 'TreeSelect', 'string'),
       'x-component-props': {
         ..._.omit(column, [...ExclusiveColumnKeyProps, 'treeData', 'remote']),
       },
     };
   },
-  reverse: (field, span, schema) => {
+  reverse: (index, schema) => {
     return {
-      field,
-      index: schema['x-index'],
+      ...baseOnBoAttrSchemaCreateColumn(index, schema),
       type: 'treeSelect',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
     };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('treeSelect', TreeSelectSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping(
+  'TreeSelect',
+  'treeSelect',
+);

@@ -42,7 +42,9 @@ export type MenuTree = Menu & {
   children: MenuTree[];
 };
 
-export default function useMenuApi(): TreeGeneralApi<MenuTree> {
+export interface MenuApi extends TreeGeneralApi<MenuTree> {}
+
+export default function useMenuApi(): MenuApi {
   const request = useRequest();
   return new TreeGeneralApiImpl<MenuTree>('/api/sys/menu', request);
 }

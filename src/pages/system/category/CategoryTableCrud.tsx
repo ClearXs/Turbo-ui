@@ -33,7 +33,7 @@ export type CategoryTableCrudProps<T extends CategoryEntity> = Omit<
 const CategoryTableCrud = <T extends CategoryEntity>(
   props: CategoryTableCrudProps<T>,
 ) => {
-  const api = props.useApi();
+  const api = props.useApi?.();
   const [showCategoryTree, setShowCategoryTree] = useState<boolean>(false);
   const categoryTreeRef = useRef<TreePanelApi<CategoryTree>>();
   const currentRowRef = useRef<T[]>();
@@ -72,7 +72,8 @@ const CategoryTableCrud = <T extends CategoryEntity>(
       <TableCrud<T>
         {...newProps}
         getTableContext={(tableContext) =>
-          (tableContextRef.current = tableContext)
+          (tableContextRef.current = tableContext) &&
+          newProps.getTableContext?.(tableContext)
         }
       />
       <Modular

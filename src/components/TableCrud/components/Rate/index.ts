@@ -1,2 +1,2 @@
 export * from './interface';
-export * from './RateFormField';
+export * from './RateTableField';

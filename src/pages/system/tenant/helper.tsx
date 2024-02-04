@@ -1,8 +1,8 @@
-import { Tenant } from '@/api/system/tenant';
+import useTenantApi, { Tenant, TenantApi } from '@/api/system/tenant';
 import { TableColumnProps } from '@/components/TableCrud/interface';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 
-const TenantHelper: Helper<Tenant> = {
+const TenantHelper: Helper<Tenant, TenantApi> = {
   getColumns: () => {
     return [
       {
@@ -49,5 +49,6 @@ const TenantHelper: Helper<Tenant> = {
       },
     ] as TableColumnProps<Tenant>[];
   },
+  getApi: useTenantApi,
 };
 export default TenantHelper;

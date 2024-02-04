@@ -56,3 +56,16 @@ const innerExpand = <T extends Tree, K extends keyof Expand>(
   });
   return expand;
 };
+
+export const find = <T extends Tree>(
+  tree: T[] = [],
+  key: keyof T,
+  v: any,
+): T | undefined => {
+  for (const element of tree) {
+    if (element[key] === v) {
+      return element;
+    }
+    return find(element.children, key, v);
+  }
+};

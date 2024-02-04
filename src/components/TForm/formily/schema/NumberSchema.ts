@@ -3,33 +3,36 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormNumberColumnProps } from '../../components';
 
 const NumberSchema: SchemaColumn<FormNumberColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(column, formContext, 'NumberPicker', 'number'),
+      ...baseOnColumnCreateISchema(
+        column,
+        formContext,
+        'NumberPicker',
+        'number',
+      ),
       'x-component-props': {
         ..._.omit(column, [...ExclusiveColumnKeyProps]),
       },
     };
   },
-  reverse: (field, span, schema) => {
-    return {
-      field,
-      index: schema['x-index'],
-      type: 'number',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
-    };
+  reverse: (index, schema) => {
+    return { ...baseOnBoAttrSchemaCreateColumn(index, schema), type: 'number' };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('number', NumberSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping('NumberPicker', 'number');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('smallint', 'number');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('int', 'number');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('bigint', 'number');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('number', 'number');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('double', 'number');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('float', 'number');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('decimal', 'number');

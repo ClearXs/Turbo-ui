@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api/interface';
 import {
   ColumnType,
   FormColumnProps,
@@ -31,6 +31,8 @@ import {
   UploadDragFormField,
 } from './components';
 import { ISchema } from '@formily/json-schema';
+import { BoAttrSchema } from '@designable/core';
+import { GlobalSchemaColumnRegistry } from './formily/schema';
 
 export interface FormColumnDecorator<T extends IdEntity> {
   /**
@@ -47,6 +49,13 @@ export interface FormColumnDecorator<T extends IdEntity> {
   schema(column: FormColumnProps<T>, index: number): ISchema;
 
   /**
+   * 基于schema获取Column
+   * @param index index
+   * @param schema schema
+   */
+  from(index: number, schema: BoAttrSchema): FormColumnProps<T> | undefined;
+
+  /**
    * 获取默认span
    * @param column column
    */
@@ -61,6 +70,16 @@ export interface FormColumnDecorator<T extends IdEntity> {
    * 设置form context
    */
   setFormContext(formContext: FormContext<T>): void;
+
+  /**
+   * 设置relation apis
+   */
+  setRelationApis(relationApis: Map<string, GeneralApi<any>>): void;
+
+  /**
+   * 获取relation apis
+   */
+  getRelationApis(): Map<string, GeneralApi<any>>;
 }
 
 export class UndefinedFormField<T extends IdEntity> extends BaseFormField<
@@ -138,13 +157,40 @@ export class FormColumnFactory {
 export class FormColumnDecoratorImpl<T extends IdEntity>
   implements FormColumnDecorator<T>
 {
+  private relationApis: Map<string, GeneralApi<any>> = new Map();
   constructor(private formContext?: FormContext<T>) {}
+
+  setRelationApis(relationApis: Map<string, GeneralApi<any>>): void {
+    this.relationApis = relationApis;
+  }
+  getRelationApis(): Map<string, GeneralApi<any>> {
+    return this.relationApis;
+  }
 
   schema(column: FormColumnProps<T>, index: number): ISchema {
     return FormColumnFactory.get<T, FormColumnProps<T>>(
       column.type,
       this,
     )?.schema(column, index);
+  }
+
+  from(index: number, schema: BoAttrSchema): FormColumnProps<T> | undefined {
+    if (schema.binding) {
+      const component = schema['props']?.['x-component'];
+      const columnType =
+        component &&
+        GlobalSchemaColumnRegistry.getColumnTypeByComponent(component);
+      return (
+        (columnType &&
+          FormColumnFactory.get<T, FormColumnProps<T>>(columnType, this)?.from(
+            index,
+            schema,
+          )) ||
+        undefined
+      );
+    } else {
+      return undefined;
+    }
   }
 
   render(column: FormColumnProps<T>, type: 'search' | 'form'): ReactNode {

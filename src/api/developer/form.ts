@@ -18,11 +18,6 @@ export interface Form extends CategoryEntity {
   schema: string;
 
   /**
-   * boSchema
-   */
-  boSchema: string;
-
-  /**
    * 所属于bo id
    */
   boId: string;

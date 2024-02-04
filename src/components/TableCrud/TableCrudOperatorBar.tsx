@@ -76,6 +76,7 @@ function useTableCrudOperatorBar<T extends IdEntity>() {
           onClick: (tableContext, formContext, record) => {
             Modal.warning({
               title: '是否确定删除?',
+              content: '该数据被删除，与其关联的数据将无法使用，请慎重操作!',
               onOk: () => {
                 tableApi?.remove(tableContext, [record.id]);
               },

@@ -3,6 +3,7 @@ import { ColumnType, FormColumnProps } from '../interface';
 import { FormColumnDecorator } from '..';
 import { ISchema } from '@formily/json-schema';
 import { GlobalSchemaColumnRegistry } from '../formily/schema';
+import { BoAttrSchema } from '@designable/core';
 
 export interface FormField<T extends IdEntity, K extends FormColumnProps<T>> {
   /**
@@ -10,9 +11,8 @@ export interface FormField<T extends IdEntity, K extends FormColumnProps<T>> {
    * @param type 区分column是搜索还是表单渲染
    */
   render(column: K, type: 'search' | 'form'): React.ReactNode | undefined;
-
   schema(column: K, index: number): ISchema;
-
+  from(index: number, schema: BoAttrSchema): FormColumnProps<T> | undefined;
   getDefaultSpan(): FormColumnProps<T>['span'];
 }
 
@@ -52,11 +52,22 @@ export abstract class BaseFormField<
   public schema(column: K, index: number): ISchema {
     const schema = GlobalSchemaColumnRegistry.getSchemaColumn(
       this.getType(),
-    ).adapt({ ...column, index }, this.decorator.getFormContext());
-    const label = column.label;
-    const placeholder = `${this.placeholderPrefix[column.type]}${label}!`;
-    schema['x-component-props']['placeholder'] = placeholder;
-    return schema;
+    )?.adapt({ ...column, index }, this.decorator.getFormContext());
+    if (schema) {
+      const label = column.label;
+      const placeholder = `${this.placeholderPrefix[column.type]}${label}!`;
+      schema['x-component-props']['placeholder'] = placeholder;
+      return schema;
+    } else {
+      return {};
+    }
+  }
+
+  from(index: number, schema: BoAttrSchema): FormColumnProps<T> | undefined {
+    const column = GlobalSchemaColumnRegistry.getSchemaColumn(
+      this.getType(),
+    )?.reverse(index, schema);
+    return column;
   }
 
   public render(

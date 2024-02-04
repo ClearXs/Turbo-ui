@@ -1,18 +1,49 @@
-import { Button, ButtonGroup, Modal, Spin } from '@douyinfe/semi-ui';
-import { ModularProps } from './interface';
+import { Button, ButtonGroup, Modal } from '@douyinfe/semi-ui';
+import { ModularButton, ModularProps } from './interface';
+import { directGetIcon } from '../Icon';
 
 // 封装Modal组件
 const Modular = (props: ModularProps) => {
   const {
     title,
     visible = true,
-    loading = false,
     children,
     size = 'medium',
     fullScreen,
     onConfirm,
     onCancel,
+    showConfirm = true,
+    showCancel = true,
+    append = [],
   } = props;
+
+  const modularButtons: ModularButton[] = [];
+  if (showCancel) {
+    modularButtons.push({
+      code: 'cancel',
+      name: '取消',
+      type: 'tertiary',
+      size: 'default',
+      icon: directGetIcon('IconCrossCircleStroked'),
+      onClick() {
+        onCancel?.();
+      },
+    });
+  }
+  if (showConfirm) {
+    modularButtons.push({
+      code: 'confirm',
+      name: '确定',
+      type: 'primary',
+      loading: true,
+      size: 'default',
+      icon: directGetIcon('IconCheckCircleStroked'),
+      onClick() {
+        onConfirm?.();
+      },
+    });
+  }
+  append.forEach((button) => modularButtons.push(button));
 
   return (
     <Modal
@@ -23,17 +54,34 @@ const Modular = (props: ModularProps) => {
       onCancel={onCancel}
       closable={false}
       footer={
-        <ButtonGroup className="relative left-0">
-          <Button loading={loading} onClick={onConfirm}>
-            确认
-          </Button>
-          <Button loading={loading} onClick={onCancel} type="tertiary">
-            取消
-          </Button>
+        <ButtonGroup className="float-right">
+          {modularButtons.map((button) => {
+            const {
+              code,
+              icon,
+              type,
+              size,
+              loading = false,
+              onClick,
+              name,
+            } = button;
+            return (
+              <Button
+                key={code}
+                icon={icon}
+                type={type}
+                size={size}
+                loading={loading && props.loading}
+                onClick={() => onClick?.()}
+              >
+                {name}
+              </Button>
+            );
+          })}
         </ButtonGroup>
       }
     >
-      <Spin spinning={loading}>{children}</Spin>
+      <div className="max-h-[60vh] overflow-y-auto">{children}</div>
     </Modal>
   );
 };

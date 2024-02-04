@@ -1,6 +1,6 @@
 import Table from '@douyinfe/semi-ui/lib/es/table';
 import TableHeader from './TableHeader';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import _ from 'lodash';
 import { IdEntity } from '@/api/interface';
 import TableToolbar from './TableToolbar';
@@ -18,7 +18,6 @@ import useTableCrudOperatorBar from './TableCrudOperatorBar';
 import useTableApi from './TableApi';
 import TablePagination from './TablePagination';
 import { TableCrudContext } from './context';
-import { FormContext } from '../TForm/interface';
 import { TFormContext } from '../TForm/context';
 import { observable } from '@formily/reactive';
 import { observer } from '@formily/reactive-react';
@@ -146,8 +145,8 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
       search: props.params || {},
       decorator,
       dataSource: [],
-      refresh: () => {
-        tableApi.listOrPageOrTree(tableContext, pageable);
+      refresh() {
+        tableApi.listOrPageOrTree(this, this.table.pagination);
       },
       getTableColumns(exclusiveOperate = false, immediateFilter = true) {
         return new TableColumnsBuilder(this.tableColumns || [], this, props)
@@ -163,21 +162,64 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
     return observerTableContext;
   }, [props.params]);
 
-  useEffect(() => {
-    tableApi.listOrPageOrTree(tableContext);
-  }, [props.params]);
-
-  // tableContext.decorator.setTableContext(tableContext);
   props.getTableContext?.(tableContext);
 
   return <ObserverTableCrud tableProps={props} tableContext={tableContext} />;
 }
+
+const ObserverTableCrud: React.FC<ObserverTableCrudProps<any>> = observer(
+  <T extends IdEntity>(props: ObserverTableCrudProps<T>) => {
+    const { tableProps, tableContext } = props;
+    const { tableApi } = tableContext;
+
+    const observerProps = useMemo(() => {
+      return observable({ formContext: undefined });
+    }, []);
+
+    useEffect(() => {
+      tableApi.listOrPageOrTree(tableContext);
+    }, [tableContext.search]);
+
+    const ViewTable = useViewTable({ tableProps, tableContext });
+
+    return (
+      <>
+        {observerProps.formContext && (
+          <TableCrudContext.Provider value={tableContext}>
+            <TFormContext.Provider value={observerProps.formContext}>
+              <header>
+                <TableHeader<T> key="TableHeader" tableProps={tableProps} />
+                <TableToolbar<T> key="TableToolbar" tableProps={tableProps} />
+              </header>
+              {ViewTable}
+            </TFormContext.Provider>
+          </TableCrudContext.Provider>
+        )}
+        <TForm<T>
+          mode="table"
+          modal={tableProps.modal}
+          columns={tableProps.columns || []}
+          useApi={tableProps.useApi}
+          onOk={() => {
+            tableApi.listOrPageOrTree(tableContext);
+          }}
+          getFormContext={(formContext) =>
+            (observerProps.formContext = formContext)
+          }
+          decorator={tableContext.decorator}
+          params={tableProps.params}
+        />
+      </>
+    );
+  },
+);
 
 const useViewTable = <T extends IdEntity>({
   tableContext,
   tableProps,
 }: ObserverTableCrudProps<any>) => {
   const { mode, tableApi } = tableContext;
+  const { id = 'id' } = tableProps;
   if (mode === 'cardPage') {
     return <CardPage tableProps={tableProps} />;
   } else {
@@ -189,8 +231,8 @@ const useViewTable = <T extends IdEntity>({
         dataSource={tableContext.dataSource}
         loading={tableContext.table.loading}
         sticky
-        key="id"
-        rowKey="id"
+        key={id}
+        rowKey={id}
         pagination={tableContext.table.pagination || false}
         renderPagination={(props) => {
           const { pageSize = 10, currentPage = 1, total = 0 } = props;
@@ -248,38 +290,5 @@ const useViewTable = <T extends IdEntity>({
     );
   }
 };
-
-const ObserverTableCrud: React.FC<ObserverTableCrudProps<any>> = observer(
-  <T extends IdEntity>(props: ObserverTableCrudProps<T>) => {
-    const { tableProps, tableContext } = props;
-    const { tableApi } = tableContext;
-    const [formContext, setFormContext] = useState<FormContext<T>>();
-    const ViewTable = useViewTable({ tableProps, tableContext });
-    return (
-      <TableCrudContext.Provider value={tableContext}>
-        {formContext && (
-          <TFormContext.Provider value={formContext}>
-            <header>
-              <TableHeader<T> key="TableHeader" tableProps={tableProps} />
-              <TableToolbar<T> key="TableToolbar" tableProps={tableProps} />
-            </header>
-            {ViewTable}
-          </TFormContext.Provider>
-        )}
-        <TForm<T>
-          mode="table"
-          columns={tableProps.columns || []}
-          useApi={tableProps.useApi}
-          onOk={() => {
-            tableApi.listOrPageOrTree(tableContext);
-          }}
-          getFormContext={setFormContext}
-          decorator={tableContext.decorator}
-          params={tableProps.params}
-        />
-      </TableCrudContext.Provider>
-    );
-  },
-);
 
 export default TableCrud;

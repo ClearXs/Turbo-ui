@@ -3,33 +3,24 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormRateColumnProps } from '../../components';
 
 const RateSchema: SchemaColumn<FormRateColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(column, formContext, 'Rate', 'number'),
+      ...baseOnColumnCreateISchema(column, formContext, 'Rate', 'number'),
       'x-component-props': {
         ..._.omit(column, [...ExclusiveColumnKeyProps]),
       },
     };
   },
-  reverse: (field, span, schema) => {
-    return {
-      field,
-      index: schema['x-index'],
-      type: 'rate',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
-    };
+  reverse: (index, schema) => {
+    return { ...baseOnBoAttrSchemaCreateColumn(index, schema), type: 'rate' };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('rate', RateSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping('Rate', 'rate');

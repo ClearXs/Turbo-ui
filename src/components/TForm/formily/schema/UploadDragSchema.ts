@@ -3,33 +3,35 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormUploadDragColumnProps } from '../../components';
 
 const UploadDragSchema: SchemaColumn<FormUploadDragColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(column, formContext, 'Upload.Dragger', 'array'),
+      ...baseOnColumnCreateISchema(
+        column,
+        formContext,
+        'Upload.Dragger',
+        'array',
+      ),
       'x-component-props': {
         ..._.omit(column, [...ExclusiveColumnKeyProps]),
       },
     };
   },
-  reverse: (field, span, schema) => {
+  reverse: (index, schema) => {
     return {
-      field,
-      index: schema['x-index'],
+      ...baseOnBoAttrSchemaCreateColumn(index, schema),
       type: 'uploadDrag',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
     };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('uploadDrag', UploadDragSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping(
+  'Upload.Dragger',
+  'uploadDrag',
+);

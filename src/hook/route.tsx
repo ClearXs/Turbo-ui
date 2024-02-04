@@ -5,11 +5,15 @@ import { importIcon } from '@/components/Icon/shared';
 import { TurboRoute } from '@/route/AppRouter';
 import { CurrentUserRouteState, MenuErrorState } from '@/store/menu';
 import { isEmpty } from '@/util/utils';
-import { Skeleton } from '@douyinfe/semi-ui';
 import _ from 'lodash';
-import { Suspense, lazy, useMemo } from 'react';
-import { useSetRecoilState } from 'recoil';
-import { findRoute } from './menu';
+import { Suspense, lazy, useContext, useMemo } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useLottie } from 'lottie-react';
+import ClockLoading from '@/lottie/ClockLoading.json';
+import Loading from '@/pages/Loading';
+import { findRoute } from '@/route/util';
+import { RouteContext } from '@/route/context';
+import { useLocation } from 'react-router-dom';
 
 const PageComponents = import.meta.glob('../pages/**/index.tsx');
 
@@ -18,28 +22,46 @@ const getInnerPageComponent = (route: string) => {
     return pageName.match(route);
   });
   if (findPage) {
-    return PageComponents[findPage];
-  } else {
-    return () => Promise.resolve(<></>);
+    return slowLazy(PageComponents[findPage]());
   }
+  return undefined;
 };
+
+export const slowLazy = (component: any, delay: number = 1000) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(component);
+    }, delay);
+  });
+};
+
 // 组件懒加载方式进行导入
-export const lazyLoader = (Module: React.ReactNode) => {
-  return (
-    <Suspense
-      fallback={
-        <Skeleton>
-          <div>
-            <Skeleton.Title
-              style={{ width: 120, marginBottom: 12, marginTop: 12 }}
-            />
-            <Skeleton.Paragraph style={{ width: 240 }} rows={3} />
-          </div>
-        </Skeleton>
-      }
-    >
-      {Module}
-    </Suspense>
+export const lazyLoader = (chunk: any, fullscreen: boolean = false) => {
+  if (chunk) {
+    const Module = lazy(chunk);
+    return (
+      <Suspense fallback={<PlaceholderLoading fullscreen={fullscreen} />}>
+        <Module />
+      </Suspense>
+    );
+  }
+  return null;
+};
+
+const PlaceholderLoading: React.FC<{
+  fullscreen: boolean;
+}> = ({ fullscreen }) => {
+  const { View } = useLottie({
+    animationData: ClockLoading,
+    style: { height: '20%', width: '20%' },
+  });
+
+  return fullscreen ? (
+    <Loading />
+  ) : (
+    <div className="flex w-[100%] h-[100%] items-center justify-center">
+      {View}
+    </div>
   );
 };
 
@@ -58,13 +80,18 @@ export const menuToRouterObject = (
   return menus
     .filter((m) => m.type !== 'BUTTON')
     .map((m) => {
-      /* @vite-ignore */
-      // 目标route组件
-      const Module = lazy(getInnerPageComponent(m.route));
-      const Component = _.isEmpty(m.route) ? null : lazyLoader(<Module />);
+      let Component;
+      if (m.type === 'PAGE') {
+        Component = lazyLoader(() => import('@/pages/developer/domain'));
+      } else {
+        // 目标route组件
+        Component = _.isEmpty(m.route)
+          ? null
+          : lazyLoader(() => getInnerPageComponent(m.route));
+      }
       // 图标组件
       const IconComponent = importIcon(m.icon as string);
-      return {
+      const route: TurboRoute = {
         id: String(m.id),
         element: Component,
         children: menuToRouterObject(
@@ -82,13 +109,14 @@ export const menuToRouterObject = (
         clearable: true,
         topRouteKey: m.depth === 0 ? m.code : topRouteKey,
         attrs: m.attrs,
-      } as TurboRoute;
+      };
+      return route;
     });
 };
 
-const useTurboRoute = () => {
+const useLoadRoutes = () => {
   const authApi = useAuthApi();
-  const setUserRouters = useSetRecoilState(CurrentUserRouteState);
+  const [userRoutes, setUserRouters] = useRecoilState(CurrentUserRouteState);
   const setMenuError = useSetRecoilState(MenuErrorState);
 
   const systemRoutePath = useMemo(() => {
@@ -96,32 +124,42 @@ const useTurboRoute = () => {
   }, []);
 
   // 加载当前用户的route并通过recoil state进行设置组成当前用户的route集
-  const loadCurrentUserRoute = () => {
+  return () => {
     const { pathname } = window.location;
-    authApi
-      .getCurrentUserMenu()
-      .then((res) => {
-        if (res.code === 200) {
-          const turboRoute = menuToRouterObject(res.data || []);
-          // 根据当前路径获取（可能是刷新的情况，去除/）设置选中的content tab 与 side tab
-          // 如果没有找到则publish error（此时浏览器会提示错误信息并且展示error页面）
-          const route = findRoute(pathname, turboRoute);
-          if (route || systemRoutePath.indexOf(pathname) > -1) {
-            setUserRouters(turboRoute);
-            // 去除error signal
-            setMenuError(undefined);
-            return;
+    if (_.isEmpty(userRoutes)) {
+      authApi
+        .getCurrentUserMenu()
+        .then((res) => {
+          if (res.code === 200) {
+            const turboRoute = menuToRouterObject(res.data || []);
+            // 根据当前路径获取（可能是刷新的情况，去除/）设置选中的content tab 与 side tab
+            // 如果没有找到则publish error（此时浏览器会提示错误信息并且展示error页面）
+            const route = findRoute(pathname, turboRoute);
+            if (route || systemRoutePath.indexOf(pathname) > -1) {
+              setUserRouters(turboRoute);
+              // 去除error signal
+              setMenuError(undefined);
+              return;
+            }
           }
-        }
-        // 发布菜单错误
-        setMenuError(new Error(`page ${pathname} not found`));
-      })
-      .catch((error) => {
-        setMenuError(error);
-      });
+          // 发布菜单错误
+          setMenuError(new Error(`page ${pathname} not found`));
+        })
+        .catch((error) => {
+          setMenuError(error);
+        });
+    }
   };
-
-  return { loadCurrentUserRoute };
 };
 
-export default useTurboRoute;
+const useRoute = () => {
+  const route = useContext(RouteContext);
+  return route?.current;
+};
+
+const useBackRoute = () => {
+  const route = useContext(RouteContext);
+  return route?.back;
+};
+
+export { useRoute, useBackRoute, useLoadRoutes };

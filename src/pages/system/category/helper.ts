@@ -1,8 +1,11 @@
-import { CategoryTree } from '@/api/system/category';
+import useCategoryApi, {
+  CategoryApi,
+  CategoryTree,
+} from '@/api/system/category';
 import { TableColumnProps } from '@/components/TableCrud/interface';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 
-const CategoryHelper: Helper<CategoryTree> = {
+const CategoryHelper: Helper<CategoryTree, CategoryApi> = {
   getColumns: () => {
     return [
       {
@@ -41,6 +44,7 @@ const CategoryHelper: Helper<CategoryTree> = {
       },
     ] as TableColumnProps<CategoryTree>[];
   },
+  getApi: useCategoryApi,
 };
 
 export default CategoryHelper;

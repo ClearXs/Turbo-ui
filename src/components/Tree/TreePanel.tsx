@@ -15,13 +15,16 @@ import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import _ from 'lodash';
 import { loadTreeData } from './tree';
 import { Toolbar } from '../TableCrud/interface';
-import { expand } from '@/util/tree';
+import { expand, find } from '@/util/tree';
 import TForm from '../TForm/TForm';
 import useTreeOperatorBar from './TreeOperatorBar';
 import OperatorButtonSet from '../TableCrud/OperatorButtonSet';
 import ConstantTag from '../Tag/ConstantTag';
 import { TFormContext } from '../TForm/context';
-import { FormSelectColumnProps } from '../TForm/components';
+import {
+  FormSelectColumnProps,
+  FormTreeSelectColumnProps,
+} from '../TForm/components';
 
 export const VIRTUAL_ROOT_VALUE = 'virtual root';
 
@@ -82,10 +85,13 @@ const getToolbar = <T extends Tree>(
 };
 
 function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
+  const { columns } = props;
   const api = props.useApi();
   const formContextRef = useRef<FormContext<T>>();
 
   const [tree, setTree] = useState<TreeNodeData[]>([]);
+  // 原始数据
+  const originTreeRef = useRef<T[]>([]);
   const [selectKey, setSelectKey] = useState<string>();
   const [selectKeys, setSelectKeys] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -100,6 +106,7 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
         .then((res) => {
           const { data, code } = res;
           if (code === 200) {
+            originTreeRef.current = data;
             const { first = true, root } = props;
             let node = data;
             // 添加根结点显示名称，该结点为虚拟结点
@@ -250,63 +257,85 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
     [];
   props.getTreePanelApi?.(treePanelApi);
 
+  // 构建树型视图的数据
+  if (columns) {
+    columns.forEach((col) => {
+      if (col.type === 'treeSelect') {
+        const treeCol = col as FormTreeSelectColumnProps<T>;
+        if (treeCol.self) {
+          treeCol.treeData =
+            treeCol.treeTransform?.(originTreeRef.current) || tree;
+        }
+      }
+    });
+  }
+
   return (
     <>
       <Spin spinning={loading}>
-        <TFormContext.Provider value={formContextRef.current}>
-          {toolbar.length > 0 && (
-            <Space>
-              {toolbar.map((bar, index) => {
-                return (
-                  <Button
-                    key={index}
-                    type={bar.type}
-                    icon={bar.icon}
-                    onClick={() =>
-                      bar.onClick?.(undefined, formContextRef.current)
-                    }
-                  >
-                    {bar.name}
-                  </Button>
-                );
-              })}
-            </Space>
-          )}
-          <SemiTree
-            {...props}
-            treeData={tree}
-            multiple={props.multiple}
-            value={props.multiple === true ? selectKeys : selectKey}
-            filterTreeNode
-            showClear
-            searchPlaceholder="请输入!"
-            motion
-            expandAll={props.expandAll}
-            onSearch={(sunInput: string, filteredExpandedKeys: string[]) => {}}
-            onSelect={(selectKey, selected) => {
-              if (props.multiple) {
-                let keys = [...selectKeys];
-                if (selected) {
-                  keys.push(selectKey);
+        {formContextRef.current && (
+          <TFormContext.Provider value={formContextRef.current}>
+            {toolbar.length > 0 && (
+              <Space>
+                {toolbar.map((bar, index) => {
+                  return (
+                    <Button
+                      key={index}
+                      type={bar.type}
+                      icon={bar.icon}
+                      onClick={() =>
+                        bar.onClick?.(undefined, formContextRef.current)
+                      }
+                    >
+                      {bar.name}
+                    </Button>
+                  );
+                })}
+              </Space>
+            )}
+            <SemiTree
+              {...props}
+              treeData={tree}
+              multiple={props.multiple}
+              value={props.multiple === true ? selectKeys : selectKey}
+              filterTreeNode
+              showClear
+              searchPlaceholder="请输入!"
+              motion
+              expandAll={props.expandAll}
+              onSearch={(
+                sunInput: string,
+                filteredExpandedKeys: string[],
+              ) => {}}
+              onSelect={(selectKey, selected) => {
+                if (props.multiple) {
+                  let keys = [...selectKeys];
+                  if (selected) {
+                    keys.push(selectKey);
+                  } else {
+                    keys = keys.filter((key) => key !== selectKey);
+                  }
+                  setSelectKeys(keys);
                 } else {
-                  keys = keys.filter((key) => key !== selectKey);
+                  setSelectKey(selectKey);
+                  if (selectKey === VIRTUAL_ROOT_VALUE) {
+                    props.onSelectChange?.(undefined);
+                  } else {
+                    props.onSelectChange?.(selectKey);
+                  }
                 }
-                setSelectKeys(keys);
-              } else {
-                setSelectKey(selectKey);
-                if (selectKey === VIRTUAL_ROOT_VALUE) {
-                  props.onSelectChange?.(undefined);
-                } else {
-                  props.onSelectChange?.(selectKey);
-                }
-              }
-            }}
-          />
-        </TFormContext.Provider>
+              }}
+              onChange={(v) => {
+                const element = find(originTreeRef.current, 'id', v);
+                props.onChange?.(element);
+              }}
+            />
+          </TFormContext.Provider>
+        )}
         <TForm<T>
           mode="tree"
           useApi={props.useApi}
-          columns={props.columns}
+          columns={columns}
           params={props.addDefaultValue}
           getFormContext={(formContext) =>
             (formContextRef.current = formContext)

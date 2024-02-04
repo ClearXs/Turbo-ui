@@ -2,9 +2,7 @@ import Binary from '@/components/Binary';
 import TreePanel from '@/components/Tree/TreePanel';
 import { BoAttributeHelper, BoTableHelper } from './helper';
 import { useState } from 'react';
-import useBoAttributeApi, {
-  BoAttributeTree,
-} from '@/api/developer/boattribute';
+import { BoAttributeTree } from '@/api/developer/boattribute';
 import TableCrud from '@/components/TableCrud';
 import _ from 'lodash';
 import { Empty } from '@douyinfe/semi-ui';
@@ -25,7 +23,7 @@ const BoTableComponent: React.FC<BoTableProps> = ({ boId }) => {
       LeftComponent={
         <TreePanel<BoAttributeTree>
           columns={BoTableHelper.getColumns()}
-          useApi={useBoAttributeApi}
+          useApi={BoTableHelper.getApi}
           params={{ boId, attrType: 'table' }}
           first={true}
           onSelectChange={setParentId}
@@ -47,7 +45,7 @@ const BoTableComponent: React.FC<BoTableProps> = ({ boId }) => {
           <TableCrud<BoAttributeTree>
             mode="page"
             columns={BoAttributeHelper.getColumns()}
-            useApi={useBoAttributeApi}
+            useApi={BoTableHelper.getApi}
             params={{ boId, parentId, attrType: 'field' }}
           />
         )

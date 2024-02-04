@@ -1,11 +1,11 @@
-import { Org } from '@/api/system/org';
+import useOrgApi, { Org, OrgApi } from '@/api/system/org';
 import { TableTreeSelectColumnProps } from '@/components/TableCrud/components';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 import { treeMap } from '@/util/tree';
 import { Tag } from '@douyinfe/semi-ui';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
-const OrgHelper: Helper<Org> = {
+const OrgHelper: Helper<Org, OrgApi> = {
   getColumns: () => {
     return [
       {
@@ -82,6 +82,7 @@ const OrgHelper: Helper<Org> = {
       },
     ];
   },
+  getApi: useOrgApi,
 };
 
 export default OrgHelper;
