@@ -18,8 +18,11 @@ export const PATTERN_TIME = 'HH:mm:ss';
 export const format = (
   dateStr: string,
   format: string = PATTERN_DATETIME,
-): Date => {
-  return moment(dateStr, format).toDate();
+): Date | undefined => {
+  if (dateStr) {
+    return moment(dateStr, format).toDate();
+  }
+  return undefined;
 };
 
 /**
@@ -30,6 +33,9 @@ export const format = (
 export const parse = (
   date: Date,
   format: string = PATTERN_DATETIME,
-): string => {
-  return moment(date).format(format);
+): string | undefined => {
+  if (date) {
+    return moment(date).format(format);
+  }
+  return undefined;
 };

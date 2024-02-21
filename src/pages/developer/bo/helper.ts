@@ -212,6 +212,15 @@ const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         table: false,
       },
       {
+        label: '是否默认字段',
+        field: 'defaulted',
+        ellipsis: true,
+        align: 'center',
+        type: 'switch',
+        line: true,
+        form: false,
+      },
+      {
         label: '所属于业务对象boID',
         field: 'boId',
         ellipsis: true,

@@ -1,10 +1,9 @@
+import '@/pages/developer/editor';
 import { Layout } from '@douyinfe/semi-ui';
 import MotionContent from './components/MotionContent';
 import MotionHeader from './components/MotionHeader';
 import { useEffect, useMemo } from 'react';
 import { GlobalRegistry } from '@designable/core';
-import './locales';
-import './theme/default.css';
 import { SUPPORT_LOCALES } from './components/MotionHeader/Locales';
 import { useLoaderData, useLocation } from 'react-router-dom';
 import { TurboRoute } from './route/AppRouter';
@@ -14,6 +13,8 @@ import { AppContext } from './context';
 import { observer } from '@formily/reactive-react';
 import { UserTab } from './components/MotionContent/interface';
 import { createContentTab } from './components/MotionContent/util';
+import './locales';
+import './theme/default.css';
 
 export type AppProperty = {
   // 当前用户route

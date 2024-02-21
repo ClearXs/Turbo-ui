@@ -117,7 +117,16 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   };
   modal?: FormProps<T>['modal'];
   // table使用的api
-  useApi?: () => GeneralApi<T>;
+  useApi?: (() => GeneralApi<T>) | GeneralApi<T>;
+  // 内置事件回调
+  event?: {
+    // 当删除成功后进行的回调
+    onDeleteSuccess?: (ids: T['id'][]) => void;
+    onQuerySuccess?: (
+      tableContext: TableContext<T>,
+      pageable?: TablePagination,
+    ) => void;
+  } & FormProps<T>['event'];
   // 获取table context实例
   getTableContext?: (tableContext: TableContext<T>) => void;
 };
@@ -151,6 +160,7 @@ export type SortColumn = {
 
 // 联系Table crud组件，进行数据操作传输
 export type TableContext<T extends IdEntity> = {
+  props: TableCrudProps<T>;
   // table 模式
   mode: TableCrudProps<T>['mode'];
   // entity api

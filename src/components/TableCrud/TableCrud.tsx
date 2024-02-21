@@ -2,7 +2,7 @@ import Table from '@douyinfe/semi-ui/lib/es/table';
 import TableHeader from './TableHeader';
 import { useEffect, useMemo } from 'react';
 import _ from 'lodash';
-import { IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api/interface';
 import TableToolbar from './TableToolbar';
 import {
   RenderOperatorBarType,
@@ -111,7 +111,16 @@ class TableColumnsBuilder<T extends IdEntity> {
 }
 
 function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
-  const api = props.useApi && props.useApi();
+  let api: GeneralApi<T>;
+  const { useApi } = props;
+  if (useApi) {
+    if (typeof useApi === 'function') {
+      api = useApi();
+    } else {
+      api = useApi;
+    }
+  }
+
   const renderOperatorBars = useTableCrudOperatorBar<T>();
   // 初始化内容
   const tableApi = useTableApi<T>(props.mode);
@@ -130,6 +139,7 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
           }
         : false;
     const tableContext: TableContext<T> = {
+      props,
       mode: props.mode,
       api,
       tableApi,
@@ -198,6 +208,7 @@ const ObserverTableCrud: React.FC<ObserverTableCrudProps<any>> = observer(
         <TForm<T>
           mode="table"
           modal={tableProps.modal}
+          event={tableProps.event}
           columns={tableProps.columns || []}
           useApi={tableProps.useApi}
           onOk={() => {

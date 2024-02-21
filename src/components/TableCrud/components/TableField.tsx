@@ -2,7 +2,6 @@ import { IdEntity } from '@/api/interface';
 import { TableColumnProps } from '../interface';
 import { BaseFormField, FormField } from '@/components/TForm/components';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-import { FormColumnProps } from '@/components/TForm/interface';
 import { TableColumnDecorator } from '../table';
 import { FormColumnFactory } from '@/components/TForm';
 import { ISchema } from '@formily/json-schema';
@@ -18,7 +17,7 @@ export interface TableField<T extends IdEntity, K extends TableColumnProps<T>>
 
 export abstract class BaseTableField<
     T extends IdEntity,
-    K extends FormColumnProps<T>,
+    K extends TableColumnProps<T>,
   >
   extends BaseFormField<T, K>
   implements TableField<T, K>
@@ -41,7 +40,7 @@ export abstract class BaseTableField<
     );
   }
 
-  public getDefaultSpan(): FormColumnProps<T>['span'] {
+  public getDefaultSpan(): TableColumnProps<T>['span'] {
     return (
       FormColumnFactory.get(
         this.getType(),

@@ -40,6 +40,7 @@ const Org: React.FC = () => {
             code: 'addSubordinate',
             name: '添加下级',
             type: 'primary',
+            icon: directGetIcon('IconPeer', 'system'),
             onClick: (tableContext, formContext, record) => {
               formContext.visible = true;
               formContext.values = Object.assign(
@@ -52,6 +53,7 @@ const Org: React.FC = () => {
             code: 'addPeer',
             name: '添加同级',
             type: 'primary',
+            icon: directGetIcon('IconSubordinate', 'system'),
             onClick: (tableContext, formContext, record) => {
               formContext.visible = true;
               formContext.values = Object.assign(

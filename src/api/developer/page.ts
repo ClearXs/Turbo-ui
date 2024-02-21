@@ -50,15 +50,19 @@ export interface Page extends TenantEntity, CategoryEntity {
   categoryId: string;
 }
 
+export type PageView = Omit<Page, 'dataview' | 'categoryId'> & {
+  dataView: DataView;
+};
+
 export interface PageApi extends GeneralApi<Page> {
   deploy: (page: Page, menuId: string) => Promise<R<Boolean>>;
-  dataView: (pageId: string) => Promise<R<DataView>>;
+  pageView: (pageView: string) => Promise<R<PageView>>;
 }
 
 class PageApiImpl extends GeneralApiImpl<Page> implements PageApi {
-  dataView(pageId: string): Promise<R<DataView>> {
+  pageView(pageId: string): Promise<R<PageView>> {
     return this.request
-      .get(this.apiPath + `/dataView/${pageId}`)
+      .get(this.apiPath + `/pageView/${pageId}`)
       .then((res) => {
         return res.data;
       });

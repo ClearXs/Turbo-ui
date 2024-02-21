@@ -92,10 +92,15 @@ export type FormProps<T extends IdEntity> = {
   showValidateErrorNotification?: boolean;
   // 可选字段
   [key: string]: any;
+  // 内置事件回调
+  event?: {
+    // 当保存或者更新成功后进行回调
+    onSaveOrUpdateSuccess?: (entity: T) => void;
+  };
   // 表单级字段验证
   validateFields?: (values: T) => string;
   // api
-  useApi?: () => GeneralApi<T>;
+  useApi?: (() => GeneralApi<T>) | GeneralApi<T>;
   // 操作完成的回调
   onOk?: (formContext: FormContext<T>) => void;
   // 发生错误时回调

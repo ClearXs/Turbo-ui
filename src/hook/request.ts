@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse, Method } from 'axios';
 import sysconfig from '@/config/config';
 import * as local from '@/util/local';
 import { R } from '@/api/interface';
-import { Notification } from '@douyinfe/semi-ui';
+import { Toast } from '@douyinfe/semi-ui';
 import * as headers from '@/util/headers';
 import { useEffect } from 'react';
 
@@ -69,11 +69,7 @@ function handleSuccess<T>(res: AxiosResponse): Promise<AxiosResponse> {
     // 消息提示
     const data = res.data;
     if (data?.code !== 200) {
-      Notification.error({
-        duration: 3,
-        position: 'top',
-        content: data?.message,
-      });
+      Toast.error(data?.message);
       return Promise.reject(res);
     } else {
       return Promise.resolve(res);
@@ -91,11 +87,7 @@ function handleResError<T>(err: AxiosError, errorValue?: R<T>) {
   const errCode = err.response?.status || err.status;
   // 错误消息展示
   const msg = err.response?.data?.message || err.response?.statusText;
-  Notification.error({
-    duration: 3,
-    position: 'top',
-    content: msg,
-  });
+  Toast.error(msg);
   // 认证失败
   if (errCode === 401) {
     local.remove(headers.Authentication);

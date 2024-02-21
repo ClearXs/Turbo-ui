@@ -54,7 +54,8 @@ export const baseOnBoAttrSchemaCreateColumn = <
   index: number,
   schema: BoAttrSchema,
 ): Column => {
-  const { binding } = schema;
+  const { binding, defaulted } = schema;
+
   return {
     field: schema.key,
     require: binding ? schema['props']?.['required'] ?? false : false,
@@ -62,7 +63,11 @@ export const baseOnBoAttrSchemaCreateColumn = <
     index,
     span: schema.span || 12,
     line: schema.span === 24,
-    form: binding,
+    // 1.表单上是否显示根据表单设计器是否绑定
+    // 2.或者是非默认的字段
+    form: binding === true ? true : !defaulted,
+    table: binding === true ? true : !defaulted,
+    search: binding === true ? true : !defaulted,
     reaction: schema['props']?.['x-reactions'],
     ...(schema['props']?.['x-component-props'] || {}),
   };

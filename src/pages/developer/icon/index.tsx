@@ -29,7 +29,7 @@ const IconList: React.FC<IconViewProps> = ({
     Notification.info({ position: 'top', content: key });
   },
 }) => {
-  const iconSystem = ['semi', 'iconoir', 'system'];
+  const iconSystem = ['semi', 'system'];
 
   const [iconTab, setIconTab] = useState<IconSystem>('semi');
   const [iconViews, setIconViews] = useState<Icon[][]>([]);

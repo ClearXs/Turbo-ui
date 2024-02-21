@@ -47,6 +47,7 @@ const PageHelper: Helper<Page, PageApi> = {
         remote: {
           url: '/api/dev/bo/list',
         },
+        disabled: true,
         showClear: true,
         relation: {
           helper: BoHelper,

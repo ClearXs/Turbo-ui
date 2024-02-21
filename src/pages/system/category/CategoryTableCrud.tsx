@@ -11,9 +11,9 @@ import { Notification } from '@douyinfe/semi-ui';
 import CategoryHelper from './helper';
 import useCategoryApi, { CategoryTree } from '@/api/system/category';
 import { useRef, useState } from 'react';
-import Modular from '@/components/Modular';
 import { TreePanelApi } from '@/components/Tree';
 import _ from 'lodash';
+import Modular from '@/components/Modular/Modular';
 
 export type CategoryTableCrudToolbar<T extends CategoryEntity> =
   TableCrudProps<T>['toolbar'] & {

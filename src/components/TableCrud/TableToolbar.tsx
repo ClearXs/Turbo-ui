@@ -3,7 +3,6 @@ import {
   Button,
   Checkbox,
   List,
-  Modal,
   Notification,
   Popover,
   Radio,
@@ -28,6 +27,7 @@ import type { Identifier, XYCoord } from 'dnd-core';
 import { TableCrudContext } from './context';
 import { TFormContext } from '../TForm/context';
 import { observable } from '@formily/reactive';
+import Modular from '../Modular/Modular';
 
 export type TableToolbarProps<T extends IdEntity> = {
   tableProps: TableCrudProps<T>;
@@ -192,9 +192,9 @@ const renderableToolbar = <T extends IdEntity>(
             content: '未选择任何记录',
           });
         } else {
-          Modal.warning({
+          Modular.warning({
             title: '是否确定删除',
-            onOk: () => {
+            onConfirm: () => {
               tableContext.tableApi.remove(
                 tableContext,
                 tableContext.table.selectedRowKeys as string[],

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import TreePanel from '@/components/Tree/TreePanel';
@@ -10,19 +10,40 @@ import PageHelper from './helper';
 import { Notification, Toast } from '@douyinfe/semi-ui';
 import FormEditor from '../editor/FormEditor';
 import { directGetIcon } from '@/components/Icon';
-import Modular from '@/components/Modular';
 import MenuTreeComponent from '@/pages/system/menu/MenuTree';
 import { TreePanelApi } from '@/components/Tree';
 import { MenuTree } from '@/api/system/menu';
+import Modular from '@/components/Modular/Modular';
+import useBoApi from '@/api/developer/bo';
 
 const Page: React.FC = () => {
   const pageApi = usePageApi();
+  const boApi = useBoApi();
   const [categoryId, setCategoryId] = useState<string>();
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const formIdRef = useRef<string>();
   const pageRef = useRef<Page>();
   const [showMenuTree, setShowMenuTree] = useState<boolean>(false);
   const menuTreeApiRef = useRef<TreePanelApi<MenuTree>>();
+
+  const editable = useMemo(() => {
+    return (record: Page) => {
+      if (_.isEmpty(record.boId)) {
+        Notification.error({ content: '请选择页面的业务对象!' });
+        return;
+      }
+      boApi.check(record.boId).then((res) => {
+        const { code, data } = res;
+        if (code === 200 && data) {
+          setShowEditor(true);
+          formIdRef.current = record.formId;
+          pageRef.current = record;
+        } else {
+          Toast.error('业务对象不存在!');
+        }
+      });
+    };
+  }, []);
 
   return (
     <>
@@ -37,6 +58,7 @@ const Page: React.FC = () => {
             depth={0}
             root="页面分类"
             expandAll
+            first={false}
           />
         }
         RightComponent={
@@ -58,17 +80,20 @@ const Page: React.FC = () => {
                     setShowMenuTree(true);
                   },
                 },
+                {
+                  code: 'pageEdit',
+                  name: '编辑页面',
+                  type: 'primary',
+                  icon: directGetIcon('IconPageSetting', 'system'),
+                  onClick(tableContext, formContext, value) {
+                    editable(value);
+                  },
+                },
               ],
             }}
             card={{
               onClick(record) {
-                if (_.isEmpty(record.boId)) {
-                  Notification.error({ content: '请选择页面对象!' });
-                  return;
-                }
-                setShowEditor(true);
-                formIdRef.current = record.formId;
-                pageRef.current = record;
+                editable(record);
               },
             }}
           />

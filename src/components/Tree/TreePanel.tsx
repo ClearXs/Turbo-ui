@@ -165,9 +165,8 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
                     className="ml-auto"
                   />
                 );
-
                 return (
-                  <div className="flex">
+                  <div className="flex items-center">
                     {props.label?.(tree) || (
                       <Space>
                         {tree.name}
@@ -184,7 +183,7 @@ function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
             );
 
             let firstKey;
-            if (root) {
+            if (root && !first) {
               firstKey = node[0].id;
             } else if (first) {
               // root不存在并且选中第一个结点

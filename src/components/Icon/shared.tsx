@@ -7,7 +7,7 @@ export type Icon = {
   component: any;
 };
 
-export type IconSystem = 'semi' | 'system' | 'iconoir';
+export type IconSystem = 'semi' | 'system';
 
 export interface IconModel {
   /**

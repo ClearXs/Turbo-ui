@@ -1,27 +1,28 @@
-import usePageApi from '@/api/developer/page';
+import usePageApi, { PageView } from '@/api/developer/page';
 import { Toast } from '@douyinfe/semi-ui';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { DataView } from '../editor/kernel';
 import TreePanel from '@/components/Tree/TreePanel';
 import TableCrud from '@/components/TableCrud';
 import _ from 'lodash';
 import Binary from '@/components/Binary';
+import useDomainApi, { DomainEntity } from '@/api/developer/domain';
 
 const Domain = () => {
   const page = usePageApi();
   const location = useLocation();
-  const [dataView, setDataView] = useState<DataView>();
+  const [pageView, setPageView] = useState<PageView>();
+  const domainApi = useDomainApi(pageView?.boId);
 
   useEffect(() => {
     const { pathname } = location;
     const pageId = pathname.substring(pathname.lastIndexOf('/') + 1);
     page
-      .dataView(pageId)
+      .pageView(pageId)
       .then((res) => {
         const { code, data, message } = res;
         if (code === 200) {
-          setDataView(data);
+          setPageView(data);
         } else {
           Toast.error(message);
         }
@@ -31,11 +32,17 @@ const Domain = () => {
       });
   }, [location.pathname]);
 
-  if (!dataView) {
+  if (!pageView?.dataView) {
     return;
   }
 
-  const Table = <TableCrud {..._.omit(dataView, 'leftTree')} />;
+  const { dataView } = pageView;
+  const Table = (
+    <TableCrud<DomainEntity>
+      {..._.omit(dataView, 'leftTree')}
+      useApi={domainApi}
+    />
+  );
   const Tree = dataView.leftTree && (
     <TreePanel {...dataView.leftTree}></TreePanel>
   );

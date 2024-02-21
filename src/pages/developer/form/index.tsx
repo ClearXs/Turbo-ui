@@ -1,5 +1,5 @@
-import { Notification } from '@douyinfe/semi-ui';
-import { useRef, useState } from 'react';
+import { Notification, Toast } from '@douyinfe/semi-ui';
+import { useMemo, useRef, useState } from 'react';
 import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import TreePanel from '@/components/Tree/TreePanel';
@@ -9,12 +9,32 @@ import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import Binary from '@/components/Binary';
 import _ from 'lodash';
 import FormEditor from '../editor/FormEditor';
+import { directGetIcon } from '@/components/Icon';
+import useBoApi from '@/api/developer/bo';
 
 const Form: React.FC = () => {
+  const boApi = useBoApi();
   const [categoryId, setCategoryId] = useState<string>();
-
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const formEntityRef = useRef<Form>();
+
+  const editable = useMemo(() => {
+    return (record: Form) => {
+      if (_.isEmpty(record.boId)) {
+        Toast.error('请选择业务对象!');
+        return;
+      }
+      boApi.check(record.boId).then((res) => {
+        const { code, data } = res;
+        if (code === 200 && data) {
+          setShowEditor(true);
+          formEntityRef.current = record;
+        } else {
+          Toast.error('业务对象不存在!');
+        }
+      });
+    };
+  }, []);
 
   return (
     <>
@@ -29,6 +49,7 @@ const Form: React.FC = () => {
             depth={0}
             root="表单分类"
             expandAll
+            first={false}
           />
         }
         RightComponent={
@@ -44,25 +65,16 @@ const Form: React.FC = () => {
                   code: 'editForm',
                   name: '编辑表单',
                   type: 'primary',
+                  icon: directGetIcon('IconFormSetting', 'system'),
                   onClick(tableContext, formContext, value) {
-                    if (_.isEmpty(value.boId)) {
-                      Notification.error({ content: '请选择业务对象!' });
-                      return;
-                    }
-                    setShowEditor(true);
-                    formEntityRef.current = value;
+                    editable(value);
                   },
                 },
               ],
             }}
             card={{
               onClick(record) {
-                if (_.isEmpty(record.boId)) {
-                  Notification.error({ content: '请选择业务对象!' });
-                  return;
-                }
-                setShowEditor(true);
-                formEntityRef.current = record;
+                editable(record);
               },
             }}
           />

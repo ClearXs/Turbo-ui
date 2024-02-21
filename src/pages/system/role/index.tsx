@@ -8,8 +8,8 @@ import RoleHelper from './helper';
 import { TreePanelApi } from '@/components/Tree/interface';
 import { MenuTree as MenuEntity } from '@/api/system/menu';
 import _ from 'lodash';
-import Modular from '@/components/Modular';
 import useRoleMenuApi from '@/api/system/rolemenu';
+import Modular from '@/components/Modular/Modular';
 
 const Role: React.FC = () => {
   const roleApi = useRoleApi();

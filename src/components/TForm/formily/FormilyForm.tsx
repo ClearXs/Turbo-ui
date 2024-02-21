@@ -38,6 +38,7 @@ import { FormContext, FormProps, ModalButton } from '../interface';
 import { Constant } from '@/constant';
 import _ from 'lodash';
 import { directGetIcon } from '@/components/Icon';
+import { GeneralApi } from '@/api/interface';
 
 const Text: React.FC<{
   value?: string;
@@ -124,8 +125,15 @@ const ModalButtonComponent: React.FC<{
     showCancel: true,
     append: [],
   };
-
-  const api = formProps.useApi?.();
+  let api: GeneralApi<any>;
+  const { event, useApi } = formProps;
+  if (useApi) {
+    if (typeof useApi === 'function') {
+      api = useApi();
+    } else {
+      api = useApi;
+    }
+  }
 
   const modalButtons: ModalButton<any>[] = [];
 
@@ -169,6 +177,13 @@ const ModalButtonComponent: React.FC<{
             formContext.loading = true;
             // 相同key优先级 默认值 > 表单值
             const values = Object.assign(data, params);
+            // 移除undefined的值
+            for (const key in values) {
+              const v = values[key];
+              if (_.isEmpty(v)) {
+                delete values[key];
+              }
+            }
             if (api) {
               api
                 .saveOrUpdate(values)
@@ -178,13 +193,16 @@ const ModalButtonComponent: React.FC<{
                       position: 'top',
                       content: res.message,
                     });
-                    onOk?.(formContext);
+                    try {
+                      // 回调事件
+                      onOk?.(formContext);
+                      event?.onSaveOrUpdateSuccess?.(values);
+                    } catch (err) {
+                      // simple print
+                      console.error(err);
+                    }
                     formContext.visible = false;
                   } else {
-                    Notification.error({
-                      position: 'top',
-                      content: res.message,
-                    });
                     onError?.(new Error(res.message), formContext);
                   }
                   formContext.loading = false;
