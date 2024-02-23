@@ -1,8 +1,8 @@
-import { Role } from '@/api/system/role';
+import useRoleApi, { Role, RoleApi } from '@/api/system/role';
 import { TableColumnProps } from '@/components/TableCrud/interface';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 
-const RoleHelper: Helper<Role> = {
+const RoleHelper: Helper<Role, RoleApi> = {
   getColumns: () => {
     return [
       {
@@ -41,6 +41,7 @@ const RoleHelper: Helper<Role> = {
       label: entity.name,
     };
   },
+  getApi: useRoleApi,
 };
 
 export default RoleHelper;

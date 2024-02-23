@@ -29,14 +29,16 @@ import {
   Slider,
 } from '@formily/semi';
 import { useMemo } from 'react';
-import { createForm } from '@formily/core';
+import { Form as FormType, createForm } from '@formily/core';
 import React from 'react';
 import { Icon, Color } from './components';
 import { toSchema } from './schema';
-import { Modal, Notification } from '@douyinfe/semi-ui';
-import { FormContext } from '../interface';
+import { Button, ButtonGroup, Modal, Notification } from '@douyinfe/semi-ui';
+import { FormContext, FormProps, ModalButton } from '../interface';
 import { Constant } from '@/constant';
 import _ from 'lodash';
+import { directGetIcon } from '@/components/Icon';
+import { GeneralApi } from '@/api/interface';
 
 const Text: React.FC<{
   value?: string;
@@ -99,9 +101,9 @@ const useFormType = (formContext: FormContext<any>) => {
   return formTypeList[formContext?.type || 'add'];
 };
 
-const useTitle = (formContext: FormContext<any>) => {
+const useTitle = (formProps: FormProps<any>, formContext: FormContext<any>) => {
   const formType = useFormType(formContext);
-  return formType.label;
+  return formProps.title || formType.label;
 };
 
 const useIcon = (formContext: FormContext<any>) => {
@@ -109,46 +111,65 @@ const useIcon = (formContext: FormContext<any>) => {
   return formType.icon;
 };
 
-const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
+const ModalButtonComponent: React.FC<{
+  formProps: FormProps<any>;
+  formContext: FormContext<any>;
+  form: FormType<any>;
+}> = observer(({ formProps, formContext, form }) => {
   const {
-    formProps,
-    formContext,
-    effects,
-    scope,
-    components,
-    ...formliyProps
-  } = props;
-  const { columns, decorator } = formContext;
-  const api = formProps.useApi?.();
-  const form = useMemo(() => {
-    return createForm({
-      initialValues: formContext?.getDefaultValues(),
-      values: formContext.values,
-      effects(form) {
-        effects?.(form);
+    showConfirm,
+    showCancel,
+    append = [],
+  } = formProps.modal || {
+    showConfirm: true,
+    showCancel: true,
+    append: [],
+  };
+  let api: GeneralApi<any>;
+  const { event, useApi } = formProps;
+  if (useApi) {
+    if (typeof useApi === 'function') {
+      api = useApi();
+    } else {
+      api = useApi;
+    }
+  }
+
+  const modalButtons: ModalButton<any>[] = [];
+
+  if (
+    (typeof showCancel === 'function' && showCancel(formContext)) ||
+    showCancel
+  ) {
+    modalButtons.push({
+      code: 'cancel',
+      name: '取消',
+      type: 'tertiary',
+      size: 'default',
+      icon: directGetIcon('IconCrossCircleStroked'),
+      onClick: (formContext) => {
+        if (formProps.onCancel) {
+          formProps.onCancel(formContext);
+        } else {
+          formContext.visible = false;
+        }
       },
     });
-  }, [formContext.values]);
+  }
 
-  const schema = useMemo(() => {
-    return toSchema(columns, formContext, (column, index) =>
-      decorator.schema(column, index),
-    );
-  }, [formContext.dataSet, formContext.type, formContext.visible]);
-
-  const title = useTitle(formContext);
-  const icon = useIcon(formContext);
-
-  return (
-    <Modal
-      title={title}
-      icon={icon}
-      visible={formContext.visible}
-      closeOnEsc={true}
-      size={formProps.size || 'large'}
-      okButtonProps={{ disabled: formContext.type === 'details' }}
-      confirmLoading={formContext.loading || false}
-      onOk={() => {
+  if (
+    ((typeof showConfirm === 'function' && showConfirm(formContext)) ||
+      showConfirm) &&
+    formContext.type !== 'details'
+  ) {
+    modalButtons.push({
+      code: 'confirm',
+      name: '确定',
+      type: 'primary',
+      loading: true,
+      size: 'default',
+      icon: directGetIcon('IconCheckCircleStroked'),
+      onClick: (formContext) => {
         // 构建需要校验的字段
         const { params, onOk, onError } = formProps;
         form
@@ -156,6 +177,13 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
             formContext.loading = true;
             // 相同key优先级 默认值 > 表单值
             const values = Object.assign(data, params);
+            // 移除undefined的值
+            for (const key in values) {
+              const v = values[key];
+              if (_.isEmpty(v)) {
+                delete values[key];
+              }
+            }
             if (api) {
               api
                 .saveOrUpdate(values)
@@ -165,15 +193,18 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
                       position: 'top',
                       content: res.message,
                     });
-                    onOk?.(formContext);
+                    try {
+                      // 回调事件
+                      onOk?.(formContext);
+                      event?.onSaveOrUpdateSuccess?.(values);
+                    } catch (err) {
+                      // simple print
+                      console.error(err);
+                    }
+                    formContext.visible = false;
                   } else {
-                    Notification.error({
-                      position: 'top',
-                      content: res.message,
-                    });
                     onError?.(new Error(res.message), formContext);
                   }
-                  formContext.visible = false;
                   formContext.loading = false;
                 })
                 .catch((err) => {
@@ -207,7 +238,88 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
               });
             }
           });
-      }}
+      },
+    });
+  }
+
+  append.forEach((button) => {
+    if (typeof button === 'function') {
+      const maybeButton = button(formContext);
+      if (maybeButton) {
+        modalButtons.push({ ...maybeButton });
+      }
+    } else {
+      modalButtons.push({ ...button });
+    }
+  });
+
+  return (
+    <ButtonGroup className="float-right">
+      {modalButtons.map((button) => {
+        const {
+          code,
+          icon,
+          type,
+          size,
+          loading = false,
+          onClick,
+          name,
+        } = button;
+        return (
+          <Button
+            key={code}
+            icon={icon}
+            type={type}
+            size={size}
+            loading={loading && formContext.loading}
+            onClick={() => onClick?.(formContext)}
+          >
+            {name}
+          </Button>
+        );
+      })}
+    </ButtonGroup>
+  );
+});
+
+const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
+  const {
+    formProps,
+    formContext,
+    effects,
+    scope,
+    components,
+    ...formliyProps
+  } = props;
+
+  const { columns, decorator } = formContext;
+
+  const form = useMemo(() => {
+    return createForm({
+      initialValues: formContext?.getDefaultValues(),
+      values: formContext.values,
+      effects(form) {
+        effects?.(form);
+      },
+    });
+  }, [formContext.values]);
+
+  const schema = useMemo(() => {
+    return toSchema(columns, formContext, (column, index) =>
+      decorator.schema(column, index),
+    );
+  }, [formContext.dataSet, formContext.type, formContext.visible]);
+
+  const title = useTitle(formProps, formContext);
+  const icon = useIcon(formContext);
+
+  return (
+    <Modal
+      title={title}
+      icon={icon}
+      visible={formContext.visible}
+      closeOnEsc={true}
+      size={formProps.size || 'large'}
       onCancel={() => {
         if (formProps.onCancel) {
           formProps.onCancel(formContext);
@@ -215,6 +327,15 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
           formContext.visible = false;
         }
       }}
+      footer={
+        columns.length > 0 && (
+          <ModalButtonComponent
+            form={form}
+            formContext={formContext}
+            formProps={formProps}
+          />
+        )
+      }
     >
       <Form form={form} {...formliyProps}>
         <SchemaField

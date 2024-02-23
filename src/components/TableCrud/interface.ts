@@ -5,7 +5,7 @@ import {
   TablePagination,
   TableProps,
 } from '@douyinfe/semi-ui/lib/es/table';
-import { FormColumnProps, FormContext } from '../TForm/interface';
+import { FormColumnProps, FormContext, FormProps } from '../TForm/interface';
 import { TableColumnDecorator } from './table';
 import { PopoverProps } from '@douyinfe/semi-ui/lib/es/popover';
 
@@ -54,6 +54,7 @@ export type Toolbar<T extends IdEntity> = Bar<T> & {
 export type OperateToolbar<T extends IdEntity> = Omit<Bar<T>, 'onClick'> & {
   // 是否是内置提供的按钮
   internal?: boolean;
+  // 点击操作
   onClick?: (
     tableContext: TableContext<T>,
     formContext: FormContext<T>,
@@ -65,6 +66,8 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   TableProps<T>,
   'columns' | 'pagination'
 > & {
+  // table row key标识，默认为id
+  id?: string;
   // table 视图模式
   mode: ViewModel;
   columns: TableColumnProps<T>[];
@@ -112,8 +115,18 @@ export type TableCrudProps<T extends IdEntity> = Omit<
     // 渲染卡片页脚，如果没有则为空
     renderFooter?: (record: T) => React.ReactNode;
   };
+  modal?: FormProps<T>['modal'];
   // table使用的api
-  useApi: () => GeneralApi<T>;
+  useApi?: (() => GeneralApi<T>) | GeneralApi<T>;
+  // 内置事件回调
+  event?: {
+    // 当删除成功后进行的回调
+    onDeleteSuccess?: (ids: T['id'][]) => void;
+    onQuerySuccess?: (
+      tableContext: TableContext<T>,
+      pageable?: TablePagination,
+    ) => void;
+  } & FormProps<T>['event'];
   // 获取table context实例
   getTableContext?: (tableContext: TableContext<T>) => void;
 };
@@ -147,6 +160,7 @@ export type SortColumn = {
 
 // 联系Table crud组件，进行数据操作传输
 export type TableContext<T extends IdEntity> = {
+  props: TableCrudProps<T>;
   // table 模式
   mode: TableCrudProps<T>['mode'];
   // entity api
@@ -220,11 +234,6 @@ export interface TableApi<T extends IdEntity> {
   ): void;
   // sort 排序
   sort(tableContext: TableContext<T>, sortColumn: SortColumn): void;
-  // 切换table模式
-  switchMode(
-    tableContext: TableContext<T>,
-    mode: TableCrudProps<T>['mode'],
-  ): void;
 }
 
 export type RenderOperatorBarType<T extends IdEntity> = (

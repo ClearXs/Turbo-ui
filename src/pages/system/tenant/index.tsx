@@ -1,4 +1,4 @@
-import useTenantApi, { Tenant } from '@/api/system/tenant';
+import { Tenant } from '@/api/system/tenant';
 import TableCrud from '@/components/TableCrud';
 import TenantHelper from './helper';
 
@@ -7,7 +7,7 @@ const Tenant: React.FC = () => {
     <TableCrud<Tenant>
       mode="page"
       columns={TenantHelper.getColumns()}
-      useApi={useTenantApi}
+      useApi={TenantHelper.getApi}
     />
   );
 };

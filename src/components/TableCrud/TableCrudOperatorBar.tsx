@@ -7,7 +7,7 @@ import {
   TableCrudProps,
 } from './interface';
 import { directGetIcon } from '../Icon/shared';
-import { Modal } from '@douyinfe/semi-ui';
+import Modular from '../Modular/Modular';
 
 function useTableCrudOperatorBar<T extends IdEntity>() {
   const renderOperatorBars = useMemo<RenderOperatorBarType<T>>(() => {
@@ -74,9 +74,10 @@ function useTableCrudOperatorBar<T extends IdEntity>() {
           internal: true,
           icon: directGetIcon('IconDeleteStroked'),
           onClick: (tableContext, formContext, record) => {
-            Modal.warning({
+            Modular.warning({
               title: '是否确定删除?',
-              onOk: () => {
+              content: '该数据被删除，与其关联的数据将无法使用，请慎重操作!',
+              onConfirm: () => {
                 tableApi?.remove(tableContext, [record.id]);
               },
             });

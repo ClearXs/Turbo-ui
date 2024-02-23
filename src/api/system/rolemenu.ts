@@ -18,7 +18,9 @@ export interface RoleMenu {
   menuId: string;
 }
 
-const useRoleMenuApi = (): GeneralApi<RoleMenu> => {
+interface RoleMenuApi extends GeneralApi<RoleMenu> {}
+
+const useRoleMenuApi = (): RoleMenuApi => {
   const request = useRequest();
   return new GeneralApiImpl<RoleMenu>('/api/sys/role-menu', request);
 };

@@ -36,8 +36,9 @@ const Color: React.FC<ColorProps> = ({ disabled, value, onChange }) => {
         value={value}
         onChange={onChange}
       >
-        {colorList.map((item) => (
+        {colorList.map((item, idx) => (
           <Radio
+            key={idx}
             value={item}
             extra={
               <Tag

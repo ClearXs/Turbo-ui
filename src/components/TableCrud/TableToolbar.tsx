@@ -3,7 +3,6 @@ import {
   Button,
   Checkbox,
   List,
-  Modal,
   Notification,
   Popover,
   Radio,
@@ -23,10 +22,12 @@ import { FormContext } from '../TForm/interface';
 import { IdEntity } from '@/api/interface';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import type { Identifier, XYCoord } from 'dnd-core';
 import { TableCrudContext } from './context';
 import { TFormContext } from '../TForm/context';
+import { observable } from '@formily/reactive';
+import Modular from '../Modular/Modular';
 
 export type TableToolbarProps<T extends IdEntity> = {
   tableProps: TableCrudProps<T>;
@@ -135,9 +136,11 @@ const renderableToolbar = <T extends IdEntity>(
   tableContext: TableContext<T>,
   tableProps: TableCrudProps<T>,
 ) => {
-  const [temporaryColumns, setTemporaryColumns] = useState<
-    TableColumnProps<T>[]
-  >([]);
+  const tool = useMemo(() => {
+    return observable({ temporaryColumns: [] as TableColumnProps<T>[] });
+  }, []);
+  const { temporaryColumns } = tool;
+
   const displayColumns = temporaryColumns.filter((column) => {
     return (
       (typeof column.table === 'function'
@@ -148,7 +151,7 @@ const renderableToolbar = <T extends IdEntity>(
 
   useEffect(() => {
     const columns = tableContext.getTableColumns(true, false);
-    setTemporaryColumns(columns || []);
+    tool.temporaryColumns = columns;
   }, [tableContext]);
 
   const toolbar: Toolbar<T>[] = [];
@@ -189,9 +192,9 @@ const renderableToolbar = <T extends IdEntity>(
             content: '未选择任何记录',
           });
         } else {
-          Modal.warning({
+          Modular.warning({
             title: '是否确定删除',
-            onOk: () => {
+            onConfirm: () => {
               tableContext.tableApi.remove(
                 tableContext,
                 tableContext.table.selectedRowKeys as string[],
@@ -283,7 +286,7 @@ const renderableToolbar = <T extends IdEntity>(
                         (col) => col.field === hoverItem.id,
                       ) as TableColumnProps<T>;
                       hoverCol.index = dragItem.index;
-                      setTemporaryColumns(newColumns);
+                      tool.temporaryColumns = newColumns;
                     }}
                     onDrop={() => {
                       tableContext.setTableColumns(temporaryColumns);
@@ -448,17 +451,16 @@ function TableToolbar<T extends IdEntity>(props: TableToolbarProps<T>) {
             value={tableContext.mode}
             onChange={(e) => {
               const value = e.target.value;
-              tableContext.tableApi.switchMode(
-                tableContext,
-                value as TableCrudProps<T>['mode'],
-              );
+              tableContext.mode = value;
             }}
-          >
-            <Radio value="page">分页模式</Radio>
-            <Radio value="cardPage">卡片模式</Radio>
-            <Radio value="list">列表模式</Radio>
-            <Radio value="tree">树形模式</Radio>
-          </RadioGroup>
+            options={[
+              { value: 'page', label: '分页模式' },
+              { value: 'cardPage', label: '卡片模式' },
+              { value: 'list', label: '列表模式' },
+              { value: 'tree', label: '树形模式' },
+              { value: 'scrollingList', label: '滚动列表' },
+            ]}
+          />
         </Space>
       </div>
     </div>

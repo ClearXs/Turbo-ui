@@ -1,8 +1,9 @@
-import { Form } from '@/api/developer/form';
+import useFormApi, { Form, FormApi } from '@/api/developer/form';
 import { TableColumnProps } from '@/components/TableCrud/interface';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
+import BoHelper from '../bo/helper';
 
-const FormHelper: Helper<Form> = {
+const FormHelper: Helper<Form, FormApi> = {
   getColumns: () => {
     return [
       {
@@ -40,6 +41,9 @@ const FormHelper: Helper<Form> = {
         remote: {
           url: '/api/dev/bo/list',
         },
+        relation: {
+          helper: BoHelper,
+        },
       },
       {
         label: '备注',
@@ -51,6 +55,7 @@ const FormHelper: Helper<Form> = {
       },
     ] as TableColumnProps<Form>[];
   },
+  getApi: useFormApi,
 };
 
 export default FormHelper;

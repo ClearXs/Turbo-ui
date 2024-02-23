@@ -17,6 +17,7 @@ import Post from '../post';
 import ChangePasswordForm from './ChangePassword';
 import TreePanel from '@/components/Tree/TreePanel';
 import Binary from '@/components/Binary';
+import { directGetIcon } from '@/components/Icon';
 
 export const User: React.FC = () => {
   const userApi = useUserApi();
@@ -56,7 +57,7 @@ export const User: React.FC = () => {
           <TableCrud<UserEntity>
             mode="page"
             columns={UserHelper.getColumns()}
-            useApi={useUserApi}
+            useApi={UserHelper.getApi}
             getTableContext={(tableContext) => {
               tableContextRef.current = tableContext;
             }}
@@ -67,7 +68,8 @@ export const User: React.FC = () => {
                   code: 'changPassword',
                   name: '修改密码',
                   type: 'primary',
-                  onClick(tableContext, value) {
+                  icon: directGetIcon('IconPassword', 'system'),
+                  onClick(tableContext, formContext, value) {
                     selectUserRef.current = value;
                     setShowChangePassword(true);
                   },
@@ -78,6 +80,7 @@ export const User: React.FC = () => {
                       code: 'enable',
                       name: '启用',
                       type: 'primary',
+                      icon: directGetIcon('IconEnable', 'system'),
                       onClick: (tableContext) => {
                         userApi.active(record.id).then((res) => {
                           if (res.code === 200 && res.data) {
@@ -103,6 +106,7 @@ export const User: React.FC = () => {
                       code: 'lock',
                       name: '锁定',
                       type: 'primary',
+                      icon: directGetIcon('IconLock', 'system'),
                       onClick: (tableContext) => {
                         userApi.lock(record.id).then((res) => {
                           if (res.code === 200 && res.data) {
@@ -126,7 +130,8 @@ export const User: React.FC = () => {
                   code: 'bindingRole',
                   name: '绑定角色',
                   type: 'primary',
-                  onClick: (tableContext, record) => {
+                  icon: directGetIcon('IconRole', 'system'),
+                  onClick: (tableContext, formContext, record) => {
                     setShowBindingRole(true);
                     selectUserRef.current = record;
                   },
@@ -135,7 +140,8 @@ export const User: React.FC = () => {
                   code: 'bindingPost',
                   name: '绑定岗位',
                   type: 'primary',
-                  onClick: (tableContext, record) => {
+                  icon: directGetIcon('IconPost', 'system'),
+                  onClick: (tableContext, formContext, record) => {
                     setShowBindingPost(true);
                     selectUserRef.current = record;
                   },
@@ -144,7 +150,8 @@ export const User: React.FC = () => {
                   code: 'bindingOrg',
                   name: '绑定组织',
                   type: 'primary',
-                  onClick: (tableContext, record) => {
+                  icon: directGetIcon('IconOrg', 'system'),
+                  onClick: (tableContext, formContext, record) => {
                     setShowBindingOrg(true);
                     selectUserRef.current = record;
                   },

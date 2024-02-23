@@ -1,9 +1,9 @@
-import { User } from '@/api/system/user';
+import useUserApi, { User, UserApi } from '@/api/system/user';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { USER_STATUS } from '@/constant/userstatus';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 
-const UserHelper: Helper<User> = {
+const UserHelper: Helper<User, UserApi> = {
   getColumns: () => {
     return [
       {
@@ -60,6 +60,7 @@ const UserHelper: Helper<User> = {
       },
     ] as TableColumnProps<User>[];
   },
+  getApi: useUserApi,
 };
 
 export default UserHelper;

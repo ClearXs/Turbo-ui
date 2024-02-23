@@ -1,4 +1,4 @@
 export * from './preview';
 export * from './shared';
-export * from './IconMessage';
-export * from './IconTheme';
+export * from './collection/IconMessage';
+export * from './collection/IconTheme';

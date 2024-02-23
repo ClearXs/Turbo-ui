@@ -1,5 +1,5 @@
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-import { IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api/interface';
 import { TableColumnProps, TableContext } from './interface';
 import { ColumnType, FormColumnProps, FormContext } from '../TForm/interface';
 import { FormColumnDecorator } from '../TForm/form';
@@ -31,6 +31,8 @@ import {
   UploadTableField,
 } from './components';
 import { ISchema } from '@formily/json-schema';
+import { BoAttrSchema } from '@designable/core';
+import { GlobalSchemaColumnRegistry } from '../TForm/formily/schema';
 
 export interface TableColumnDecorator<T extends IdEntity>
   extends FormColumnDecorator<T> {
@@ -125,17 +127,48 @@ export class TableColumnFactory {
 class TableColumnDecoratorImpl<T extends IdEntity>
   implements TableColumnDecorator<T>
 {
+  private relationApis: Map<string, GeneralApi<any>> = new Map();
+
   constructor(
     private tableContext?: TableContext<T>,
     private formContext?: FormContext<T>,
   ) {}
+
+  setRelationApis(relationApis: Map<string, GeneralApi<any>>): void {
+    this.relationApis = relationApis;
+  }
+
+  getRelationApis(): Map<string, GeneralApi<any>> {
+    return this.relationApis;
+  }
+
   schema(column: FormColumnProps<T>, index: number): ISchema {
     return TableColumnFactory.get(column.type, this).schema(column, index);
+  }
+
+  from(index: number, schema: BoAttrSchema): FormColumnProps<T> | undefined {
+    if (schema.binding) {
+      const component = schema['props']?.['x-component'];
+      const columnType =
+        component &&
+        GlobalSchemaColumnRegistry.getColumnTypeByComponent(component);
+      return (
+        (columnType &&
+          TableColumnFactory.get<T, FormColumnProps<T>>(columnType, this)?.from(
+            index,
+            schema,
+          )) ||
+        undefined
+      );
+    } else {
+      return undefined;
+    }
   }
 
   render(column: FormColumnProps<T>, type: 'search' | 'form'): ReactNode {
     return TableColumnFactory.get(column.type, this).render(column, type);
   }
+
   wrap(column: TableColumnProps<T>): ColumnProps<T> {
     return TableColumnFactory.get(column.type, this).wrap(column);
   }
@@ -149,9 +182,11 @@ class TableColumnDecoratorImpl<T extends IdEntity>
   getFormContext(): FormContext<T> {
     return this.formContext;
   }
+
   setFormContext(formContext: FormContext<T>): void {
     this.formContext = formContext;
   }
+
   getDefaultSpan(column: FormColumnProps<T>): FormColumnProps<T>['span'] {
     return TableColumnFactory.get(column.type, this).getDefaultSpan();
   }

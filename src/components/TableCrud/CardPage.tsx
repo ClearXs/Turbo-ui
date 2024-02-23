@@ -59,7 +59,7 @@ const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
   // 取内容区columns
   const contentColumns = tableColumns
     .filter((col) => col.field !== titleColumn.field)
-    .slice(0, 5);
+    .slice(0, 4);
   return (
     <Spin spinning={tableContext.table.loading}>
       <CardGroup spacing={10} style={{ maxHeight: '65vh', overflowY: 'auto' }}>

@@ -13,4 +13,9 @@ export const MENU_TYPE: MenuType[] = [
     label: '按钮',
     tag: 'cyan',
   },
+  {
+    value: 'PAGE',
+    label: '页面',
+    tag: 'lime',
+  },
 ];

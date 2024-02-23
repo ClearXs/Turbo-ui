@@ -7,6 +7,7 @@ import {
   FormProps,
 } from '../interface';
 import { IFormLayoutProps } from '@formily/semi';
+import { BoAttrSchema, FieldType } from '@designable/core';
 
 export type FormilyFormProps = IFormLayoutProps & {
   formProps: FormProps<any>;
@@ -21,20 +22,20 @@ export type FormilyFormProps = IFormLayoutProps & {
 
 export interface SchemaColumn<Column extends FormColumnProps<any>> {
   /**
-   * 给定column转换Schema
+   * 给定column转换Formliy Schema
    * @param column column
    * @returns
    */
   adapt: (column: Column, formContext: FormContext<any>) => ISchema;
 
   /**
-   * 给定schema转换为Column
+   * 将BoAttrSchema转换为Column
    * @param field column field
    * @param span 栅栏间隔
    * @param schema schema
    * @returns
    */
-  reverse: (field: string, span: number, schema: ISchema) => Column;
+  reverse: (index: number, schema: BoAttrSchema) => Column;
 }
 
 export interface SchemaColumnRegistry {
@@ -53,5 +54,34 @@ export interface SchemaColumnRegistry {
    * @param columnType column
    * @returns
    */
-  getSchemaColumn: (columnType: ColumnType) => SchemaColumn<any>;
+  getSchemaColumn: (columnType: ColumnType) => SchemaColumn<any> | undefined;
+
+  /**
+   * 添加表单组件与ColumnType的映射
+   * @param component 表单组件
+   * @param columnType column type
+   */
+  addComponentColumnMapping: (
+    component: string,
+    columnType: ColumnType,
+  ) => void;
+
+  /**
+   * 根据表单组件获取Column Type
+   * @param component 表单组件
+   */
+  getColumnTypeByComponent(component: string): ColumnType | undefined;
+
+  /**
+   * 添加字段类型与ColumnType的映射
+   * @param component 表单组件
+   * @param columnType column type
+   */
+  addFieldTypeColumnMapping: (field: FieldType, columnType: ColumnType) => void;
+
+  /**
+   * 根据字段获取Column Type
+   * @param component 表单组件
+   */
+  getColumnTypeByFieldType(field: FieldType): ColumnType | undefined;
 }

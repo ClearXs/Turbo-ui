@@ -7,7 +7,6 @@ function SvgComponent(props: React.SVGProps<SVGSVGElement>) {
       class="icon"
       viewBox="0 0 1024 1024"
       version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
       p-id="7542"
       // 注意自定义icon需要加上下面参数
       width="1em"
@@ -39,5 +38,4 @@ function SvgComponent(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-const IconTheme = convertIcon(SvgComponent, 'align_center_vertical');
-export default IconTheme;
+export const IconTheme = convertIcon(SvgComponent, 'align_center_vertical');

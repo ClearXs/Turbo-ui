@@ -1,24 +1,40 @@
-import { Modal, Notification } from '@douyinfe/semi-ui';
+import { Notification, Toast } from '@douyinfe/semi-ui';
 import { useMemo, useRef, useState } from 'react';
-import useCategoryApi, { CategoryTree } from '@/api/system/category';
+import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import TreePanel from '@/components/Tree/TreePanel';
-import useFormApi, { Form } from '@/api/developer/form';
+import { Form } from '@/api/developer/form';
 import FormHelper from './helper';
-import Editor from '../editor';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import Binary from '@/components/Binary';
-import { Form as Formliy } from '@formily/core';
 import _ from 'lodash';
+import FormEditor from '../editor/FormEditor';
+import { directGetIcon } from '@/components/Icon';
+import useBoApi from '@/api/developer/bo';
 
 const Form: React.FC = () => {
+  const boApi = useBoApi();
   const [categoryId, setCategoryId] = useState<string>();
-
   const [showEditor, setShowEditor] = useState<boolean>(false);
-  const [showPreview, setShowPreview] = useState<boolean>(false);
-  const formRef = useRef<Formliy>();
-
   const formEntityRef = useRef<Form>();
+
+  const editable = useMemo(() => {
+    return (record: Form) => {
+      if (_.isEmpty(record.boId)) {
+        Toast.error('请选择业务对象!');
+        return;
+      }
+      boApi.check(record.boId).then((res) => {
+        const { code, data } = res;
+        if (code === 200 && data) {
+          setShowEditor(true);
+          formEntityRef.current = record;
+        } else {
+          Toast.error('业务对象不存在!');
+        }
+      });
+    };
+  }, []);
 
   return (
     <>
@@ -28,83 +44,48 @@ const Form: React.FC = () => {
             columns={CategoryHelper.getColumns()}
             params={{ funcCode: 'form' }}
             addDefaultValue={{ funcCode: 'form' }}
-            useApi={useCategoryApi}
+            useApi={CategoryHelper.getApi}
             onSelectChange={setCategoryId}
             depth={0}
             root="表单分类"
             expandAll
+            first={false}
           />
         }
         RightComponent={
           <CategoryTableCrud<Form>
             mode="cardPage"
             columns={FormHelper.getColumns()}
-            useApi={useFormApi}
+            useApi={FormHelper.getApi}
             params={{ categoryId: categoryId }}
             funcCode="form"
             operateBar={{
               append: [
                 {
-                  code: 'preview',
-                  name: '预览',
-                  type: 'primary',
-                  onClick(tableContext, formContext, value) {
-                    setShowPreview(true);
-                  },
-                },
-                {
                   code: 'editForm',
                   name: '编辑表单',
                   type: 'primary',
+                  icon: directGetIcon('IconFormSetting', 'system'),
                   onClick(tableContext, formContext, value) {
-                    if (_.isEmpty(value.boId)) {
-                      Notification.error({ content: '请选择业务对象!' });
-                      return;
-                    }
-                    setShowEditor(true);
-                    formEntityRef.current = value;
+                    editable(value);
                   },
                 },
               ],
             }}
             card={{
               onClick(record) {
-                if (_.isEmpty(record.boId)) {
-                  Notification.error({ content: '请选择业务对象!' });
-                  return;
-                }
-                setShowEditor(true);
-                formEntityRef.current = record;
+                editable(record);
               },
             }}
           />
         }
       />
-      <Modal
-        fullScreen
-        footer={null}
+      <FormEditor
         visible={showEditor}
-        closeOnEsc={false}
+        panels={['formDesign']}
         onCancel={() => setShowEditor(false)}
-      >
-        {formEntityRef.current && (
-          <Editor
-            form={formEntityRef.current}
-            onClose={() => setShowEditor(false)}
-          />
-        )}
-      </Modal>
-      <Modal
-        visible={showPreview}
-        closeOnEsc
-        onCancel={() => setShowPreview(false)}
-        size="large"
-        onOk={() => {
-          formRef.current?.submit((values) => {
-            Notification.info({ content: JSON.stringify(values) });
-          });
-        }}
-      ></Modal>
+        formOrId={formEntityRef.current}
+      />
     </>
   );
 };

@@ -3,33 +3,27 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormInputColumnProps } from '../../components';
 
 const InputSchema: SchemaColumn<FormInputColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(column, formContext, 'Input', 'string'),
+      ...baseOnColumnCreateISchema(column, formContext, 'Input', 'string'),
       'x-component-props': {
         ..._.omit(column, [...ExclusiveColumnKeyProps]),
       },
     };
   },
-  reverse: (field, span, schema) => {
-    return {
-      field,
-      index: schema['x-index'],
-      type: 'input',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
-    };
+  reverse: (index, schema) => {
+    const column = baseOnBoAttrSchemaCreateColumn(index, schema);
+    return { ...column, type: 'input' };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('input', InputSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping('Input', 'input');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('varchar', 'input');
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('char', 'input');

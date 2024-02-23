@@ -28,7 +28,7 @@ export interface Org extends Tree {
   type: string;
 }
 
-interface OrgApi extends TreeGeneralApi<Org> {}
+export interface OrgApi extends TreeGeneralApi<Org> {}
 
 export default function useOrgApi(): OrgApi {
   const request = useRequest();

@@ -7,7 +7,7 @@ import {
 } from '@/api/interface';
 import { TableApi, TableContext, TableCrudProps } from './interface';
 import { useMemo } from 'react';
-import { Notification } from '@douyinfe/semi-ui';
+import { Toast } from '@douyinfe/semi-ui';
 import {
   TablePagination,
   TablePaginationProps,
@@ -19,14 +19,36 @@ export default function useTableApi<T extends IdEntity>(
   return useMemo<TableApi<T>>(() => {
     const check = (tableContext: TableContext<T>) => {
       if (tableContext === undefined) {
-        Notification.error({ position: 'top', content: '未完成初始化' });
+        Toast.error('未完成初始化!');
         return true;
       }
       if (tableContext.api === undefined) {
-        Notification.error({ position: 'top', content: '请提供api接口' });
+        Toast.error('请提供api接口!');
         return true;
       }
       return false;
+    };
+
+    const onRemoveAfter = (props: TableCrudProps<T>, ids: T['id'][]) => {
+      const { event } = props;
+      try {
+        event?.onDeleteSuccess?.(ids);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const onQueryAfter = (
+      props: TableCrudProps<T>,
+      tableContext: TableContext<T>,
+      pageable?: TablePagination,
+    ) => {
+      const { event } = props;
+      try {
+        event?.onQuerySuccess?.(tableContext, pageable);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     return {
@@ -37,10 +59,9 @@ export default function useTableApi<T extends IdEntity>(
         const checkedContext = tableContext as TableContext<T>;
         checkedContext.api?.deleteEntity(ids).then((res) => {
           if (res.code === 200 && res.data) {
-            Notification.success({
-              position: 'top',
-              content: '删除成功!',
-            });
+            Toast.success('删除成功!');
+            // 触发移除后的事件
+            onRemoveAfter(tableContext.props, ids);
             // 判断删除数据是否已经等于当前页的数据
             const dataSource = tableContext.dataSource;
             if (
@@ -60,11 +81,6 @@ export default function useTableApi<T extends IdEntity>(
             } else {
               this.listOrPageOrTree(tableContext);
             }
-          } else {
-            Notification.error({
-              position: 'top',
-              content: res.message,
-            });
           }
         });
       },
@@ -79,29 +95,36 @@ export default function useTableApi<T extends IdEntity>(
           size: searchPage?.pageSize,
         } as Pagination<T>;
         tableContext.table.loading = true;
-
         // 调用接口
         const params: GeneralParams<T> = {
           entity: tableContext.search as T,
           orders: tableContext.table.orders,
         };
-        tableContext.api.page(page, params).then((res) => {
-          if (res.code === 200) {
-            const data = res.data;
-            const pageable: TablePagination = {
-              currentPage: Number.parseInt(data.current),
-              pageSize: Number.parseInt(data.size),
-              total: Number.parseInt(data.total || '0'),
-            };
+        tableContext.api
+          .page(page, params)
+          .then((res) => {
+            if (res.code === 200) {
+              const data = res.data;
+              const pageable: TablePagination = {
+                currentPage: Number.parseInt(data.current),
+                pageSize: Number.parseInt(data.size),
+                total: Number.parseInt(data.total || '0'),
+              };
+              tableContext.table.loading = false;
+              tableContext.table.selectedRowKeys = [];
+              tableContext.table.pagination = pageable;
+              tableContext.dataSource = data.records as T[];
+              // 触发查询后的事件
+              onQueryAfter(tableContext.props, tableContext, pageable);
+            } else {
+              tableContext.table.loading = false;
+              tableContext.table.selectedRowKeys = [];
+            }
+          })
+          .catch((err) => {
             tableContext.table.loading = false;
             tableContext.table.selectedRowKeys = [];
-            tableContext.table.pagination = pageable;
-            tableContext.dataSource = data.records as T[];
-          } else {
-            tableContext.table.loading = false;
-            tableContext.table.selectedRowKeys = [];
-          }
-        });
+          });
       },
       list(tableContext: TableContext<T>) {
         if (check(tableContext)) {
@@ -114,15 +137,24 @@ export default function useTableApi<T extends IdEntity>(
           entity: checkedContext.search as T,
           orders: checkedContext.table.orders,
         };
-        checkedContext.api?.list(params).then((res) => {
-          if (res.code === 200) {
-            const data = res.data;
-            checkedContext.dataSource = data as T[];
-          }
-          checkedContext.table.loading = false;
-          checkedContext.table.selectedRowKeys = [];
-          checkedContext.table.pagination = false;
-        });
+        checkedContext.api
+          ?.list(params)
+          .then((res) => {
+            if (res.code === 200) {
+              const data = res.data;
+              checkedContext.dataSource = data as T[];
+              // 触发查询后的事件
+              onQueryAfter(tableContext.props, tableContext, undefined);
+            }
+            checkedContext.table.loading = false;
+            checkedContext.table.selectedRowKeys = [];
+            checkedContext.table.pagination = false;
+          })
+          .catch((err) => {
+            checkedContext.table.loading = false;
+            checkedContext.table.selectedRowKeys = [];
+            checkedContext.table.pagination = false;
+          });
       },
       tree(tableContext: TableContext<T>) {
         if (check(tableContext)) {
@@ -132,14 +164,23 @@ export default function useTableApi<T extends IdEntity>(
         const params: GeneralParams<T> = {
           entity: tableContext.search as T,
         };
-        (tableContext.api as TreeGeneralApi<T>).tree(params).then((res) => {
-          if (res.code === 200) {
-            tableContext.dataSource = res.data as T[];
-          }
-          tableContext.table.loading = false;
-          tableContext.table.selectedRowKeys = [];
-          tableContext.table.pagination = false;
-        });
+        (tableContext.api as TreeGeneralApi<T>)
+          .tree(params)
+          .then((res) => {
+            if (res.code === 200) {
+              tableContext.dataSource = res.data as T[];
+              // 触发查询后的事件
+              onQueryAfter(tableContext.props, tableContext, undefined);
+            }
+            tableContext.table.loading = false;
+            tableContext.table.selectedRowKeys = [];
+            tableContext.table.pagination = false;
+          })
+          .catch((err) => {
+            tableContext.table.loading = false;
+            tableContext.table.selectedRowKeys = [];
+            tableContext.table.pagination = false;
+          });
       },
       listOrPageOrTree(tableContext, pageable?) {
         if (mode === 'list') {
@@ -159,8 +200,6 @@ export default function useTableApi<T extends IdEntity>(
             formContext.visible = true;
             formContext.type = 'edit';
             formContext.values = res.data;
-          } else {
-            Notification.error({ position: 'top', content: res.message });
           }
         });
       },
@@ -173,8 +212,6 @@ export default function useTableApi<T extends IdEntity>(
             formContext.visible = true;
             formContext.type = 'details';
             formContext.values = res.data;
-          } else {
-            Notification.error({ position: 'top', content: res.message });
           }
         });
       },
@@ -196,9 +233,6 @@ export default function useTableApi<T extends IdEntity>(
           });
         tableContext.table.orders = orders;
         this.listOrPageOrTree(tableContext);
-      },
-      switchMode(tableContext, value) {
-        tableContext.mode = value;
       },
     };
   }, []);

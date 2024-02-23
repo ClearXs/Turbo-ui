@@ -27,7 +27,9 @@ export type CategoryTree = Category & {
   children: CategoryTree[];
 };
 
-export default function useCategoryApi(): TreeGeneralApi<CategoryTree> {
+export interface CategoryApi extends TreeGeneralApi<CategoryTree> {}
+
+export default function useCategoryApi(): CategoryApi {
   const request = useRequest();
   return new TreeGeneralApiImpl<CategoryTree>('/api/sys/category', request);
 }

@@ -1,76 +1,63 @@
 import { directGetIcon } from '@/components/Icon';
 import { Button, ButtonGroup, Popover, Typography } from '@douyinfe/semi-ui';
-import { Engine } from '@designable/core';
 import { EditorProps } from '../interface';
-import { transformToSchema } from '@designable/formily-transformer';
-import useFormApi from '@/api/developer/form';
-import { useInitializeSchema } from '../service/schema';
-import { useEffect } from 'react';
+import { DesignableProps } from '../Editor';
+import { observer } from '@formily/reactive-react';
+import { useKernel } from '../kernel';
 
 export type ActionWidgetProps = {
-  engine: Engine;
-  form: EditorProps['form'];
+  designableProps: DesignableProps;
+  onSave?: EditorProps['onSave'];
+  onPublish?: EditorProps['onPublish'];
   onClose?: EditorProps['onClose'];
 };
 
-export const ActionWidget: React.FC<ActionWidgetProps> = ({
-  engine,
-  form,
-  onClose,
-}) => {
-  const formApi = useFormApi();
-  const initializeSchema = useInitializeSchema();
+export const ActionWidget: React.FC<ActionWidgetProps> = observer(
+  ({ designableProps, onSave, onPublish, onClose }) => {
+    const kernel = useKernel();
 
-  useEffect(() => {
-    initializeSchema(form);
-  }, [form]);
-
-  return (
-    <ButtonGroup>
-      <Popover
-        content={
-          <div className="p-2 flex gap-1 flex-col">
-            <Typography.Title heading={6}>保存</Typography.Title>
-            <Typography.Paragraph>
-              该操作只会保存表单数据，不会对Bo数据进行任何变动
-            </Typography.Paragraph>
-            <Typography.Title heading={6}>发布</Typography.Title>
-            <Typography.Paragraph spacing="extended">
-              在保存的中基础上，将会对Bo数据进行变动，包括Bo生成的实例数据表
-            </Typography.Paragraph>
-          </div>
-        }
-      >
+    return (
+      <ButtonGroup>
+        <Popover
+          content={
+            <div className="p-2 flex gap-1 flex-col">
+              <Typography.Title heading={6}>保存</Typography.Title>
+              <Typography.Paragraph>
+                该操作只会保存表单数据，不会对Bo数据进行任何变动
+              </Typography.Paragraph>
+              <Typography.Title heading={6}>发布</Typography.Title>
+              <Typography.Paragraph spacing="extended">
+                在保存的中基础上，将会对Bo数据进行变动，包括Bo生成的实例数据表
+              </Typography.Paragraph>
+            </div>
+          }
+        >
+          <Button
+            type="primary"
+            icon={directGetIcon('IconHelpCircleStroked')}
+            theme="borderless"
+          />
+        </Popover>
+        <Button
+          loading={designableProps.loading}
+          onClick={() => onSave?.(kernel, designableProps)}
+        >
+          保存
+        </Button>
+        <Button
+          loading={designableProps.loading}
+          type="primary"
+          onClick={() => onPublish?.(kernel, designableProps)}
+        >
+          发布
+        </Button>
         <Button
           type="primary"
-          icon={directGetIcon('IconHelpCircleStroked')}
+          icon={directGetIcon('IconClose')}
           theme="borderless"
+          onClick={() => onClose?.(designableProps)}
         />
-      </Popover>
-      <Button
-        onClick={() => {
-          const schema = JSON.stringify(
-            transformToSchema(engine.getCurrentTree()),
-            null,
-            2,
-          );
-          const boSchema = JSON.stringify(engine.getBoSchema(), null, 2);
-          form.schema = schema;
-          form.boSchema = boSchema;
-          formApi.saveOrUpdate(form);
-        }}
-      >
-        保存
-      </Button>
-      <Button type="primary" onClick={() => props.onPublish?.()}>
-        发布
-      </Button>
-      <Button
-        type="primary"
-        icon={directGetIcon('IconClose')}
-        theme="borderless"
-        onClick={() => onClose?.()}
-      />
-    </ButtonGroup>
-  );
-};
+      </ButtonGroup>
+    );
+  },
+);

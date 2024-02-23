@@ -1,4 +1,3 @@
-import LoginSVG from '@/img/login.svg';
 import React, { useEffect, useState } from 'react';
 import { Button, Select, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { IconArrowLeft } from '@douyinfe/semi-icons';
@@ -7,12 +6,17 @@ import * as headers from '@/util/headers';
 import LoginFrom from './LoginFrom';
 import RegisterFrom from './RegisterFrom';
 import useTenantApi, { Tenant } from '@/api/system/tenant';
+import Copyright from '../Copyright';
+import { useLottie } from 'lottie-react';
+import LoadingAnimation from '@/lottie/Login.json';
 
 const Login: React.FC = () => {
   const [switchRegister, setSwitchRegister] = useState<boolean>(false);
   const [tenantList, setTenantList] = useState<Tenant[]>([]);
   const [tenantId, setTenantId] = useState('');
   const tenantApi = useTenantApi();
+
+  const { View } = useLottie({ animationData: LoadingAnimation });
 
   useEffect(() => {
     tenantApi.list({}).then((res) => {
@@ -37,10 +41,7 @@ const Login: React.FC = () => {
               一站式门店解决方案
             </p>
           </div>
-          <img
-            className="relative max-h-full max-w-full flex-1 object-cover object-center"
-            src={LoginSVG}
-          />
+          {View}
         </div>
         <div className="border border-dotted border-blue-gray-50"></div>
         <div className="relative flex w-3/5 flex-col items-center justify-center">
@@ -92,6 +93,8 @@ const Login: React.FC = () => {
           )}
         </div>
       </div>
+
+      <Copyright />
     </div>
   );
 };

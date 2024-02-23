@@ -3,14 +3,15 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormDateRangeColumnProps } from '../../components';
 
 const DateRangeSchema: SchemaColumn<FormDateRangeColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(
+      ...baseOnColumnCreateISchema(
         column,
         formContext,
         'DatePicker.RangePicker',
@@ -21,20 +22,16 @@ const DateRangeSchema: SchemaColumn<FormDateRangeColumnProps<any>> = {
       },
     };
   },
-  reverse: (field, span, schema) => {
+  reverse: (index, schema) => {
     return {
-      field,
-      index: schema['x-index'],
+      ...baseOnBoAttrSchemaCreateColumn(index, schema),
       type: 'dateRange',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
     };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('dateRange', DateRangeSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping(
+  'DatePicker.RangePicker',
+  'dateRange',
+);

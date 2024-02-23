@@ -1,10 +1,11 @@
-import { GeneralApi, IdEntity, TreeGeneralApi } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api/interface';
 import { Constant } from '@/constant/interface';
-import { FormApi, RuleItem } from '@douyinfe/semi-ui/lib/es/form';
+import { RuleItem } from '@douyinfe/semi-ui/lib/es/form';
 import { FormColumnDecorator } from './form';
-import { Dic } from '@/api/system/dic';
 import { Method } from 'axios';
-import { ISchema, SchemaReactions } from '@formily/json-schema';
+import { SchemaReactions } from '@formily/json-schema';
+import { Form as FormType } from '@formily/core';
+import { Helper } from '../interface';
 
 export type Pair = {
   key: string;
@@ -58,6 +59,19 @@ export type ColumnType =
   | 'selectGroup'
   | 'undefined';
 
+export type FormStatus = 'add' | 'edit' | 'details';
+
+export type ModalButton<T extends IdEntity> = {
+  code: string;
+  name: string;
+  type: 'warning' | 'primary' | 'tertiary' | 'secondary' | 'danger';
+  size?: 'default' | 'small' | 'large';
+  icon?: React.ReactNode;
+  // 按钮loading状态，如果不赋值默认为false
+  loading?: boolean;
+  onClick?: (formContext: FormContext<T>) => void;
+};
+
 export type FormProps<T extends IdEntity> = {
   // 表单模型标识
   mode: 'tree' | 'table' | 'simply';
@@ -65,6 +79,8 @@ export type FormProps<T extends IdEntity> = {
   title?: string;
   // 字段集合
   columns: FormColumnProps<T>[];
+  // 表单类型
+  type?: FormStatus;
   // 表单弹出框大小
   size?: 'small' | 'medium' | 'large' | 'full-width';
   decorator?: FormColumnDecorator<T>;
@@ -74,10 +90,17 @@ export type FormProps<T extends IdEntity> = {
   immediateVisible?: boolean;
   // 是否显示表单验证提示消息
   showValidateErrorNotification?: boolean;
+  // 可选字段
+  [key: string]: any;
+  // 内置事件回调
+  event?: {
+    // 当保存或者更新成功后进行回调
+    onSaveOrUpdateSuccess?: (entity: T) => void;
+  };
   // 表单级字段验证
   validateFields?: (values: T) => string;
   // api
-  useApi?: () => GeneralApi<T>;
+  useApi?: (() => GeneralApi<T>) | GeneralApi<T>;
   // 操作完成的回调
   onOk?: (formContext: FormContext<T>) => void;
   // 发生错误时回调
@@ -85,9 +108,19 @@ export type FormProps<T extends IdEntity> = {
   // 取消时回调
   onCancel?: (formContext: FormContext<T>) => void;
   // 获取表单上下文
-  getFormContext?: (formContext?: FormContext<T>) => void;
-  // 可选字段
-  [key: string]: any;
+  getFormContext?: (formContext: FormContext<T>) => void;
+  // modal内容
+  modal?: {
+    // 是否显示确认操作
+    showConfirm?: boolean | ((formContext: FormContext<T>) => boolean);
+    // 是否显示取消操作
+    showCancel?: boolean | ((formContext: FormContext<T>) => boolean);
+    // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
+    append?: (
+      | ModalButton<T>
+      | ((formContext: FormContext<T>) => ModalButton<T> | undefined)
+    )[];
+  };
 };
 
 // 远程搜索
@@ -146,11 +179,17 @@ export type FormColumnProps<T extends IdEntity> = {
   ) => string | Promise<string>;
   // 联动
   reaction?: SchemaReactions<any>;
+  // 关联
+  relation?: {
+    title?: FormProps<T>['title'];
+    helper: Helper<any, any>;
+  };
+  [key: string]: any;
 };
 
 export type FormContext<T extends IdEntity> = {
   // 弹窗类型
-  type: 'add' | 'edit' | 'details' | undefined;
+  type: FormStatus;
   // Form props
   props: FormProps<T>;
   // 是否显示
@@ -165,6 +204,11 @@ export type FormContext<T extends IdEntity> = {
   dataSet: Record<string, Constant[]>;
   // 字段转换为semi props
   decorator: FormColumnDecorator<T>;
+  valid: FormType['valid'];
+  validating: FormType['validating'];
+  validate?: FormType['validate'];
+  submit?: FormType['submit'];
+  reset?: FormType['reset'];
   // 获取字段绑定的默认值
   getDefaultValues: () => Partial<T>;
   // 获取表单绑定的值

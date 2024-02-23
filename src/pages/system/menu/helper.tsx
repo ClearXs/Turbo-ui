@@ -1,6 +1,6 @@
-import { MenuTree } from '@/api/system/menu';
+import useMenuApi, { MenuApi, MenuTree } from '@/api/system/menu';
 import { MENU_TYPE } from '@/constant/menutype';
-import { Helper } from '@/pages/interface';
+import { Helper } from '@/components/interface';
 import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
@@ -34,7 +34,7 @@ const loadMenuTreeData = (
   });
 };
 
-const MenuHelper: Helper<MenuTree> = {
+const MenuHelper: Helper<MenuTree, MenuApi> = {
   getColumns: () => {
     return [
       {
@@ -69,6 +69,14 @@ const MenuHelper: Helper<MenuTree> = {
         ellipsis: true,
         align: 'center',
         type: 'input',
+        reaction: {
+          dependencies: ['type'],
+          fulfill: {
+            schema: {
+              'x-visible': "{{$deps[0] !== 'PAGE'}}",
+            },
+          },
+        },
       },
       {
         label: '类型',
@@ -109,6 +117,8 @@ const MenuHelper: Helper<MenuTree> = {
         table: false,
         filterTreeNode: true,
         expandAll: true,
+        self: true,
+        treeTransform: loadMenuTreeData,
         treeData: (tableContext) => {
           return loadMenuTreeData(tableContext?.dataSource || []);
         },
@@ -125,6 +135,7 @@ const MenuHelper: Helper<MenuTree> = {
       } as TableCheckboxColumnProps<MenuTree>,
     ];
   },
+  getApi: useMenuApi,
 };
 
 export default MenuHelper;

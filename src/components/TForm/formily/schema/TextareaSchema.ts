@@ -3,33 +3,36 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormTextareaColumnProps } from '../../components';
 
 const TextareaSchema: SchemaColumn<FormTextareaColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(column, formContext, 'Input.TextArea', 'string'),
+      ...baseOnColumnCreateISchema(
+        column,
+        formContext,
+        'Input.TextArea',
+        'string',
+      ),
       'x-component-props': {
         ..._.omit(column, [...ExclusiveColumnKeyProps]),
       },
     };
   },
-  reverse: (field, span, schema) => {
+  reverse: (index, schema) => {
     return {
-      field,
-      index: schema['x-index'],
+      ...baseOnBoAttrSchemaCreateColumn(index, schema),
       type: 'textarea',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
     };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('textarea', TextareaSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping(
+  'Input.TextArea',
+  'textarea',
+);
+GlobalSchemaColumnRegistry.addFieldTypeColumnMapping('text', 'textarea');

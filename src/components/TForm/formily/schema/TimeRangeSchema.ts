@@ -3,14 +3,15 @@ import { SchemaColumn } from '../interface';
 import {
   ExclusiveColumnKeyProps,
   GlobalSchemaColumnRegistry,
-  createColumnSchema,
+  baseOnColumnCreateISchema,
+  baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { FormTimeRangeColumnProps } from '../../components';
 
 const TimeRangeSchema: SchemaColumn<FormTimeRangeColumnProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...createColumnSchema(
+      ...baseOnColumnCreateISchema(
         column,
         formContext,
         'TimePicker.RangePicker',
@@ -21,20 +22,16 @@ const TimeRangeSchema: SchemaColumn<FormTimeRangeColumnProps<any>> = {
       },
     };
   },
-  reverse: (field, span, schema) => {
+  reverse: (index, schema) => {
     return {
-      field,
-      index: schema['x-index'],
+      ...baseOnBoAttrSchemaCreateColumn(index, schema),
       type: 'timeRange',
-      label: schema.title,
-      require: schema.required,
-      initValue: schema.default,
-      span,
-      line: span === 24,
-      reaction: schema['x-reactions'],
-      ...schema['x-component-props'],
     };
   },
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('timeRange', TimeRangeSchema);
+GlobalSchemaColumnRegistry.addComponentColumnMapping(
+  'TimePicker.RangePicker',
+  'timeRange',
+);

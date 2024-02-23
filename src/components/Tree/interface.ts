@@ -8,6 +8,7 @@ export type TreePanelProps<T extends Tree> = {
   params?: Partial<T>;
   // 用于在添加时的默认值
   addDefaultValue?: Partial<T>;
+  // 工具栏
   toolbar?: {
     // 是否显示增加按钮
     showAdd?: boolean;
@@ -18,6 +19,7 @@ export type TreePanelProps<T extends Tree> = {
     // 自定义追加
     append?: Toolbar<T>[];
   };
+  // 操作栏
   operateBar?: {
     // 是否显示怎增加操作
     showAdd?: boolean | ((record: T) => boolean);
@@ -48,6 +50,8 @@ export type TreePanelProps<T extends Tree> = {
   useApi: () => TreeGeneralApi<T>;
   // 当选中结点时回调
   onSelectChange?: (value?: string) => void;
+  // 选中时回调
+  onChange?: (value: T | undefined) => void;
   // 渲染每个结点label的样式
   label?: (tree: T) => any;
   getTreePanelApi?: (treePanelApi: TreePanelApi<T>) => void;

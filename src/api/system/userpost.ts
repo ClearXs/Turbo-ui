@@ -13,7 +13,9 @@ export interface UserPost extends IdEntity {
   postId: number;
 }
 
-const useUserPosteApi = (): GeneralApi<UserPost> => {
+interface UserPostApi extends GeneralApi<UserPost> {}
+
+const useUserPosteApi = (): UserPostApi => {
   const request = useRequest();
 
   return new GeneralApiImpl<UserPost>('/api/sys/user-post', request);

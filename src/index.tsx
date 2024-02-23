@@ -2,7 +2,6 @@ import { createRoot } from 'react-dom/client';
 import 'tailwindcss/tailwind.css';
 import { AppRouter } from '@/route';
 import { RecoilEnv, RecoilRoot } from 'recoil';
-import './theme/default.css';
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = true;
 

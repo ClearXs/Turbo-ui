@@ -11,9 +11,9 @@ import { Notification } from '@douyinfe/semi-ui';
 import CategoryHelper from './helper';
 import useCategoryApi, { CategoryTree } from '@/api/system/category';
 import { useRef, useState } from 'react';
-import Modular from '@/components/Modular';
 import { TreePanelApi } from '@/components/Tree';
 import _ from 'lodash';
+import Modular from '@/components/Modular/Modular';
 
 export type CategoryTableCrudToolbar<T extends CategoryEntity> =
   TableCrudProps<T>['toolbar'] & {
@@ -33,7 +33,7 @@ export type CategoryTableCrudProps<T extends CategoryEntity> = Omit<
 const CategoryTableCrud = <T extends CategoryEntity>(
   props: CategoryTableCrudProps<T>,
 ) => {
-  const api = props.useApi();
+  const api = props.useApi?.();
   const [showCategoryTree, setShowCategoryTree] = useState<boolean>(false);
   const categoryTreeRef = useRef<TreePanelApi<CategoryTree>>();
   const currentRowRef = useRef<T[]>();
@@ -72,7 +72,8 @@ const CategoryTableCrud = <T extends CategoryEntity>(
       <TableCrud<T>
         {...newProps}
         getTableContext={(tableContext) =>
-          (tableContextRef.current = tableContext)
+          (tableContextRef.current = tableContext) &&
+          newProps.getTableContext?.(tableContext)
         }
       />
       <Modular
