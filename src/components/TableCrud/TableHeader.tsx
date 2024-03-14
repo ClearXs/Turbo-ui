@@ -1,13 +1,14 @@
-import { Button, Col, Collapsible, Form, Row, Space } from '@douyinfe/semi-ui';
+import { Button, Col, Collapsible, Form, Row } from '@douyinfe/semi-ui';
 import { directGetIcon } from '../Icon/shared';
 import { useContext, useMemo, useRef } from 'react';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import { TableContext, TableCrudProps } from './interface';
 import { IdEntity } from '@/api/interface';
 import { chunk } from '../TForm/util';
-import { TableCrudContext } from './context';
+import { TableCrudContext } from './context/table';
 import { observable } from '@formily/reactive';
 import { observer } from '@formily/reactive-react';
+import ButtonSpace from '../ButtonSpace/ButtonSpace';
 
 export type TableHeaderProps<T extends IdEntity> = {
   tableProps: TableCrudProps<T>;
@@ -23,7 +24,15 @@ const TableHeader = observer(
 
     const tableContext = useContext<TableContext<T>>(TableCrudContext);
 
-    const { columns = [], params } = props.tableProps;
+    const {
+      columns = [],
+      params,
+      search: { disabled = false, showSearch = true, showReset = true } = {
+        disabled: false,
+        showSearch: true,
+        showReset: true,
+      },
+    } = props.tableProps;
     // 不调用tableContext.getTableColumns，避免都更改内部columns导致搜索项更改，从而杜绝页面大规模的动画
     const searchColumns = columns
       .filter((col) => {
@@ -35,8 +44,64 @@ const TableHeader = observer(
         return {
           ...col,
           span: tableContext.decorator.getDefaultSpan(col) || 6,
+          disabled,
         };
       });
+
+    const headerButton = [];
+
+    // more button
+    headerButton.push(
+      <Button
+        key="more"
+        type="tertiary"
+        theme="borderless"
+        icon={
+          header.showCollapseColumn
+            ? directGetIcon('IconChevronUp')
+            : directGetIcon('IconChevronDown')
+        }
+        onClick={() => (header.showCollapseColumn = !header.showCollapseColumn)}
+      >
+        更多
+      </Button>,
+    );
+
+    // search button
+    showSearch &&
+      headerButton.push(
+        <Button
+          key="search"
+          type="primary"
+          icon={directGetIcon('IconSearch')}
+          onClick={() => {
+            // 相同key 默认值的优先级 > 表单值
+            const values = Object.assign(
+              formApiRef.current?.getValues(),
+              params,
+            );
+            tableContext.search = values;
+          }}
+        >
+          搜索
+        </Button>,
+      );
+
+    // reset button
+    showReset &&
+      headerButton.push(
+        <Button
+          key="reset"
+          type="tertiary"
+          icon={directGetIcon('IconRefresh')}
+          onClick={() => {
+            formApiRef.current?.reset();
+            tableContext.search = params || {};
+          }}
+        >
+          重制
+        </Button>,
+      );
 
     const chunks = chunk(searchColumns, 6);
     const directColumns = chunks[0] || { columns: [] };
@@ -83,46 +148,7 @@ const TableHeader = observer(
             })}
           </Collapsible>
         </div>
-        <Space className="ml-auto mr-2">
-          <Button
-            type="tertiary"
-            theme="borderless"
-            icon={
-              header.showCollapseColumn
-                ? directGetIcon('IconChevronUp')
-                : directGetIcon('IconChevronDown')
-            }
-            onClick={() =>
-              (header.showCollapseColumn = !header.showCollapseColumn)
-            }
-          >
-            更多
-          </Button>
-          <Button
-            type="primary"
-            icon={directGetIcon('IconSearch')}
-            onClick={() => {
-              // 相同key 默认值的优先级 > 表单值
-              const values = Object.assign(
-                formApiRef.current?.getValues(),
-                params,
-              );
-              tableContext.search = values;
-            }}
-          >
-            搜索
-          </Button>
-          <Button
-            type="tertiary"
-            icon={directGetIcon('IconRefresh')}
-            onClick={() => {
-              formApiRef.current?.reset();
-              tableContext.search = params || {};
-            }}
-          >
-            重制
-          </Button>
-        </Space>
+        <ButtonSpace>{headerButton.map((Button) => Button)}</ButtonSpace>
       </Form>
     );
   },

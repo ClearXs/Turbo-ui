@@ -3,7 +3,7 @@ import { TableContext } from './interface';
 import { Pagination, Typography } from '@douyinfe/semi-ui';
 import { TablePaginationProps as SemiTablePaginationProps } from '@douyinfe/semi-ui/lib/es/table';
 import { useContext } from 'react';
-import { TableCrudContext } from './context';
+import { TableCrudContext } from './context/table';
 
 export type TablePaginationProps = {
   currentPage: SemiTablePaginationProps['currentPage'];

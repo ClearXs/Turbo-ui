@@ -4,9 +4,9 @@ import { directGetIcon } from '../Icon/shared';
 import { Button, ButtonGroup, Dropdown, Tooltip } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 import { useContext } from 'react';
-import { TableCrudContext } from './context';
+import { TableCrudContext } from './context/table';
 import { FormContext } from '../TForm/interface';
-import { TFormContext } from '../TForm/context';
+import { TFormContext } from '../TForm/context/form';
 import { observer } from '@formily/reactive-react';
 
 export type OperatorButtonSetProps<T extends IdEntity> = {

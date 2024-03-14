@@ -10,7 +10,8 @@
     "semi-ui",
     "axios",
     "prettier",
-    "recoil"
+    "recoil",
+    "formily"
   ],
   "repository": {
     "type": "git",
@@ -35,14 +36,14 @@
     "test:cover": "vitest run --coverage"
   },
   "dependencies": {
-    "@designable/core": "0.0.1-beta.22",
-    "@designable/formily-semi": "0.0.1-beta.22",
-    "@designable/formily-setters": "0.0.1-beta.22",
-    "@designable/formily-transformer": "0.0.1-beta.22",
-    "@designable/react": "0.0.1-beta.22",
-    "@designable/react-sandbox": "0.0.1-beta.22",
-    "@designable/react-settings-form": "0.0.1-beta.22",
-    "@designable/shared": "0.0.1-beta.22",
+    "@designable/core": "0.0.1-beta.24",
+    "@designable/formily-semi": "0.0.1-beta.24",
+    "@designable/formily-setters": "0.0.1-beta.24",
+    "@designable/formily-transformer": "0.0.1-beta.24",
+    "@designable/react": "0.0.1-beta.24",
+    "@designable/react-sandbox": "0.0.1-beta.24",
+    "@designable/react-settings-form": "0.0.1-beta.24",
+    "@designable/shared": "0.0.1-beta.24",
     "@douyinfe/semi-icons": "^2.50.0",
     "@douyinfe/semi-illustrations": "^2.50.0",
     "@douyinfe/semi-ui": "^2.50.0",

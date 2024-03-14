@@ -1,6 +1,6 @@
 import usePageApi, { PageView } from '@/api/developer/page';
 import { Toast } from '@douyinfe/semi-ui';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import TreePanel from '@/components/Tree/TreePanel';
 import TableCrud from '@/components/TableCrud';

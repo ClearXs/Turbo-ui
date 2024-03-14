@@ -16,8 +16,8 @@ import OperatorButtonSet from './OperatorButtonSet';
 import useTableCrudOperatorBar from './TableCrudOperatorBar';
 import TablePagination from './TablePagination';
 import { useContext } from 'react';
-import { TableCrudContext } from './context';
-import { TFormContext } from '../TForm/context';
+import { TableCrudContext } from './context/table';
+import { TFormContext } from '../TForm/context/form';
 import { observer } from '@formily/reactive-react';
 
 export type CardPageProps<T extends IdEntity> = {

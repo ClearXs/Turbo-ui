@@ -20,7 +20,7 @@ import TForm from '../TForm/TForm';
 import useTreeOperatorBar from './TreeOperatorBar';
 import OperatorButtonSet from '../TableCrud/OperatorButtonSet';
 import ConstantTag from '../Tag/ConstantTag';
-import { TFormContext } from '../TForm/context';
+import { TFormContext } from '../TForm/context/form';
 import {
   FormSelectColumnProps,
   FormTreeSelectColumnProps,

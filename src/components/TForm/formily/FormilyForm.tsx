@@ -49,7 +49,7 @@ const Text: React.FC<{
   return React.createElement(tagName, props, value || content);
 };
 
-const SchemaField = createSchemaField({
+export const SchemaField = createSchemaField({
   components: {
     Space,
     FormGrid,

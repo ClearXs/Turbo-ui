@@ -9,6 +9,33 @@ import {
 import { directGetIcon } from '../Icon/shared';
 import Modular from '../Modular/Modular';
 
+export const EDIT_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
+  code: 'edit',
+  name: '编辑',
+  type: 'primary',
+  size: 'small',
+  internal: true,
+  icon: directGetIcon('IconEditStroked'),
+};
+
+export const DETAILS_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
+  code: 'details',
+  name: '详情',
+  type: 'primary',
+  size: 'small',
+  icon: directGetIcon('IconBriefStroked'),
+  internal: true,
+};
+
+export const DELETE_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
+  code: 'delete',
+  name: '删除',
+  type: 'danger',
+  size: 'small',
+  internal: true,
+  icon: directGetIcon('IconDeleteStroked'),
+};
+
 function useTableCrudOperatorBar<T extends IdEntity>() {
   const renderOperatorBars = useMemo<RenderOperatorBarType<T>>(() => {
     return (
@@ -26,31 +53,21 @@ function useTableCrudOperatorBar<T extends IdEntity>() {
 
       // 编辑
       if ((typeof showEdit === 'function' && showEdit(record)) || showEdit) {
-        bars.push({
-          code: 'edit',
-          name: '编辑',
-          type: 'primary',
-          size: 'small',
-          internal: true,
-          icon: directGetIcon('IconEditStroked'),
-          onClick: (tableContext, formContext, record) => {
+        const editOperatorBar: OperateToolbar<T> = {
+          ...EDIT_LITERAL_OPERATOR_BAR,
+          onClick(tableContext, formContext, value) {
             tableContext?.tableApi.edit(tableContext, formContext, record.id);
           },
-        });
+        };
+        bars.push(editOperatorBar);
       }
-
       // 详情
       if (
         (typeof showDetails === 'function' && showDetails(record)) ||
         showDetails
       ) {
-        bars.push({
-          code: 'details',
-          name: '详情',
-          type: 'primary',
-          size: 'small',
-          icon: directGetIcon('IconBriefStroked'),
-          internal: true,
+        const detailsOperatorBar: OperateToolbar<T> = {
+          ...DETAILS_LITERAL_OPERATOR_BAR,
           onClick: (tableContext, formContext, record) => {
             tableContext?.tableApi.details(
               tableContext,
@@ -58,22 +75,17 @@ function useTableCrudOperatorBar<T extends IdEntity>() {
               record.id,
             );
           },
-        });
+        };
+        bars.push(detailsOperatorBar);
       }
-
       // 删除
       if (
         (typeof showDelete === 'function' && showDelete(record)) ||
         showDelete
       ) {
-        bars.push({
-          code: 'delete',
-          name: '删除',
-          type: 'danger',
-          size: 'small',
-          internal: true,
-          icon: directGetIcon('IconDeleteStroked'),
-          onClick: (tableContext, formContext, record) => {
+        const deleteOperatorBar: OperateToolbar<T> = {
+          ...DELETE_LITERAL_OPERATOR_BAR,
+          onClick(tableContext, formContext, value) {
             Modular.warning({
               title: '是否确定删除?',
               content: '该数据被删除，与其关联的数据将无法使用，请慎重操作!',
@@ -82,7 +94,8 @@ function useTableCrudOperatorBar<T extends IdEntity>() {
               },
             });
           },
-        });
+        };
+        bars.push(deleteOperatorBar);
       }
       append.forEach((bar) => {
         if (typeof bar === 'function') {
