@@ -150,6 +150,8 @@ export type FormColumnProps<T extends IdEntity> = {
   field: string;
   // 字段位置索引
   index?: number;
+  // 是否可用
+  disabled?: boolean;
   // 字段类型
   type: ColumnType;
   // 字段名称

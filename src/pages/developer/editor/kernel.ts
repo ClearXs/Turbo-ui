@@ -10,9 +10,10 @@ import { KernelContext } from './context';
 import { from } from '@/components/TForm/formily/schema';
 import { TableCrudProps } from '@/components/TableCrud/interface';
 import { TreePanelProps } from '@/components/Tree';
+import { IdEntity } from '@/api/interface';
 
 // 数据视图
-export type DataView = TableCrudProps<any> & {
+export type DataView = TableCrudProps<IdEntity> & {
   leftTree?: TreePanelProps<any>;
 };
 

@@ -40,6 +40,8 @@ export type Bar<T extends IdEntity> = {
   popoverPosition?: PopoverProps['position'];
   // popover内容组件，如果存在的话则增加Popover组件在Bar的最外层
   popoverContent?: React.ReactNode;
+  // 是否可用
+  disabled?: boolean;
   onClick?: (
     tableContext: TableContext<T>,
     formContext: FormContext<T>,
@@ -70,13 +72,29 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   id?: string;
   // table 视图模式
   mode: ViewModel;
+  // 数据源
+  dataSource?: T[];
+  // 数据字段
   columns: TableColumnProps<T>[];
+  // 是否具有可操作（意味着能否用是否api进行crud、能否点击操作按钮进行操作...）
+  operability?: boolean;
+  // search参数
+  search?: {
+    // 是否禁用search字段，默认为false
+    disabled?: boolean;
+    // 是否显示search按钮，默认为true
+    showSearch?: boolean;
+    // 是否显示reset按钮，默认为true
+    showReset?: boolean;
+  };
   // table工具栏，组件中包含默认的工具栏，可以自定义添加
   toolbar?: {
     // 是否显示增加按钮
     showAdd?: boolean;
     // 是否显示批量删除按钮
     showBatchDelete?: boolean;
+    // 是否显示刷新
+    showRefresh?: boolean;
     // 是否显示导出按钮
     showExport?: boolean;
     // 是否显示导入按钮
@@ -241,3 +259,7 @@ export type RenderOperatorBarType<T extends IdEntity> = (
   operateBar?: TableCrudProps<T>['operateBar'],
   tableApi?: TableApi<T>,
 ) => OperateToolbar<T>[];
+
+export type TableToolbarProps<T extends IdEntity> = {
+  tableProps: TableCrudProps<T>;
+};

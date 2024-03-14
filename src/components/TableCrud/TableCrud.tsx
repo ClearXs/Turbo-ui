@@ -17,8 +17,8 @@ import OperatorButtonSet from './OperatorButtonSet';
 import useTableCrudOperatorBar from './TableCrudOperatorBar';
 import useTableApi from './TableApi';
 import TablePagination from './TablePagination';
-import { TableCrudContext } from './context';
-import { TFormContext } from '../TForm/context';
+import { TableCrudContext } from './context/table';
+import { TFormContext } from '../TForm/context/form';
 import { observable } from '@formily/reactive';
 import { observer } from '@formily/reactive-react';
 
@@ -154,7 +154,7 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
       },
       search: props.params || {},
       decorator,
-      dataSource: [],
+      dataSource: props.dataSource || [],
       refresh() {
         tableApi.listOrPageOrTree(this, this.table.pagination);
       },
@@ -239,6 +239,8 @@ const useViewTable = <T extends IdEntity>({
         columns={tableContext
           .getTableColumns()
           .map((column) => tableContext.decorator.wrap(column))}
+        title={tableProps.title}
+        bordered={tableProps.bordered || true}
         dataSource={tableContext.dataSource}
         loading={tableContext.table.loading}
         sticky
@@ -258,7 +260,6 @@ const useViewTable = <T extends IdEntity>({
           );
         }}
         expandAllRows={tableContext.tree.expandAllRows}
-        bordered
         scroll={{
           y: tableContext.table.pagination || false ? '58vh' : '65vh',
         }}

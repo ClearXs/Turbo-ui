@@ -1,71 +1,9 @@
 import { createForm } from '@formily/core';
-import { createSchemaField } from '@formily/react';
 import { useMemo } from 'react';
 import { transformToSchema } from '@designable/formily-transformer';
-import {
-  Form,
-  FormItem,
-  DatePicker,
-  Checkbox,
-  Cascader,
-  Input,
-  NumberPicker,
-  Switch,
-  Password,
-  PreviewText,
-  Radio,
-  Reset,
-  Select,
-  Space,
-  Submit,
-  TimePicker,
-  Transfer,
-  TreeSelect,
-  Upload,
-  FormGrid,
-  FormLayout,
-  FormTab,
-  FormCollapse,
-  ArrayTable,
-  Rate,
-  Slider,
-} from '@formily/semi';
+import { Form } from '@formily/semi';
 import { TreeNode } from '@designable/core';
-import { Icon } from '../components/Icon';
-import { Color } from '../components/Color';
-
-const SchemaField = createSchemaField({
-  components: {
-    Form,
-    FormItem,
-    DatePicker,
-    Checkbox,
-    Cascader,
-    Input,
-    NumberPicker,
-    Switch,
-    Password,
-    PreviewText,
-    Radio,
-    Reset,
-    Select,
-    Space,
-    Submit,
-    TimePicker,
-    Transfer,
-    TreeSelect,
-    Upload,
-    FormGrid,
-    FormLayout,
-    FormTab,
-    FormCollapse,
-    ArrayTable,
-    Rate,
-    Slider,
-    Icon,
-    Color,
-  },
-});
+import { SchemaField } from '@/components/TForm/formily/FormilyForm';
 
 export type IPreviewWidgetProps = {
   tree: TreeNode;

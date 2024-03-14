@@ -2,7 +2,7 @@ import { GeneralApi, IdEntity } from '@/api/interface';
 import { FormColumnProps, FormContext } from '../TForm/interface';
 import { OperateToolbar, Toolbar } from '../TableCrud/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
-import { ListItemProps, ListProps } from '@douyinfe/semi-ui/lib/es/list';
+import { ListProps } from '@douyinfe/semi-ui/lib/es/list';
 
 export interface ListPanelProps<T extends IdEntity> {
   columns: FormColumnProps<T>[];
@@ -42,10 +42,10 @@ export interface ListPanelProps<T extends IdEntity> {
 }
 
 export interface ListPanelApi<T extends IdEntity> {
-  list: (formContext: FormContext<T> | undefined) => void;
-  details: (formContext: FormContext<T> | undefined, record: T) => void;
-  edit: (formContext: FormContext<T> | undefined, record: T) => void;
-  remove: (formContext: FormContext<T> | undefined, ids: string[]) => void;
+  list: (formContext: FormContext<T>) => void;
+  details: (formContext: FormContext<T>, record: T) => void;
+  edit: (formContext: FormContext<T>, record: T) => void;
+  remove: (formContext: FormContext<T>, ids: string[]) => void;
   // 全选
   selectAll: () => void;
   // 取消全选
@@ -74,4 +74,11 @@ export type DraggableItemProps = IdEntity & {
     hoverItem: DraggableItemProps,
   ) => void;
   onDrop: (item: DraggableItemProps) => void;
+};
+
+// bordered list
+export type BorderedListProps<T> = {
+  dataSource: T[];
+  label: (data: T) => string | React.ReactNode;
+  footer: (data: T) => React.ReactNode;
 };

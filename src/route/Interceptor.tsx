@@ -62,7 +62,10 @@ class InnerRouteInterceptor implements RouteInterceptor {
 const AuthenticationInterceptor: RouteInterceptor = {
   order: -1,
   intercept: (context: InterceptorContext): boolean => {
-    if (_.isEmpty(local.get(headers.Authentication))) {
+    if (
+      _.isEmpty(local.get(headers.Authentication)) &&
+      context.route.path != '/login'
+    ) {
       context.navigate('/login');
       Notification.error({
         content: (

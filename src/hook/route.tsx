@@ -13,7 +13,6 @@ import ClockLoading from '@/lottie/ClockLoading.json';
 import Loading from '@/pages/Loading';
 import { findRoute } from '@/route/util';
 import { RouteContext } from '@/route/context';
-import { useLocation } from 'react-router-dom';
 
 const PageComponents = import.meta.glob('../pages/**/index.tsx');
 

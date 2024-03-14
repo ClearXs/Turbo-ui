@@ -1,10 +1,7 @@
 import { directGetIcon } from '../Icon/shared';
 import {
-  Button,
   Checkbox,
-  List,
   Notification,
-  Popover,
   Radio,
   RadioGroup,
   Space,
@@ -13,179 +10,128 @@ import {
 } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 import {
-  TableColumnProps,
+  Bar,
   TableContext,
   TableCrudProps,
+  TableToolbarProps,
   Toolbar,
 } from './interface';
 import { FormContext } from '../TForm/interface';
 import { IdEntity } from '@/api/interface';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useContext, useEffect, useMemo, useRef } from 'react';
-import type { Identifier, XYCoord } from 'dnd-core';
-import { TableCrudContext } from './context';
-import { TFormContext } from '../TForm/context';
-import { observable } from '@formily/reactive';
+import { useContext, useMemo } from 'react';
+import { TableCrudContext } from './context/table';
+import { TFormContext } from '../TForm/context/form';
 import Modular from '../Modular/Modular';
+import { useIconBar, useOperabilityBar, useTextIconBar } from './hook/bar';
+import DraggableColumnList from './DraggableColumnList';
+import BorderedList from '../List/BorderedList';
 
-export type TableToolbarProps<T extends IdEntity> = {
-  tableProps: TableCrudProps<T>;
+export const ADD_LITERAL_TOOLBAR: Toolbar<any> = {
+  code: 'add',
+  name: '新增',
+  position: 'left',
+  type: 'primary',
+  icon: directGetIcon('IconCopyAdd'),
 };
 
-type DragListItemProps = {
-  id: string;
-  index: number;
-  children: React.ReactNode;
-  onHover: (dragItem: DragListItemProps, hoverItem: DragListItemProps) => void;
-  onDrop: (item: DragListItemProps) => void;
+export const DELETE_LITERAL_TOOLBAR: Toolbar<any> = {
+  code: 'delete',
+  name: '删除',
+  position: 'left',
+  type: 'danger',
+  icon: directGetIcon('IconDelete'),
 };
 
-const DropListItem = (props: DragListItemProps) => {
-  const { id, index, children, onHover, onDrop } = props;
+export const REFRESH_LITERAL_TOOLBAR: Toolbar<any> = {
+  code: 'refresh',
+  name: '刷新',
+  position: 'right',
+  type: 'primary',
+  icon: directGetIcon('IconRefresh'),
+};
 
-  const ref = useRef<HTMLDivElement>(null);
-  const [{ handlerId }, drop] = useDrop<
-    DragListItemProps,
-    void,
-    { handlerId: Identifier | null }
-  >({
-    accept: 'list',
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      };
-    },
-    hover(item: DragListItemProps, monitor) {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
+export const IMPORT_LITERAL_TOOLBAR: Toolbar<any> = {
+  code: 'import',
+  name: '导入',
+  position: 'right',
+  type: 'primary',
+  icon: directGetIcon('IconDescend2'),
+};
 
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
-        return;
-      }
+export const EXPORT_LITERAL_TOOLBAR: Toolbar<any> = {
+  code: 'export',
+  name: '导出',
+  position: 'right',
+  type: 'primary',
+  icon: directGetIcon('IconDownloadStroked'),
+};
 
-      // Determine rectangle on screen
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+export const SHOW_COLUMN_LITERAL_TOOLBAR: Toolbar<any> = {
+  code: 'columns',
+  name: '显示列',
+  position: 'right',
+  type: 'primary',
+  icon: directGetIcon('IconGridSquare'),
+};
 
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset();
-
-      // Get pixels to the top
-      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
-
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
-
-      // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return;
-      }
-
-      // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return;
-      }
-      onHover(item, props);
-      item.index = hoverIndex;
-    },
-    drop(item: DragListItemProps, monitor) {
-      onDrop(item);
-    },
-  });
-
-  const [{ isDragging }, drag] = useDrag({
-    type: 'list',
-    item: () => {
-      return { id, index };
-    },
-    collect: (monitor: any) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const opacity = isDragging ? 0.3 : 1;
-  drag(drop(ref));
-  return (
-    <div
-      ref={ref}
-      style={{
-        border: '1px dashed gray',
-        marginBottom: '.5rem',
-        backgroundColor: 'white',
-        cursor: 'move',
-        opacity,
-      }}
-      data-handler-id={handlerId}
-    >
-      {children}
-    </div>
-  );
+export const ORDERED_LITERAL_TOOLBAR: Toolbar<any> = {
+  code: 'ordered',
+  name: '排序',
+  position: 'right',
+  type: 'primary',
+  icon: directGetIcon('IconSortStroked'),
 };
 
 const renderableToolbar = <T extends IdEntity>(
   formContext: FormContext<T>,
   tableContext: TableContext<T>,
   tableProps: TableCrudProps<T>,
+  operabilityBar: <T extends Bar<any>>(props: T) => T,
 ) => {
   const tool = useMemo(() => {
-    return observable({ temporaryColumns: [] as TableColumnProps<T>[] });
-  }, []);
-  const { temporaryColumns } = tool;
-
-  const displayColumns = temporaryColumns.filter((column) => {
-    return (
-      (typeof column.table === 'function'
-        ? column.table(tableContext as TableContext<T>)
-        : column.table) !== false
-    );
-  });
-
-  useEffect(() => {
-    const columns = tableContext.getTableColumns(true, false);
-    tool.temporaryColumns = columns;
+    const temporaryColumns = tableContext.getTableColumns(true, false);
+    const displayColumns = temporaryColumns.filter((column) => {
+      return (
+        (typeof column.table === 'function'
+          ? column.table(tableContext as TableContext<T>)
+          : column.table) !== false
+      );
+    });
+    return { temporaryColumns, displayColumns };
   }, [tableContext]);
+
+  const { temporaryColumns, displayColumns } = tool;
 
   const toolbar: Toolbar<T>[] = [];
   const {
     showAdd = true,
     showBatchDelete = true,
+    showRefresh = true,
     showExport = true,
     showImport = true,
     showColumns = true,
     showOrdered = true,
     append = [],
   } = tableProps.toolbar || {};
-  // 如果没有设置参数默认为false
-  showAdd &&
-    toolbar.push({
-      code: 'add',
-      name: '新增',
-      position: 'left',
-      type: 'primary',
-      icon: directGetIcon('IconCopyAdd'),
-      onClick: () => {
+
+  // add
+  if (showAdd) {
+    const addToolbar: Toolbar<T> = {
+      ...ADD_LITERAL_TOOLBAR,
+      onClick(tableContext, formContext) {
         formContext.type = 'add';
         formContext.visible = true;
         formContext.values = {};
       },
-    });
-  showBatchDelete &&
-    toolbar.push({
-      code: 'delete',
-      name: '删除',
-      position: 'left',
-      type: 'danger',
-      icon: directGetIcon('IconDelete'),
-      onClick: (tableContext) => {
+    };
+    toolbar.push(operabilityBar(addToolbar));
+  }
+
+  // delete
+  if (showBatchDelete) {
+    const deleteToolbar: Toolbar<T> = {
+      ...DELETE_LITERAL_TOOLBAR,
+      onClick(tableContext, formContext) {
         if (_.isEmpty(tableContext.table.selectedRowKeys)) {
           Notification.error({
             position: 'top',
@@ -203,46 +149,37 @@ const renderableToolbar = <T extends IdEntity>(
           });
         }
       },
-    });
+    };
+    toolbar.push(deleteToolbar);
+  }
 
-  toolbar.push({
-    code: 'refresh',
-    name: '刷新',
-    position: 'right',
-    type: 'primary',
-    icon: directGetIcon('IconRefresh'),
-    onClick: (tableContext) => {
-      tableContext.tableApi.listOrPageOrTree(tableContext);
-    },
-  });
+  // refresh
+  if (showRefresh) {
+    const refreshToolbar: Toolbar<T> = {
+      ...REFRESH_LITERAL_TOOLBAR,
+      onClick(tableContext, formContext) {
+        tableContext.tableApi.listOrPageOrTree(tableContext);
+      },
+    };
+    toolbar.push(operabilityBar(refreshToolbar));
+  }
 
-  // 导入
-  showImport &&
-    toolbar.push({
-      code: 'import',
-      name: '导入',
-      position: 'right',
-      type: 'primary',
-      icon: directGetIcon('IconDescend2'),
-    });
+  // import
+  if (showImport) {
+    const importToolbar: Toolbar<T> = { ...IMPORT_LITERAL_TOOLBAR };
+    toolbar.push(operabilityBar(importToolbar));
+  }
 
-  // 导出
-  showExport &&
-    toolbar.push({
-      code: 'export',
-      name: '导出',
-      position: 'right',
-      type: 'primary',
-      icon: directGetIcon('IconDownloadStroked'),
-    });
+  // export
+  if (showExport) {
+    const exportToolbar: Toolbar<T> = { ...EXPORT_LITERAL_TOOLBAR };
+    toolbar.push(operabilityBar(exportToolbar));
+  }
 
-  showColumns &&
-    toolbar.push({
-      code: 'columns',
-      name: '显示列',
-      position: 'right',
-      type: 'primary',
-      icon: directGetIcon('IconGridSquare'),
+  // show columns
+  if (showColumns) {
+    const showColumnsToolbar: Toolbar<T> = {
+      ...SHOW_COLUMN_LITERAL_TOOLBAR,
       popoverContent: (
         <div className="w-96 h-64 max-h-64 p-3 overflow-y-auto flex flex-col gap-2">
           <Typography.Title heading={6}>
@@ -262,121 +199,66 @@ const renderableToolbar = <T extends IdEntity>(
           >
             全选 {`${displayColumns.length}/${temporaryColumns.length}`}
           </Checkbox>
-          <DndProvider backend={HTML5Backend}>
-            <List<TableColumnProps<T>>
-              dataSource={temporaryColumns.sort(
-                (col1, col2) => (col1.index || 0) - (col2.index || 0),
-              )}
-              renderItem={(column) => {
-                const checked =
-                  (typeof column.table === 'function'
-                    ? column.table(tableContext as TableContext<T>)
-                    : column.table) !== false;
-                return (
-                  <DropListItem
-                    id={column.field}
-                    index={column.index as number}
-                    onHover={(dragItem, hoverItem) => {
-                      const newColumns = [...temporaryColumns];
-                      const dragCol = newColumns.find(
-                        (col) => col.field === dragItem.id,
-                      ) as TableColumnProps<T>;
-                      dragCol.index = hoverItem.index;
-                      const hoverCol = newColumns.find(
-                        (col) => col.field === hoverItem.id,
-                      ) as TableColumnProps<T>;
-                      hoverCol.index = dragItem.index;
-                      tool.temporaryColumns = newColumns;
-                    }}
-                    onDrop={() => {
-                      tableContext.setTableColumns(temporaryColumns);
-                    }}
-                  >
-                    <List.Item
-                      style={{ padding: '8px 16px' }}
-                      header={
-                        <Checkbox
-                          checked={checked}
-                          onChange={(e) => {
-                            const value = e.target.checked;
-                            const newColumns = [...temporaryColumns];
-                            newColumns.forEach((col) => {
-                              if (col.field === column.field) {
-                                col.table = value;
-                              }
-                            });
-                            tableContext.setTableColumns(newColumns);
-                          }}
-                        />
-                      }
-                      main={<Typography.Text>{column.label}</Typography.Text>}
-                      extra={
-                        <Button
-                          size="small"
-                          icon={directGetIcon('IconHandle')}
-                        />
-                      }
-                    />
-                  </DropListItem>
-                );
-              }}
-            />
-          </DndProvider>
+          <DraggableColumnList<T>
+            columns={temporaryColumns}
+            onDrop={(columns) => tableContext.setTableColumns(columns)}
+            onCheck={(column) => {
+              const newColumns = [...temporaryColumns];
+              newColumns.forEach((col) => {
+                if (col.field === column.field) {
+                  col.table = true;
+                }
+              });
+              tableContext.setTableColumns(newColumns);
+            }}
+          />
         </div>
       ),
-    });
+    };
+    toolbar.push(operabilityBar(showColumnsToolbar));
+  }
 
-  // 排序
-  showOrdered &&
-    toolbar.push({
-      code: 'ordered',
-      name: '排序',
-      position: 'right',
-      type: 'primary',
-      icon: directGetIcon('IconSortStroked'),
+  // ordered
+  if (showOrdered) {
+    const orderedToolbar: Toolbar<T> = {
+      ...ORDERED_LITERAL_TOOLBAR,
       popoverContent: (
         <div className="w-96 h-64 max-h-64 p-3 overflow-y-auto flex flex-col gap-2">
-          <List<TableColumnProps<T>>
+          <BorderedList
             dataSource={temporaryColumns}
-            renderItem={(column) => {
+            label={(column) => column.label}
+            footer={(column) => {
               const sortOrder = column.sortOrder;
               return (
-                <List.Item
-                  style={{
-                    border: '1px dashed gray',
-                    padding: '8px 16px',
-                    marginBottom: '.5rem',
-                    backgroundColor: 'white',
-                    cursor: 'pointer',
+                <RadioGroup
+                  value={sortOrder as string}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    column.sortOrder = value;
+                    tableContext.tableApi.sort(tableContext, {
+                      property: column.field,
+                      order: value,
+                      sorted: true,
+                    });
                   }}
-                  main={<Typography.Text>{column.label}</Typography.Text>}
-                  extra={
-                    <RadioGroup
-                      value={sortOrder}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        column.sortOrder = value;
-                        tableContext.tableApi.sort(tableContext, {
-                          property: column.field,
-                          order: value,
-                          sorted: true,
-                        });
-                      }}
-                    >
-                      <Radio value="ascend">升序</Radio>
-                      <Radio value="descend">降序</Radio>
-                    </RadioGroup>
-                  }
-                />
+                >
+                  <Radio value="ascend">升序</Radio>
+                  <Radio value="descend">降序</Radio>
+                </RadioGroup>
               );
             }}
           />
         </div>
       ),
-    });
+    };
+    toolbar.push(operabilityBar(orderedToolbar));
+  }
 
   // 添加追加的菜单栏按钮
-  toolbar.push(...append);
+  for (const appendToolbar of append) {
+    toolbar.push(operabilityBar(appendToolbar));
+  }
+
   return toolbar;
 };
 
@@ -384,70 +266,36 @@ function TableToolbar<T extends IdEntity>(props: TableToolbarProps<T>) {
   const { tableProps } = props;
   const tableContext = useContext<TableContext<T>>(TableCrudContext);
   const formContext = useContext<FormContext<T>>(TFormContext);
+  const textIconBar = useTextIconBar();
+  const iconBar = useIconBar();
+  const operabilityBar = useOperabilityBar();
 
-  const toolbar = renderableToolbar(formContext, tableContext, tableProps);
+  const toolbar = renderableToolbar(
+    formContext,
+    tableContext,
+    tableProps,
+    operabilityBar,
+  );
 
   return (
     <div className="flex mt-3 mb-3 pl-2 pr-2">
       <Space>
         {toolbar
           .filter((bar) => bar.position === 'left')
-          .map((bar, index) => {
-            const BarButton = (
-              <Button
-                key={index}
-                type={bar.type}
-                icon={bar.icon}
-                onClick={() => bar.onClick?.(tableContext, formContext)}
-              >
-                {bar.name}
-              </Button>
-            );
-            return bar.popoverContent ? (
-              <Popover
-                key={index}
-                trigger="click"
-                closeOnEsc
-                content={bar.popoverContent}
-                position={bar.popoverPosition}
-              >
-                {BarButton}
-              </Popover>
-            ) : (
-              BarButton
-            );
-          })}
+          .map((bar) => textIconBar(bar))}
       </Space>
       <div className="ml-auto">
         <Space>
           {toolbar
             .filter((bar) => bar.position === 'right')
-            .map((bar, index) => {
-              const TooltipBarButton = (
-                <Tooltip key={index} content={bar.name} position="leftTop">
-                  <Button
-                    type={bar.type}
-                    icon={bar.icon}
-                    onClick={() => bar.onClick?.(tableContext, formContext)}
-                  />
-                </Tooltip>
-              );
-              return bar.popoverContent ? (
-                <Popover
-                  key={index}
-                  trigger="click"
-                  closeOnEsc
-                  content={bar.popoverContent}
-                  position={bar.popoverPosition}
-                >
-                  <span className="inline-block">{TooltipBarButton}</span>
-                </Popover>
-              ) : (
-                TooltipBarButton
-              );
-            })}
+            .map((bar) => iconBar(bar))}
           <RadioGroup
             type="button"
+            disabled={
+              tableContext.props.operability === undefined
+                ? false
+                : !tableContext.props.operability
+            }
             value={tableContext.mode}
             onChange={(e) => {
               const value = e.target.value;

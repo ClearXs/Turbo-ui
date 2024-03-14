@@ -22,8 +22,12 @@ export default function useTableApi<T extends IdEntity>(
         Toast.error('未完成初始化!');
         return true;
       }
+      // api不存在
       if (tableContext.api === undefined) {
-        Toast.error('请提供api接口!');
+        return true;
+      }
+      // 不具有api可操作性
+      if (tableContext.props.operability === false) {
         return true;
       }
       return false;

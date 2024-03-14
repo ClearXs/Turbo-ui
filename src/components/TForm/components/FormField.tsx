@@ -105,6 +105,7 @@ export abstract class BaseFormField<
       extraText: column.extraText,
       validate: column.validate,
       trigger: column.validateTrigger,
+      disabled: column.disabled || false,
     };
   }
 

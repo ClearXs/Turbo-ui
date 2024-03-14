@@ -34,14 +34,10 @@ const getToolbar = <T extends IdEntity>(
       type: 'primary',
       icon: directGetIcon('IconCopyAdd'),
       onClick: () => {
-        const newFormContext = {
-          ...formContext,
-          visible: true,
-          loading: false,
-          type: 'add',
-          values: formContext.getDefaultValues(),
-        } as FormContext<T>;
-        formContext?.newContext(newFormContext);
+        formContext.visible = true;
+        formContext.loading = false;
+        formContext.type = 'add';
+        formContext.values = formContext.getDefaultValues();
       },
     });
 
@@ -130,13 +126,9 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
         });
     },
     details(formContext, record) {
-      const newFormContext = {
-        ...formContext,
-        values: record,
-        visible: true,
-        type: 'details',
-      } as FormContext<T>;
-      formContext?.newContext(newFormContext);
+      formContext.visible = true;
+      formContext.type = 'details';
+      formContext.values = record;
     },
     edit(formContext, record) {
       const newFormContext = {
@@ -145,7 +137,9 @@ const ListPanel = <T extends IdEntity>(props: ListPanelProps<T>) => {
         visible: true,
         type: 'edit',
       } as FormContext<T>;
-      formContext?.newContext(newFormContext);
+      formContext.visible = true;
+      formContext.type = 'edit';
+      formContext.values = record;
     },
     remove(formContext, ids) {
       api.deleteEntity(ids).then((res) => {

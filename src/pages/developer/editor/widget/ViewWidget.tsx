@@ -4,7 +4,7 @@ import { EditorProps, ViewType } from '../interface';
 import { Tabs } from '@douyinfe/semi-ui';
 import { directGetIcon } from '@/components/Icon';
 import { PlainTab } from '@douyinfe/semi-ui/lib/es/tabs';
-import { usePrefix } from '@designable/react';
+import { usePrefix, useWorkbench } from '@designable/react';
 import cls from 'classnames';
 import './styles.less';
 import { DesignableProps } from '../Editor';
@@ -16,6 +16,7 @@ export type ViewWidgetProps = {
 
 const ViewWidget: React.FC<ViewWidgetProps> = observer(
   ({ editorProps, designableProps }) => {
+    const workbench = useWorkbench();
     const prefix = usePrefix('view-widget');
     const { panels = [] } = editorProps;
     const viewKinds: PlainTab[] = useMemo(() => {
@@ -53,9 +54,19 @@ const ViewWidget: React.FC<ViewWidgetProps> = observer(
           <Tabs
             tabList={tabList}
             activeKey={designableProps.selectPanel}
-            onTabClick={(key) =>
-              (designableProps.selectPanel = key as ViewType)
-            }
+            onTabClick={(key) => {
+              designableProps.selectPanel = key as ViewType;
+              if (designableProps.selectPanel === 'formDesign') {
+                workbench.type = 'DESIGNABLE';
+              } else if (designableProps.selectPanel === 'dataView') {
+                workbench.type = 'CUSTOM_DESIGNABLE';
+              } else if (
+                designableProps.selectPanel === 'pageSetting' ||
+                designableProps.selectPanel === 'dataManager'
+              ) {
+                workbench.type = 'CUSTOM_DESIGNABLE';
+              }
+            }}
           />
         </div>
       )

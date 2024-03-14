@@ -1,0 +1,71 @@
+@ui-prefix: semi;
+
+.dn-data-view-form-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+
+  .dn-node-path {
+    flex-grow: 0;
+  }
+
+  .dn-data-view-form-content {
+    flex-grow: 1;
+    overflow: overlay;
+  }
+
+  .@{ui-prefix}-formily-item {
+    border-bottom: 1px solid var(--semi-color-border);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+
+    * {
+      font-size: 13px;
+    }
+
+    .@{ui-prefix}-formily-item-control-content-component {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      & > .@{ui-prefix}-radio-group {
+        display: flex !important;
+        width: 100%;
+
+        .@{ui-prefix}-radio-button-wrapper {
+          display: flex;
+          justify-content: center;
+          padding: 0 6px !important;
+          align-items: center;
+          flex-grow: 2;
+        }
+      }
+
+      & > .@{ui-prefix}-slider {
+        flex-shrink: 0;
+        min-width: 0;
+        width: 100%;
+      }
+
+      & > .@{ui-prefix}-select {
+        max-width: 140px;
+      }
+    }
+  }
+}
+
+.dn-data-view-form {
+  padding: 5px 10px 0px 20px;
+
+  &-empty {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+  }
+}
