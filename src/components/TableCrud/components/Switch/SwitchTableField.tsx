@@ -1,5 +1,5 @@
-import { IdEntity } from '@/api/interface';
-import {  Switch } from '@douyinfe/semi-ui';
+import { IdEntity } from '@/api';
+import { Switch } from '@douyinfe/semi-ui';
 import { BaseTableField, TableSwitchColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';

@@ -38,7 +38,7 @@ import { FormContext, FormProps, ModalButton } from '../interface';
 import { Constant } from '@/constant';
 import _ from 'lodash';
 import { directGetIcon } from '@/components/Icon';
-import { GeneralApi } from '@/api/interface';
+import { GeneralApi } from '@/api';
 
 const Text: React.FC<{
   value?: string;
@@ -117,8 +117,8 @@ const ModalButtonComponent: React.FC<{
   form: FormType<any>;
 }> = observer(({ formProps, formContext, form }) => {
   const {
-    showConfirm,
-    showCancel,
+    showConfirm = true,
+    showCancel = true,
     append = [],
   } = formProps.modal || {
     showConfirm: true,

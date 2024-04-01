@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, Method } from 'axios';
 import sysconfig from '@/config/config';
 import * as local from '@/util/local';
-import { R } from '@/api/interface';
+import { R } from '@/api';
 import { Toast } from '@douyinfe/semi-ui';
 import * as headers from '@/util/headers';
 import { useEffect } from 'react';
@@ -36,6 +36,11 @@ export interface InternalRequest {
 const internalRemote = axios.create();
 internalRemote.defaults.baseURL = sysconfig.request.baseUrl;
 internalRemote.defaults.timeout = sysconfig.request.timeout;
+internalRemote.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+internalRemote.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
+internalRemote.defaults.headers.common['Access-Control-Allow-Headers'] = '*';
+internalRemote.defaults.headers.common['Access-Control-Allow-Credentials'] =
+  'true';
 internalRemote.defaults.headers.post['Content-Type'] = 'application/json';
 
 // 请求拦截器

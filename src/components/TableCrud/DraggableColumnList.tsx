@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { Identifier, XYCoord } from 'dnd-core';
 import { useRef, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';

@@ -17,7 +17,7 @@ import {
   Toolbar,
 } from './interface';
 import { FormContext } from '../TForm/interface';
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { useContext, useMemo } from 'react';
 import { TableCrudContext } from './context/table';
 import { TFormContext } from '../TForm/context/form';

@@ -1,4 +1,4 @@
-import { GeneralApi, GeneralApiImpl, IdEntity } from '../interface';
+import { GeneralApi, GeneralApiImpl, IdEntity } from '..';
 import useRequest from '@/hook/request';
 
 export interface Tenant extends IdEntity {

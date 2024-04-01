@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity, Order } from '@/api/interface';
+import { GeneralApi, IdEntity, Order } from '@/api';
 import {
   ColumnProps,
   SortOrder,

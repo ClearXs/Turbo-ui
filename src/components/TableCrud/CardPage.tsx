@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { TableContext, TableCrudProps } from './interface';
 import {
   Card,

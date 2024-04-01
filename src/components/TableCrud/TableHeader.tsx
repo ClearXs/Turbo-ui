@@ -3,7 +3,7 @@ import { directGetIcon } from '../Icon/shared';
 import { useContext, useMemo, useRef } from 'react';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import { TableContext, TableCrudProps } from './interface';
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { chunk } from '../TForm/util';
 import { TableCrudContext } from './context/table';
 import { observable } from '@formily/reactive';

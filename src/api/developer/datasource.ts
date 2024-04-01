@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, GeneralApiImpl, R, TenantEntity } from '../interface';
+import { GeneralApi, GeneralApiImpl, R, TenantEntity } from '..';
 
 export interface DataSource extends TenantEntity {
   /**

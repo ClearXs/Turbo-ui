@@ -1,4 +1,4 @@
-import { R } from '../interface';
+import { R } from '..';
 import useRequest from '@/hook/request';
 import { User } from './user';
 import { MenuTree } from './menu';

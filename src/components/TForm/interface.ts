@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api';
 import { Constant } from '@/constant/interface';
 import { RuleItem } from '@douyinfe/semi-ui/lib/es/form';
 import { FormColumnDecorator } from './form';

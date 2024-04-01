@@ -1,4 +1,4 @@
-import { CategoryEntity } from '@/api/interface';
+import { CategoryEntity } from '@/api';
 import { directGetIcon } from '@/components/Icon/shared';
 import TableCrud from '@/components/TableCrud';
 import {

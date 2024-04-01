@@ -1,4 +1,4 @@
-import { Constant } from './interface';
+import { Constant } from '.';
 
 export type MenuAttr = Constant;
 

@@ -1,5 +1,5 @@
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-import { GeneralApi, IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api';
 import { TableColumnProps, TableContext } from './interface';
 import { ColumnType, FormColumnProps, FormContext } from '../TForm/interface';
 import { FormColumnDecorator } from '../TForm/form';

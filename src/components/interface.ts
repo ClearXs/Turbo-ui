@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 

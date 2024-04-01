@@ -7,7 +7,7 @@ import {
   R,
   TenantEntity,
   Tree,
-} from '../interface';
+} from '..';
 import _ from 'lodash';
 
 // domain

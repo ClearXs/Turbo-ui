@@ -1,7 +1,7 @@
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { directGetIcon } from '../Icon/shared';
 import { treeMap } from '@/util/tree';
-import { Tree } from '@/api/interface';
+import { Tree } from '@/api';
 
 // 基于semi ui tree做的二次封装
 export const loadTreeData = <T extends Tree>(

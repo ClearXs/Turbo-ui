@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { FormColumnProps, Pair } from './interface';
 
 export type BarrierColumns<T extends IdEntity> = {

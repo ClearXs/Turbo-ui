@@ -4,7 +4,7 @@ import {
   Order,
   Pagination,
   TreeGeneralApi,
-} from '@/api/interface';
+} from '@/api';
 import { TableApi, TableContext, TableCrudProps } from './interface';
 import { useMemo } from 'react';
 import { Toast } from '@douyinfe/semi-ui';

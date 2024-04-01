@@ -1,6 +1,6 @@
 import { AppProperty } from '@/App';
 import { createContentTab } from '@/components/MotionContent/util';
-import { HIDE, NEW_WINDOW } from '@/constant/MenuAttr';
+import { HIDE, NEW_WINDOW } from '@/constant/menuAttr';
 import { TurboRoute } from '@/route/AppRouter';
 import { Nav, Notification } from '@douyinfe/semi-ui';
 import _ from 'lodash';

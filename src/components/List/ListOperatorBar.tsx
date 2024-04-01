@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { RenderOperatorBarType } from './interface';
 import { OperateToolbar } from '../TableCrud/interface';
 import { directGetIcon } from '../Icon/shared';

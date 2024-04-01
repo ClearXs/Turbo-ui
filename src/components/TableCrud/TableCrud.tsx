@@ -2,7 +2,7 @@ import Table from '@douyinfe/semi-ui/lib/es/table';
 import TableHeader from './TableHeader';
 import { useEffect, useMemo } from 'react';
 import _ from 'lodash';
-import { GeneralApi, IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api';
 import TableToolbar from './TableToolbar';
 import {
   RenderOperatorBarType,

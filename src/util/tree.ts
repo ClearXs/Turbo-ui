@@ -1,4 +1,4 @@
-import { Expand, Tree } from '@/api/interface';
+import { Expand, Tree } from '@/api';
 import _ from 'lodash';
 
 const EMPTY = new Object();

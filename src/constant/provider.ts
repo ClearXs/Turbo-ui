@@ -1,6 +1,6 @@
 import { Constant } from './interface';
 
-export const PROVIDER = [
+export const PROVIDER: Constant[] = [
   {
     value: 'MINIO',
     label: 'MINIO',
@@ -11,4 +11,4 @@ export const PROVIDER = [
     label: '阿里云oss',
     tag: 'violet',
   },
-] as Constant[];
+];

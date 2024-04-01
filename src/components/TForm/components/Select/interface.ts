@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { FormColumnProps, RemoteProps } from '../../interface';
 import { SelectProps } from '@douyinfe/semi-ui/lib/es/select';
 import { Constant } from '@/constant';

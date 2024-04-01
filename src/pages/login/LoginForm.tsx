@@ -12,12 +12,26 @@ import { useNavigate } from 'react-router-dom';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { IconGithubLogo, IconWeibo } from '@douyinfe/semi-icons';
+import {
+  IconGithubLogo,
+  IconTiktokLogo,
+  IconWeibo,
+} from '@douyinfe/semi-icons';
 import useAuthApi, { Captcha } from '@/api/system/auth';
+import { IconWechat } from '@/components/Icon/collection/IconWechat';
+import { IconWechatEnterprise } from '@/components/Icon/collection/IconWechatEnterprise';
+import { IconGitee } from '@/components/Icon/collection/IconGitee';
+import { IconBaidu } from '@/components/Icon/collection/IconBaidu';
+import { IconQQ } from '@/components/Icon/collection/IconQQ';
+import useOAuth2Api from '@/api/system/oauth2';
+import { IconTaobao } from '@/components/Icon/collection/IconTaobao';
+import useRequest from '@/hook/request';
 
 const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
   const authApi = useAuthApi();
+  const oauth2Api = useOAuth2Api();
+  const request = useRequest();
   const [loading, setLoading] = useState<boolean>(false);
   const [captcha, setCaptcha] = useState<Captcha | undefined>();
 
@@ -69,7 +83,6 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                 });
             }}
             labelPosition="left"
-            labelCol={{ span: 4, offset: 22 }}
           >
             <Form.Input
               field="username"
@@ -92,7 +105,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                 placeholder="请输入验证码"
                 maxLength={4}
                 rules={[{ required: true, message: '请输入验证码' }]}
-              ></Form.Input>
+              />
               <Tooltip content="刷新验证码">
                 <img
                   src={captcha?.base64 || ''}
@@ -102,6 +115,13 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               </Tooltip>
             </div>
             <div className="flex items-center align-middle">
+              <Button
+                style={{ marginRight: 'auto' }}
+                size="large"
+                theme="borderless"
+              >
+                短信登录
+              </Button>
               <Button
                 style={{ marginLeft: 'auto' }}
                 size="large"
@@ -124,12 +144,73 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
           <Divider>
             <Text type="tertiary">第三方登录</Text>
           </Divider>
-          <Space align="center">
+          <Space align="center" spacing={20}>
             <Tooltip content="github">
-              <IconGithubLogo size="large" />
+              <Button
+                theme="borderless"
+                icon={<IconGithubLogo size="large" />}
+                onClick={async () => {
+                  const response = await fetch(
+                    'https://github.com/login/oauth/authorize?response_type=code&client_id=bd1d756a53ca039c1675&scope=read:user&state=h2GWejiwL5xxAL6jZsG2ycmyZdwxiHEoQ2IYksMtuyY%3D&redirect_uri=http://localhost:8600/oauth2/code/login/github',
+                  );
+                }}
+              />
             </Tooltip>
-            <Tooltip content="微博">
-              <IconWeibo size="large" />
+            <Tooltip content="weibo">
+              <Button
+                theme="borderless"
+                icon={<IconWeibo size="large" />}
+                onClick={() => oauth2Api.authorization('weibo')}
+              />
+            </Tooltip>
+            <Tooltip content="wechat">
+              <Button
+                theme="borderless"
+                icon={<IconWechat size="large" />}
+                onClick={() => oauth2Api.authorization('wechat-mp')}
+              />
+            </Tooltip>
+            <Tooltip content="wechat-enterprise">
+              <Button
+                theme="borderless"
+                icon={<IconWechatEnterprise size="large" />}
+                onClick={() => oauth2Api.authorization('wechat-enterprise')}
+              />
+            </Tooltip>
+            <Tooltip content="gitee">
+              <Button
+                theme="borderless"
+                icon={<IconGitee size="large" />}
+                onClick={() => oauth2Api.authorization('gitee')}
+              />
+            </Tooltip>
+            <Tooltip content="baidu">
+              <Button
+                theme="borderless"
+                icon={<IconBaidu size="large" />}
+                onClick={() => oauth2Api.authorization('baidu')}
+              />
+            </Tooltip>
+            <Tooltip content="qq">
+              <Button
+                theme="borderless"
+                icon={<IconQQ size="large" />}
+                onClick={() => oauth2Api.authorization('qq')}
+              />
+            </Tooltip>
+            <Tooltip content="tiktok">
+              <Button
+                theme="borderless"
+                icon={<IconTiktokLogo size="large" />}
+                onClick={() => oauth2Api.authorization('tiktok')}
+              />
+            </Tooltip>
+            <Tooltip content="taobao">
+              <Button
+                theme="borderless"
+                icon={<IconTaobao size="large" />}
+                onClick={() => oauth2Api.authorization('taobao')}
+              />
             </Tooltip>
           </Space>
         </div>

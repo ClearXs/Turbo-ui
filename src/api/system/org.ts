@@ -1,4 +1,4 @@
-import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '../interface';
+import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '..';
 import useRequest from '@/hook/request';
 
 export interface Org extends Tree {

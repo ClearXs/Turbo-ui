@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, GeneralApiImpl, TenantEntity } from '../interface';
+import { GeneralApi, GeneralApiImpl, TenantEntity } from '..';
 
 export interface Post extends TenantEntity {
   /**

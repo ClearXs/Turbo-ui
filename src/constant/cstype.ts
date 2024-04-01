@@ -1,6 +1,6 @@
 import { Constant } from './interface';
 
-export const CS_TYPE = [
+export const CS_TYPE: Constant[] = [
   {
     value: 'OSS',
     label: '对象关系存储',
@@ -13,4 +13,4 @@ export const CS_TYPE = [
     value: 'EBS',
     label: '块存储',
   },
-] as Constant[];
+];

@@ -6,7 +6,7 @@ import {
 } from '../../interface';
 import _ from 'lodash';
 import { SchemaColumn, SchemaColumnRegistry } from '../interface';
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { ISchema, SchemaTypes } from '@formily/json-schema';
 import { uid } from '@/util/utils';
 import { chunk } from '../../util';

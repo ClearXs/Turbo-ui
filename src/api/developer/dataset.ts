@@ -1,10 +1,5 @@
 import useRequest from '@/hook/request';
-import {
-  CategoryEntity,
-  GeneralApi,
-  GeneralApiImpl,
-  TenantEntity,
-} from '../interface';
+import { CategoryEntity, GeneralApi, GeneralApiImpl, TenantEntity } from '..';
 
 export interface Dataset extends TenantEntity, CategoryEntity {
   /**

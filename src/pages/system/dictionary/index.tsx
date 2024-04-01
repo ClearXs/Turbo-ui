@@ -1,7 +1,7 @@
 import useDicApi, { Dic } from '@/api/system/dic';
 import { FormColumnProps } from '@/components/TForm/interface';
 import TableCrud from '@/components/TableCrud';
-import { DIC_TYPE } from '@/constant/dictype';
+import { DIC_TYPE } from '@/constant/dicType';
 import { Divider, Empty, Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { useMemo, useState } from 'react';

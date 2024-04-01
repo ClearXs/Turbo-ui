@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, GeneralApiImpl } from '../interface';
+import { GeneralApi, GeneralApiImpl } from '..';
 
 export interface RoleMenu {
   /**

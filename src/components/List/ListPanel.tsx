@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { ListPanelApi, ListPanelProps } from './interface';
 import { FormContext } from '../TForm/interface';
 import { useEffect, useRef, useState } from 'react';

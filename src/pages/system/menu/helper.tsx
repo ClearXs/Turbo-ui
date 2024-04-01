@@ -1,12 +1,12 @@
 import useMenuApi, { MenuApi, MenuTree } from '@/api/system/menu';
-import { MENU_TYPE } from '@/constant/menutype';
+import { MENU_TYPE } from '@/constant/menuType';
 import { Helper } from '@/components/interface';
 import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { treeMap } from '@/util/tree';
 import { directGetIcon } from '@/components/Icon/shared';
-import { MENU_ATTR } from '@/constant/MenuAttr';
+import { MENU_ATTR } from '@/constant/menuAttr';
 import {
   TableCheckboxColumnProps,
   TableTreeSelectColumnProps,

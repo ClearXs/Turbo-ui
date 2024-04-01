@@ -5,7 +5,7 @@ import {
   GeneralApiImpl,
   R,
   TenantEntity,
-} from '../interface';
+} from '..';
 import { DataView } from '@/pages/developer/editor/kernel';
 
 export interface Page extends TenantEntity, CategoryEntity {

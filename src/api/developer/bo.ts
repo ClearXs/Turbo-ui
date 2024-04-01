@@ -5,7 +5,7 @@ import {
   GeneralApiImpl,
   R,
   TenantEntity,
-} from '../interface';
+} from '..';
 import { BoSchema } from '@designable/core';
 
 export interface Bo extends TenantEntity, CategoryEntity {

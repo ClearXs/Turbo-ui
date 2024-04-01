@@ -1,4 +1,4 @@
-import { Tree } from '@/api/interface';
+import { Tree } from '@/api';
 import { TreePanelApi, TreePanelProps } from '.';
 import { OperateToolbar } from '../TableCrud/interface';
 import { directGetIcon } from '../Icon/shared';

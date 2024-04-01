@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api';
 import {
   ColumnType,
   FormColumnProps,

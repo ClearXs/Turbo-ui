@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { TableCascadeColumnProps } from './interface';
 import { BaseTableField } from '..';
 import ConstantTag from '@/components/Tag/ConstantTag';

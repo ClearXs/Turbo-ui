@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '../interface';
+import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '..';
 
 export interface Category extends Tree {
   /**

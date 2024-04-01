@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { OperateToolbar, TableContext } from './interface';
 import { directGetIcon } from '../Icon/shared';
 import { Button, ButtonGroup, Dropdown, Tooltip } from '@douyinfe/semi-ui';

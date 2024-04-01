@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '../interface';
+import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '..';
 import { Constant } from '@/constant/interface';
 import { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
 

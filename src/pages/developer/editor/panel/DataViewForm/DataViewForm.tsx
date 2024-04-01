@@ -19,10 +19,10 @@ import { GlobalRegistry, TreeNode } from '@designable/core';
 import { SchemaField } from '@/components/TForm/formily/FormilyForm';
 import { useKernel } from '../../kernel';
 import { observable } from '@formily/reactive';
-import { DataViewContext } from './context/dataView';
 import { TableContext } from '@/components/TableCrud/interface';
 import { TableCrudContext } from '@/components/TableCrud/context/table';
 import './styles.less';
+import { DataViewContext } from './context/dataView';
 
 export type IDataFormProps = {
   className?: string;

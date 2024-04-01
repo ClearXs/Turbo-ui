@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { CardColumnProps, TableContext } from '../../interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { FormTreeSelectColumnProps } from '@/components/TForm/components';

@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { BaseTableField, TableColorColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { Tag } from '@douyinfe/semi-ui';

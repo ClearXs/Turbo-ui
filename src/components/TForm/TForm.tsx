@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api';
 import { Constant } from '@/constant/interface';
 import { FormContext, FormProps, RemoteProps } from './interface';
 import { Suspense, useMemo, useRef } from 'react';

@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { BaseTableField, TableNumberColumnProps } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';

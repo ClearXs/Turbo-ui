@@ -1,5 +1,5 @@
 // 树形面板
-import { Tree } from '@/api/interface';
+import { Tree } from '@/api';
 import { TreePanelApi, TreePanelProps } from './interface';
 import {
   Button,

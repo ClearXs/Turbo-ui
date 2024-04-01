@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { Form, RadioGroup, Space } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps, FormContext } from '../../interface';
 import { ReactNode } from 'react';

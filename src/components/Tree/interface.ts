@@ -1,4 +1,4 @@
-import { Tree, TreeGeneralApi } from '@/api/interface';
+import { Tree, TreeGeneralApi } from '@/api';
 import { OperateToolbar, Toolbar } from '../TableCrud/interface';
 import { FormColumnProps, FormContext } from '../TForm/interface';
 

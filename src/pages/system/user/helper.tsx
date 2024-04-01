@@ -1,6 +1,6 @@
 import useUserApi, { User, UserApi } from '@/api/system/user';
 import { TableColumnProps } from '@/components/TableCrud/interface';
-import { USER_STATUS } from '@/constant/userstatus';
+import { USER_STATUS } from '@/constant/userStatus';
 import { Helper } from '@/components/interface';
 
 const UserHelper: Helper<User, UserApi> = {
