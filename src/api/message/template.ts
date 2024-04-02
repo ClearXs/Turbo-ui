@@ -47,6 +47,11 @@ export interface MessageTemplate extends TenantEntity {
   title: string;
 
   /**
+   * 消息副标题
+   */
+  subtitle: string;
+
+  /**
    * 模板内容
    */
   template: string;

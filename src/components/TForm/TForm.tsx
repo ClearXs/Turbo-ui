@@ -1,117 +1,15 @@
 import { GeneralApi, IdEntity } from '@/api';
-import { Constant } from '@/constant/interface';
-import { FormContext, FormProps, RemoteProps } from './interface';
+import { FormContext, FormProps } from './interface';
 import { Suspense, useMemo, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { getFormColumnDecorator } from './form';
-import useDicApi, { Dic, DicApi, format } from '@/api/system/dic';
+import useDicApi from '@/api/system/dic';
 import _ from 'lodash';
-import { findPairValue, kvPairToObject } from './util';
-import useRequest, { InternalRequest, createRequest } from '@/hook/request';
+import useRequest from '@/hook/request';
 import FormliyForm from './formily/FormilyForm';
 import { Form as CoreForm } from '@formily/core';
 import { observable } from '@formily/reactive';
-
-const loadDataSet = <T extends IdEntity>(
-  formContext: FormContext<T>,
-  dicApi: DicApi,
-  request: InternalRequest,
-) => {
-  const { columns } = formContext;
-
-  // 初始化远端数据项
-  const remoteCombine =
-    columns
-      .filter((column) => Object.hasOwn(column, 'remote'))
-      .map((column) => {
-        const records: Record<string, Constant[]> = {};
-        const {
-          url,
-          method = 'POST',
-          params = [],
-          headers = [],
-          internal = true,
-          mapping = [
-            { key: 'code', value: 'code' },
-            { key: 'data', value: 'data' },
-            { key: 'success', value: 200 },
-            { key: 'value', value: 'id' },
-            { key: 'label', value: 'name' },
-          ],
-          formatter = (res: Record<string, any>) => {
-            const code = findPairValue(mapping, 'code');
-            const success = findPairValue(mapping, 'success');
-            const data = findPairValue(mapping, 'data');
-            const value = findPairValue(mapping, 'value');
-            const label = findPairValue(mapping, 'label');
-
-            if (res && res[code] === success) {
-              const collection = res[data];
-              if (collection && _.isArray(collection)) {
-                const constant = collection.map((record) => {
-                  return {
-                    value: record?.[value],
-                    label: record?.[label],
-                  } as Constant;
-                });
-                records[column.field] = constant;
-              }
-            }
-            return records;
-          },
-        } = column['remote'] as RemoteProps;
-
-        const paramsRecord = kvPairToObject(params);
-        const headersRecord = kvPairToObject(headers);
-
-        const requestPromise = internal
-          ? request.request(url, method, paramsRecord, headersRecord)
-          : createRequest().request(url, method, paramsRecord, headersRecord);
-        return requestPromise
-          .then((res) => {
-            if (res.status === 200) {
-              const result = res.data;
-              return formatter(result);
-            } else {
-              return Promise.reject(
-                `request ${url} has fatal error ${res.data}, make sure 'url' 'params' 'headers'... correct`,
-              );
-            }
-          })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
-      }) || Promise.resolve([]);
-
-  // 初始化字典项
-  const dicCombine =
-    columns
-      .filter((column) => Object.hasOwn(column, 'dictionary'))
-      .map((column) => {
-        return dicApi
-          .tree({ entity: { code: column['dictionary'] } })
-          .then((res) => {
-            const records: Record<string, any> = {};
-            if (res.code === 200) {
-              const data = res.data;
-              // 编码查询字典树不会存储多个
-              const dicTree = data.length > 0 && data[0];
-              if (dicTree && !_.isEmpty(dicTree.children)) {
-                const dics = format(dicTree.children as Dic[]);
-                records[column['dictionary']] = dics;
-              }
-            }
-            return records;
-          });
-      }) || Promise.resolve([]);
-
-  Promise.all([...remoteCombine, ...dicCombine]).then((all) => {
-    const dataSet = all.reduce((buf, cur) => {
-      return { ...buf, ...cur };
-    }, {});
-    formContext.dataSet = dataSet;
-  });
-};
+import { loadDataSet } from './util/column';
 
 function TForm<T extends IdEntity>(props: FormProps<T>) {
   const dicApi = useDicApi();

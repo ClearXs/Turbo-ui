@@ -2,6 +2,7 @@ import useUserApi, { User, UserApi } from '@/api/system/user';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { USER_STATUS } from '@/constant/userStatus';
 import { Helper } from '@/components/interface';
+import { UserSource } from '@/constant/userSource';
 
 const UserHelper: Helper<User, UserApi> = {
   getColumns: () => {
@@ -57,6 +58,15 @@ const UserHelper: Helper<User, UserApi> = {
         align: 'center',
         form: false,
         optionList: USER_STATUS,
+      },
+      {
+        label: '用户来源',
+        field: 'source',
+        type: 'select',
+        ellipsis: true,
+        align: 'center',
+        form: false,
+        optionList: UserSource,
       },
     ] as TableColumnProps<User>[];
   },

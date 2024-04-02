@@ -2,9 +2,15 @@ import useMessageConfigApi, {
   MessageConfig,
   MessageConfigApi,
 } from '@/api/message/config';
+import { FormJsonObjectColumnProps } from '@/components/TForm/components';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { Helper } from '@/components/interface';
 import { NotificationType } from '@/constant/notificationType';
+import { RetryStrategy } from '@/constant/retryStrategy';
+import { SendProtocol } from '@/constant/sendProtocol';
+import { SendTarget } from '@/constant/sendTarget';
+import { SendWay } from '@/constant/sendWay';
+import _ from 'lodash';
 
 const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {
   getColumns: () => {
@@ -32,16 +38,60 @@ const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {
         ellipsis: true,
         align: 'center',
         type: 'switch',
+        initValue: true,
       },
       {
         label: '发送方式',
         field: 'sendTemplates',
         ellipsis: true,
         align: 'center',
-        type: 'textarea',
+        type: 'jsonArray',
         form: true,
         line: true,
-      },
+        initValue: [{ sendWay: 'SYSTEM' }],
+        columns: [
+          {
+            label: '发送方式',
+            field: 'sendWay',
+            align: 'center',
+            type: 'select',
+            optionList: SendWay,
+            initValue: 'SYSTEM',
+            reaction: {
+              target: 'sendKey',
+              fulfill: {
+                state: {
+                  'x-visible': '{{$self.value !== "SYSTEM"}}',
+                },
+              },
+            },
+          },
+          {
+            label: '发送标识',
+            field: 'sendKey',
+            align: 'center',
+            type: 'input',
+          },
+          {
+            label: '消息模板',
+            field: 'templates',
+            align: 'center',
+            type: 'select',
+            remote: {
+              url: '/api/sys/message/template/list',
+            },
+            multiple: true,
+          },
+          {
+            label: '消息推送方式',
+            field: 'protocols',
+            align: 'center',
+            type: 'select',
+            multiple: true,
+            optionList: SendProtocol,
+          },
+        ],
+      } as FormJsonObjectColumnProps<any>,
       {
         label: '消息类型',
         field: 'messageType',
@@ -49,6 +99,7 @@ const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {
         align: 'center',
         type: 'select',
         dictionary: 'message_type',
+        require: true,
       },
       {
         label: '通知类型',
@@ -57,25 +108,67 @@ const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {
         align: 'center',
         type: 'select',
         optionList: NotificationType,
+        initValue: 'Remind',
       },
       {
         label: '失败重试',
         field: 'retryFailed',
         ellipsis: true,
         align: 'center',
-        type: 'textarea',
-        form: true,
+        type: 'jsonObject',
         line: true,
-      },
+        columns: [
+          {
+            label: '消息重试策略',
+            field: 'strategy',
+            align: 'center',
+            type: 'select',
+            optionList: RetryStrategy,
+            initValue: 'IGNORE',
+            reaction: {
+              target: '*(count,timeout)',
+              fulfill: {
+                state: {
+                  'x-visible': '{{$self.value !== "IGNORE"}}',
+                },
+              },
+            },
+          },
+          {
+            label: '重试次数',
+            field: 'count',
+            align: 'center',
+            type: 'number',
+          },
+          {
+            label: '延迟时间',
+            field: 'timeout',
+            align: 'center',
+            type: 'number',
+          },
+        ],
+      } as FormJsonObjectColumnProps<any>,
       {
         label: '发送目标',
         field: 'sendTargets',
         ellipsis: true,
         align: 'center',
-        type: 'textarea',
-        form: true,
+        type: 'jsonObject',
+        columns: [
+          {
+            label: '用户类型',
+            field: 'target',
+            type: 'select',
+            optionList: SendTarget,
+          },
+          {
+            label: '标识',
+            field: 'key',
+            type: 'input',
+          },
+        ],
         line: true,
-      },
+      } as FormJsonObjectColumnProps<any>,
     ] as TableColumnProps<MessageConfig>[];
   },
 

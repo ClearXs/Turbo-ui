@@ -27,6 +27,8 @@ import {
   ArrayTable,
   Rate,
   Slider,
+  ArrayItems,
+  ArrayBase,
 } from '@formily/semi';
 import { useMemo } from 'react';
 import { Form as FormType, createForm } from '@formily/core';
@@ -39,6 +41,8 @@ import { Constant } from '@/constant';
 import _ from 'lodash';
 import { directGetIcon } from '@/components/Icon';
 import { GeneralApi } from '@/api';
+import { TFormContext } from '../context/form';
+import { globalThisPolyfill } from '@formily/shared';
 
 const Text: React.FC<{
   value?: string;
@@ -57,7 +61,9 @@ export const SchemaField = createSchemaField({
     FormTab,
     FormCollapse,
     ArrayTable,
+    ArrayItems,
     FormItem,
+    ArrayBase,
     DatePicker,
     Checkbox,
     Cascader,
@@ -295,6 +301,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   const { columns, decorator } = formContext;
 
   const form = useMemo(() => {
+    globalThisPolyfill['__DESIGNABLE_LAYOUT__'] = { prefixCls: 'dn-' };
     return createForm({
       initialValues: formContext?.getDefaultValues(),
       values: formContext.values,
@@ -337,13 +344,15 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
         )
       }
     >
-      <Form form={form} {...formliyProps}>
-        <SchemaField
-          schema={schema}
-          components={components}
-          scope={{ $context: formContext, ...scope }}
-        />
-      </Form>
+      <TFormContext.Provider value={formContext}>
+        <Form form={form} {...formliyProps}>
+          <SchemaField
+            schema={schema}
+            components={components}
+            scope={{ $context: formContext, ...scope }}
+          />
+        </Form>
+      </TFormContext.Provider>
     </Modal>
   );
 });

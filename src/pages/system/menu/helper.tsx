@@ -53,6 +53,7 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         ellipsis: true,
         align: 'center',
         require: true,
+        table: false,
         extraText: '编码需要唯一',
       },
       {
@@ -69,6 +70,7 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         ellipsis: true,
         align: 'center',
         type: 'input',
+        table: false,
         reaction: {
           dependencies: ['type'],
           fulfill: {
@@ -98,6 +100,7 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         ellipsis: true,
         align: 'center',
         type: 'input',
+        table: false,
       },
       {
         label: '序号',

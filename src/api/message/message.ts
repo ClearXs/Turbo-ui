@@ -1,5 +1,12 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, GeneralApiImpl, TenantEntity } from '..';
+import {
+  GeneralApi,
+  GeneralApiImpl,
+  GeneralParams,
+  Pagination,
+  R,
+  TenantEntity,
+} from '..';
 
 export interface Message extends TenantEntity {
   /**
@@ -25,7 +32,7 @@ export interface Message extends TenantEntity {
   /**
    * 消息状态
    */
-  messageStatus: string;
+  messageStatus: 'READ' | 'UNREAD';
 
   /**
    * 消息类型
@@ -73,9 +80,26 @@ export interface Message extends TenantEntity {
   action: string;
 }
 
-export interface MessageApi extends GeneralApi<Message> {}
+export interface MessageApi extends GeneralApi<Message> {
+  currentUser: (
+    page: Pagination<Message>,
+    params: GeneralParams<Message>,
+  ) => Promise<R<Pagination<Message>>>;
+}
 
-class MessageApiImpl extends GeneralApiImpl<Message> implements MessageApi {}
+class MessageApiImpl extends GeneralApiImpl<Message> implements MessageApi {
+  currentUser(
+    page: Pagination<Message>,
+    params: GeneralParams<Message>,
+  ): Promise<R<Pagination<Message>>> {
+    const queryParam = this.buildRemoteQueryParam(params);
+    return this.request
+      .post(this.apiPath + '/current-user', { page, ...queryParam })
+      .then((res) => {
+        return res.data;
+      });
+  }
+}
 
 export default function useMessageApi(): MessageApi {
   const request = useRequest();

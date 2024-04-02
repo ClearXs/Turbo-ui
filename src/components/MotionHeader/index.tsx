@@ -6,8 +6,6 @@ import {
   Modal,
   Nav,
   Notification,
-  TabPane,
-  Tabs,
 } from '@douyinfe/semi-ui';
 import Header from '@douyinfe/semi-ui/lib/es/navigation/Header';
 import { IconBell, IconLanguage } from '@douyinfe/semi-icons';
@@ -15,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRenderMenu } from '@/hook/menu';
 import { CurrentUserState } from '@/store/user';
 import { useRecoilValue } from 'recoil';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useAuthApi from '@/api/system/auth';
 import * as local from '@/util/local';
 import * as headers from '@/util/headers';
@@ -28,20 +26,35 @@ import { observer } from '@formily/reactive-react';
 import { changePasswordColumns } from '@/pages/system/user/ChangePassword';
 import _ from 'lodash';
 import { IconTheme } from '../Icon';
+import Message from './MessageScrolling';
+import useDicApi, { Dic } from '@/api/system/dic';
 
 const MotionHeader = observer(() => {
   const app = useContext(AppContext);
   const { userRoutes, selectTopKey } = app;
 
   const authApi = useAuthApi();
+  const dicApi = useDicApi();
   const currentUser = useRecoilValue(CurrentUserState);
   const navigate = useNavigate();
+
+  const [messageType, setMessageType] = useState<Dic[]>([]);
 
   // 取depth = 0的菜单项进行渲染
   const topMenus = userRoutes.filter(
     (route) => route?.depth === 0 || route?.code === 'home',
   );
   const renderMenu = useRenderMenu();
+
+  useEffect(() => {
+    dicApi.tree({ entity: { code: 'message_type' } }).then((res) => {
+      const { code, data } = res;
+      if (code === 200 && data.length > 0) {
+        const messageType = data[0].children as Dic[];
+        setMessageType(messageType);
+      }
+    });
+  }, []);
 
   return (
     <Header className="h-16 w-[100%]">
@@ -56,29 +69,7 @@ const MotionHeader = observer(() => {
           <Dropdown
             key="message"
             trigger="hover"
-            clickToHide
-            render={
-              <div className="w-96 h-80 max-h-80 overflow-y-auto border-r-2">
-                <div className="w-[100%] h-[90%]">
-                  <Tabs type="button" size="small">
-                    <TabPane tab="文档" itemKey="1">
-                      文档
-                    </TabPane>
-                    <TabPane tab="快速起步" itemKey="2">
-                      快速起步
-                    </TabPane>
-                    <TabPane tab="帮助" itemKey="3">
-                      帮助
-                    </TabPane>
-                  </Tabs>
-                </div>
-                <div className="w-[100%] h-[10%]">
-                  <Button block theme="borderless" type="tertiary">
-                    查看更多
-                  </Button>
-                </div>
-              </div>
-            }
+            render={<Message messageType={messageType} />}
           >
             <Badge type="danger" count={2}>
               <Button

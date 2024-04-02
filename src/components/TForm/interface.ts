@@ -57,6 +57,16 @@ export type ColumnType =
   | 'color'
   // select group
   | 'selectGroup'
+
+  // complex type
+  // bridge to form
+  | 'jsonObject'
+  | 'jsonArray'
+  // advanced type
+  | 'user'
+  | 'org'
+  | 'post'
+  | 'role'
   | 'undefined';
 
 export type FormStatus = 'add' | 'edit' | 'details';

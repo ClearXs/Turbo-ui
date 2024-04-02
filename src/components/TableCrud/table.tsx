@@ -13,10 +13,15 @@ import {
   DateTableField,
   IconTableField,
   InputTableField,
+  JsonArrayTableField,
+  JsonObjectTableField,
   NumberTableField,
+  OrgTableField,
   PasswordTableField,
+  PostTableField,
   RadioTableField,
   RateTableField,
+  RoleTableField,
   SelectGroupTableField,
   SelectTableField,
   SliderTableField,
@@ -29,10 +34,12 @@ import {
   TreeSelectTableField,
   UploadDragTableField,
   UploadTableField,
+  UserTableField,
 } from './components';
 import { ISchema } from '@formily/json-schema';
 import { BoAttrSchema } from '@designable/core';
 import { GlobalSchemaColumnRegistry } from '../TForm/formily/schema';
+import { JsonArrayFormField } from '../TForm/components';
 
 export interface TableColumnDecorator<T extends IdEntity>
   extends FormColumnDecorator<T> {
@@ -117,6 +124,18 @@ export class TableColumnFactory {
         return new UploadTableField<T>(decorator);
       case 'uploadDrag':
         return new UploadDragTableField<T>(decorator);
+      case 'jsonObject':
+        return new JsonObjectTableField<T>(decorator);
+      case 'jsonArray':
+        return new JsonArrayTableField<T>(decorator);
+      case 'user':
+        return new UserTableField<T>(decorator);
+      case 'org':
+        return new OrgTableField<T>(decorator);
+      case 'post':
+        return new PostTableField<T>(decorator);
+      case 'role':
+        return new RoleTableField<T>(decorator);
       case 'undefined':
       default:
         return new UndefinedTableField<T>(decorator);

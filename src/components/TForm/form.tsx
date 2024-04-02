@@ -29,6 +29,12 @@ import {
   TransferFormField,
   UploadFormField,
   UploadDragFormField,
+  JsonObjectFormField,
+  JsonArrayFormField,
+  UserFormField,
+  OrgFormField,
+  PostFormField,
+  RoleFormField,
 } from './components';
 import { ISchema } from '@formily/json-schema';
 import { BoAttrSchema } from '@designable/core';
@@ -147,6 +153,18 @@ export class FormColumnFactory {
         return new UploadFormField<T>(decorator);
       case 'uploadDrag':
         return new UploadDragFormField<T>(decorator);
+      case 'jsonObject':
+        return new JsonObjectFormField<T>(decorator);
+      case 'jsonArray':
+        return new JsonArrayFormField<T>(decorator);
+      case 'user':
+        return new UserFormField<T>(decorator);
+      case 'org':
+        return new OrgFormField<T>(decorator);
+      case 'post':
+        return new PostFormField<T>(decorator);
+      case 'role':
+        return new RoleFormField<T>(decorator);
       case 'undefined':
       default:
         return new UndefinedFormField<T>(decorator);

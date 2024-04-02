@@ -5,6 +5,7 @@ import {
   CardGroup,
   Checkbox,
   Col,
+  Empty,
   Row,
   Spin,
   Typography,
@@ -19,6 +20,10 @@ import { useContext } from 'react';
 import { TableCrudContext } from './context/table';
 import { TFormContext } from '../TForm/context/form';
 import { observer } from '@formily/reactive-react';
+import {
+  IllustrationNoContent,
+  IllustrationNoContentDark,
+} from '@douyinfe/semi-illustrations';
 
 export type CardPageProps<T extends IdEntity> = {
   tableProps: TableCrudProps<T>;
@@ -38,6 +43,10 @@ const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
     },
   } = tableContext || {};
   const { card } = props.tableProps || {};
+  let showAdd =
+    props.tableProps.toolbar?.showAdd === undefined
+      ? true
+      : props.tableProps.toolbar?.showAdd;
 
   const tableColumns = [...(tableContext.getTableColumns(true) || [])];
 
@@ -60,169 +69,188 @@ const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
   const contentColumns = tableColumns
     .filter((col) => col.field !== titleColumn.field)
     .slice(0, 4);
+
+  const isEmpty = !showAdd && dataSource.length == 0;
+
   return (
     <Spin spinning={tableContext.table.loading}>
-      <CardGroup spacing={10} style={{ maxHeight: '65vh', overflowY: 'auto' }}>
-        <div
-          onClick={() => {
-            formContext.visible = true;
-            formContext.loading = false;
-            formContext.type = 'add';
-          }}
+      {isEmpty ? (
+        <Empty
+          image={<IllustrationNoContent style={{ width: 150, height: 150 }} />}
+          darkModeImage={
+            <IllustrationNoContentDark style={{ width: 150, height: 150 }} />
+          }
+          description="暂无数据"
+        />
+      ) : (
+        <CardGroup
+          spacing={10}
+          style={{ maxHeight: '65vh', overflowY: 'auto' }}
         >
-          <Card
-            title
-            className="bg-gray-400"
-            shadows="hover"
-            headerLine={false}
-            header
-            style={{
-              width: 230,
-              height: 180,
-              backgroundColor: '#fbfdff',
-              borderStyle: 'dashed',
-              borderRadius: '10px',
-            }}
-          >
-            <div className="text-center">
-              <Typography.Title type="tertiary" heading={6}>
-                <div className="flex gap-2 items-center justify-center">
-                  {directGetIcon('IconCopyAdd')}
-                  新增
-                </div>
-              </Typography.Title>
-            </div>
-          </Card>
-        </div>
-        {dataSource.map((data, idx) => {
-          const bars = renderOperatorBars(
-            data,
-            props.tableProps['operateBar'],
-            tableContext.tableApi,
-          );
-          const cardChecked =
-            selectedRowKeys.findIndex((record) => record === data.id) > -1;
-          return (
-            <Card
-              key={idx}
-              shadows="hover"
-              headerStyle={{ padding: '8px', height: '15%' }}
-              header={
-                <div className="flex gap-2 items-center">
-                  {directGetIcon('IconGridStroked')}
-                  {card?.renderTitle?.(data) || (
-                    <Typography.Title
-                      heading={6}
-                      ellipsis={{
-                        showTooltip: {
-                          opts: { content: data[titleColumn.field] },
-                        },
-                      }}
-                    >
-                      {data[titleColumn.field]}
-                    </Typography.Title>
-                  )}
-                  {
-                    <Checkbox
-                      checked={cardChecked}
-                      className="ml-auto"
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        let selectedRowKeys = [
-                          ...(tableContext.table.selectedRowKeys || []),
-                        ];
-                        if (checked) {
-                          selectedRowKeys.push(data.id);
-                        } else {
-                          selectedRowKeys = selectedRowKeys.filter(
-                            (key) => key !== data?.id,
-                          );
-                        }
-                        tableContext.table.selectedRowKeys = selectedRowKeys;
-                      }}
-                    />
-                  }
-                </div>
-              }
-              headerLine={false}
-              style={{
-                width: 230,
-                height: 180,
-                borderStyle: 'dashed',
-                borderRadius: '10px',
-              }}
-              footer={
-                <div className="flex items-center">
-                  {card?.renderFooter?.(data) ||
-                    (Object.hasOwn(data, 'createdTime') && (
-                      <Typography.Text
-                        type="tertiary"
-                        size="small"
-                        className="p-2"
-                      >
-                        {data['createdTime']}
-                      </Typography.Text>
-                    ))}
-                  <OperatorButtonSet<T>
-                    bars={bars}
-                    record={data}
-                    mode="shrink"
-                    className="ml-auto"
-                  />
-                </div>
-              }
-              bodyStyle={{ height: '75%', padding: '5px' }}
-              footerStyle={{
-                position: 'relative',
-                padding: '0px',
-                right: '0px',
-                bottom: '15px',
+          {showAdd && (
+            <div
+              onClick={() => {
+                formContext.visible = true;
+                formContext.loading = false;
+                formContext.type = 'add';
               }}
             >
-              <div onClick={() => card?.onClick?.(data)}>
-                {card?.renderContent?.(data) || (
-                  <div className="p-2">
-                    {contentColumns.map((col, idx) => {
-                      const value = data[col.field];
-                      const Content = tableContext.decorator
-                        .wrap(col)
-                        .render?.(col.label, data, idx) || (
+              <Card
+                title
+                className="bg-gray-400"
+                shadows="hover"
+                headerLine={false}
+                header
+                style={{
+                  width: 230,
+                  height: 180,
+                  backgroundColor: '#fbfdff',
+                  borderStyle: 'dashed',
+                  borderRadius: '10px',
+                }}
+              >
+                <div className="text-center">
+                  <Typography.Title type="tertiary" heading={6}>
+                    <div className="flex gap-2 items-center justify-center">
+                      {directGetIcon('IconCopyAdd')}
+                      新增
+                    </div>
+                  </Typography.Title>
+                </div>
+              </Card>
+            </div>
+          )}
+          {dataSource.map((data, idx) => {
+            const bars = renderOperatorBars(
+              data,
+              props.tableProps['operateBar'],
+              tableContext.tableApi,
+            );
+            const cardChecked =
+              selectedRowKeys.findIndex((record) => record === data.id) > -1;
+            return (
+              <Card
+                key={idx}
+                shadows="hover"
+                headerStyle={{ padding: '8px', height: '15%' }}
+                header={
+                  <div className="flex gap-2 items-center">
+                    {directGetIcon('IconGridStroked')}
+                    {card?.renderTitle?.(data) || (
+                      <Typography.Title
+                        heading={6}
+                        ellipsis={{
+                          showTooltip: {
+                            opts: { content: data[titleColumn.field] },
+                          },
+                        }}
+                      >
+                        {data[titleColumn.field]}
+                      </Typography.Title>
+                    )}
+                    {
+                      <Checkbox
+                        checked={cardChecked}
+                        className="ml-auto"
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          let selectedRowKeys = [
+                            ...(tableContext.table.selectedRowKeys || []),
+                          ];
+                          if (checked) {
+                            selectedRowKeys.push(data.id);
+                          } else {
+                            selectedRowKeys = selectedRowKeys.filter(
+                              (key) => key !== data?.id,
+                            );
+                          }
+                          tableContext.table.selectedRowKeys = selectedRowKeys;
+                        }}
+                      />
+                    }
+                  </div>
+                }
+                headerLine={false}
+                style={{
+                  width: 230,
+                  height: 180,
+                  borderStyle: 'dashed',
+                  borderRadius: '10px',
+                }}
+                footer={
+                  <div className="flex items-center">
+                    {card?.renderFooter?.(data) ||
+                      (Object.hasOwn(data, 'createdTime') && (
                         <Typography.Text
                           type="tertiary"
-                          ellipsis={{
-                            showTooltip: {
-                              opts: { content: String(value) },
-                            },
-                          }}
+                          size="small"
+                          className="p-2"
                         >
-                          {value}
+                          {data['createdTime']}
                         </Typography.Text>
-                      );
-                      return (
-                        <Row key={idx}>
-                          <Col span={10}>
-                            <Typography.Text
-                              type="tertiary"
-                              ellipsis={{
-                                showTooltip: {
-                                  opts: { content: col.label },
-                                },
-                              }}
-                            >
-                              {col.label}:
-                            </Typography.Text>
-                          </Col>
-                          <Col span={14}>{Content}</Col>
-                        </Row>
-                      );
-                    })}
+                      ))}
+                    <OperatorButtonSet<T>
+                      bars={bars}
+                      record={data}
+                      mode="shrink"
+                      className="ml-auto"
+                    />
                   </div>
-                )}
-              </div>
-            </Card>
-          );
-        })}
-      </CardGroup>
+                }
+                bodyStyle={{ height: '75%', padding: '5px' }}
+                footerStyle={{
+                  position: 'relative',
+                  padding: '0px',
+                  right: '0px',
+                  bottom: '15px',
+                }}
+              >
+                <div onClick={() => card?.onClick?.(data)}>
+                  {card?.renderContent?.(data) || (
+                    <div className="p-2">
+                      {contentColumns.map((col, idx) => {
+                        const value = data[col.field];
+                        const Content = tableContext.decorator
+                          .wrap(col)
+                          .render?.(col.label, data, idx) || (
+                          <Typography.Text
+                            type="tertiary"
+                            ellipsis={{
+                              showTooltip: {
+                                opts: { content: String(value) },
+                              },
+                            }}
+                          >
+                            {value}
+                          </Typography.Text>
+                        );
+                        return (
+                          <Row key={idx}>
+                            <Col span={10}>
+                              <Typography.Text
+                                type="tertiary"
+                                ellipsis={{
+                                  showTooltip: {
+                                    opts: { content: col.label },
+                                  },
+                                }}
+                              >
+                                {col.label}:
+                              </Typography.Text>
+                            </Col>
+                            <Col span={14}>{Content}</Col>
+                          </Row>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </Card>
+            );
+          })}
+        </CardGroup>
+      )}
+
       {mode !== 'tree' && (
         <TablePagination
           total={total}

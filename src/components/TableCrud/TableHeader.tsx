@@ -4,7 +4,7 @@ import { useContext, useMemo, useRef } from 'react';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import { TableContext, TableCrudProps } from './interface';
 import { IdEntity } from '@/api';
-import { chunk } from '../TForm/util';
+import { chunk } from '../TForm/util/util';
 import { TableCrudContext } from './context/table';
 import { observable } from '@formily/reactive';
 import { observer } from '@formily/reactive-react';

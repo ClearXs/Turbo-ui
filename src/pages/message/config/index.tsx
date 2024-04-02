@@ -2,7 +2,7 @@ import TableCrud from '@/components/TableCrud';
 import { MessageConfig } from '@/api/message/config';
 import MessageConfigHelper from './helper';
 
-const MessageConfig = () => {
+const MessageConfigComponent = () => {
   return (
     <TableCrud<MessageConfig>
       mode="page"
@@ -12,4 +12,4 @@ const MessageConfig = () => {
   );
 };
 
-export default MessageConfig;
+export default MessageConfigComponent;
