@@ -180,17 +180,21 @@ const ModalButtonComponent: React.FC<{
         const { params, onOk, onError } = formProps;
         form
           .submit((data) => {
-            formContext.loading = true;
             // 相同key优先级 默认值 > 表单值
             const values = Object.assign(data, params);
             // 移除undefined的值
             for (const key in values) {
               const v = values[key];
-              if (_.isEmpty(v)) {
+              // exclude boolean type and number type delete value
+              if (
+                _.isEmpty(v) &&
+                !(typeof v === 'boolean' || typeof v === 'number')
+              ) {
                 delete values[key];
               }
             }
             if (api) {
+              formContext.loading = true;
               api
                 .saveOrUpdate(values)
                 .then((res) => {
@@ -218,7 +222,7 @@ const ModalButtonComponent: React.FC<{
                   onError?.(err, formContext);
                 });
             } else {
-              formProps.onOk?.(values);
+              formProps.onOk?.(formContext);
             }
           })
           .catch((err) => {

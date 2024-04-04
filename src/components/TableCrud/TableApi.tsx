@@ -85,6 +85,8 @@ export default function useTableApi<T extends IdEntity>(
             } else {
               this.listOrPageOrTree(tableContext);
             }
+          } else {
+            Toast.error('删除失败');
           }
         });
       },

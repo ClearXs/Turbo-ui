@@ -85,6 +85,8 @@ export interface MessageApi extends GeneralApi<Message> {
     page: Pagination<Message>,
     params: GeneralParams<Message>,
   ) => Promise<R<Pagination<Message>>>;
+
+  publish: (configKey: string, variables: Record<string, any>) => Promise<void>;
 }
 
 class MessageApiImpl extends GeneralApiImpl<Message> implements MessageApi {
@@ -98,6 +100,11 @@ class MessageApiImpl extends GeneralApiImpl<Message> implements MessageApi {
       .then((res) => {
         return res.data;
       });
+  }
+  publish(configKey: string, variables: Record<string, any>): Promise<void> {
+    return this.request
+      .post(this.apiPath + '/publish', { configKey, ...variables })
+      .then();
   }
 }
 

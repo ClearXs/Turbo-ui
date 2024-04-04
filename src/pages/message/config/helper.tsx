@@ -45,7 +45,7 @@ const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {
         field: 'sendTemplates',
         ellipsis: true,
         align: 'center',
-        type: 'jsonArray',
+        type: 'jsonObject',
         form: true,
         line: true,
         initValue: [{ sendWay: 'SYSTEM' }],
@@ -71,16 +71,6 @@ const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {
             field: 'sendKey',
             align: 'center',
             type: 'input',
-          },
-          {
-            label: '消息模板',
-            field: 'templates',
-            align: 'center',
-            type: 'select',
-            remote: {
-              url: '/api/sys/message/template/list',
-            },
-            multiple: true,
           },
           {
             label: '消息推送方式',
@@ -169,6 +159,16 @@ const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {
         ],
         line: true,
       } as FormJsonObjectColumnProps<any>,
+      {
+        label: '默认消息模板',
+        field: 'defaultTemplateIds',
+        align: 'center',
+        type: 'select',
+        remote: {
+          url: '/api/sys/message/template/list',
+        },
+        multiple: true,
+      },
     ] as TableColumnProps<MessageConfig>[];
   },
 

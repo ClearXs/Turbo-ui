@@ -137,6 +137,7 @@ TForm.open = <T extends IdEntity>(props: FormProps<T>) => {
       </Suspense>,
     );
   }
+  open();
 
   return { open, close, destroy };
 };

@@ -30,7 +30,7 @@ export type RetryFailed = {
   timeout: number;
 };
 
-export type SendTemplate = {
+export type SendModel = {
   /**
    * 发送方式
    * <P>SYSTEM 系统信息、SMS 短信 EMAIL 邮箱 DINGDING</P>
@@ -41,11 +41,6 @@ export type SendTemplate = {
    * 发送标识 用于SMS、EMAIL等
    */
   sendKey: string;
-
-  /**
-   * 消息模板 KEY集合
-   */
-  templates: string[];
 
   /**
    * 消息推送的网络集合
@@ -85,9 +80,9 @@ export interface MessageConfig extends TenantEntity {
 
   /**
    * 发送方式模板配置
-   * <p>[{"sendWay":"发送方式 SYSTEM 系统信息、SMS 短信 EMAIL 邮箱 DINGDING ","sendKey":"发送标识","templates":[""],"protocol":"系统消息发送协议 WEBSOCKET 、MQTT "}],</p>
+   * <p>[{"sendWay":"发送方式 SYSTEM 系统信息、SMS 短信 EMAIL 邮箱 DINGDING ","sendKey":"发送标识","protocol":"系统消息发送协议 WEBSOCKET 、MQTT "}],</p>
    */
-  sendTemplates: SendTemplate[];
+  sendModel: SendModel[];
 
   /**
    * 消息类型
@@ -110,6 +105,11 @@ export interface MessageConfig extends TenantEntity {
    * <p>[{"type":"用户类型 ORG 组织、GROUP 用户组、ROLE 角色、USER 指定用户、CUSTOM 自定义 ","key":"标识"}]/p>
    */
   sendTargets: SendTarget[];
+
+  /**
+   * 默认消息模板
+   */
+  defaultTemplateIds: number[];
 }
 
 export interface MessageConfigApi extends GeneralApi<MessageConfig> {}

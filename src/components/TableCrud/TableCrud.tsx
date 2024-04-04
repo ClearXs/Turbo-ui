@@ -139,6 +139,7 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
           }
         : false;
     const tableContext: TableContext<T> = {
+      idKey: props.id || 'id',
       props,
       mode: props.mode,
       api,
@@ -165,6 +166,16 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
       },
       setTableColumns(columns) {
         this.tableColumns = columns;
+      },
+      getSelectedRowKeys() {
+        return this.table.selectedRowKeys;
+      },
+      getSelectedRows() {
+        const selectedRowKeys = this.table.selectedRowKeys;
+        const dataSource = this.dataSource;
+        return dataSource.filter((r) =>
+          selectedRowKeys.includes(r[this.idKey]),
+        );
       },
     };
     const observerTableContext = observable(tableContext);
