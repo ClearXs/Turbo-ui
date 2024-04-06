@@ -9,7 +9,7 @@ const MessageLogComponent = () => {
       useApi={MessageTemplateHelper.getApi}
       columns={MessageTemplateHelper.getColumns()}
       toolbar={{ showAdd: false }}
-      operateBar={{ showDetails: false }}
+      operateBar={{ showEdit: false }}
     />
   );
 };

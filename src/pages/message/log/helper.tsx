@@ -14,6 +14,7 @@ const MessageLogHelper: Helper<MessageLog, MessageLogApi> = {
         align: 'center',
         search: true,
         type: 'user',
+        showClear: true,
       },
       {
         label: '发送时间',
@@ -29,14 +30,24 @@ const MessageLogHelper: Helper<MessageLog, MessageLogApi> = {
         ellipsis: true,
         align: 'center',
         type: 'user',
+        search: true,
+        showClear: true,
       },
       {
-        label: '运行时消息变量',
+        label: '发送状态',
         field: 'sendStatus',
         ellipsis: true,
         align: 'center',
         type: 'select',
         optionList: SendStatus,
+      },
+      {
+        label: '运行时变量',
+        field: 'variables',
+        ellipsis: true,
+        align: 'center',
+        type: 'input',
+        table: false,
       },
     ] as TableColumnProps<MessageLog>[];
   },

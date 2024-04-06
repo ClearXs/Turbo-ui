@@ -28,17 +28,22 @@ import _ from 'lodash';
 import { IconTheme } from '../Icon';
 import Message from './MessageScrolling';
 import useDicApi, { Dic } from '@/api/system/dic';
+import useMessageApi from '@/api/message/message';
+import './styles.less';
 
 const MotionHeader = observer(() => {
   const app = useContext(AppContext);
   const { userRoutes, selectTopKey } = app;
-
+  const [unreadMessageCount, setUnreadMessageCount] = useState<
+    number | undefined
+  >();
   const authApi = useAuthApi();
   const dicApi = useDicApi();
+  const messageApi = useMessageApi();
   const currentUser = useRecoilValue(CurrentUserState);
   const navigate = useNavigate();
 
-  const [messageType, setMessageType] = useState<Dic[]>([]);
+  const [messageTypes, setMessageTypes] = useState<Dic[]>([]);
 
   // 取depth = 0的菜单项进行渲染
   const topMenus = userRoutes.filter(
@@ -51,9 +56,17 @@ const MotionHeader = observer(() => {
       const { code, data } = res;
       if (code === 200 && data.length > 0) {
         const messageType = data[0].children as Dic[];
-        setMessageType(messageType);
+        setMessageTypes(messageType);
       }
     });
+    messageApi
+      .currentUserMessageCount({ entity: { messageStatus: 'UNREAD' } })
+      .then((res) => {
+        const { code, data } = res;
+        if (code === 200) {
+          setUnreadMessageCount(data);
+        }
+      });
   }, []);
 
   return (
@@ -69,9 +82,19 @@ const MotionHeader = observer(() => {
           <Dropdown
             key="message"
             trigger="hover"
-            render={<Message messageType={messageType} />}
+            style={{ overflowY: 'hidden' }}
+            render={
+              <Message
+                messageTypes={messageTypes}
+                onReload={() => {
+                  messageApi.currentUserMessageCount({
+                    entity: { messageStatus: 'UNREAD' },
+                  });
+                }}
+              />
+            }
           >
-            <Badge type="danger" count={2}>
+            <Badge type="danger" count={unreadMessageCount}>
               <Button
                 theme="borderless"
                 icon={<IconBell size="large" />}

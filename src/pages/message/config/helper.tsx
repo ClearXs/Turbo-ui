@@ -143,7 +143,7 @@ const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {
         field: 'sendTargets',
         ellipsis: true,
         align: 'center',
-        type: 'jsonObject',
+        type: 'jsonArray',
         columns: [
           {
             label: '用户类型',

@@ -17,7 +17,7 @@ import {
   IconTiktokLogo,
   IconWeibo,
 } from '@douyinfe/semi-icons';
-import useAuthApi, { Captcha } from '@/api/system/auth';
+import useAuthApi, { Captcha, LoginInfo } from '@/api/system/auth';
 import { IconWechat } from '@/components/Icon/collection/IconWechat';
 import { IconWechatEnterprise } from '@/components/Icon/collection/IconWechatEnterprise';
 import { IconGitee } from '@/components/Icon/collection/IconGitee';
@@ -59,12 +59,16 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
           <Form
             onSubmit={async (data) => {
               setLoading(true);
-              authApi
-                .login({
-                  ...data,
+              const loginInfo: LoginInfo = {
+                loginMode: 'CAPTCHA_CODE',
+                ...data,
+                captchaCode: {
                   captchaId: captcha?.captchaId,
-                  tenant: tenantId,
-                })
+                  captcha: data['captcha'],
+                },
+              };
+              authApi
+                .login(loginInfo)
                 .then((res) => {
                   if (res.code !== 200) {
                     reloadCaptcha();
