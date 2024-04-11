@@ -1,4 +1,4 @@
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import {
   Checkbox,
   Notification,
@@ -31,7 +31,7 @@ export const ADD_LITERAL_TOOLBAR: Toolbar<any> = {
   name: '新增',
   position: 'left',
   type: 'primary',
-  icon: directGetIcon('IconCopyAdd'),
+  icon: tryGetIcon('IconCopyAdd'),
 };
 
 export const DELETE_LITERAL_TOOLBAR: Toolbar<any> = {
@@ -39,7 +39,7 @@ export const DELETE_LITERAL_TOOLBAR: Toolbar<any> = {
   name: '删除',
   position: 'left',
   type: 'danger',
-  icon: directGetIcon('IconDelete'),
+  icon: tryGetIcon('IconDelete'),
 };
 
 export const REFRESH_LITERAL_TOOLBAR: Toolbar<any> = {
@@ -47,7 +47,7 @@ export const REFRESH_LITERAL_TOOLBAR: Toolbar<any> = {
   name: '刷新',
   position: 'right',
   type: 'primary',
-  icon: directGetIcon('IconRefresh'),
+  icon: tryGetIcon('IconRefresh'),
 };
 
 export const IMPORT_LITERAL_TOOLBAR: Toolbar<any> = {
@@ -55,7 +55,7 @@ export const IMPORT_LITERAL_TOOLBAR: Toolbar<any> = {
   name: '导入',
   position: 'right',
   type: 'primary',
-  icon: directGetIcon('IconDescend2'),
+  icon: tryGetIcon('IconDescend2'),
 };
 
 export const EXPORT_LITERAL_TOOLBAR: Toolbar<any> = {
@@ -63,7 +63,7 @@ export const EXPORT_LITERAL_TOOLBAR: Toolbar<any> = {
   name: '导出',
   position: 'right',
   type: 'primary',
-  icon: directGetIcon('IconDownloadStroked'),
+  icon: tryGetIcon('IconDownloadStroked'),
 };
 
 export const SHOW_COLUMN_LITERAL_TOOLBAR: Toolbar<any> = {
@@ -71,7 +71,7 @@ export const SHOW_COLUMN_LITERAL_TOOLBAR: Toolbar<any> = {
   name: '显示列',
   position: 'right',
   type: 'primary',
-  icon: directGetIcon('IconGridSquare'),
+  icon: tryGetIcon('IconGridSquare'),
 };
 
 export const ORDERED_LITERAL_TOOLBAR: Toolbar<any> = {
@@ -79,7 +79,7 @@ export const ORDERED_LITERAL_TOOLBAR: Toolbar<any> = {
   name: '排序',
   position: 'right',
   type: 'primary',
-  icon: directGetIcon('IconSortStroked'),
+  icon: tryGetIcon('IconSortStroked'),
 };
 
 const renderableToolbar = <T extends IdEntity>(
@@ -185,7 +185,7 @@ const renderableToolbar = <T extends IdEntity>(
           <Typography.Title heading={6}>
             显示列
             <Tooltip content="支持拖动，顺序即为展示的顺序">
-              {directGetIcon('IconHelpCircleStroked')}
+              {tryGetIcon('IconHelpCircleStroked')}
             </Tooltip>
           </Typography.Title>
           <Checkbox

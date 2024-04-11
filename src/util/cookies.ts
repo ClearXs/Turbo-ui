@@ -1,50 +1,54 @@
-type Opt = {
-  expried: number;
-};
+import Cookies from 'js-cookie';
+import _ from 'lodash';
 
 /**
  * 获取cookie
  *
  * @param {string} key cookie key
+ *
  * @returns cookie value
  */
-export const get = (key: string): string | number | undefined => {
-  return document.cookie
-    .split(';')
-    .filter((v) => {
-      const kv: string[] = v.split('=');
-      return kv[0] === key;
-    })
-    .map((v) => {
-      return decodeURIComponent(v[1]);
-    })
-    .pop();
+export const get = (
+  key: string,
+  attributes?: Cookies.CookieAttributes,
+): string => {
+  if (_.isEmpty(attributes)) {
+    return Cookies.get(key);
+  }
+  const api = Cookies.withAttributes(attributes);
+  return api.get(key);
 };
 
 /**
- * 设置
+ * contains key has existing cookies
+ *
+ * @param key the key
+ * @returns
+ */
+export const contains = (key: string): boolean => {
+  return get(key) !== undefined;
+};
+
+/**
+ * set the value to cookies
+ *
  * @param key
  * @param value
  * @param opt
  */
-export const set = (key: string, value: string, opt?: Opt) => {
-  document.cookie = document.cookie.concat(`;${key}=${value}`);
-  if (opt) {
-    setInterval(() => {
-      remove(key);
-    }, opt.expried);
-  }
+export const set = (
+  key: string,
+  value: string,
+  opts?: Cookies.CookieAttributes,
+) => {
+  Cookies.set(key, value, opts);
 };
 
-export const remove = (key: string) => {
-  document.cookie = document.cookie
-    .split(';')
-    .filter((v) => {
-      const kv: string[] = v.split('=');
-      return kv[0] !== key;
-    })
-    .map((v) => {
-      return decodeURIComponent(v[1]);
-    })
-    .join(';');
+/**
+ * remove cookie by key
+ * @param key the key
+ * @param opts the cookies opts
+ */
+export const remove = (key: string, opts?: Cookies.CookieAttributes) => {
+  Cookies.remove(key, opts);
 };

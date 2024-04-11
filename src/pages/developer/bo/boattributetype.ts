@@ -1,4 +1,4 @@
-import { directGetIcon } from '@/components/Icon/shared';
+import { tryGetIcon } from '@/components/Icon/shared';
 import { Constant, TreeConstant } from '@/constant';
 
 export const NUMBER = { value: 'number', label: '数字型' } as Constant;
@@ -9,7 +9,7 @@ export const BoAttributeTypes = [
   {
     value: 'number',
     label: '数字型',
-    icon: directGetIcon('IconBookH5Stroked'),
+    icon: tryGetIcon('IconBookH5Stroked'),
     depth: 0,
     children: [
       { value: 'bigint', label: 'bigint' },
@@ -26,7 +26,7 @@ export const BoAttributeTypes = [
   {
     value: 'character',
     label: '字符型',
-    icon: directGetIcon('IconTextStroked'),
+    icon: tryGetIcon('IconTextStroked'),
     depth: 0,
     children: [
       {
@@ -46,7 +46,7 @@ export const BoAttributeTypes = [
   {
     value: 'datetime',
     label: '时间型',
-    icon: directGetIcon('IconCalendarClock'),
+    icon: tryGetIcon('IconCalendarClock'),
     children: [
       {
         value: 'time',
@@ -65,7 +65,7 @@ export const BoAttributeTypes = [
   {
     value: 'advanced',
     label: '高级类型',
-    icon: directGetIcon('IconFolderStroked'),
+    icon: tryGetIcon('IconFolderStroked'),
     depth: 0,
     children: [
       {

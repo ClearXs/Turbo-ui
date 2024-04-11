@@ -1,9 +1,10 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, Method } from 'axios';
 import sysconfig from '@/config/config';
-import * as local from '@/util/local';
 import { R } from '@/api';
 import { Toast } from '@douyinfe/semi-ui';
-import * as headers from '@/util/headers';
+import * as auth from '@/util/auth';
+import * as local from '@/util/local';
+import * as constants from '@/util/constant';
 import { useEffect } from 'react';
 
 export interface InternalRequest {
@@ -36,21 +37,17 @@ export interface InternalRequest {
 const internalRemote = axios.create();
 internalRemote.defaults.baseURL = sysconfig.request.baseUrl;
 internalRemote.defaults.timeout = sysconfig.request.timeout;
-internalRemote.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-internalRemote.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
-internalRemote.defaults.headers.common['Access-Control-Allow-Headers'] = '*';
-internalRemote.defaults.headers.common['Access-Control-Allow-Credentials'] =
-  'true';
 internalRemote.defaults.headers.post['Content-Type'] = 'application/json';
 
 // 请求拦截器
 internalRemote.interceptors.request.use((config) => {
   // 设置请求头
   config.headers.set(
-    headers.Authentication,
-    local.get(headers.Authentication) || '',
+    constants.Authentication,
+    local.get(constants.Authentication) || '',
   );
-  config.headers.set(headers.Tenant, local.get(headers.Tenant) || '');
+  config.headers.set(constants.Tenant, local.get(constants.Tenant) || '');
+  config.headers.set(constants.App, 'PC');
   return config;
 });
 
@@ -95,7 +92,7 @@ function handleResError<T>(err: AxiosError, errorValue?: R<T>) {
   Toast.error(msg);
   // 认证失败
   if (errCode === 401) {
-    local.remove(headers.Authentication);
+    auth.clear();
     return Promise.reject(err);
     // 服务错误或者权限认证失败
   } else if (errCode === 403 || errCode === 500) {

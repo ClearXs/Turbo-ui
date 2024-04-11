@@ -1,7 +1,7 @@
 import { IdEntity } from '@/api';
 import { BaseTableField, TableIconColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
-import { importIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import { Tooltip, Typography } from '@douyinfe/semi-ui';
 import { ColumnType } from '@/components/TForm/interface';
 
@@ -16,10 +16,10 @@ export class IconTableField<T extends IdEntity> extends BaseTableField<
       index: number,
     ) => {
       const iconName = record[column.field];
-      const Icon = importIcon(iconName);
+      const Icon = tryGetIcon(iconName);
       return Icon ? (
         <Tooltip position="top" content={iconName}>
-          <Icon />
+          {Icon}
         </Tooltip>
       ) : (
         <Typography.Text>{iconName}</Typography.Text>

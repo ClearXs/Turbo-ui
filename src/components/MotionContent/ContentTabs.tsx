@@ -1,6 +1,6 @@
 import { Dropdown, Notification, TabPane, Tabs } from '@douyinfe/semi-ui';
 import { useNavigate } from 'react-router-dom';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import _ from 'lodash';
 import { useContext, useEffect } from 'react';
@@ -22,6 +22,11 @@ const ContentTabs = observer(() => {
     const closeTabIndex = userTabs.findIndex((tab) => {
       return tab.itemKey === tabKey;
     });
+    const newUserTabs = [
+      ...userTabs.slice(0, closeTabIndex),
+      ...userTabs.slice(closeTabIndex + 1, userTabs.length),
+    ];
+    app.userTabs = newUserTabs;
     // 判断当前关闭的key是否为激活的key，如果不是则不重新设置激活key
     if (tabKey === selectSideKey) {
       // 判断当前关闭是否为最后一个，如果是则取上一个，如果不是则取下一个
@@ -40,11 +45,6 @@ const ContentTabs = observer(() => {
       navigate(nextTab.path as string);
       onceMoreRenderSideMenu(nextTab);
     }
-    const newUserTabs = [
-      ...userTabs.slice(0, closeTabIndex),
-      ...userTabs.slice(closeTabIndex + 1, userTabs.length),
-    ];
-    app.userTabs = newUserTabs;
   };
 
   const closeOtherTab = (tab: UserTab) => {
@@ -156,7 +156,7 @@ const ContentTabs = observer(() => {
                   <Dropdown.Menu>
                     {tab.itemKey !== 'home' && (
                       <Dropdown.Item
-                        icon={directGetIcon('IconRefresh')}
+                        icon={tryGetIcon('IconRefresh')}
                         onClick={() => {
                           navigate(tab.path);
                           // 设置active
@@ -169,25 +169,25 @@ const ContentTabs = observer(() => {
 
                     {tab.itemKey !== 'home' && (
                       <Dropdown.Item
-                        icon={directGetIcon('IconClose')}
+                        icon={tryGetIcon('IconClose')}
                         onClick={() => closeTab(tab.itemKey as string)}
                       >
                         关闭
                       </Dropdown.Item>
                     )}
                     <Dropdown.Item
-                      icon={directGetIcon('IconMinusCircleStroked')}
+                      icon={tryGetIcon('IconMinusCircleStroked')}
                       onClick={() => closeOtherTab(tab)}
                     >
                       关闭其他
                     </Dropdown.Item>
                     <Dropdown.Item
-                      icon={directGetIcon('IconClear')}
+                      icon={tryGetIcon('IconClear')}
                       onClick={() => closeAllTab()}
                     >
                       关闭全部
                     </Dropdown.Item>
-                    <Dropdown.Item icon={directGetIcon('IconStar')}>
+                    <Dropdown.Item icon={tryGetIcon('IconStar')}>
                       收藏
                     </Dropdown.Item>
                   </Dropdown.Menu>

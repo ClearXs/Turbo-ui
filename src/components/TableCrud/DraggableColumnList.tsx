@@ -5,7 +5,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { Bar, TableColumnProps, TableContext } from './interface';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Checkbox, List, Typography } from '@douyinfe/semi-ui';
-import { directGetIcon } from '../Icon';
+import { tryGetIcon } from '../Icon';
 import _ from 'lodash';
 import ButtonSpace from '../ButtonSpace/ButtonSpace';
 import { useIconBar } from './hook/bar';
@@ -140,7 +140,7 @@ const DraggableColumnList = <T extends IdEntity>(
       code: 'drag',
       name: '拖动',
       type: 'primary',
-      icon: directGetIcon('IconHandle'),
+      icon: tryGetIcon('IconHandle'),
     });
   }
 

@@ -2,7 +2,7 @@ import { observer } from '@formily/reactive-react';
 import { useMemo } from 'react';
 import { EditorProps, ViewType } from '../interface';
 import { Tabs } from '@douyinfe/semi-ui';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import { PlainTab } from '@douyinfe/semi-ui/lib/es/tabs';
 import { usePrefix, useWorkbench } from '@designable/react';
 import cls from 'classnames';
@@ -24,22 +24,22 @@ const ViewWidget: React.FC<ViewWidgetProps> = observer(
         {
           tab: '表单设计',
           itemKey: 'formDesign',
-          icon: directGetIcon('IconFormDesign', 'system'),
+          icon: tryGetIcon('IconFormDesign'),
         },
         {
           tab: '数据视图',
           itemKey: 'dataView',
-          icon: directGetIcon('IconDataView', 'system'),
+          icon: tryGetIcon('IconDataView'),
         },
         {
           tab: '页面设置',
           itemKey: 'pageSetting',
-          icon: directGetIcon('IconPageSetting', 'system'),
+          icon: tryGetIcon('IconPageSetting'),
         },
         {
           tab: '数据管理',
           itemKey: 'dataManager',
-          icon: directGetIcon('IconDataManager', 'system'),
+          icon: tryGetIcon('IconDataManager'),
         },
       ];
     }, []);

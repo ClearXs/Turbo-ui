@@ -4,8 +4,9 @@ import { ColumnType, FormColumnProps, FormContext } from '../../interface';
 import { BaseFormField } from '..';
 import { FormIconColumnProps } from '.';
 import { IconCamera } from '@douyinfe/semi-icons';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import IconList from '@/pages/developer/icon';
+import Modular from '@/components/Modular/Modular';
 
 export class IconFormField<T extends IdEntity> extends BaseFormField<
   T,
@@ -28,11 +29,13 @@ export class IconFormField<T extends IdEntity> extends BaseFormField<
               if (isDetails) {
                 return;
               }
-              const modal = Modal.info({
+              const modal = Modular.info({
+                icon: undefined,
                 size: 'medium',
                 title: 'Icon Resources',
                 content: (
                   <IconList
+                    tooltip={true}
                     chooseIcon={(icon) => {
                       const formContext = this.decorator.getFormContext();
                       const values = { ...formContext?.values } || {};
@@ -46,11 +49,9 @@ export class IconFormField<T extends IdEntity> extends BaseFormField<
                       formContext?.formApi?.setValue(props.field, icon);
                       modal.destroy();
                     }}
-                    showName={false}
                     splitNum={3}
                   />
                 ),
-                footer: null,
               });
             }}
             hoverMask={
@@ -70,9 +71,7 @@ export class IconFormField<T extends IdEntity> extends BaseFormField<
               )
             }
           >
-            {directGetIcon(
-              this.decorator.getFormContext()?.values?.[props.field],
-            )}
+            {tryGetIcon(this.decorator.getFormContext()?.values?.[props.field])}
           </Avatar>
         </Form.Slot>
       </>

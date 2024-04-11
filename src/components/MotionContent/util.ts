@@ -23,7 +23,7 @@ export const createContentTab = (
     // 添加user tab
     newTabs.push({
       itemKey: route.code,
-      path: route.path,
+      path: route.path as string,
       icon: route.icon,
       tab: route.name,
       closable: route.clearable,

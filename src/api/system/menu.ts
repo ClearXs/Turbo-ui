@@ -5,27 +5,27 @@ export interface Menu extends Tree {
   /**
    * 菜单域
    */
-  scope: string;
+  scope?: string;
 
   /**
    * 菜单序号
    */
-  sort: number;
+  sort?: number;
 
   /**
    * 菜单类型
    */
-  type: string;
+  type?: string;
 
   /**
    * 别名
    */
-  alias: string;
+  alias?: string;
 
   /**
    * 路径
    */
-  route: string;
+  route?: string;
 
   /**
    * icon
@@ -35,7 +35,7 @@ export interface Menu extends Tree {
   /**
    * 菜单属性
    */
-  attrs: string[];
+  attrs?: string[];
 }
 
 export type MenuTree = Menu & {

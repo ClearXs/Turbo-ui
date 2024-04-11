@@ -260,7 +260,7 @@ const MessageScrolling: React.FC<IMessageProps> = ({
             />
             <Spin
               spinning={loadMoreLoading && loadMore}
-              style={{ textAlign: 'center' }}
+              style={{ textAlign: 'center', width: '100%' }}
             />
           </InfiniteScroll>
         </div>

@@ -1,11 +1,11 @@
-import { Org } from '@/api/system/org';
+import { Org as OrgEntity } from '@/api/system/org';
 import TableCrud from '@/components/TableCrud';
 import OrgHelper from './helper';
-import { directGetIcon } from '@/components/Icon/shared';
+import { tryGetIcon } from '@/components/Icon/shared';
 
 const Org: React.FC = () => {
   return (
-    <TableCrud<Org>
+    <TableCrud<OrgEntity>
       mode="tree"
       useApi={OrgHelper.getApi}
       columns={OrgHelper.getColumns()}
@@ -17,7 +17,7 @@ const Org: React.FC = () => {
             name: '展开所有',
             type: 'primary',
             position: 'right',
-            icon: directGetIcon('IconExpand'),
+            icon: tryGetIcon('IconExpand'),
             onClick: (tableContext) => {
               tableContext.tree.expandAllRows = true;
             },
@@ -27,7 +27,7 @@ const Org: React.FC = () => {
             name: '缩放所有',
             type: 'primary',
             position: 'right',
-            icon: directGetIcon('IconShrink'),
+            icon: tryGetIcon('IconShrink'),
             onClick: (tableContext) => {
               tableContext.tree.expandAllRows = false;
             },
@@ -40,7 +40,7 @@ const Org: React.FC = () => {
             code: 'addSubordinate',
             name: '添加下级',
             type: 'primary',
-            icon: directGetIcon('IconPeer', 'system'),
+            icon: tryGetIcon('IconPeer'),
             onClick: (tableContext, formContext, record) => {
               formContext.visible = true;
               formContext.values = Object.assign(
@@ -53,7 +53,7 @@ const Org: React.FC = () => {
             code: 'addPeer',
             name: '添加同级',
             type: 'primary',
-            icon: directGetIcon('IconSubordinate', 'system'),
+            icon: tryGetIcon('IconSubordinate'),
             onClick: (tableContext, formContext, record) => {
               formContext.visible = true;
               formContext.values = Object.assign(

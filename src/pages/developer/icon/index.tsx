@@ -7,6 +7,7 @@ import {
   Row,
   TabPane,
   Tabs,
+  Tooltip,
 } from '@douyinfe/semi-ui';
 import { useEffect, useState } from 'react';
 import _ from 'lodash';
@@ -14,6 +15,8 @@ import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
 
 export type IconViewProps = {
+  // 是否以tooltip形式显示名称
+  tooltip?: boolean;
   // 是否显示名称
   showName?: boolean;
   // 每一行的切分数量
@@ -23,6 +26,7 @@ export type IconViewProps = {
 };
 
 const IconList: React.FC<IconViewProps> = ({
+  tooltip = false,
   showName = true,
   splitNum = 6,
   chooseIcon = (key) => {
@@ -54,7 +58,13 @@ const IconList: React.FC<IconViewProps> = ({
         {iconSystem.map((type) => {
           return (
             <TabPane itemKey={type} tab={type}>
-              {renderIconViews(iconViews, showName, splitNum, chooseIcon)}
+              {renderIconViews(
+                iconViews,
+                tooltip,
+                showName,
+                splitNum,
+                chooseIcon,
+              )}
             </TabPane>
           );
         })}
@@ -65,6 +75,7 @@ const IconList: React.FC<IconViewProps> = ({
 
 function renderIconViews(
   iconViews: Icon[][],
+  tooltip = false,
   showName = true,
   splitNum: number,
   chooseIcon?: (key: string) => void,
@@ -78,20 +89,26 @@ function renderIconViews(
               <Row gutter={24}>
                 {icons.map((icon) => {
                   const IconComponent = icon.component;
+                  const IconView = (
+                    <div
+                      className="flex flex-col items-center gap-4 m-2 p-3 hover:bg-slate-100 hover:cursor-pointer"
+                      onClick={() => {
+                        // TODO 选择时的回调
+                        chooseIcon?.(icon.key);
+                      }}
+                    >
+                      <IconComponent size="extra-large" />
+                      {showName && <Text type="primary">{icon.key}</Text>}
+                    </div>
+                  );
+
                   return (
                     <Col span={24 / splitNum}>
-                      {
-                        <div
-                          className="flex flex-col items-center gap-4 m-2 p-3 hover:bg-slate-100 hover:cursor-pointer"
-                          onClick={() => {
-                            // TODO 选择时的回调
-                            chooseIcon && chooseIcon(icon.key);
-                          }}
-                        >
-                          <IconComponent size="extra-large" />
-                          {showName && <Text type="primary">{icon.key}</Text>}
-                        </div>
-                      }
+                      {tooltip == true ? (
+                        <Tooltip content={icon.key}>{IconView}</Tooltip>
+                      ) : (
+                        IconView
+                      )}
                     </Col>
                   );
                 })}

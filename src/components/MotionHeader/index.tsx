@@ -15,8 +15,7 @@ import { CurrentUserState } from '@/store/user';
 import { useRecoilValue } from 'recoil';
 import { useContext, useEffect, useState } from 'react';
 import useAuthApi from '@/api/system/auth';
-import * as local from '@/util/local';
-import * as headers from '@/util/headers';
+import * as auth from '@/util/auth';
 import { SUPPORT_LOCALES } from './Locales';
 import { GlobalRegistry } from '@designable/core';
 import { TextWidget } from '@designable/react';
@@ -213,10 +212,7 @@ const MotionHeader = observer(() => {
                                 content: message,
                               });
                               // 设置新token
-                              local.set(
-                                headers.Authentication,
-                                data.token.tokenValue,
-                              );
+                              auth.set(data.token?.tokenValue);
                             } else {
                               Notification.error({
                                 position: 'top',
@@ -225,7 +221,7 @@ const MotionHeader = observer(() => {
                             }
                           });
                       },
-                      onCancel(formContext) {
+                      onCancel() {
                         from.destroy();
                       },
                     });
@@ -243,7 +239,7 @@ const MotionHeader = observer(() => {
                         authApi.logout().then((res) => {
                           if (res.code === 200 && res.data) {
                             // 1.清除token
-                            local.remove(headers.Authentication);
+                            auth.clear();
                             // 2.重定向
                             navigate('/login');
                           }

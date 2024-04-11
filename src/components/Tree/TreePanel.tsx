@@ -8,7 +8,7 @@ import {
   Space,
   Spin,
 } from '@douyinfe/semi-ui';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import { FormContext } from '../TForm/interface';
 import { useEffect, useRef, useState } from 'react';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
@@ -46,7 +46,7 @@ const getToolbar = <T extends Tree>(
       name: '新增',
       position: 'left',
       type: 'primary',
-      icon: directGetIcon('IconCopyAdd'),
+      icon: tryGetIcon('IconCopyAdd'),
       onClick: () => {
         formContext.visible = true;
         formContext.loading = false;
@@ -61,7 +61,7 @@ const getToolbar = <T extends Tree>(
       name: '全选',
       position: 'left',
       type: 'primary',
-      icon: directGetIcon('IconCheckList'),
+      icon: tryGetIcon('IconCheckList'),
       onClick: () => {
         treeApi.selectAll();
       },
@@ -74,7 +74,7 @@ const getToolbar = <T extends Tree>(
       name: '取消全选',
       position: 'left',
       type: 'primary',
-      icon: directGetIcon('IconCheckChoiceStroked'),
+      icon: tryGetIcon('IconCheckChoiceStroked'),
       onClick: () => {
         treeApi.unSelectAll();
       },

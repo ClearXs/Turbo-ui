@@ -39,7 +39,7 @@ import { Button, ButtonGroup, Modal, Notification } from '@douyinfe/semi-ui';
 import { FormContext, FormProps, ModalButton } from '../interface';
 import { Constant } from '@/constant';
 import _ from 'lodash';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import { GeneralApi } from '@/api';
 import { TFormContext } from '../context/form';
 import { globalThisPolyfill } from '@formily/shared';
@@ -152,7 +152,7 @@ const ModalButtonComponent: React.FC<{
       name: '取消',
       type: 'tertiary',
       size: 'default',
-      icon: directGetIcon('IconCrossCircleStroked'),
+      icon: tryGetIcon('IconCrossCircleStroked'),
       onClick: (formContext) => {
         if (formProps.onCancel) {
           formProps.onCancel(formContext);
@@ -174,7 +174,7 @@ const ModalButtonComponent: React.FC<{
       type: 'primary',
       loading: true,
       size: 'default',
-      icon: directGetIcon('IconCheckCircleStroked'),
+      icon: tryGetIcon('IconCheckCircleStroked'),
       onClick: (formContext) => {
         // 构建需要校验的字段
         const { params, onOk, onError } = formProps;

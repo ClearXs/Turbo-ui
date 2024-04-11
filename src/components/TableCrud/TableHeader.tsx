@@ -1,5 +1,5 @@
 import { Button, Col, Collapsible, Form, Row } from '@douyinfe/semi-ui';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import { useContext, useMemo, useRef } from 'react';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import { TableContext, TableCrudProps } from './interface';
@@ -58,8 +58,8 @@ const TableHeader = observer(
         theme="borderless"
         icon={
           header.showCollapseColumn
-            ? directGetIcon('IconChevronUp')
-            : directGetIcon('IconChevronDown')
+            ? tryGetIcon('IconChevronUp')
+            : tryGetIcon('IconChevronDown')
         }
         onClick={() => (header.showCollapseColumn = !header.showCollapseColumn)}
       >
@@ -73,7 +73,7 @@ const TableHeader = observer(
         <Button
           key="search"
           type="primary"
-          icon={directGetIcon('IconSearch')}
+          icon={tryGetIcon('IconSearch')}
           onClick={() => {
             // 相同key 默认值的优先级 > 表单值
             const values = Object.assign(
@@ -93,7 +93,7 @@ const TableHeader = observer(
         <Button
           key="reset"
           type="tertiary"
-          icon={directGetIcon('IconRefresh')}
+          icon={tryGetIcon('IconRefresh')}
           onClick={() => {
             formApiRef.current?.reset();
             tableContext.search = params || {};

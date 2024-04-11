@@ -59,31 +59,31 @@ interface TreeNode extends IdEntity {
   /**
    * 树结点code
    */
-  code: string;
+  code?: string;
   /**
    * 树结点name
    */
-  name: string;
+  name?: string;
 
   /**
    * 树深度
    */
-  depth: number;
+  depth?: number;
 
   /**
    * 是否为叶子结点
    */
-  leaf: boolean;
+  leaf?: boolean;
 
   /**
    * 树路径
    */
-  path: string;
+  path?: string;
 
   /**
    * 父节点id
    */
-  parentId: string;
+  parentId?: string;
 }
 
 // 树平展结构

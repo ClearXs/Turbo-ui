@@ -5,7 +5,7 @@ import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { treeMap } from '@/util/tree';
-import { directGetIcon } from '@/components/Icon/shared';
+import { tryGetIcon } from '@/components/Icon/shared';
 import { MENU_ATTR } from '@/constant/menuAttr';
 import {
   TableCheckboxColumnProps,
@@ -29,7 +29,7 @@ const loadMenuTreeData = (
       key: menu.code,
       value: menu.id,
       label: labelRender?.(menu) || menu.name,
-      icon: directGetIcon(menu.icon),
+      icon: tryGetIcon(menu.icon),
     } as TreeNodeData;
   });
 };
@@ -117,6 +117,7 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         ellipsis: true,
         align: 'center',
         type: 'treeSelect',
+        initValue: -1,
         table: false,
         filterTreeNode: true,
         expandAll: true,

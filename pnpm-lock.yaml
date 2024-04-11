@@ -80,6 +80,9 @@ dependencies:
   iconoir-react:
     specifier: ^7.5.0
     version: 7.5.0(react@18.2.0)
+  js-cookie:
+    specifier: ^3.0.5
+    version: 3.0.5
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -136,6 +139,9 @@ devDependencies:
   '@testing-library/user-event':
     specifier: ^14.5.2
     version: 14.5.2(@testing-library/dom@9.3.4)
+  '@types/js-cookie':
+    specifier: ^3.0.6
+    version: 3.0.6
   '@types/lodash':
     specifier: ^4.17.0
     version: 4.17.0
@@ -1817,6 +1823,10 @@ packages:
 
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
+    dev: true
+
+  /@types/js-cookie@3.0.6:
+    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
     dev: true
 
   /@types/json5@0.0.29:
@@ -3893,6 +3903,11 @@ packages:
     resolution: {integrity: sha512-gFqAIbuKyyso/3G2qhiO2OM6shY6EPP/R0+mkDbyspxKazh8BXDC5FiFsUjlczgdNz/vfra0da2y+aHrusLG/Q==}
     hasBin: true
     dev: true
+
+  /js-cookie@3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
+    engines: {node: '>=14'}
+    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}

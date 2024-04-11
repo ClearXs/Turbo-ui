@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Select, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { IconArrowLeft } from '@douyinfe/semi-icons';
 import * as local from '@/util/local';
-import * as headers from '@/util/headers';
+import * as headers from '@/util/constant';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import useTenantApi, { Tenant } from '@/api/system/tenant';

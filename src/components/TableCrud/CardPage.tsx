@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@douyinfe/semi-ui';
 import _ from 'lodash';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import { FormContext } from '../TForm/interface';
 import OperatorButtonSet from './OperatorButtonSet';
 import useTableCrudOperatorBar from './TableCrudOperatorBar';
@@ -112,7 +112,7 @@ const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
                 <div className="text-center">
                   <Typography.Title type="tertiary" heading={6}>
                     <div className="flex gap-2 items-center justify-center">
-                      {directGetIcon('IconCopyAdd')}
+                      {tryGetIcon('IconCopyAdd')}
                       新增
                     </div>
                   </Typography.Title>
@@ -135,7 +135,7 @@ const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
                 headerStyle={{ padding: '8px', height: '15%' }}
                 header={
                   <div className="flex gap-2 items-center">
-                    {directGetIcon('IconGridStroked')}
+                    {tryGetIcon('IconGridStroked')}
                     {card?.renderTitle?.(data) || (
                       <Typography.Title
                         heading={6}

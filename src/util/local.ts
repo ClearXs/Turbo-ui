@@ -1,14 +1,14 @@
-// 操作localStroage
+// 操作localStorage
 
 /**
  * 获取cookie
  *
- * @param {string} key local stroage key
- * @returns local stroage value
+ * @param {string} key local storage key
+ * @returns local storage value
  */
 export const get = (key: string): string | null => {
-  return localStorage.getItem(key)
-}
+  return localStorage.getItem(key);
+};
 
 /**
  * 判断key是否存在
@@ -16,8 +16,8 @@ export const get = (key: string): string | null => {
  * @returns true contains otherwise false
  */
 export const contains = (key: string): boolean => {
-  return get(key) != null
-}
+  return get(key) != null;
+};
 
 /**
  * 设置
@@ -26,20 +26,20 @@ export const contains = (key: string): boolean => {
  * @param opt
  */
 export const set = (key: string, value: string) => {
-  localStorage.setItem(key, value)
-}
+  localStorage.setItem(key, value);
+};
 
 /**
  * 根据key移除
  * @param key key
  */
 export const remove = (key: string) => {
-  localStorage.removeItem(key)
-}
+  localStorage.removeItem(key);
+};
 
 /**
  * 清楚数据
  */
 export const clear = () => {
-  localStorage.clear()
-}
+  localStorage.clear();
+};

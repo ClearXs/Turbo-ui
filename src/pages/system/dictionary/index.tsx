@@ -63,9 +63,6 @@ const Dictionary: React.FC = () => {
         align: 'center',
         type: 'color',
         line: true,
-        form: (formContext) => {
-          return formContext?.props.mode !== 'tree';
-        },
       },
       {
         label: '',

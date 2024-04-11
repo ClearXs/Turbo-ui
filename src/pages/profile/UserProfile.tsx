@@ -15,7 +15,7 @@ import _ from 'lodash';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import * as local from '@/util/local';
-import * as headers from '@/util/headers';
+import * as headers from '@/util/constant';
 import useAuthApi from '@/api/system/auth';
 import { IconCamera } from '@douyinfe/semi-icons';
 

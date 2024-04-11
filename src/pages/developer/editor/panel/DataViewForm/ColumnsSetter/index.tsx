@@ -3,11 +3,10 @@ import { observer } from '@formily/reactive-react';
 import DraggableColumnList from '@/components/TableCrud/DraggableColumnList';
 import useDataView from '../hook/useDataView';
 import { FoldItem } from '@designable/react-settings-form';
-import { Field, useField } from '@formily/react';
+import { useField } from '@formily/react';
 import { usePrefix } from '@designable/react';
 import cls from 'classnames';
 import { Button } from '@douyinfe/semi-ui';
-import { directGetIcon } from '@/components/Icon';
 
 export interface ColumnsSetterProps {
   className?: string;

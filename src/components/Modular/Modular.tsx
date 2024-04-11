@@ -1,24 +1,24 @@
 import { Button, ButtonGroup, Modal } from '@douyinfe/semi-ui';
 import { ModularButton, ModularProps } from './interface';
-import { directGetIcon } from '../Icon';
+import { tryGetIcon } from '../Icon';
 import { createRoot } from 'react-dom/client';
 import { Suspense } from 'react';
 import cls from 'classnames';
 
 const TypeIcons: Record<string, React.ReactNode> = {};
-TypeIcons['info'] = directGetIcon('IconInfoCircle', 'semi', {
+TypeIcons['info'] = tryGetIcon('IconInfoCircle', {
   size: 'large',
   className: 'semi-modal-info-icon',
 });
-TypeIcons['warning'] = directGetIcon('IconIssueStroked', 'semi', {
+TypeIcons['warning'] = tryGetIcon('IconIssueStroked', {
   size: 'large',
   className: 'semi-modal-warning-icon',
 });
-TypeIcons['error'] = directGetIcon('IconClose', 'semi', {
+TypeIcons['error'] = tryGetIcon('IconClose', {
   size: 'large',
   className: 'semi-modal-error-icon',
 });
-TypeIcons['success'] = directGetIcon('IconCheckCircleStroked', 'semi', {
+TypeIcons['success'] = tryGetIcon('IconCheckCircleStroked', {
   size: 'large',
   className: 'semi-modal-success-icon',
 });
@@ -79,7 +79,7 @@ const Modular = (props: ModularProps) => {
       name: '取消',
       type: 'tertiary',
       size: 'default',
-      icon: directGetIcon('IconCrossCircleStroked'),
+      icon: tryGetIcon('IconCrossCircleStroked'),
       onClick() {
         powerfulCancel();
       },
@@ -92,7 +92,7 @@ const Modular = (props: ModularProps) => {
       type: 'primary',
       loading: true,
       size: 'default',
-      icon: directGetIcon('IconCheckCircleStroked'),
+      icon: tryGetIcon('IconCheckCircleStroked'),
       onClick() {
         powerfulConfirm();
       },

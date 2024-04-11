@@ -1,4 +1,4 @@
-import { IdEntity, Tree } from '@/api';
+import { Tree } from '@/api';
 import { FormColumnProps, FormContext, RemoteProps } from '../../interface';
 import { TreeSelectProps } from '@douyinfe/semi-ui/lib/es/treeSelect';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';

@@ -1,7 +1,7 @@
 import { Tree } from '@/api';
 import { TreePanelApi, TreePanelProps } from '.';
 import { OperateToolbar } from '../TableCrud/interface';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import { Modal } from '@douyinfe/semi-ui';
 
 export default function useTreeOperatorBar<T extends Tree>() {
@@ -26,7 +26,7 @@ export default function useTreeOperatorBar<T extends Tree>() {
         name: '增加',
         type: 'primary',
         size: 'small',
-        icon: directGetIcon('IconCopyAdd'),
+        icon: tryGetIcon('IconCopyAdd'),
         internal: true,
         onClick: (tableContext, formContext, record) => {
           formContext.visible = true;
@@ -45,7 +45,7 @@ export default function useTreeOperatorBar<T extends Tree>() {
         type: 'primary',
         size: 'small',
         internal: true,
-        icon: directGetIcon('IconEditStroked'),
+        icon: tryGetIcon('IconEditStroked'),
         onClick: (tableContext, formContext, record) => {
           treePanelApi.edit(formContext, record);
         },
@@ -62,7 +62,7 @@ export default function useTreeOperatorBar<T extends Tree>() {
         name: '详情',
         type: 'primary',
         size: 'small',
-        icon: directGetIcon('IconBriefStroked'),
+        icon: tryGetIcon('IconBriefStroked'),
         internal: true,
         onClick: (tableContext, formContext, record) => {
           formContext.visible = true;
@@ -83,7 +83,7 @@ export default function useTreeOperatorBar<T extends Tree>() {
         name: '删除',
         type: 'danger',
         size: 'small',
-        icon: directGetIcon('IconDeleteStroked'),
+        icon: tryGetIcon('IconDeleteStroked'),
         internal: true,
         onClick: (tableContext, formContext, record) => {
           Modal.warning({

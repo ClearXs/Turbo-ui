@@ -9,8 +9,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as local from '@/util/local';
-import * as headers from '@/util/headers';
+import * as auth from '@/util/auth';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import {
   IconGithubLogo,
@@ -75,7 +74,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                   } else {
                     // 设置local storage
                     const token = res.data?.tokenValue || '';
-                    local.set(headers.Authentication, token as string);
+                    auth.set(token);
                     // 跳转至首页
                     navigate('/');
                   }
@@ -153,10 +152,8 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               <Button
                 theme="borderless"
                 icon={<IconGithubLogo size="large" />}
-                onClick={async () => {
-                  const response = await fetch(
-                    'https://github.com/login/oauth/authorize?response_type=code&client_id=bd1d756a53ca039c1675&scope=read:user&state=h2GWejiwL5xxAL6jZsG2ycmyZdwxiHEoQ2IYksMtuyY%3D&redirect_uri=http://localhost:8600/oauth2/code/login/github',
-                  );
+                onClick={() => {
+                  window.location.href = '/api/oauth2/authorization/github';
                 }}
               />
             </Tooltip>
@@ -164,28 +161,38 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               <Button
                 theme="borderless"
                 icon={<IconWeibo size="large" />}
-                onClick={() => oauth2Api.authorization('weibo')}
+                onClick={() => {
+                  window.location.href = '/api/oauth2/authorization/weibo';
+                }}
               />
             </Tooltip>
             <Tooltip content="wechat">
               <Button
                 theme="borderless"
                 icon={<IconWechat size="large" />}
-                onClick={() => oauth2Api.authorization('wechat-mp')}
+                onClick={() => {
+                  window.location.href =
+                    '/api/oauth2/authorization/wechat-open';
+                }}
               />
             </Tooltip>
             <Tooltip content="wechat-enterprise">
               <Button
                 theme="borderless"
                 icon={<IconWechatEnterprise size="large" />}
-                onClick={() => oauth2Api.authorization('wechat-enterprise')}
+                onClick={() => {
+                  window.location.href =
+                    '/api/oauth2/authorization/wechat-enterprise';
+                }}
               />
             </Tooltip>
             <Tooltip content="gitee">
               <Button
                 theme="borderless"
                 icon={<IconGitee size="large" />}
-                onClick={() => oauth2Api.authorization('gitee')}
+                onClick={() => {
+                  window.location.href = '/api/oauth2/authorization/gitee';
+                }}
               />
             </Tooltip>
             <Tooltip content="baidu">
@@ -199,21 +206,27 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               <Button
                 theme="borderless"
                 icon={<IconQQ size="large" />}
-                onClick={() => oauth2Api.authorization('qq')}
+                onClick={() => {
+                  window.location.href = '/api/oauth2/authorization/qq';
+                }}
               />
             </Tooltip>
             <Tooltip content="tiktok">
               <Button
                 theme="borderless"
                 icon={<IconTiktokLogo size="large" />}
-                onClick={() => oauth2Api.authorization('tiktok')}
+                onClick={() => {
+                  window.location.href = '/api/oauth2/authorization/tiktok';
+                }}
               />
             </Tooltip>
             <Tooltip content="taobao">
               <Button
                 theme="borderless"
                 icon={<IconTaobao size="large" />}
-                onClick={() => oauth2Api.authorization('taobao')}
+                onClick={() => {
+                  window.location.href = '/api/oauth2/authorization/taobao';
+                }}
               />
             </Tooltip>
           </Space>

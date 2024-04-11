@@ -31,6 +31,9 @@ export class TreeSelectTableField<T extends IdEntity> extends BaseTableField<
         showClear={column.showClear || true}
         showSearchClear={column.showSearchClear || true}
         expandAll={column.expandAll}
+        onClear={(e) => {
+          debugger;
+        }}
       />
     );
   }

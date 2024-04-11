@@ -17,7 +17,7 @@ import Post from '../post';
 import ChangePasswordForm from './ChangePassword';
 import TreePanel from '@/components/Tree/TreePanel';
 import Binary from '@/components/Binary';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 
 export const User: React.FC = () => {
   const userApi = useUserApi();
@@ -68,7 +68,7 @@ export const User: React.FC = () => {
                   code: 'changPassword',
                   name: '修改密码',
                   type: 'primary',
-                  icon: directGetIcon('IconPassword', 'system'),
+                  icon: tryGetIcon('IconPassword'),
                   onClick(tableContext, formContext, value) {
                     selectUserRef.current = value;
                     setShowChangePassword(true);
@@ -80,7 +80,7 @@ export const User: React.FC = () => {
                       code: 'enable',
                       name: '启用',
                       type: 'primary',
-                      icon: directGetIcon('IconEnable', 'system'),
+                      icon: tryGetIcon('IconEnable'),
                       onClick: (tableContext) => {
                         userApi.active(record.id).then((res) => {
                           if (res.code === 200 && res.data) {
@@ -106,7 +106,7 @@ export const User: React.FC = () => {
                       code: 'lock',
                       name: '锁定',
                       type: 'primary',
-                      icon: directGetIcon('IconLock', 'system'),
+                      icon: tryGetIcon('IconLock'),
                       onClick: (tableContext) => {
                         userApi.lock(record.id).then((res) => {
                           if (res.code === 200 && res.data) {
@@ -130,7 +130,7 @@ export const User: React.FC = () => {
                   code: 'bindingRole',
                   name: '绑定角色',
                   type: 'primary',
-                  icon: directGetIcon('IconRole', 'system'),
+                  icon: tryGetIcon('IconRole'),
                   onClick: (tableContext, formContext, record) => {
                     setShowBindingRole(true);
                     selectUserRef.current = record;
@@ -140,7 +140,7 @@ export const User: React.FC = () => {
                   code: 'bindingPost',
                   name: '绑定岗位',
                   type: 'primary',
-                  icon: directGetIcon('IconPost', 'system'),
+                  icon: tryGetIcon('IconPost'),
                   onClick: (tableContext, formContext, record) => {
                     setShowBindingPost(true);
                     selectUserRef.current = record;
@@ -150,7 +150,7 @@ export const User: React.FC = () => {
                   code: 'bindingOrg',
                   name: '绑定组织',
                   type: 'primary',
-                  icon: directGetIcon('IconOrg', 'system'),
+                  icon: tryGetIcon('IconOrg'),
                   onClick: (tableContext, formContext, record) => {
                     setShowBindingOrg(true);
                     selectUserRef.current = record;
