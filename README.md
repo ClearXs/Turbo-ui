@@ -50,5 +50,6 @@ npm run build
     <tr>
         <td><img src="./docs/images/preview7.png" alt="preview7"/></td>
         <td><img src="./docs/images/preview8.png" alt="preview8"/></td>
+      	<td><img src="./docs/images/preview9.png" alt="preview9"/></td>
     </tr>
 </table>
