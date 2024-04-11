@@ -1,11 +1,11 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { ListPanelApi, ListPanelProps } from './interface';
 import { FormContext } from '../TForm/interface';
 import { useEffect, useRef, useState } from 'react';
 import Tree, { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { Button, Notification, Space, Spin } from '@douyinfe/semi-ui';
 import { Toolbar } from '../TableCrud/interface';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import TForm from '../TForm/TForm';
 import useListOperatorBar from './ListOperatorBar';
 import OperatorButtonSet from '../TableCrud/OperatorButtonSet';
@@ -32,7 +32,7 @@ const getToolbar = <T extends IdEntity>(
       name: '新增',
       position: 'left',
       type: 'primary',
-      icon: directGetIcon('IconCopyAdd'),
+      icon: tryGetIcon('IconCopyAdd'),
       onClick: () => {
         formContext.visible = true;
         formContext.loading = false;
@@ -48,7 +48,7 @@ const getToolbar = <T extends IdEntity>(
       name: '全选',
       position: 'left',
       type: 'primary',
-      icon: directGetIcon('IconCheckList'),
+      icon: tryGetIcon('IconCheckList'),
       onClick: () => {
         api.selectAll();
       },
@@ -61,7 +61,7 @@ const getToolbar = <T extends IdEntity>(
       name: '取消全选',
       position: 'left',
       type: 'primary',
-      icon: directGetIcon('IconCheckChoiceStroked'),
+      icon: tryGetIcon('IconCheckChoiceStroked'),
       onClick: () => {
         api.unSelectAll();
       },

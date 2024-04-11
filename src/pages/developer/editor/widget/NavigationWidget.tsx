@@ -1,5 +1,5 @@
 import { Form } from '@/api/developer/form';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import MenuTreeComponent from '@/pages/system/menu/MenuTree';
 import { Button, Popover } from '@douyinfe/semi-ui';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ const NavigationWidget: React.FC<{ form: Form }> = ({ form }) => {
         </div>
       }
     >
-      <Button icon={directGetIcon('IconApps')} size="large" theme="borderless">
+      <Button icon={tryGetIcon('IconApps')} size="large" theme="borderless">
         {form.name}
       </Button>
     </Popover>

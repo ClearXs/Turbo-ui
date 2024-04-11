@@ -5,8 +5,7 @@ import {
   createBrowserRouter,
 } from 'react-router-dom';
 import React, { useEffect, useMemo } from 'react';
-import * as local from '@/util/local';
-import * as headers from '@/util/headers';
+import * as auth from '@/util/auth';
 import { useRecoilValue } from 'recoil';
 import { CurrentUserRouteState } from '@/store/menu';
 import { MenuTree } from '@/api/system/menu';
@@ -14,23 +13,25 @@ import { importIcon } from '@/components/Icon/shared';
 import _ from 'lodash';
 import Home from '@/pages/home';
 import Login from '@/pages/login';
-import { lazyLoader, slowLazy, useLoadRoutes } from '../hook/route';
+import { useLoadRoutes } from '../hook/route';
 import Loading from '../pages/Loading';
 import { withInterceptorComponent } from './Interceptor';
 import Profile from '@/pages/profile';
+import App from '@/App';
 
 export type TurboRoute = RouteObject &
   Pick<MenuTree, 'code' | 'alias' | 'sort' | 'name' | 'depth' | 'attrs'> & {
     // 菜单类型 'system' 系统默认菜单。 'custom'是自定义菜单由后端返回
     type: 'system' | 'custom';
     // 是否允许关闭
-    clearable: boolean;
+    clearable?: boolean;
     // icon
     icon?: React.ReactNode;
     // 当前路由所属于的顶部route，如果为undefined则为顶部菜单或者非关键菜单
     topRouteKey?: string;
     // 路由定义拦截器
     intercept?: (navigate: NavigateFunction) => boolean;
+    children?: TurboRoute[];
   };
 
 const AppRouter: React.FC = () => {
@@ -38,7 +39,7 @@ const AppRouter: React.FC = () => {
   const loadCurrentUserRoute = useLoadRoutes();
 
   useEffect(() => {
-    const authentication = local.get(headers.Authentication);
+    const authentication = auth.get();
     if (!_.isEmpty(authentication)) {
       loadCurrentUserRoute();
     }
@@ -72,7 +73,6 @@ const AppRouter: React.FC = () => {
       return interceptorTrait(routes);
     };
   }, []);
-
   const IconHomeComponent = useMemo(() => importIcon('IconHome'), []);
   const IconUserComponent = useMemo(() => importIcon('IconUser'), []);
   const renderRoutes = [
@@ -108,13 +108,13 @@ const AppRouter: React.FC = () => {
     {
       id: '/',
       path: '/',
-      element: lazyLoader(() => slowLazy(import('@/App')), true),
+      element: <App />,
       errorElement: <Loading />,
       loader: () => renderRoutes,
       type: 'system',
       children: renderRoutes,
       intercept: (navigate: NavigateFunction) => {
-        const authentication = local.get(headers.Authentication);
+        const authentication = auth.get();
         if (_.isEmpty(authentication)) {
           navigate('/login');
         } else {
@@ -128,7 +128,7 @@ const AppRouter: React.FC = () => {
       path: '/login',
       element: <Login />,
       intercept: (navigate: NavigateFunction) => {
-        const authentication = local.get(headers.Authentication);
+        const authentication = auth.get();
         if (!_.isEmpty(authentication)) {
           navigate('/');
           return false;

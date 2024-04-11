@@ -10,6 +10,7 @@ import { MenuTree as MenuEntity } from '@/api/system/menu';
 import _ from 'lodash';
 import useRoleMenuApi from '@/api/system/rolemenu';
 import Modular from '@/components/Modular/Modular';
+import { IconAuthorize } from '@/components/Icon/collection/IconAuthorize';
 
 const Role: React.FC = () => {
   const roleApi = useRoleApi();
@@ -32,6 +33,7 @@ const Role: React.FC = () => {
               name: '授权',
               type: 'primary',
               size: 'small',
+              icon: <IconAuthorize />,
               onClick: (tableContext, formContext, record) => {
                 roleRef.current = record;
                 roleMenuApi

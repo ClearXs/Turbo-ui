@@ -5,11 +5,11 @@ import TreePanel from '@/components/Tree/TreePanel';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import Binary from '@/components/Binary';
 import _ from 'lodash';
-import usePageApi, { Page } from '@/api/developer/page';
+import usePageApi, { Page as PageEntity } from '@/api/developer/page';
 import PageHelper from './helper';
 import { Notification, Toast } from '@douyinfe/semi-ui';
 import FormEditor from '../editor/FormEditor';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import MenuTreeComponent from '@/pages/system/menu/MenuTree';
 import { TreePanelApi } from '@/components/Tree';
 import { MenuTree } from '@/api/system/menu';
@@ -22,12 +22,12 @@ const Page: React.FC = () => {
   const [categoryId, setCategoryId] = useState<string>();
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const formIdRef = useRef<string>();
-  const pageRef = useRef<Page>();
+  const pageRef = useRef<PageEntity>();
   const [showMenuTree, setShowMenuTree] = useState<boolean>(false);
   const menuTreeApiRef = useRef<TreePanelApi<MenuTree>>();
 
   const editable = useMemo(() => {
-    return (record: Page) => {
+    return (record: PageEntity) => {
       if (_.isEmpty(record.boId)) {
         Notification.error({ content: '请选择页面的业务对象!' });
         return;
@@ -62,7 +62,7 @@ const Page: React.FC = () => {
           />
         }
         RightComponent={
-          <CategoryTableCrud<Page>
+          <CategoryTableCrud<PageEntity>
             mode="cardPage"
             columns={PageHelper.getColumns()}
             useApi={PageHelper.getApi}
@@ -74,7 +74,7 @@ const Page: React.FC = () => {
                   code: 'deploy',
                   name: '发布',
                   type: 'primary',
-                  icon: directGetIcon('IconSendStroked'),
+                  icon: tryGetIcon('IconSendStroked'),
                   onClick(tableContext, formContext, value) {
                     pageRef.current = value;
                     setShowMenuTree(true);
@@ -84,7 +84,7 @@ const Page: React.FC = () => {
                   code: 'pageEdit',
                   name: '编辑页面',
                   type: 'primary',
-                  icon: directGetIcon('IconPageSetting', 'system'),
+                  icon: tryGetIcon('IconPageSetting'),
                   onClick(tableContext, formContext, value) {
                     editable(value);
                   },

@@ -1,7 +1,7 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { RenderOperatorBarType } from './interface';
 import { OperateToolbar } from '../TableCrud/interface';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import { Modal } from '@douyinfe/semi-ui';
 
 export default function useListOperatorBar<T extends IdEntity>() {
@@ -24,7 +24,7 @@ export default function useListOperatorBar<T extends IdEntity>() {
         name: '编辑',
         type: 'primary',
         size: 'small',
-        icon: directGetIcon('IconEditStroked'),
+        icon: tryGetIcon('IconEditStroked'),
         onClick: (tableContext, formContext, record) => {
           listApi.edit(formContext, record);
         },
@@ -41,7 +41,7 @@ export default function useListOperatorBar<T extends IdEntity>() {
         name: '删除',
         type: 'danger',
         size: 'small',
-        icon: directGetIcon('IconDeleteStroked'),
+        icon: tryGetIcon('IconDeleteStroked'),
         onClick: (tableContext, formContext, record) => {
           Modal.warning({
             title: '是否确定删除?',

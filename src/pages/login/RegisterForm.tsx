@@ -9,7 +9,7 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as local from '@/util/local';
-import * as headers from '@/util/headers';
+import * as headers from '@/util/constant';
 import useAuthApi from '@/api/system/auth';
 
 const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
@@ -41,6 +41,7 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                   authApi
                     .register({
                       ...data,
+                      source: 'SELF-BUILT',
                       tenantId,
                     })
                     .then((res) => {
@@ -88,7 +89,7 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                   placeholder="请输入邮箱"
                 />
                 <Button className="mt-6" block size="large" htmlType="submit">
-                  注册
+                  提交
                 </Button>
               </Form>
             </TabPane>
@@ -112,9 +113,12 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                         message: '请输入验证码',
                       },
                     ]}
-                  ></Form.Input>
+                  />
                   <Button className="ml-auto">获取验证码</Button>
                 </div>
+                <Button className="mt-6" block size="large" htmlType="submit">
+                  提交
+                </Button>
               </Form>
             </TabPane>
           </Tabs>

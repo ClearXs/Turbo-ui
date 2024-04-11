@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { FormDateColumnProps } from './interface';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';

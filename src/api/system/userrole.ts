@@ -1,5 +1,5 @@
 import useRequest from '@/hook/request';
-import { GeneralApi, GeneralApiImpl, IdEntity } from '../interface';
+import { GeneralApi, GeneralApiImpl, IdEntity } from '..';
 
 export interface UserRole extends IdEntity {
   /**

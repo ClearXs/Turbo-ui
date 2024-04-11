@@ -18,5 +18,5 @@ export default {
     baseUrl: '/',
     // 默认超时时间为10s
     timeout: 100000,
-  } as Request,
-} as Config;
+  },
+};

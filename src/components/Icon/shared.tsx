@@ -1,6 +1,7 @@
-import { lazy } from 'react';
 import * as systemIcons from './collection';
 import { IconProps } from '@douyinfe/semi-icons';
+import * as semiIcons from '@douyinfe/semi-icons/lib/es/icons';
+import _ from 'lodash';
 
 export type Icon = {
   key: string;
@@ -29,29 +30,10 @@ export interface IconModel {
 
 export class SemiIconsModel implements IconModel {
   constructor(private icons: Map<string, Icon>) {
-    // 从semi库里面导入UI组件
-    const imports = import.meta.glob(
-      '../../../node_modules/@douyinfe/semi-icons/lib/es/icons/*',
-    );
-    Object.keys(imports)
-      .filter((name) => {
-        return name.match('Icon.*.js') !== null;
-      })
-      .map((iconKey) => {
-        // 形如../../../node_modules/@douyinfe/semi-icons/lib/es/icons/IconPieChart2Stroked.js形式
-        const lastSlashIndex = iconKey.lastIndexOf('/Icon');
-        const suffixIndex = iconKey.lastIndexOf('.js');
-        // IconPieChart2Stroked ===> PieChart2Stroked
-        const key = iconKey.substring(lastSlashIndex + 1, suffixIndex);
-        const component = lazy(imports[iconKey]);
-        return {
-          key,
-          component,
-        } as Icon;
-      })
-      .forEach((icon) => {
-        this.icons.set(icon.key, icon);
-      });
+    for (const key in semiIcons) {
+      const icon = semiIcons[key];
+      this.icons.set(key, { key, component: icon });
+    }
   }
 
   getIconList(): Icon[] {
@@ -145,11 +127,27 @@ export const directGetIcon = (
   icon: string | undefined,
   type: IconSystem = 'semi',
   props: Partial<IconProps> = {},
-): React.ReactNode => {
+): React.ReactNode | undefined => {
   if (icon === undefined) {
     return null;
   }
   const iconModel = getIconModel(type);
   const IconComponent = iconModel.getIcon(icon)?.component;
-  return IconComponent && <IconComponent {...props} />;
+  return IconComponent && <IconComponent />;
+};
+
+/**
+ * try best hard get icon, first from semi icon system, if not found then from system get icon
+ *
+ * @param icon the icon
+ */
+export const tryGetIcon = (
+  icon: string | undefined,
+  props: Partial<IconProps> = {},
+): React.ReactNode | undefined => {
+  let IconComponent = directGetIcon(icon, 'semi', props);
+  if (_.isEmpty(IconComponent)) {
+    return directGetIcon(icon, 'system', props);
+  }
+  return IconComponent;
 };

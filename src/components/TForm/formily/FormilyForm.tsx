@@ -27,6 +27,8 @@ import {
   ArrayTable,
   Rate,
   Slider,
+  ArrayItems,
+  ArrayBase,
 } from '@formily/semi';
 import { useMemo } from 'react';
 import { Form as FormType, createForm } from '@formily/core';
@@ -37,8 +39,10 @@ import { Button, ButtonGroup, Modal, Notification } from '@douyinfe/semi-ui';
 import { FormContext, FormProps, ModalButton } from '../interface';
 import { Constant } from '@/constant';
 import _ from 'lodash';
-import { directGetIcon } from '@/components/Icon';
-import { GeneralApi } from '@/api/interface';
+import { tryGetIcon } from '@/components/Icon';
+import { GeneralApi } from '@/api';
+import { TFormContext } from '../context/form';
+import { globalThisPolyfill } from '@formily/shared';
 
 const Text: React.FC<{
   value?: string;
@@ -57,7 +61,9 @@ export const SchemaField = createSchemaField({
     FormTab,
     FormCollapse,
     ArrayTable,
+    ArrayItems,
     FormItem,
+    ArrayBase,
     DatePicker,
     Checkbox,
     Cascader,
@@ -117,8 +123,8 @@ const ModalButtonComponent: React.FC<{
   form: FormType<any>;
 }> = observer(({ formProps, formContext, form }) => {
   const {
-    showConfirm,
-    showCancel,
+    showConfirm = true,
+    showCancel = true,
     append = [],
   } = formProps.modal || {
     showConfirm: true,
@@ -146,7 +152,7 @@ const ModalButtonComponent: React.FC<{
       name: '取消',
       type: 'tertiary',
       size: 'default',
-      icon: directGetIcon('IconCrossCircleStroked'),
+      icon: tryGetIcon('IconCrossCircleStroked'),
       onClick: (formContext) => {
         if (formProps.onCancel) {
           formProps.onCancel(formContext);
@@ -168,23 +174,27 @@ const ModalButtonComponent: React.FC<{
       type: 'primary',
       loading: true,
       size: 'default',
-      icon: directGetIcon('IconCheckCircleStroked'),
+      icon: tryGetIcon('IconCheckCircleStroked'),
       onClick: (formContext) => {
         // 构建需要校验的字段
         const { params, onOk, onError } = formProps;
         form
           .submit((data) => {
-            formContext.loading = true;
             // 相同key优先级 默认值 > 表单值
             const values = Object.assign(data, params);
             // 移除undefined的值
             for (const key in values) {
               const v = values[key];
-              if (_.isEmpty(v)) {
+              // exclude boolean type and number type delete value
+              if (
+                _.isEmpty(v) &&
+                !(typeof v === 'boolean' || typeof v === 'number')
+              ) {
                 delete values[key];
               }
             }
             if (api) {
+              formContext.loading = true;
               api
                 .saveOrUpdate(values)
                 .then((res) => {
@@ -212,7 +222,7 @@ const ModalButtonComponent: React.FC<{
                   onError?.(err, formContext);
                 });
             } else {
-              formProps.onOk?.(values);
+              formProps.onOk?.(formContext);
             }
           })
           .catch((err) => {
@@ -295,6 +305,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   const { columns, decorator } = formContext;
 
   const form = useMemo(() => {
+    globalThisPolyfill['__DESIGNABLE_LAYOUT__'] = { prefixCls: 'dn-' };
     return createForm({
       initialValues: formContext?.getDefaultValues(),
       values: formContext.values,
@@ -337,13 +348,15 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
         )
       }
     >
-      <Form form={form} {...formliyProps}>
-        <SchemaField
-          schema={schema}
-          components={components}
-          scope={{ $context: formContext, ...scope }}
-        />
-      </Form>
+      <TFormContext.Provider value={formContext}>
+        <Form form={form} {...formliyProps}>
+          <SchemaField
+            schema={schema}
+            components={components}
+            scope={{ $context: formContext, ...scope }}
+          />
+        </Form>
+      </TFormContext.Provider>
     </Modal>
   );
 });

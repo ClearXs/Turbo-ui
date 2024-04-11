@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { FormCascadeColumnProps } from './interface';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
@@ -6,6 +6,7 @@ import { BaseFormField } from '..';
 import { TreeConstant } from '@/constant';
 import { CascaderData } from '@douyinfe/semi-ui/lib/es/cascader';
 import ConstantTag from '@/components/Tag/ConstantTag';
+import _ from 'lodash';
 
 export class CascadeFormField<T extends IdEntity> extends BaseFormField<
   T,

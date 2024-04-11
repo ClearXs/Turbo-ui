@@ -1,6 +1,6 @@
 import { Constant } from './interface';
 
-export const ENABLE = [
+export const ENABLE: Constant[] = [
   {
     value: 'ENABLE',
     label: '启用',
@@ -11,4 +11,4 @@ export const ENABLE = [
     label: '停用',
     tag: 'red',
   },
-] as Constant[];
+];

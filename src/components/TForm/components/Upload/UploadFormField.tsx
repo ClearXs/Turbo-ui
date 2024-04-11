@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormUploadProps } from '.';

@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { ColumnType, FormColumnProps } from '../interface';
 import { FormColumnDecorator } from '..';
 import { ISchema } from '@formily/json-schema';
@@ -47,6 +47,12 @@ export abstract class BaseFormField<
     timeRange: '请选择',
     upload: '请选择',
     uploadDrag: '请选择',
+    jsonObject: '',
+    jsonArray: '',
+    user: '请选择',
+    org: '请选择',
+    post: '请选择',
+    role: '请选择',
   };
 
   public schema(column: K, index: number): ISchema {
@@ -75,7 +81,6 @@ export abstract class BaseFormField<
     type: 'search' | 'form',
   ): React.ReactNode | undefined {
     // 表单通用属性实现
-
     return this.doRender(column, type);
   }
 

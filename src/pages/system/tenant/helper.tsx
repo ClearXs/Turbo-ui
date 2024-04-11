@@ -28,7 +28,7 @@ const TenantHelper: Helper<Tenant, TenantApi> = {
         label: '创建人',
         ellipsis: true,
         align: 'center',
-        type: 'input',
+        type: 'user',
         form: false,
       },
       {
@@ -44,7 +44,7 @@ const TenantHelper: Helper<Tenant, TenantApi> = {
         label: '更新人',
         ellipsis: true,
         align: 'center',
-        type: 'input',
+        type: 'user',
         form: false,
       },
     ] as TableColumnProps<Tenant>[];

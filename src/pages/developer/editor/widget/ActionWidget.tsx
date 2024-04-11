@@ -1,4 +1,4 @@
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import { Button, ButtonGroup, Popover, Typography } from '@douyinfe/semi-ui';
 import { EditorProps } from '../interface';
 import { DesignableProps } from '../Editor';
@@ -34,7 +34,7 @@ export const ActionWidget: React.FC<ActionWidgetProps> = observer(
         >
           <Button
             type="primary"
-            icon={directGetIcon('IconHelpCircleStroked')}
+            icon={tryGetIcon('IconHelpCircleStroked')}
             theme="borderless"
           />
         </Popover>
@@ -53,7 +53,7 @@ export const ActionWidget: React.FC<ActionWidgetProps> = observer(
         </Button>
         <Button
           type="primary"
-          icon={directGetIcon('IconClose')}
+          icon={tryGetIcon('IconClose')}
           theme="borderless"
           onClick={() => onClose?.(designableProps)}
         />

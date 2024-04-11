@@ -1,4 +1,4 @@
-import { directGetIcon } from '@/components/Icon/shared';
+import { tryGetIcon } from '@/components/Icon/shared';
 import IconList, { IconViewProps } from '@/pages/developer/icon';
 import { IconCamera } from '@douyinfe/semi-icons';
 import { Avatar, Modal } from '@douyinfe/semi-ui';
@@ -56,7 +56,7 @@ const Icon: React.FC<IconProps> = ({
         )
       }
     >
-      {directGetIcon(icon)}
+      {tryGetIcon(icon)}
     </Avatar>
   );
 };

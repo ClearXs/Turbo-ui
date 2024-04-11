@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
@@ -37,14 +37,19 @@ export class TreeSelectFormField<T extends IdEntity> extends BaseFormField<
 
   public schema(column: FormTreeSelectColumnProps<T>, index: number): ISchema {
     const schema = super.schema(column, index);
+    const formContext = this.decorator.getFormContext();
     let data;
     if (typeof column.treeData === 'function') {
-      data = column.treeData(this.decorator.getFormContext());
+      data = column.treeData(formContext);
     }
     if (_.isEmpty(data)) {
       data = column.treeData;
     }
     schema['x-component-props']['treeData'] = data;
+    schema['x-component-props']['showClear'] = column.showClear || true;
+    schema['x-component-props']['onClear'] = () => {
+      formContext.values[column.field] = column.initValue;
+    };
     return schema;
   }
 

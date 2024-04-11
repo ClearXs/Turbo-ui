@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { FormColumnProps } from '../../interface';
 import { SwitchProps } from '@douyinfe/semi-ui/lib/es/switch';
 

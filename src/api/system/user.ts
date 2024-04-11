@@ -1,4 +1,4 @@
-import { GeneralApi, GeneralApiImpl, R, TenantEntity } from '../interface';
+import { GeneralApi, GeneralApiImpl, R, TenantEntity } from '..';
 import useRequest from '@/hook/request';
 import { Role } from './role';
 import { Org } from './org';
@@ -14,6 +14,7 @@ export type User = TenantEntity & {
   avatar: string;
   status: string;
   orgId: string;
+  source: 'THIRD' | 'SELF-BUILT';
 };
 
 export type UserVO = User & {

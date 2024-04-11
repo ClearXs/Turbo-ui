@@ -1,14 +1,14 @@
 import TableCrud from '@/components/TableCrud';
-import { DataSource } from '@/api/developer/datasource';
+import { DataSource as DataSourceEntity } from '@/api/developer/datasource';
 import DataSourceHelper from './helper';
 import { Notification } from '@douyinfe/semi-ui';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 
 const DataSource: React.FC = () => {
   const api = DataSourceHelper.getApi();
 
   return (
-    <TableCrud<DataSource>
+    <TableCrud<DataSourceEntity>
       mode="page"
       columns={DataSourceHelper.getColumns()}
       useApi={DataSourceHelper.getApi}
@@ -19,7 +19,7 @@ const DataSource: React.FC = () => {
             name: '测试连接',
             type: 'primary',
             loading: true,
-            icon: directGetIcon('IconTestScoreStroked'),
+            icon: tryGetIcon('IconTestScoreStroked'),
             onClick: (formContext) => {
               formContext.submit?.((values) => {
                 formContext.loading = true;
@@ -48,7 +48,7 @@ const DataSource: React.FC = () => {
             code: 'test',
             name: '测试连接',
             type: 'primary',
-            icon: directGetIcon('IconTestScoreStroked'),
+            icon: tryGetIcon('IconTestScoreStroked'),
             onClick(tableContext, formContext, value) {
               api.testConnection(value).then((res) => {
                 const { code, data } = res;
@@ -64,7 +64,7 @@ const DataSource: React.FC = () => {
             code: 'dataTable',
             name: '数据表',
             type: 'primary',
-            icon: directGetIcon('IconVoteStroked'),
+            icon: tryGetIcon('IconVoteStroked'),
             onClick(tableContext, formContext, value) {
               api.showTables(value.id).then((res) => {
                 Notification.info({ content: res.data });

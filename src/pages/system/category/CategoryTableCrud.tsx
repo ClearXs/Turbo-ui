@@ -1,5 +1,5 @@
-import { CategoryEntity } from '@/api/interface';
-import { directGetIcon } from '@/components/Icon/shared';
+import { CategoryEntity } from '@/api';
+import { tryGetIcon } from '@/components/Icon/shared';
 import TableCrud from '@/components/TableCrud';
 import {
   TableContext,
@@ -49,7 +49,7 @@ const CategoryTableCrud = <T extends CategoryEntity>(
       name: '设置分类',
       position: 'left',
       type: 'primary',
-      icon: directGetIcon('IconGridView'),
+      icon: tryGetIcon('IconGridView'),
       onClick: (tableContext, formContext) => {
         const {
           dataSource,
@@ -77,6 +77,7 @@ const CategoryTableCrud = <T extends CategoryEntity>(
         }
       />
       <Modular
+        title="设置分类"
         visible={showCategoryTree}
         onCancel={() => setShowCategoryTree(false)}
         onConfirm={() => {

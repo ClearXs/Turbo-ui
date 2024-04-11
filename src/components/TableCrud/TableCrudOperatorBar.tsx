@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { useMemo } from 'react';
 import {
   OperateToolbar,
@@ -6,7 +6,7 @@ import {
   TableApi,
   TableCrudProps,
 } from './interface';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import Modular from '../Modular/Modular';
 
 export const EDIT_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
@@ -15,7 +15,7 @@ export const EDIT_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
   type: 'primary',
   size: 'small',
   internal: true,
-  icon: directGetIcon('IconEditStroked'),
+  icon: tryGetIcon('IconEditStroked'),
 };
 
 export const DETAILS_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
@@ -23,7 +23,7 @@ export const DETAILS_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
   name: '详情',
   type: 'primary',
   size: 'small',
-  icon: directGetIcon('IconBriefStroked'),
+  icon: tryGetIcon('IconBriefStroked'),
   internal: true,
 };
 
@@ -33,7 +33,7 @@ export const DELETE_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
   type: 'danger',
   size: 'small',
   internal: true,
-  icon: directGetIcon('IconDeleteStroked'),
+  icon: tryGetIcon('IconDeleteStroked'),
 };
 
 function useTableCrudOperatorBar<T extends IdEntity>() {

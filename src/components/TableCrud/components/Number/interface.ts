@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { CardColumnProps } from '../../interface';
 import { FormNumberColumnProps } from '@/components/TForm/components';
 

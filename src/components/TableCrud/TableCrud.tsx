@@ -2,7 +2,7 @@ import Table from '@douyinfe/semi-ui/lib/es/table';
 import TableHeader from './TableHeader';
 import { useEffect, useMemo } from 'react';
 import _ from 'lodash';
-import { GeneralApi, IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api';
 import TableToolbar from './TableToolbar';
 import {
   RenderOperatorBarType,
@@ -139,6 +139,7 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
           }
         : false;
     const tableContext: TableContext<T> = {
+      idKey: props.id || 'id',
       props,
       mode: props.mode,
       api,
@@ -165,6 +166,16 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
       },
       setTableColumns(columns) {
         this.tableColumns = columns;
+      },
+      getSelectedRowKeys() {
+        return this.table.selectedRowKeys;
+      },
+      getSelectedRows() {
+        const selectedRowKeys = this.table.selectedRowKeys;
+        const dataSource = this.dataSource;
+        return dataSource.filter((r) =>
+          selectedRowKeys.includes(r[this.idKey]),
+        );
       },
     };
     const observerTableContext = observable(tableContext);

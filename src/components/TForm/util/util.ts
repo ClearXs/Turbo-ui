@@ -1,5 +1,5 @@
-import { IdEntity } from '@/api/interface';
-import { FormColumnProps, Pair } from './interface';
+import { IdEntity } from '@/api';
+import { FormColumnProps, Pair } from '../interface';
 
 export type BarrierColumns<T extends IdEntity> = {
   // 该栅栏位能容纳的最大column数量

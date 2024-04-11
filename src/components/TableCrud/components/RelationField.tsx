@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { Button } from '@douyinfe/semi-ui';
 import { TableColumnProps } from '../interface';
 import { TableColumnDecorator } from '../table';

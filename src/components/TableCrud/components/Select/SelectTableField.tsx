@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import ConstantTag from '@/components/Tag/ConstantTag';
 import { BaseTableField, TableSelectColumnProps } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';

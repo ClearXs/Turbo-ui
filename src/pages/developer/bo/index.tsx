@@ -5,10 +5,10 @@ import useBoApi, { Bo } from '@/api/developer/bo';
 import CategoryHelper from '@/pages/system/category/helper';
 import TreePanel from '@/components/Tree/TreePanel';
 import Binary from '@/components/Binary';
-import { Modal, Notification } from '@douyinfe/semi-ui';
+import { Notification } from '@douyinfe/semi-ui';
 import ModularBoTable from './ModularBoTable';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import { TableContext } from '@/components/TableCrud/interface';
 import { ModularProps } from '@/components/Modular/interface';
 import { observer } from '@formily/reactive-react';
@@ -67,7 +67,7 @@ const Bo: React.FC = observer(() => {
                   code: 'materialize',
                   name: '物化',
                   type: 'primary',
-                  icon: directGetIcon('IconBriefStroked'),
+                  icon: tryGetIcon('IconBriefStroked'),
                   onClick(tableContext, formContext, value) {
                     Modular.warning({
                       title: `'${value.name}'业务对象物化`,
@@ -98,7 +98,7 @@ const Bo: React.FC = observer(() => {
                   code: 'details',
                   name: '明细',
                   type: 'primary',
-                  icon: directGetIcon('IconDetails', 'system'),
+                  icon: tryGetIcon('IconDetails', 'system'),
                   onClick(tableContext, formContext, value) {
                     props.bo = value;
                     props.showBoTable = true;

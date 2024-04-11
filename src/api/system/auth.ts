@@ -1,4 +1,4 @@
-import { R } from '../interface';
+import { R } from '..';
 import useRequest from '@/hook/request';
 import { User } from './user';
 import { MenuTree } from './menu';
@@ -6,13 +6,57 @@ import { Org } from './org';
 import { Role } from './role';
 import { Post } from './post';
 
-export type LoginInfo = {
-  captchaId: string;
-  username: string;
-  password: string;
-  tenant?: string;
-  captcha: string;
+export type LoginMode = 'EMPTY' | 'CAPTCHA_CODE' | 'VERIFICATION_CODE';
+
+export type CaptchaCode = {
+  captcha?: string;
+  captchaId?: string;
 };
+
+export type VerificationCode = {
+  code: string;
+};
+
+export type LoginUsernamePassword = {
+  /**
+   * 用户名
+   */
+  username: string;
+
+  /**
+   * 密码
+   */
+  password: string;
+
+  /**
+   * login mode
+   */
+  loginMode: LoginMode;
+};
+
+export type LoginCaptcha = {
+  /**
+   * 用户名
+   */
+  username: string;
+
+  /**
+   * 密码
+   */
+  password: string;
+
+  /**
+   * login mode
+   */
+  loginMode: LoginMode;
+
+  /**
+   * the captcha code
+   */
+  captchaCode: CaptchaCode;
+};
+
+export type LoginInfo = LoginUsernamePassword | LoginCaptcha;
 
 export type Captcha = {
   captchaId: string;
@@ -30,9 +74,11 @@ export default function useAuthApi() {
    * @returns user of collection
    */
   const login = (params: LoginInfo): Promise<R<Record<string, any>>> => {
-    return request.post('/api/auth/login', params).then((res) => {
-      return res.data;
-    });
+    return request
+      .post('/api/auth/login', params, { 'X-LOGIN-MODE': params.loginMode })
+      .then((res) => {
+        return res.data;
+      });
   };
 
   /**

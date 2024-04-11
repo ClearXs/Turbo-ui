@@ -1,14 +1,13 @@
 import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
 import { TurboRoute } from './AppRouter';
 import _ from 'lodash';
-import * as local from '@/util/local';
-import * as headers from '@/util/headers';
-import { Notification, Typography } from '@douyinfe/semi-ui';
 import { useEffect, useMemo, useRef } from 'react';
 import { RouteContext } from './context';
 import { findRoute } from './util';
 import { useRecoilValue } from 'recoil';
 import { CurrentUserRouteState } from '@/store/menu';
+import AuthenticationInterceptor from './AuthenticationInterceptor';
+import InnerRouteInterceptor from './InnerRouteInterceptor';
 
 export type RouteInterceptor = {
   // 优先级
@@ -33,59 +32,6 @@ export type RouteInterceptor = {
 export type InterceptorContext = {
   route: TurboRoute;
   navigate: NavigateFunction;
-};
-
-/**
- * 每一个route的{@link TurboRoute#intercept}属性的实现
- */
-class InnerRouteInterceptor implements RouteInterceptor {
-  constructor(private route: TurboRoute) {
-    this.order = Number.MAX_VALUE;
-  }
-  order: number = Number.MAX_VALUE;
-
-  intercept(context: InterceptorContext): boolean {
-    return this.route.intercept?.(context.navigate) || true;
-  }
-
-  match(route: TurboRoute, path?: string): boolean {
-    if (_.isEmpty(path)) {
-      return false;
-    }
-    return _.isEqual(this.route.path, path) || false;
-  }
-}
-
-/**
- * 全局的鉴权认证
- */
-const AuthenticationInterceptor: RouteInterceptor = {
-  order: -1,
-  intercept: (context: InterceptorContext): boolean => {
-    if (
-      _.isEmpty(local.get(headers.Authentication)) &&
-      context.route.path != '/login'
-    ) {
-      context.navigate('/login');
-      Notification.error({
-        content: (
-          <Typography.Text>当前用户信息不存在,请重新登陆.</Typography.Text>
-        ),
-        position: 'top',
-      });
-      return false;
-    }
-    return true;
-  },
-
-  match: (route: TurboRoute, path?: string): boolean => {
-    // 排除鉴权验证的route path
-    const exclusive: string[] = [''];
-    if (_.isEmpty(path)) {
-      return false;
-    }
-    return !exclusive.includes(path as string);
-  },
 };
 
 export const withInterceptorComponent = (

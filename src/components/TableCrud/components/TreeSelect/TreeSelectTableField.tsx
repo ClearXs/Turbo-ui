@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { TableTreeSelectColumnProps } from '.';
@@ -31,6 +31,9 @@ export class TreeSelectTableField<T extends IdEntity> extends BaseTableField<
         showClear={column.showClear || true}
         showSearchClear={column.showSearchClear || true}
         expandAll={column.expandAll}
+        onClear={(e) => {
+          debugger;
+        }}
       />
     );
   }

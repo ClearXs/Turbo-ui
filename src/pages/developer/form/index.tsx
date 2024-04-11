@@ -1,25 +1,25 @@
-import { Notification, Toast } from '@douyinfe/semi-ui';
+import { Toast } from '@douyinfe/semi-ui';
 import { useMemo, useRef, useState } from 'react';
 import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import TreePanel from '@/components/Tree/TreePanel';
-import { Form } from '@/api/developer/form';
+import { Form as FormEntity } from '@/api/developer/form';
 import FormHelper from './helper';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import Binary from '@/components/Binary';
 import _ from 'lodash';
 import FormEditor from '../editor/FormEditor';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import useBoApi from '@/api/developer/bo';
 
 const Form: React.FC = () => {
   const boApi = useBoApi();
   const [categoryId, setCategoryId] = useState<string>();
   const [showEditor, setShowEditor] = useState<boolean>(false);
-  const formEntityRef = useRef<Form>();
+  const formEntityRef = useRef<FormEntity>();
 
   const editable = useMemo(() => {
-    return (record: Form) => {
+    return (record: FormEntity) => {
       if (_.isEmpty(record.boId)) {
         Toast.error('请选择业务对象!');
         return;
@@ -53,7 +53,7 @@ const Form: React.FC = () => {
           />
         }
         RightComponent={
-          <CategoryTableCrud<Form>
+          <CategoryTableCrud<FormEntity>
             mode="cardPage"
             columns={FormHelper.getColumns()}
             useApi={FormHelper.getApi}
@@ -65,7 +65,7 @@ const Form: React.FC = () => {
                   code: 'editForm',
                   name: '编辑表单',
                   type: 'primary',
-                  icon: directGetIcon('IconFormSetting', 'system'),
+                  icon: tryGetIcon('IconFormSetting'),
                   onClick(tableContext, formContext, value) {
                     editable(value);
                   },

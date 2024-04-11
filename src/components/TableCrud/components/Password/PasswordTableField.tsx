@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { BaseTableField } from '..';
 import { TablePasswordColumnProps } from '.';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';

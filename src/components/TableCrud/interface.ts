@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity, Order } from '@/api/interface';
+import { GeneralApi, IdEntity, Order } from '@/api';
 import {
   ColumnProps,
   SortOrder,
@@ -178,6 +178,8 @@ export type SortColumn = {
 
 // 联系Table crud组件，进行数据操作传输
 export type TableContext<T extends IdEntity> = {
+  // mark data source unique key, default is id
+  idKey: string;
   props: TableCrudProps<T>;
   // table 模式
   mode: TableCrudProps<T>['mode'];
@@ -211,6 +213,7 @@ export type TableContext<T extends IdEntity> = {
   decorator: TableColumnDecorator<T>;
   // 刷新table，使其重新调用接口（TODO 可能会出现预想不到情况）
   refresh: () => void;
+
   /**
    * 内置对columns的二次处理的返回
    * @param exclusiveOperate 排序操作列
@@ -221,8 +224,19 @@ export type TableContext<T extends IdEntity> = {
     exclusiveOperate?: boolean,
     immediateFilter?: boolean,
   ): TableColumnProps<T>[];
+
   // 设置columns
   setTableColumns(columns: TableColumnProps<T>[]): void;
+
+  /**
+   * get select row keys
+   */
+  getSelectedRowKeys(): string[];
+
+  /**
+   * get select rows
+   */
+  getSelectedRows(): T[];
 };
 
 export interface TableApi<T extends IdEntity> {

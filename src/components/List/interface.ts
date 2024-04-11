@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api/interface';
+import { GeneralApi, IdEntity } from '@/api';
 import { FormColumnProps, FormContext } from '../TForm/interface';
 import { OperateToolbar, Toolbar } from '../TableCrud/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';

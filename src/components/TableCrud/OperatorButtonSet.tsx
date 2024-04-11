@@ -1,6 +1,6 @@
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { OperateToolbar, TableContext } from './interface';
-import { directGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../Icon/shared';
 import { Button, ButtonGroup, Dropdown, Tooltip } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 import { useContext } from 'react';
@@ -128,7 +128,7 @@ const OperatorButtonSet = observer(
           <Button
             className={className}
             theme="borderless"
-            icon={directGetIcon('IconMoreStroked')}
+            icon={tryGetIcon('IconMoreStroked')}
             type="primary"
           />
         </Dropdown>

@@ -1,4 +1,4 @@
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 import { Button, Layout, Typography } from '@douyinfe/semi-ui';
 
 export default function Copyright() {
@@ -9,7 +9,7 @@ export default function Copyright() {
         Leading Edge · Innovation
       </Typography.Text>
       <Button
-        icon={directGetIcon('IconGithubLogo')}
+        icon={tryGetIcon('IconGithubLogo')}
         theme="borderless"
         onClick={() => window.open('https://github.com/ClearXs/Turbo')}
       />

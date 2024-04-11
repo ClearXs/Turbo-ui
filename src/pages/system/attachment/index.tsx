@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import TableCrud from '@/components/TableCrud';
 import { PROVIDER } from '@/constant/provider';
 import useAttachmentApi, { Attachment } from '@/api/system/attachment';
-import { directGetIcon } from '@/components/Icon/shared';
+import { tryGetIcon } from '@/components/Icon/shared';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 
 export default function (): React.ReactNode {
@@ -50,7 +50,7 @@ export default function (): React.ReactNode {
             code: 'preview',
             name: '预览',
             type: 'primary',
-            icon: directGetIcon('IconEyeOpened'),
+            icon: tryGetIcon('IconEyeOpened'),
             onClick: (tableContext, formContext, record) => {
               window.open(record.filepath);
             },

@@ -6,10 +6,10 @@ import {
 } from '../../interface';
 import _ from 'lodash';
 import { SchemaColumn, SchemaColumnRegistry } from '../interface';
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { ISchema, SchemaTypes } from '@formily/json-schema';
 import { uid } from '@/util/utils';
-import { chunk } from '../../util';
+import { chunk } from '../../util/util';
 import { BoAttrSchema, BoSchema, FieldType } from '@designable/core';
 
 /**
@@ -36,6 +36,7 @@ export const baseOnColumnCreateISchema = (
     'x-component': component,
     'x-validator': [],
     'x-reactions': column.reaction,
+    'x-display': column.form as boolean,
   };
   if (formContext.type === 'details') {
     schema['x-pattern'] = 'disabled';

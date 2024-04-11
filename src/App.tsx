@@ -44,7 +44,7 @@ export default function App(): React.ReactNode {
       selectTabKey: undefined,
     });
     return app;
-  }, []);
+  }, [userRoutes]);
 
   useEffect(() => {
     const supportLocales = SUPPORT_LOCALES.map((locales) => locales.value);

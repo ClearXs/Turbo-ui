@@ -1,12 +1,12 @@
 import useMenuApi, { MenuTree } from '@/api/system/menu';
 import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { MENU_TYPE } from '@/constant/menutype';
+import { MENU_TYPE } from '@/constant/menuType';
 import { TreePanelApi, TreePanelProps } from '@/components/Tree/interface';
 import MenuHelper from './helper';
 import TreePanel from '@/components/Tree/TreePanel';
 import { OperateToolbar } from '@/components/TableCrud/interface';
-import { directGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/Icon';
 
 const MenuTreeComponent: React.FC<{
   menuIds?: string[];
@@ -37,7 +37,7 @@ const MenuTreeComponent: React.FC<{
       code: 'addSubordinate',
       name: '添加下级',
       type: 'primary',
-      icon: directGetIcon('IconPeer', 'system'),
+      icon: tryGetIcon('IconPeer'),
       onClick: (tableContext, formContext, record) => {
         formContext.visible = true;
         formContext.type = 'add';
@@ -53,7 +53,7 @@ const MenuTreeComponent: React.FC<{
       code: 'addPeer',
       name: '添加同级',
       type: 'primary',
-      icon: directGetIcon('IconSubordinate', 'system'),
+      icon: tryGetIcon('IconSubordinate'),
       onClick: (tableContext, formContext, record) => {
         formContext.visible = true;
         formContext.type = 'add';

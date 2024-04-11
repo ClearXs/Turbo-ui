@@ -10,7 +10,7 @@ import {
 import DataViewForm from './DataViewForm/DataViewForm';
 import TableCrud from '@/components/TableCrud';
 import { useKernel } from '../kernel';
-import { IdEntity } from '@/api/interface';
+import { IdEntity } from '@/api';
 import { observer } from '@formily/reactive-react';
 import { useMemo } from 'react';
 import { observable } from '@formily/reactive';
