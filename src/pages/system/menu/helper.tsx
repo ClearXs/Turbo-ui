@@ -117,7 +117,6 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         ellipsis: true,
         align: 'center',
         type: 'treeSelect',
-        initValue: -1,
         table: false,
         filterTreeNode: true,
         expandAll: true,

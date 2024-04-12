@@ -48,7 +48,7 @@ export class TreeSelectFormField<T extends IdEntity> extends BaseFormField<
     schema['x-component-props']['treeData'] = data;
     schema['x-component-props']['showClear'] = column.showClear || true;
     schema['x-component-props']['onClear'] = () => {
-      formContext.values[column.field] = column.initValue;
+      formContext.values[column.field] = column.initValue || null;
     };
     return schema;
   }
