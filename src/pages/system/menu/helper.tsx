@@ -119,9 +119,9 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         type: 'treeSelect',
         table: false,
         filterTreeNode: true,
-        expandAll: true,
         self: true,
         treeTransform: loadMenuTreeData,
+        expandAll: false,
         treeData: (tableContext) => {
           return loadMenuTreeData(tableContext?.dataSource || []);
         },
