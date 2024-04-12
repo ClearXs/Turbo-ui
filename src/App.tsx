@@ -15,6 +15,9 @@ import { UserTab } from './components/MotionContent/interface';
 import { createContentTab } from './components/MotionContent/util';
 import './locales';
 import './theme/default.css';
+import { useRecoilValue } from 'recoil';
+import Error from './pages/Error';
+import { ErrorState } from './store/error';
 
 export type AppProperty = {
   // 当前用户route
@@ -30,6 +33,7 @@ export type AppProperty = {
 };
 
 export default function App(): React.ReactNode {
+  const error = useRecoilValue(ErrorState);
   const userRoutes = useLoaderData() as TurboRoute[];
   const location = useLocation();
 
@@ -67,8 +71,7 @@ export default function App(): React.ReactNode {
       app.selectTabKey = route.code;
     }
   }, [location]);
-
-  return <AppLayout app={app} />;
+  return error !== undefined ? <Error /> : <AppLayout app={app} />;
 }
 
 const AppLayout: React.FC<{ app: AppProperty }> = observer(({ app }) => {

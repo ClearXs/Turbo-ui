@@ -182,17 +182,6 @@ const ModalButtonComponent: React.FC<{
           .submit((data) => {
             // 相同key优先级 默认值 > 表单值
             const values = Object.assign(data, params);
-            // 移除undefined的值
-            for (const key in values) {
-              const v = values[key];
-              // exclude boolean type and number type delete value
-              if (
-                _.isEmpty(v) &&
-                !(typeof v === 'boolean' || typeof v === 'number')
-              ) {
-                delete values[key];
-              }
-            }
             if (api) {
               formContext.loading = true;
               api
