@@ -3,6 +3,9 @@ import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormJsonArrayColumnProps } from '.';
 
+/**
+ * @see JsonArraySchema
+ */
 export class JsonArrayFormField<T extends IdEntity> extends BaseFormField<
   T,
   FormJsonArrayColumnProps<T>

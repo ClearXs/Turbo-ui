@@ -31,10 +31,10 @@ export class CascadeFormField<T extends IdEntity> extends BaseFormField<
   ): React.ReactNode {
     const props = this.getGeneralProps(column, type);
     const { optionTree } = column;
-
-    return (
-      <Form.Cascader {...props} treeData={this.renderCascadeTree(optionTree)} />
-    );
+    const formContext = this.decorator.getFormContext();
+    const tree =
+      typeof optionTree === 'function' ? optionTree(formContext) : optionTree;
+    return <Form.Cascader {...props} treeData={this.renderCascadeTree(tree)} />;
   }
 
   public getType(): ColumnType {

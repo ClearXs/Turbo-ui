@@ -8,6 +8,7 @@ import {
 } from './interface';
 import { tryGetIcon } from '../Icon/shared';
 import Modular from '../Modular/Modular';
+import _ from 'lodash';
 
 export const EDIT_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
   code: 'edit',
@@ -36,6 +37,29 @@ export const DELETE_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
   icon: tryGetIcon('IconDeleteStroked'),
 };
 
+export const COPY_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
+  code: 'copy',
+  name: '复制',
+  type: 'primary',
+  size: 'small',
+  internal: true,
+  icon: tryGetIcon('IconCopy'),
+};
+
+const COPY_IGNORE_KEYS = [
+  'id',
+  'tenantId',
+  'createdTime',
+  'createdBy',
+  'updatedTime',
+  'updateBy',
+  'isDeleted',
+  'version',
+  'categoryId',
+  'parent',
+  'children',
+];
+
 function useTableCrudOperatorBar<T extends IdEntity>() {
   const renderOperatorBars = useMemo<RenderOperatorBarType<T>>(() => {
     return (
@@ -48,6 +72,7 @@ function useTableCrudOperatorBar<T extends IdEntity>() {
         showEdit = true,
         showDetails = true,
         showDelete = true,
+        showCopy = false,
         append = [],
       } = operateBar || {};
 
@@ -96,6 +121,28 @@ function useTableCrudOperatorBar<T extends IdEntity>() {
           },
         };
         bars.push(deleteOperatorBar);
+      }
+      // 复制
+      if ((typeof showCopy === 'function' && showCopy(record)) || showCopy) {
+        const copyOperatorBar: OperateToolbar<T> = {
+          ...COPY_LITERAL_OPERATOR_BAR,
+          onClick(tableContext, formContext, value) {
+            const copyValues = _.assignWith(
+              {},
+              value,
+              (objectValue, sourceValue, key, object, source) => {
+                if (key && COPY_IGNORE_KEYS.includes(key)) {
+                  return null;
+                }
+                return key && source?.[key];
+              },
+            );
+            formContext.type = 'add';
+            formContext.visible = true;
+            formContext.values = copyValues;
+          },
+        };
+        bars.push(copyOperatorBar);
       }
       append.forEach((bar) => {
         if (typeof bar === 'function') {

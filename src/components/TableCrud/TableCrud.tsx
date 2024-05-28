@@ -73,7 +73,7 @@ class TableColumnsBuilder<T extends IdEntity> {
         field: 'operate',
         align: 'center',
         type: 'undefined',
-        fixed: true,
+        fixed: 'right',
         width: '30%',
         render: (text, record) => {
           const bars = renderOperatorBars(
@@ -123,7 +123,10 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
 
   const renderOperatorBars = useTableCrudOperatorBar<T>();
   // 初始化内容
-  const tableApi = useTableApi<T>(props.mode);
+  const tableApi = useTableApi<T>(
+    props.mode,
+    props.useApi === undefined ? 'local' : 'remote',
+  );
 
   const tableContext = useMemo(() => {
     const decorator = getTableDecorator<T>();
@@ -181,7 +184,7 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
     const observerTableContext = observable(tableContext);
     decorator.setTableContext(observerTableContext);
     return observerTableContext;
-  }, [props.params]);
+  }, [props.params, props.dataSource]);
 
   props.getTableContext?.(tableContext);
 
@@ -222,6 +225,7 @@ const ObserverTableCrud: React.FC<ObserverTableCrudProps<any>> = observer(
           event={tableProps.event}
           columns={tableProps.columns || []}
           useApi={tableProps.useApi}
+          scope={tableProps.scope}
           onOk={() => {
             tableApi.listOrPageOrTree(tableContext);
           }}
@@ -241,7 +245,15 @@ const useViewTable = <T extends IdEntity>({
   tableProps,
 }: ObserverTableCrudProps<any>) => {
   const { mode, tableApi } = tableContext;
-  const { id = 'id' } = tableProps;
+  const { id = 'id', height } = tableProps;
+
+  const scrollY =
+    height === undefined
+      ? tableContext.table.pagination || false
+        ? '58vh'
+        : '65vh'
+      : height;
+
   if (mode === 'cardPage') {
     return <CardPage tableProps={tableProps} />;
   } else {
@@ -272,7 +284,8 @@ const useViewTable = <T extends IdEntity>({
         }}
         expandAllRows={tableContext.tree.expandAllRows}
         scroll={{
-          y: tableContext.table.pagination || false ? '58vh' : '65vh',
+          x: '100px',
+          y: scrollY,
         }}
         rowSelection={{
           selectedRowKeys: tableContext.table.selectedRowKeys,

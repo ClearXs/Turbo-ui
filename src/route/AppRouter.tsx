@@ -22,6 +22,7 @@ import { findRoute } from './util';
 import Preview from './routes';
 import PageNotFound from '@/error/PageNotFound';
 import { ErrorState } from '@/store/error';
+import { useAuth } from '@/hook/auth';
 
 export type TurboRoute = RouteObject &
   Pick<MenuTree, 'code' | 'alias' | 'sort' | 'name' | 'depth' | 'attrs'> & {
@@ -42,6 +43,8 @@ const AppRouter: React.FC = () => {
   const authApi = useAuthApi();
   const [userRoutes, setUserRouters] = useRecoilState(CurrentUserRouteState);
   const setError = useSetRecoilState(ErrorState);
+
+  const authentication = useAuth();
 
   const systemRoutePath = useMemo(() => {
     return ['/', '/home', '/profile', '/login'];
@@ -166,12 +169,14 @@ const AppRouter: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const authentication = auth.get();
-    if (!_.isEmpty(authentication)) {
-      loadCurrentUserRoute();
-    }
-  }, []);
+  useEffect(
+    function loadUserRouteIfAuthNotEmpty() {
+      if (!_.isEmpty(authentication)) {
+        loadCurrentUserRoute();
+      }
+    },
+    [authentication],
+  );
 
   const IconHomeComponent = useMemo(() => importIcon('IconHome'), []);
   const IconUserComponent = useMemo(() => importIcon('IconUser'), []);

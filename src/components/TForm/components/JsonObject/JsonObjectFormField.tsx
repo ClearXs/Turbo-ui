@@ -2,6 +2,9 @@ import { IdEntity } from '@/api';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField, FormJsonObjectColumnProps } from '..';
 
+/**
+ * @see JsonObjectSchema
+ */
 export class JsonObjectFormField<T extends IdEntity> extends BaseFormField<
   T,
   FormJsonObjectColumnProps<T>

@@ -264,6 +264,9 @@ const renderableToolbar = <T extends IdEntity>(
 
 function TableToolbar<T extends IdEntity>(props: TableToolbarProps<T>) {
   const { tableProps } = props;
+
+  const { show = true } = tableProps.toolbar || {};
+  const { showModelSwitch = true } = tableProps.toolbar || {};
   const tableContext = useContext<TableContext<T>>(TableCrudContext);
   const formContext = useContext<FormContext<T>>(TFormContext);
   const textIconBar = useTextIconBar();
@@ -278,40 +281,44 @@ function TableToolbar<T extends IdEntity>(props: TableToolbarProps<T>) {
   );
 
   return (
-    <div className="flex mt-3 mb-3 pl-2 pr-2">
-      <Space>
-        {toolbar
-          .filter((bar) => bar.position === 'left')
-          .map((bar) => textIconBar(bar))}
-      </Space>
-      <div className="ml-auto">
+    show && (
+      <div className="flex mt-3 mb-3 pl-2 pr-2">
         <Space>
           {toolbar
-            .filter((bar) => bar.position === 'right')
-            .map((bar) => iconBar(bar))}
-          <RadioGroup
-            type="button"
-            disabled={
-              tableContext.props.operability === undefined
-                ? false
-                : !tableContext.props.operability
-            }
-            value={tableContext.mode}
-            onChange={(e) => {
-              const value = e.target.value;
-              tableContext.mode = value;
-            }}
-            options={[
-              { value: 'page', label: '分页模式' },
-              { value: 'cardPage', label: '卡片模式' },
-              { value: 'list', label: '列表模式' },
-              { value: 'tree', label: '树形模式' },
-              { value: 'scrollingList', label: '滚动列表' },
-            ]}
-          />
+            .filter((bar) => bar.position === 'left')
+            .map((bar) => textIconBar(bar))}
         </Space>
+        <div className="ml-auto">
+          <Space>
+            {toolbar
+              .filter((bar) => bar.position === 'right')
+              .map((bar) => iconBar(bar))}
+            {showModelSwitch && (
+              <RadioGroup
+                type="button"
+                disabled={
+                  tableContext.props.operability === undefined
+                    ? false
+                    : !tableContext.props.operability
+                }
+                value={tableContext.mode}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  tableContext.mode = value;
+                }}
+                options={[
+                  { value: 'page', label: '分页模式' },
+                  { value: 'cardPage', label: '卡片模式' },
+                  { value: 'list', label: '列表模式' },
+                  { value: 'tree', label: '树形模式' },
+                  { value: 'scrollingList', label: '滚动列表' },
+                ]}
+              />
+            )}
+          </Space>
+        </div>
       </div>
-    </div>
+    )
   );
 }
 

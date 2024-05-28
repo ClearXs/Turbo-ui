@@ -43,6 +43,8 @@ import { tryGetIcon } from '@/components/Icon';
 import { GeneralApi } from '@/api';
 import { TFormContext } from '../context/form';
 import { globalThisPolyfill } from '@formily/shared';
+import CodeEditor from './components/CodeEditor';
+import DEFAULT_SCOPES from './scope';
 
 const Text: React.FC<{
   value?: string;
@@ -85,6 +87,7 @@ export const SchemaField = createSchemaField({
     Slider,
     Icon,
     Color,
+    CodeEditor,
   },
 });
 
@@ -181,7 +184,17 @@ const ModalButtonComponent: React.FC<{
         form
           .submit((data) => {
             // 相同key优先级 默认值 > 表单值
-            const values = Object.assign(data, params);
+            // if default value key is undefined but form value is not, choose form value
+            const values = _.assignWith(
+              data,
+              params,
+              (objectValue, sourceValue, key, object, source) => {
+                if (!_.isEmpty(objectValue)) {
+                  return objectValue;
+                }
+                return sourceValue;
+              },
+            );
             if (api) {
               formContext.loading = true;
               api
@@ -204,11 +217,12 @@ const ModalButtonComponent: React.FC<{
                   } else {
                     onError?.(new Error(res.message), formContext);
                   }
-                  formContext.loading = false;
                 })
                 .catch((err) => {
-                  formContext.loading = false;
                   onError?.(err, formContext);
+                })
+                .finally(() => {
+                  formContext.loading = false;
                 });
             } else {
               formProps.onOk?.(formContext);
@@ -286,7 +300,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
     formProps,
     formContext,
     effects,
-    scope,
+    scope = {},
     components,
     ...formliyProps
   } = props;
@@ -313,13 +327,32 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   const title = useTitle(formProps, formContext);
   const icon = useIcon(formContext);
 
-  return (
+  const { slotBottom, modal } = formProps;
+
+  const { abandon = false, size = 'large', closeOnEsc = true } = modal || {};
+
+  const InternalFormily = (
+    <TFormContext.Provider value={formContext}>
+      <Form form={form} {...formliyProps}>
+        <SchemaField
+          schema={schema}
+          components={components}
+          scope={{ $context: formContext, ...scope, ...DEFAULT_SCOPES }}
+        />
+      </Form>
+      {slotBottom}
+    </TFormContext.Provider>
+  );
+
+  return abandon ? (
+    <React.Fragment>{InternalFormily}</React.Fragment>
+  ) : (
     <Modal
       title={title}
       icon={icon}
       visible={formContext.visible}
-      closeOnEsc={true}
-      size={formProps.size || 'large'}
+      closeOnEsc={closeOnEsc}
+      size={size}
       onCancel={() => {
         if (formProps.onCancel) {
           formProps.onCancel(formContext);
@@ -337,15 +370,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
         )
       }
     >
-      <TFormContext.Provider value={formContext}>
-        <Form form={form} {...formliyProps}>
-          <SchemaField
-            schema={schema}
-            components={components}
-            scope={{ $context: formContext, ...scope }}
-          />
-        </Form>
-      </TFormContext.Provider>
+      {InternalFormily}
     </Modal>
   );
 });

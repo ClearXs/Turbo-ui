@@ -50,8 +50,17 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
           );
         return Object.assign({}, props.params, columnValues);
       },
+      getValue(field) {
+        return formRef.current?.getValuesIn(field);
+      },
       getValues() {
         return formRef.current?.values;
+      },
+      setValue(field, value) {
+        formRef.current?.setValuesIn(field, value);
+      },
+      setValues(values) {
+        formRef.current?.setValues(values);
       },
       open() {
         formContext.visible = true;
@@ -104,6 +113,7 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
       wrapperAlign="left"
       feedbackLayout="loose"
       tooltipLayout="text"
+      scope={props.scope}
       effects={(form) => (formRef.current = form)}
     />
   );

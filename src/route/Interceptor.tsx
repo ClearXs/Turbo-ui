@@ -43,7 +43,7 @@ export const withInterceptorComponent = (
     const userRoutes = useRecoilValue(CurrentUserRouteState);
     const backRoute = useRef<TurboRoute | undefined>(undefined);
 
-    const location = useLocation();
+    const location = window.location;
     const interceptor = useMemo(() => {
       return [AuthenticationInterceptor, new InnerRouteInterceptor(route)].sort(
         (a, b) => {
@@ -53,7 +53,7 @@ export const withInterceptorComponent = (
     }, []);
 
     useEffect(() => {
-      const { pathname } = location;
+      const { pathname } = window.location;
       for (const intcp of interceptor) {
         const nextExecute =
           intcp.match(route, pathname) &&

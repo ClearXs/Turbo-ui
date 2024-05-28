@@ -26,3 +26,5 @@ export * from './UserSchema';
 export * from './OrgSchema';
 export * from './PostSchema';
 export * from './RoleSchema';
+export * from './CodeEditorSchema';
+export * from './SlotSchema';

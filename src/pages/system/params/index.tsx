@@ -1,8 +1,8 @@
 import TableCrud from '@/components/TableCrud';
-import ParamsHelper from '../params/helper';
+import ParamsHelper from './helper';
 import { Params } from '@/api/system/params';
 
-const Params = () => {
+const ParamsComponent = () => {
   return (
     <TableCrud<Params>
       mode="page"
@@ -12,4 +12,4 @@ const Params = () => {
   );
 };
 
-export default Params;
+export default ParamsComponent;

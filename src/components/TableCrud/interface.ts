@@ -21,6 +21,9 @@ export type ViewModel =
   // 无限滚动的列表
   | 'scrollingList';
 
+// 数据模式
+export type DataMode = 'local' | 'remote';
+
 export type Bar<T extends IdEntity> = {
   code:
     | 'add'
@@ -72,6 +75,7 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   id?: string;
   // table 视图模式
   mode: ViewModel;
+  height?: string | 'auto';
   // 数据源
   dataSource?: T[];
   // 数据字段
@@ -80,6 +84,8 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   operability?: boolean;
   // search参数
   search?: {
+    // 是否显示search
+    show?: boolean;
     // 是否禁用search字段，默认为false
     disabled?: boolean;
     // 是否显示search按钮，默认为true
@@ -89,6 +95,8 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   };
   // table工具栏，组件中包含默认的工具栏，可以自定义添加
   toolbar?: {
+    // 是否显示toolbar
+    show?: boolean;
     // 是否显示增加按钮
     showAdd?: boolean;
     // 是否显示批量删除按钮
@@ -103,6 +111,8 @@ export type TableCrudProps<T extends IdEntity> = Omit<
     showColumns?: boolean;
     // 是否展示排序
     showOrdered?: boolean;
+    // 是否显示模式切换
+    showModelSwitch?: boolean;
     // 自定义追加
     append?: Toolbar<T>[];
   };
@@ -112,8 +122,10 @@ export type TableCrudProps<T extends IdEntity> = Omit<
     showEdit?: boolean | ((record: T) => boolean);
     // 是否显示删除操作
     showDelete?: boolean | ((record: T) => boolean);
-    // 是否显示详情
+    // 是否显示详情操作
     showDetails?: boolean | ((record: T) => boolean);
+    // 是否显示复制操作
+    showCopy?: boolean | ((record: T) => boolean);
     // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
     append?: (
       | OperateToolbar<T>
@@ -147,6 +159,8 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   } & FormProps<T>['event'];
   // 获取table context实例
   getTableContext?: (tableContext: TableContext<T>) => void;
+  // form reaction scope
+  scope?: FormProps<T>['scope'];
 };
 
 // table column 属性
@@ -180,11 +194,12 @@ export type SortColumn = {
 export type TableContext<T extends IdEntity> = {
   // mark data source unique key, default is id
   idKey: string;
+  // table props
   props: TableCrudProps<T>;
   // table 模式
   mode: TableCrudProps<T>['mode'];
   // entity api
-  api: GeneralApi<T>;
+  api?: GeneralApi<T>;
   // table api
   tableApi: TableApi<T>;
   // table columns

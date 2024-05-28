@@ -3,6 +3,8 @@ import { DataSource as DataSourceEntity } from '@/api/developer/datasource';
 import DataSourceHelper from './helper';
 import { Notification } from '@douyinfe/semi-ui';
 import { tryGetIcon } from '@/components/Icon';
+import Modular from '@/components/Modular/Modular';
+import TableGrid from './TableGrid';
 
 const DataSource: React.FC = () => {
   const api = DataSourceHelper.getApi();
@@ -66,8 +68,10 @@ const DataSource: React.FC = () => {
             type: 'primary',
             icon: tryGetIcon('IconVoteStroked'),
             onClick(tableContext, formContext, value) {
-              api.showTables(value.id).then((res) => {
-                Notification.info({ content: res.data });
+              Modular.show({
+                title: value.name,
+                content: <TableGrid dataSourceId={value.id} />,
+                size: 'full-width',
               });
             },
           },

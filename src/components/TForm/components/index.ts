@@ -23,3 +23,5 @@ export * from './User';
 export * from './Org';
 export * from './Post';
 export * from './Role';
+export * from './CodeEditor';
+export * from './Slot';

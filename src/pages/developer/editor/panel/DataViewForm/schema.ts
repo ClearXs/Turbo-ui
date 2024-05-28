@@ -2,6 +2,7 @@ import ColumnsSetter from './ColumnsSetter';
 import OperatorBarSetter from './OperatorBarSetter';
 import QueryFilterSetter from './QueryFilterSetter';
 import ToolBarSetter from './ToolbarSetter';
+import viewMode from './constant/viewMode';
 
 export default {
   type: 'object',
@@ -12,23 +13,7 @@ export default {
       'x-component': 'Select',
       'x-component-props': {
         defaultValue: 'page',
-        optionList: [
-          { label: '无分页列表', value: 'list' },
-          { label: '分页列表', value: 'page' },
-          { label: '树', value: 'tree' },
-          { label: '卡片列表', value: 'cardPage' },
-          { label: '滚动列表', value: 'scrollingList' },
-          { label: '滚动卡片', value: 'scrollingCard' },
-          { label: '左树右列表', value: 'leftTreeRightList' },
-          { label: '左树右分页列表', value: 'leftTreeRightPage' },
-          { label: '左树右树', value: 'leftTreeRightTree' },
-          { label: '左树右分页卡片列表', value: 'leftTreeRightCardPage' },
-          {
-            label: '左树右滚动卡片列表',
-            value: 'leftTreeRightScrollingCard',
-          },
-          { label: '左树右滚动列表', value: 'leftTreeRightScrollingList' },
-        ],
+        optionList: viewMode,
       },
     },
     title: {

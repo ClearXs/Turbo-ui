@@ -13,7 +13,7 @@ export type FormilyFormProps = IFormLayoutProps & {
   formProps: FormProps<any>;
   formContext: FormContext<any>;
   // reaction 作用域变量
-  scope?: any;
+  scope?: Record<string, object>;
   // 附加的schema component
   components?: Record<string, React.FC<any>>;
   // 副作用
