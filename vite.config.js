@@ -33,10 +33,6 @@ export default defineConfig(({ command, mode }) => {
           changeOrigin: true,
           rewrite: (apiPath) => apiPath.replace(/^\/api/, ''),
         },
-        'https://http.cat': {
-          target: 'https://http.cat',
-          changeOrigin: true,
-        },
       },
     },
     /**
