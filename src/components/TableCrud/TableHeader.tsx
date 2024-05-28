@@ -27,7 +27,13 @@ const TableHeader = observer(
     const {
       columns = [],
       params,
-      search: { disabled = false, showSearch = true, showReset = true } = {
+      search: {
+        show = true,
+        disabled = false,
+        showSearch = true,
+        showReset = true,
+      } = {
+        show: true,
         disabled: false,
         showSearch: true,
         showReset: true,
@@ -108,48 +114,53 @@ const TableHeader = observer(
     const collapseColumns = chunks.slice(1);
 
     return (
-      <Form
-        labelPosition="left"
-        className="flex"
-        getFormApi={(formApi) => (formApiRef.current = formApi)}
-        initValues={tableContext?.search}
-      >
-        <div className="w-[80%]">
-          <Row>
-            {directColumns.columns.map((column, index) => {
-              return (
-                <Col
-                  key={index}
-                  span={tableContext?.decorator.getDefaultSpan(column)}
-                  style={{ paddingLeft: '0.5em', paddingRight: '0.5em' }}
-                >
-                  {tableContext?.decorator.render(column, 'search')}
-                </Col>
-              );
-            })}
-          </Row>
-          <Collapsible isOpen={header.showCollapseColumn}>
-            {collapseColumns.map((barrier, collapseIndex) => {
-              return (
-                <Row key={collapseIndex}>
-                  {barrier.columns.map((column, index) => {
-                    return (
-                      <Col
-                        key={index}
-                        span={tableContext.decorator.getDefaultSpan(column)}
-                        style={{ paddingLeft: '0.5em', paddingRight: '0.5em' }}
-                      >
-                        {tableContext.decorator.render(column, 'search')}
-                      </Col>
-                    );
-                  })}
-                </Row>
-              );
-            })}
-          </Collapsible>
-        </div>
-        <ButtonSpace>{headerButton.map((Button) => Button)}</ButtonSpace>
-      </Form>
+      show && (
+        <Form
+          labelPosition="left"
+          className="flex"
+          getFormApi={(formApi) => (formApiRef.current = formApi)}
+          initValues={tableContext?.search}
+        >
+          <div className="w-[80%]">
+            <Row>
+              {directColumns.columns.map((column, index) => {
+                return (
+                  <Col
+                    key={index}
+                    span={tableContext?.decorator.getDefaultSpan(column)}
+                    style={{ paddingLeft: '0.5em', paddingRight: '0.5em' }}
+                  >
+                    {tableContext?.decorator.render(column, 'search')}
+                  </Col>
+                );
+              })}
+            </Row>
+            <Collapsible isOpen={header.showCollapseColumn}>
+              {collapseColumns.map((barrier, collapseIndex) => {
+                return (
+                  <Row key={collapseIndex}>
+                    {barrier.columns.map((column, index) => {
+                      return (
+                        <Col
+                          key={index}
+                          span={tableContext.decorator.getDefaultSpan(column)}
+                          style={{
+                            paddingLeft: '0.5em',
+                            paddingRight: '0.5em',
+                          }}
+                        >
+                          {tableContext.decorator.render(column, 'search')}
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                );
+              })}
+            </Collapsible>
+          </div>
+          <ButtonSpace>{headerButton.map((Button) => Button)}</ButtonSpace>
+        </Form>
+      )
     );
   },
 );

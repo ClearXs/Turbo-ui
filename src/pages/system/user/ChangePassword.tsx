@@ -50,10 +50,10 @@ const ChangePasswordForm: React.FC<{
       mode="simply"
       title="修改密码"
       columns={changePasswordColumns}
-      size="small"
       onOk={onOk}
       onCancel={onCancel}
       immediateVisible={true}
+      modal={{ size: 'small' }}
     />
   );
 };

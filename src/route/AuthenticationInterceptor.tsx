@@ -7,7 +7,7 @@ import { Toast, Typography } from '@douyinfe/semi-ui';
 import { TurboRoute } from './AppRouter';
 
 /**
- * 全局的鉴权认证
+ * 全局鉴权认证
  */
 export default {
   order: -1,

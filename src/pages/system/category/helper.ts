@@ -32,6 +32,7 @@ const CategoryHelper: Helper<CategoryTree, CategoryApi> = {
         align: 'center',
         type: 'number',
         table: false,
+        initValue: 0,
       },
       {
         label: '功能标识',

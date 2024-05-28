@@ -1,33 +1,14 @@
 import { Button, ButtonGroup, Modal } from '@douyinfe/semi-ui';
-import { ModularButton, ModularProps } from './interface';
-import { tryGetIcon } from '../Icon';
+import { ModularProps } from './interface';
 import { createRoot } from 'react-dom/client';
 import { Suspense } from 'react';
 import cls from 'classnames';
-
-const TypeIcons: Record<string, React.ReactNode> = {};
-TypeIcons['info'] = tryGetIcon('IconInfoCircle', {
-  size: 'large',
-  className: 'semi-modal-info-icon',
-});
-TypeIcons['warning'] = tryGetIcon('IconIssueStroked', {
-  size: 'large',
-  className: 'semi-modal-warning-icon',
-});
-TypeIcons['error'] = tryGetIcon('IconClose', {
-  size: 'large',
-  className: 'semi-modal-error-icon',
-});
-TypeIcons['success'] = tryGetIcon('IconCheckCircleStroked', {
-  size: 'large',
-  className: 'semi-modal-success-icon',
-});
+import useBottomButton from '../Dialog/hook/useBottomButton';
+import useIcon from '../Dialog/hook/useIcon';
 
 // 封装Modal组件
 const Modular = (props: ModularProps) => {
   const {
-    type,
-    icon,
     title,
     content,
     closeOnEsc = true,
@@ -38,69 +19,11 @@ const Modular = (props: ModularProps) => {
     closable = true,
     size = 'medium',
     fullScreen,
-    beforeConfirm,
-    onConfirm,
-    beforeCancel,
-    onCancel,
-    showConfirm = true,
-    showCancel = true,
-    append = [],
     afterClose,
   } = props;
 
-  const powerfulConfirm = () => {
-    try {
-      if (beforeConfirm) {
-        beforeConfirm(onConfirm);
-      } else {
-        onConfirm?.();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const powerfulCancel = () => {
-    try {
-      if (beforeCancel) {
-        beforeCancel(onCancel);
-      } else {
-        onCancel?.();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const modularButtons: ModularButton[] = [];
-  if (showCancel) {
-    modularButtons.push({
-      code: 'cancel',
-      name: '取消',
-      type: 'tertiary',
-      size: 'default',
-      icon: tryGetIcon('IconCrossCircleStroked'),
-      onClick() {
-        powerfulCancel();
-      },
-    });
-  }
-  if (showConfirm) {
-    modularButtons.push({
-      code: 'confirm',
-      name: '确定',
-      type: 'primary',
-      loading: true,
-      size: 'default',
-      icon: tryGetIcon('IconCheckCircleStroked'),
-      onClick() {
-        powerfulConfirm();
-      },
-    });
-  }
-  append.forEach((button) => modularButtons.push(button));
-
-  const IconComponent = (type && TypeIcons[type]) || icon;
+  const { modularButtons, powerfulCancel } = useBottomButton(props);
+  const IconComponent = useIcon(props);
 
   const bodyClassName = cls(`${scrollY && 'max-h-[60vh] overflow-y-auto'}`);
 
@@ -150,7 +73,7 @@ const Modular = (props: ModularProps) => {
 
 export type StaticModularProps = Omit<ModularProps, 'type' | 'afterClose'>;
 
-const confirm = (props: ModularProps) => {
+const show = (props: ModularProps) => {
   const div = document.createElement('div');
   const container = createRoot(div);
   document.body.appendChild(div);
@@ -211,24 +134,28 @@ const confirm = (props: ModularProps) => {
       </Suspense>,
     );
   }
-  render(props);
+  open(props);
   return { open, destroy, close };
 };
 
+Modular.show = (props: StaticModularProps) => {
+  return show(props);
+};
+
 Modular.success = (props: StaticModularProps) => {
-  return confirm({ ...props, type: 'success' });
+  return show({ ...props, type: 'success' });
 };
 
 Modular.info = (props: StaticModularProps) => {
-  return confirm({ ...props, type: 'info' });
+  return show({ ...props, type: 'info' });
 };
 
 Modular.warning = (props: StaticModularProps) => {
-  return confirm({ ...props, type: 'warning' });
+  return show({ ...props, type: 'warning' });
 };
 
 Modular.error = (props: StaticModularProps) => {
-  return confirm({ ...props, type: 'error' });
+  return show({ ...props, type: 'error' });
 };
 
 export default Modular;

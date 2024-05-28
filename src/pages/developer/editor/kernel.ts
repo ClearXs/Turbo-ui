@@ -17,6 +17,37 @@ export type DataView = TableCrudProps<IdEntity> & {
   leftTree?: TreePanelProps<any>;
 };
 
+// listable data type
+export type DataType =
+  | 'bit'
+  | 'smallint'
+  | 'tinyint'
+  | 'int'
+  | 'int2'
+  | 'int4'
+  | 'int8'
+  | 'bigint'
+  | 'float8'
+  | 'numeric'
+  | 'number'
+  | 'double'
+  | 'float'
+  | 'decimal'
+  | 'time'
+  | 'timestamp'
+  | 'date'
+  | 'char'
+  | 'character'
+  | 'varchar'
+  | 'nvarchar'
+  | 'longvarchar'
+  | 'longnvarchar'
+  | 'varbinary'
+  | 'longvarchar'
+  | 'text'
+  | 'object'
+  | 'array';
+
 export class Kernel {
   engine: Engine;
   dataView?: DataView;

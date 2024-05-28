@@ -35,6 +35,8 @@ import {
   OrgFormField,
   PostFormField,
   RoleFormField,
+  CodeEditorFormField,
+  SlotFormField,
 } from './components';
 import { ISchema } from '@formily/json-schema';
 import { BoAttrSchema } from '@designable/core';
@@ -165,6 +167,10 @@ export class FormColumnFactory {
         return new PostFormField<T>(decorator);
       case 'role':
         return new RoleFormField<T>(decorator);
+      case 'codeEditor':
+        return new CodeEditorFormField<T>(decorator);
+      case 'slot':
+        return new SlotFormField<T>(decorator);
       case 'undefined':
       default:
         return new UndefinedFormField<T>(decorator);

@@ -15,7 +15,6 @@ const MessageTemplateHelper: Helper<MessageTemplate, MessageTemplateApi> = {
         field: 'key',
         ellipsis: true,
         align: 'center',
-        search: true,
         type: 'input',
         require: true,
       },
@@ -23,6 +22,7 @@ const MessageTemplateHelper: Helper<MessageTemplate, MessageTemplateApi> = {
         label: '模板名称',
         field: 'name',
         ellipsis: true,
+        search: true,
         align: 'center',
         type: 'input',
         require: true,
@@ -51,7 +51,6 @@ const MessageTemplateHelper: Helper<MessageTemplate, MessageTemplateApi> = {
         type: 'textarea',
         line: true,
       },
-
       {
         label: '模板变量',
         field: 'variables',

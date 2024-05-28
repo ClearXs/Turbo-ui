@@ -7,7 +7,7 @@ import Role from '@/pages/system/role';
 import Menu from '@/pages/system/menu';
 import Org from '@/pages/system/org';
 import User from '@/pages/system/user';
-import Params from '@/pages/system/params';
+import ParamsComponent from '@/pages/system/params';
 import MessageLogComponent from '@/pages/message/log';
 import MessageTemplateComponent from '@/pages/message/template';
 import MessageConfigComponent from '@/pages/message/config';
@@ -19,6 +19,8 @@ import Dataset from '@/pages/developer/dataset';
 import Page from '@/pages/developer/page';
 import Cloudstorageconfig from '@/pages/developer/cloudstorageconfig';
 import IconList from '@/pages/developer/icon';
+import CodeGenerateTemplateComponent from '@/pages/developer/codeGenerateTemplate';
+import CodeGenerateComponent from '@/pages/developer/codeGenerate';
 
 // 预定义加载组件
 type PreviewRoute = {
@@ -73,7 +75,7 @@ export default [
   },
   {
     path: '/system/params',
-    element: <Params />,
+    element: <ParamsComponent />,
   },
   {
     path: '/developer/datasource',
@@ -102,6 +104,14 @@ export default [
   {
     path: '/developer/cloudstorageconfig',
     element: <Cloudstorageconfig />,
+  },
+  {
+    path: '/developer/codeGenerateTemplate',
+    element: <CodeGenerateTemplateComponent />,
+  },
+  {
+    path: '/developer/codeGenerate',
+    element: <CodeGenerateComponent />,
   },
   // 低代码领域页面
   {

@@ -123,8 +123,8 @@ export default function UserProfile() {
                 accept="image/*"
                 showUploadList={false}
                 headers={{
-                  'X-Authentication': local.get(headers.Authentication),
-                  'X-Tenant': local.get(headers.Tenant),
+                  'X-AUTHENTICATION': local.get(headers.Authentication),
+                  'X-TENANT': local.get(headers.Tenant),
                 }}
                 disabled={!isSave}
               >

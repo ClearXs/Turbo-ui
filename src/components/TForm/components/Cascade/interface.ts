@@ -1,10 +1,12 @@
 import { IdEntity } from '@/api';
-import { FormColumnProps } from '../../interface';
+import { FormColumnProps, FormContext } from '../../interface';
 import { CascaderProps } from '@douyinfe/semi-ui/lib/es/cascader';
 import { TreeConstant } from '@/constant';
 
 // 集联选择 组件
 export type FormCascadeColumnProps<T extends IdEntity> = FormColumnProps<T> &
   CascaderProps & {
-    optionTree: TreeConstant[];
+    optionTree:
+      | TreeConstant[]
+      | ((formContext: FormContext<T>) => TreeConstant[]);
   };

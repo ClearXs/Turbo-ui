@@ -6,6 +6,7 @@ import { Method } from 'axios';
 import { SchemaReactions } from '@formily/json-schema';
 import { Form as FormType } from '@formily/core';
 import { Helper } from '../interface';
+import { FormilyFormProps } from './formily/interface';
 
 export type Pair = {
   key: string;
@@ -57,7 +58,6 @@ export type ColumnType =
   | 'color'
   // select group
   | 'selectGroup'
-
   // complex type
   // bridge to form
   | 'jsonObject'
@@ -67,6 +67,10 @@ export type ColumnType =
   | 'org'
   | 'post'
   | 'role'
+  // code editor
+  | 'codeEditor'
+  // custom component
+  | 'slot'
   | 'undefined';
 
 export type FormStatus = 'add' | 'edit' | 'details';
@@ -91,8 +95,7 @@ export type FormProps<T extends IdEntity> = {
   columns: FormColumnProps<T>[];
   // 表单类型
   type?: FormStatus;
-  // 表单弹出框大小
-  size?: 'small' | 'medium' | 'large' | 'full-width';
+  // form decorator
   decorator?: FormColumnDecorator<T>;
   // 父级传递
   params?: Partial<T>;
@@ -100,8 +103,6 @@ export type FormProps<T extends IdEntity> = {
   immediateVisible?: boolean;
   // 是否显示表单验证提示消息
   showValidateErrorNotification?: boolean;
-  // 可选字段
-  [key: string]: any;
   // 内置事件回调
   event?: {
     // 当保存或者更新成功后进行回调
@@ -121,6 +122,12 @@ export type FormProps<T extends IdEntity> = {
   getFormContext?: (formContext: FormContext<T>) => void;
   // modal内容
   modal?: {
+    // abandon modal dialog show form (default is false)
+    abandon?: boolean;
+    // 表单弹出框大小 (default is 'large')
+    size?: 'small' | 'medium' | 'large' | 'full-width';
+    // close on esc
+    closeOnEsc?: boolean;
     // 是否显示确认操作
     showConfirm?: boolean | ((formContext: FormContext<T>) => boolean);
     // 是否显示取消操作
@@ -131,6 +138,10 @@ export type FormProps<T extends IdEntity> = {
       | ((formContext: FormContext<T>) => ModalButton<T> | undefined)
     )[];
   };
+  // slot to bottom form
+  slotBottom?: React.ReactNode;
+  // reaction scope
+  scope?: FormilyFormProps['scope'];
 };
 
 // 远程搜索
@@ -171,7 +182,7 @@ export type FormColumnProps<T extends IdEntity> = {
   // 表格表单校验规则
   rules?: RuleItem[];
   // 表单字段初始值
-  initValue?: any;
+  initValue?: T[FormColumnProps<T>['field']];
   // 表单文本拓展
   extraText?: string;
   // 行分割的数目，默认为12
@@ -224,7 +235,13 @@ export type FormContext<T extends IdEntity> = {
   // 获取字段绑定的默认值
   getDefaultValues: () => Partial<T>;
   // 获取表单绑定的值
-  getValues: () => T;
+  // according to field key obtain field value
+  getValue: (field: FormColumnProps<T>['field']) => any;
+  getValues: () => Partial<T>;
+  // set value by field
+  setValue: (field: FormColumnProps<T>['field'], value: any) => void;
+  // set type T values
+  setValues: (values: Partial<T>) => void;
   // 开启form弹窗
   open: () => void;
   // 关闭form弹窗

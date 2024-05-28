@@ -12,7 +12,7 @@ import { IconBell, IconLanguage } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import { useRenderMenu } from '@/hook/menu';
 import { CurrentUserState } from '@/store/user';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useContext, useEffect, useState } from 'react';
 import useAuthApi from '@/api/system/auth';
 import * as auth from '@/util/auth';
@@ -29,6 +29,8 @@ import Message from './MessageScrolling';
 import useDicApi, { Dic } from '@/api/system/dic';
 import useMessageApi from '@/api/message/message';
 import './styles.less';
+import { CurrentUserRouteState } from '@/store/menu';
+import Modular from '../Modular/Modular';
 
 const MotionHeader = observer(() => {
   const app = useContext(AppContext);
@@ -49,6 +51,7 @@ const MotionHeader = observer(() => {
     (route) => route?.depth === 0 || route?.code === 'home',
   );
   const renderMenu = useRenderMenu();
+  const setUserRouters = useSetRecoilState(CurrentUserRouteState);
 
   useEffect(() => {
     dicApi.tree({ entity: { code: 'message_type' } }).then((res) => {
@@ -233,15 +236,17 @@ const MotionHeader = observer(() => {
                 <Dropdown.Divider />
                 <Dropdown.Item
                   onClick={() => {
-                    Modal.confirm({
+                    Modular.show({
                       content: '是否退出登陆',
-                      onOk: () => {
+                      onConfirm: () => {
                         authApi.logout().then((res) => {
                           if (res.code === 200 && res.data) {
                             // 1.清除token
                             auth.clear();
                             // 2.重定向
                             navigate('/login');
+                            // 3.清除用户路由
+                            setUserRouters([]);
                           }
                           Notification.success({
                             position: 'top',

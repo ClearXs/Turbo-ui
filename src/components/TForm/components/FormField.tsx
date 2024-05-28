@@ -53,6 +53,7 @@ export abstract class BaseFormField<
     org: '请选择',
     post: '请选择',
     role: '请选择',
+    codeEditor: '请输入',
   };
 
   public schema(column: K, index: number): ISchema {

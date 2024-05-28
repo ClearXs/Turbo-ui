@@ -8,6 +8,7 @@ import {
   BaseTableField,
   CascadeTableField,
   CheckboxTableField,
+  CodeEditorTableField,
   ColorTableField,
   DateRangeTableField,
   DateTableField,
@@ -25,6 +26,7 @@ import {
   SelectGroupTableField,
   SelectTableField,
   SliderTableField,
+  SlotTableField,
   SwitchTableField,
   TableField,
   TextareaTableField,
@@ -39,7 +41,6 @@ import {
 import { ISchema } from '@formily/json-schema';
 import { BoAttrSchema } from '@designable/core';
 import { GlobalSchemaColumnRegistry } from '../TForm/formily/schema';
-import { JsonArrayFormField } from '../TForm/components';
 
 export interface TableColumnDecorator<T extends IdEntity>
   extends FormColumnDecorator<T> {
@@ -136,6 +137,10 @@ export class TableColumnFactory {
         return new PostTableField<T>(decorator);
       case 'role':
         return new RoleTableField<T>(decorator);
+      case 'codeEditor':
+        return new CodeEditorTableField<T>(decorator);
+      case 'slot':
+        return new SlotTableField<T>(decorator);
       case 'undefined':
       default:
         return new UndefinedTableField<T>(decorator);

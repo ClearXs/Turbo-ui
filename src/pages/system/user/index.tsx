@@ -1,6 +1,6 @@
 import useOrgApi, { Org } from '@/api/system/org';
 import useUserApi, { UserApi, User as UserEntity } from '@/api/system/user';
-import Sider from '@/components/Sider';
+import SliderSide from '@/components/SliderSide';
 import TableCrud from '@/components/TableCrud';
 import { TableContext } from '@/components/TableCrud/interface';
 import { Notification } from '@douyinfe/semi-ui';
@@ -229,7 +229,7 @@ const RoleListSider: React.FC<{
   const [loading, setLoading] = useState<boolean>(false);
   const listRef = useRef<ListPanelApi<Role>>();
   return (
-    <Sider
+    <SliderSide
       title="绑定角色"
       visible={visible}
       loading={loading}
@@ -262,7 +262,7 @@ const RoleListSider: React.FC<{
         userId={user.id}
         getListPanelApi={(api) => (listRef.current = api)}
       />
-    </Sider>
+    </SliderSide>
   );
 };
 
@@ -275,7 +275,7 @@ const PostListSider: React.FC<{
   const [loading, setLoading] = useState<boolean>(false);
   const listRef = useRef<ListPanelApi<Post>>();
   return (
-    <Sider
+    <SliderSide
       title="绑定岗位"
       visible={visible}
       loading={loading}
@@ -308,7 +308,7 @@ const PostListSider: React.FC<{
         userId={user.id}
         getListPanelApi={(api) => (listRef.current = api)}
       />
-    </Sider>
+    </SliderSide>
   );
 };
 
@@ -322,7 +322,7 @@ const OrgTreeSider: React.FC<{
   const treeRef = useRef<TreePanelApi<Org>>();
 
   return (
-    <Sider
+    <SliderSide
       title="绑定组织"
       visible={visible}
       loading={loading}
@@ -368,7 +368,7 @@ const OrgTreeSider: React.FC<{
           treeRef.current = treePanelApi;
         }}
       />
-    </Sider>
+    </SliderSide>
   );
 };
 

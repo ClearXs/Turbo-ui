@@ -24,3 +24,6 @@ export * from './IconRoleManager';
 export * from './IconMenuManager';
 export * from './IconDictionaryManager';
 export * from './IconOrgManager';
+export * from './IconCode';
+export * from './IconGenerate';
+export * from './IconTemplateManager';
