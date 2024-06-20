@@ -3,14 +3,35 @@ import {
   TableColumnProps,
   TableContext,
 } from '@/components/TableCrud/interface';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 export type IFieldColumnTableProps = {
+  displayDetails: boolean;
   dataSource: TableColumnProps<any>[];
+  getFieldColumnTableApi?: (api: FieldColumnTableApi) => void;
 };
 
-const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
+export interface FieldColumnTableApi {
+  getDataSource: () => TableColumnProps<any>[];
+}
+
+const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({
+  displayDetails,
+  dataSource,
+  getFieldColumnTableApi,
+}) => {
   const tableContextRef = useRef<TableContext<any>>();
+
+  const api: FieldColumnTableApi = useMemo(() => {
+    return {
+      getDataSource() {
+        return tableContextRef!.current!.dataSource;
+      },
+    };
+  }, [dataSource]);
+
+  getFieldColumnTableApi?.(api);
+
   const getFieldColumns = useCallback(() => {
     return [
       {
@@ -19,7 +40,8 @@ const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
         ellipsis: true,
         align: 'center',
         type: 'input',
-        require: true,
+        editable: false,
+        width: 200,
       },
       {
         label: '字段名称',
@@ -27,7 +49,7 @@ const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
         ellipsis: true,
         align: 'center',
         type: 'input',
-        require: true,
+        width: 200,
       },
       {
         label: '字段位置索引',
@@ -35,6 +57,7 @@ const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
         ellipsis: true,
         align: 'center',
         type: 'number',
+        width: 200,
       },
       {
         label: '是否可用',
@@ -43,6 +66,7 @@ const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
         align: 'center',
         type: 'switch',
         initValue: true,
+        width: 200,
       },
       {
         label: '是否必填',
@@ -51,19 +75,21 @@ const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
         align: 'center',
         type: 'switch',
         initValue: false,
+        width: 200,
       },
       {
         label: '行分割的数目',
         field: 'span',
         ellipsis: true,
         align: 'center',
-        type: 'checkbox',
+        type: 'select',
         initValue: '12',
-        options: [
+        optionList: [
           { label: '6', value: '6' },
           { label: '12', value: '12' },
           { label: '24', value: '24' },
         ],
+        width: 220,
       },
       {
         label: '是否单独成行',
@@ -72,6 +98,7 @@ const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
         align: 'center',
         type: 'switch',
         initValue: false,
+        editable: false,
       },
       {
         label: '是否在表单中显示',
@@ -88,6 +115,7 @@ const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
         align: 'center',
         type: 'switch',
         initValue: false,
+        width: 200,
       },
       {
         label: '是否在搜索中显示',
@@ -96,16 +124,28 @@ const FieldColumnTable: React.FC<IFieldColumnTableProps> = ({ dataSource }) => {
         align: 'center',
         type: 'switch',
         initValue: false,
+        width: 200,
       },
     ] as TableColumnProps<any>[];
   }, []);
 
   return (
     <TableCrud<TableColumnProps<any>>
+      id="field"
       mode="list"
+      fixed={true}
+      height="auto"
       columns={getFieldColumns()}
       dataSource={dataSource}
+      disableDefaultBehavior={false}
       search={{ show: false }}
+      title="字段列表"
+      operateBar={{
+        showInlineEdit: !displayDetails,
+        showEdit: false,
+        showDetails: false,
+        showDelete: !displayDetails,
+      }}
       toolbar={{
         show: false,
       }}

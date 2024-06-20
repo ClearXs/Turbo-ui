@@ -15,7 +15,7 @@ export class SelectGroupTableField<T extends IdEntity> extends BaseTableField<
       let dic = column.optionList?.filter((c) => c.value === value).pop();
       return dic ? <ConstantTag constant={dic} /> : value;
     };
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
 
   public getType(): ColumnType {

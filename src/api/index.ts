@@ -157,6 +157,7 @@ interface RemoteQueryParam {
 export interface GeneralApi<T extends IdEntity> {
   /**
    * 保存
+   *
    * @param entity 实体
    * @returns true or false
    */
@@ -164,6 +165,7 @@ export interface GeneralApi<T extends IdEntity> {
 
   /**
    * 编辑
+   *
    * @param entity 实体
    * @returns true or false
    */
@@ -178,6 +180,7 @@ export interface GeneralApi<T extends IdEntity> {
 
   /**
    * 批量保存或者更新
+   *
    * @param entity 实体
    * @returns true or false
    */
@@ -185,6 +188,7 @@ export interface GeneralApi<T extends IdEntity> {
 
   /**
    * 删除
+   *
    * @param id id
    * @returns true or false
    */
@@ -192,13 +196,15 @@ export interface GeneralApi<T extends IdEntity> {
 
   /**
    * 详情
+   *
    * @param id id
    * @returns 实体 or null
    */
-  details: (string: string) => Promise<R<T & { [key: string]: any }>>;
+  details: (id: string) => Promise<R<T & { [key: string]: any }>>;
 
   /**
    * 导入
+   *
    * @param id id
    * @returns true or false
    */
@@ -206,6 +212,7 @@ export interface GeneralApi<T extends IdEntity> {
 
   /**
    * 导出
+   *
    * @param id id
    * @returns 实体 or null
    */
@@ -213,6 +220,7 @@ export interface GeneralApi<T extends IdEntity> {
 
   /**
    * 列表
+   *
    * @param entity 用于过滤实体
    * @returns list
    */
@@ -220,6 +228,7 @@ export interface GeneralApi<T extends IdEntity> {
 
   /**
    * 分页
+   *
    * @param page 分页
    * @param entity 实体
    * @returns page

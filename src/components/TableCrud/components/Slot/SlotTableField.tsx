@@ -9,7 +9,7 @@ export class SlotTableField<T extends IdEntity> extends BaseTableField<
   TableSlotColumnProps<T>
 > {
   doWrap(column: TableSlotColumnProps<T>): ColumnProps<T> {
-    return { ...column };
+    return { ...column, render: this.withColumnRender(column, undefined) };
   }
 
   public getType(): ColumnType {

@@ -26,7 +26,7 @@ export default {
       context.navigate('/login');
       Toast.error({
         content: (
-          <Typography.Text>当前用户信息不存在,请重新登陆.</Typography.Text>
+          <Typography.Text>当前用户信息不存在,请重新登陆!</Typography.Text>
         ),
       });
       return false;

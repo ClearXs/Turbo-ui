@@ -89,7 +89,9 @@ export default function useTreeOperatorBar<T extends Tree>() {
           Modal.warning({
             title: '是否确定删除?',
             onOk: () => {
-              treePanelApi.remove(formContext, [record.id]);
+              treePanelApi.remove(formContext, [
+                tableContext.helperApi.getId(record),
+              ]);
             },
           });
         },

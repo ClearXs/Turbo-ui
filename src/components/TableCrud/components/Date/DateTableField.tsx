@@ -9,18 +9,29 @@ import {
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { PATTERN_TIME, parse } from '@/util/date';
 import { ColumnType } from '@/components/TForm/interface';
+import { Form } from '@douyinfe/semi-ui';
 
 export class DateTableField<T extends IdEntity> extends BaseTableField<
   T,
   TableDateColumnProps<T>
 > {
   protected doWrap(column: TableDateColumnProps<T>): ColumnProps<T> {
-    const render: ColumnRender<T> = (text, record) => {
+    const render: ColumnRender<T> = (text, record, index) => {
+      const props = this.getGeneralProps(column, 'form');
       const value = record[column.field];
-      return parse(value);
+      return this.isEditing(column, record) ? (
+        <Form.DatePicker
+          {...props}
+          noLabel
+          field={`data[${index}][${column.dataIndex}]`}
+          pure
+        ></Form.DatePicker>
+      ) : (
+        parse(value)
+      );
     };
 
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
   public getType(): ColumnType {
     return 'date';
@@ -37,7 +48,7 @@ export class DateRangeTableField<T extends IdEntity> extends BaseTableField<
       return parse(value);
     };
 
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
   public getType(): ColumnType {
     return 'dateRange';
@@ -54,7 +65,7 @@ export class TimeTableField<T extends IdEntity> extends BaseTableField<
       return parse(value, PATTERN_TIME);
     };
 
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
   public getType(): ColumnType {
     return 'time';

@@ -9,11 +9,11 @@ import {
 } from '@douyinfe/semi-ui';
 import Header from '@douyinfe/semi-ui/lib/es/navigation/Header';
 import { IconBell, IconLanguage } from '@douyinfe/semi-icons';
-import { useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useRenderMenu } from '@/hook/menu';
 import { CurrentUserState } from '@/store/user';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import useAuthApi from '@/api/system/auth';
 import * as auth from '@/util/auth';
 import { SUPPORT_LOCALES } from './Locales';
@@ -31,10 +31,12 @@ import useMessageApi from '@/api/message/message';
 import './styles.less';
 import { CurrentUserRouteState } from '@/store/menu';
 import Modular from '../Modular/Modular';
+import { useAuth } from '@/hook/auth';
+import { TurboRoute } from '@/route/AppRouter';
 
 const MotionHeader = observer(() => {
   const app = useContext(AppContext);
-  const { userRoutes, selectTopKey } = app;
+  const { selectTopKey } = app;
   const [unreadMessageCount, setUnreadMessageCount] = useState<
     number | undefined
   >();
@@ -44,31 +46,39 @@ const MotionHeader = observer(() => {
   const currentUser = useRecoilValue(CurrentUserState);
   const navigate = useNavigate();
 
+  const routes = useLoaderData() as TurboRoute[];
+
   const [messageTypes, setMessageTypes] = useState<Dic[]>([]);
 
   // 取depth = 0的菜单项进行渲染
-  const topMenus = userRoutes.filter(
-    (route) => route?.depth === 0 || route?.code === 'home',
-  );
+  // const topMenus = userRoutes.filter((route) => route?.depth === 0);
+  const topMenus = useMemo(() => {
+    return routes.filter((r) => r.code !== 'profile' || r?.depth === 0) || [];
+  }, [routes]);
+
   const renderMenu = useRenderMenu();
   const setUserRouters = useSetRecoilState(CurrentUserRouteState);
 
+  const authentication = useAuth();
+
   useEffect(() => {
-    dicApi.tree({ entity: { code: 'message_type' } }).then((res) => {
-      const { code, data } = res;
-      if (code === 200 && data.length > 0) {
-        const messageType = data[0].children as Dic[];
-        setMessageTypes(messageType);
-      }
-    });
-    messageApi
-      .currentUserMessageCount({ entity: { messageStatus: 'UNREAD' } })
-      .then((res) => {
+    authentication &&
+      dicApi.tree({ entity: { code: 'message_type' } }).then((res) => {
         const { code, data } = res;
-        if (code === 200) {
-          setUnreadMessageCount(data);
+        if (code === 200 && data.length > 0) {
+          const messageType = data[0].children as Dic[];
+          setMessageTypes(messageType);
         }
       });
+    authentication &&
+      messageApi
+        .currentUserMessageCount({ entity: { messageStatus: 'UNREAD' } })
+        .then((res) => {
+          const { code, data } = res;
+          if (code === 200) {
+            setUnreadMessageCount(data);
+          }
+        });
   }, []);
 
   return (
@@ -78,7 +88,15 @@ const MotionHeader = observer(() => {
         selectedKeys={(selectTopKey && [selectTopKey]) || []}
         style={{ height: '100%' }}
       >
-        <Nav.Header text="Turbo" />
+        <div
+          onClick={() => {
+            app.selectTopKey = 'home';
+            navigate('/home');
+          }}
+          className="cursor-pointer"
+        >
+          <Nav.Header text="Turbo" />
+        </div>
         {renderMenu(topMenus, 'top', app)}
         <Nav.Footer>
           <Dropdown

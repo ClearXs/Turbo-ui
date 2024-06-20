@@ -54,5 +54,46 @@ export abstract class BaseTableField<
     return this.doWrap(column);
   }
 
+  /**
+   * subclass implementation
+   *
+   * @param column the specifies column
+   */
   protected abstract doWrap(column: K): ColumnProps<T>;
+
+  /**
+   * overwrite column render
+   *
+   * @param column the column instance
+   * @param self the sub column implementation
+   * @returns render function
+   */
+  protected withColumnRender(
+    column: K,
+    self?: ColumnProps<T>['render'],
+  ): ColumnProps<T>['render'] {
+    const render: ColumnProps<T>['render'] = (text, record, index) => {
+      return column.render?.(
+        text,
+        record,
+        index,
+        this.decorator.getTableContext(),
+      );
+    };
+    return column.render === undefined ? self : render;
+  }
+
+  /**
+   * decide row is editing
+   *
+   * @param entity the entity instance
+   */
+  public isEditing(column: TableColumnProps<T>, entity: T): boolean {
+    const tableContext = this.decorator.getTableContext();
+    const id = tableContext.helperApi.getId(entity);
+    return (
+      tableContext.inlineEditorApi.isEditing(id) &&
+      (column.editable === undefined ? true : column.editable)
+    );
+  }
 }

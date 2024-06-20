@@ -1,7 +1,7 @@
 import { CodeGenerate } from '@/api/developer/codeGenerate';
 import TForm from '@/components/TForm/TForm';
 import { FormColumnProps, FormContext } from '@/components/TForm/interface';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { DataView } from '../../editor/kernel';
 import viewMode from '../../editor/panel/DataViewForm/constant/viewMode';
 import {
@@ -9,18 +9,23 @@ import {
   Handler,
   SlotComponentProps,
 } from '@/components/TForm/components';
-import FieldColumnTable from './FieldColumnTable';
+import FieldColumnTable, { FieldColumnTableApi } from './FieldColumnTable';
 
 export type ICodeGenerateEditorProps = SlotComponentProps & {
+  displayDetails: boolean;
   formContext: FormContext<CodeGenerate>;
   dataView: DataView;
 };
 
 const CodeGenerateEditor: React.FC<ICodeGenerateEditorProps> = ({
+  displayDetails,
   formContext,
   getHandler,
   dataView,
 }) => {
+  const dataViewFormContextRef = useRef<FormContext<DataView>>();
+  const fieldColumnTableApiRef = useRef<FieldColumnTableApi>();
+
   const getDataViewColumns = useCallback(() => {
     return [
       {
@@ -150,21 +155,42 @@ const CodeGenerateEditor: React.FC<ICodeGenerateEditorProps> = ({
         ],
       } as FormJsonObjectColumnProps<any>,
     ] as FormColumnProps<DataView>[];
-  }, [formContext]);
+  }, [dataView]);
 
   const handler = useMemo<Handler>(() => {
-    return { onOk: () => {}, onCancel: () => [] };
-  }, [formContext]);
+    return {
+      onOk: (instance) => {
+        const columns = fieldColumnTableApiRef.current!.getDataSource();
+        const dataView = dataViewFormContextRef.current!.getValues();
+        dataView.columns = columns;
+        formContext.setValue('dataView', JSON.stringify(dataView));
+        instance.destroy();
+      },
+    };
+  }, [dataView]);
+
   getHandler?.(handler);
 
   return (
-    <div className="h-[100%]">
+    <div className="h-[100%] overflow-x-hidden">
       <TForm<DataView>
         mode="simply"
+        type={displayDetails && 'details'}
         modal={{ abandon: true }}
         columns={getDataViewColumns()}
         params={dataView}
-        slotBottom={<FieldColumnTable dataSource={dataView.columns} />}
+        getFormContext={(formContext) =>
+          (dataViewFormContextRef.current = formContext)
+        }
+        slotBottom={
+          <FieldColumnTable
+            displayDetails={displayDetails}
+            dataSource={dataView.columns}
+            getFieldColumnTableApi={(api) =>
+              (fieldColumnTableApiRef.current = api)
+            }
+          />
+        }
       />
     </div>
   );

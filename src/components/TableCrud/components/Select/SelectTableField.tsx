@@ -4,7 +4,9 @@ import { BaseTableField, TableSelectColumnProps } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';
 import { findConstant } from '@/constant/util';
-import { RelationComponent } from '../RelationField';
+import Relational from '../RelationField';
+import { Form } from '@douyinfe/semi-ui';
+import { Constant } from '@/constant';
 
 export class SelectTableField<T extends IdEntity> extends BaseTableField<
   T,
@@ -13,34 +15,48 @@ export class SelectTableField<T extends IdEntity> extends BaseTableField<
   doWrap(column: TableSelectColumnProps<T>): ColumnProps<T> {
     const render = (text: string, record: T, index: number) => {
       const { field, remote, dictionary, optionList } = column;
-
       const decorator = this.decorator;
       const value = record[field];
-      let constant;
+      let recordConstant: Constant | undefined;
+      let constantList: Constant[] = [];
       if (remote) {
         const formContext = decorator.getFormContext();
-        const constants = formContext?.dataSet[field] || [];
-        constant = findConstant(value, constants);
+        constantList = formContext?.dataSet[field] || [];
+        recordConstant = findConstant(value, constantList);
       } else if (dictionary) {
         const formContext = decorator.getFormContext();
-        const constants = formContext?.dataSet[dictionary] || [];
-        constant = findConstant(value, constants);
+        constantList = formContext?.dataSet[dictionary] || [];
+        recordConstant = findConstant(value, constantList);
       } else {
-        constant = optionList?.filter((c) => c.value === value).pop();
+        constantList = optionList;
+        recordConstant = optionList?.filter((c) => c.value === value).pop();
       }
-      const Display = constant ? (
-        <RelationComponent
+
+      const props = this.getGeneralProps(column, 'form');
+      const Display = recordConstant ? (
+        <Relational
           column={column}
           record={record}
           decorator={decorator}
-          Display={<ConstantTag constant={constant} />}
+          Display={<ConstantTag constant={recordConstant} />}
         />
       ) : (
         <ConstantTag constant={{ value, label: 'undefined', tag: 'red' }} />
       );
-      return Display;
+
+      return this.isEditing(column, record) ? (
+        <Form.Select
+          {...props}
+          noLabel
+          field={`data[${index}][${column.dataIndex}]`}
+          pure
+          optionList={constantList}
+        />
+      ) : (
+        Display
+      );
     };
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
 
   public getType(): ColumnType {

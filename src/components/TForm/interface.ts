@@ -184,7 +184,7 @@ export type FormColumnProps<T extends IdEntity> = {
   // 表单字段初始值
   initValue?: T[FormColumnProps<T>['field']];
   // 表单文本拓展
-  extraText?: string;
+  extraText?: string | React.ReactNode;
   // 行分割的数目，默认为12
   span?: 6 | 12 | 24;
   // 是否单独一行
@@ -232,18 +232,21 @@ export type FormContext<T extends IdEntity> = {
   validate?: FormType['validate'];
   submit?: FormType['submit'];
   reset?: FormType['reset'];
+  // open form dialog
+  open: () => void;
+  // close form dialog
+  close: () => void;
   // 获取字段绑定的默认值
   getDefaultValues: () => Partial<T>;
   // 获取表单绑定的值
   // according to field key obtain field value
-  getValue: (field: FormColumnProps<T>['field']) => any;
+  getValue: (field: keyof T) => any;
   getValues: () => Partial<T>;
   // set value by field
-  setValue: (field: FormColumnProps<T>['field'], value: any) => void;
+  setValue: (field: keyof T, value: any) => void;
   // set type T values
   setValues: (values: Partial<T>) => void;
-  // 开启form弹窗
-  open: () => void;
-  // 关闭form弹窗
-  close: () => void;
+  // get column
+  // the field allowing a.b.c format
+  getColumn: (field: keyof T) => FormColumnProps<T> | undefined;
 };

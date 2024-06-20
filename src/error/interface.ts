@@ -4,6 +4,7 @@
 export type SystemError = {
   // error status code
   // 401: authentication error
+  // 403
   // 404: page not found
   // 500: internal error
   status: 401 | 404 | 500;

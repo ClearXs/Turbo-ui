@@ -90,7 +90,7 @@ const transformToTableColumnProps = (
       field: _.camelCase(column.dslName),
       label: column.comment,
       type:
-        DATA_TYPE_MAPPINGS.get(column.dataType.dslType.name as DataType) ||
+        DATA_TYPE_MAPPINGS.get(column.dataType?.dslType.name as DataType) ||
         'input',
     };
   });

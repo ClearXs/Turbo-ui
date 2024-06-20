@@ -3,7 +3,7 @@ import { Form } from '@douyinfe/semi-ui';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { TableTreeSelectColumnProps } from '.';
 import { BaseTableField } from '..';
-import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
+import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';
 import { ISchema } from '@formily/json-schema';
 
@@ -16,12 +16,7 @@ export class TreeSelectTableField<T extends IdEntity> extends BaseTableField<
     type: 'search' | 'form',
   ): React.ReactNode | undefined {
     const props = this.getGeneralProps(column, type);
-    let data = column.treeData;
-    if (typeof column.treeData === 'function') {
-      data = column.treeData(this.decorator.getTableContext());
-    } else {
-      data = column.treeData as TreeNodeData[];
-    }
+    const data = this.getTreeData(column);
     return (
       <Form.TreeSelect
         {...props}
@@ -39,7 +34,22 @@ export class TreeSelectTableField<T extends IdEntity> extends BaseTableField<
   }
 
   doWrap(column: TableTreeSelectColumnProps<T>): ColumnProps<T> {
-    return { ...column };
+    const render: ColumnRender<T> = (text, record, index) => {
+      const props = this.getGeneralProps(column, 'form');
+      const data = this.getTreeData(column);
+      return this.isEditing(column, record) ? (
+        <Form.TreeSelect
+          {...props}
+          noLabel
+          field={`data[${index}][${column.dataIndex}]`}
+          pure
+          treeData={data}
+        />
+      ) : (
+        text
+      );
+    };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
 
   public schema(column: TableTreeSelectColumnProps<T>, index: number): ISchema {
@@ -56,5 +66,15 @@ export class TreeSelectTableField<T extends IdEntity> extends BaseTableField<
 
   public getType(): ColumnType {
     return 'treeSelect';
+  }
+
+  getTreeData(column: TableTreeSelectColumnProps<T>): TreeNodeData[] {
+    let data: TreeNodeData[];
+    if (typeof column.treeData === 'function') {
+      data = column.treeData(this.decorator.getTableContext());
+    } else {
+      data = column.treeData as TreeNodeData[];
+    }
+    return data;
   }
 }

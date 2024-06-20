@@ -31,20 +31,20 @@ import {
   ArrayBase,
 } from '@formily/semi';
 import { useMemo } from 'react';
-import { Form as FormType, createForm } from '@formily/core';
+import { createForm } from '@formily/core';
 import React from 'react';
 import { Icon, Color } from './components';
 import { toSchema } from './schema';
-import { Button, ButtonGroup, Modal, Notification } from '@douyinfe/semi-ui';
-import { FormContext, FormProps, ModalButton } from '../interface';
+import { Modal } from '@douyinfe/semi-ui';
+import { FormContext, FormProps } from '../interface';
 import { Constant } from '@/constant';
 import _ from 'lodash';
-import { tryGetIcon } from '@/components/Icon';
-import { GeneralApi } from '@/api';
+import { IdEntity } from '@/api';
 import { TFormContext } from '../context/form';
 import { globalThisPolyfill } from '@formily/shared';
 import CodeEditor from './components/CodeEditor';
 import DEFAULT_SCOPES from './scope';
+import FormilyModalButton from './FormilyModalButton';
 
 const Text: React.FC<{
   value?: string;
@@ -106,194 +106,26 @@ const formTypeList: Record<string, Constant> = {
   },
 };
 
-const useFormType = (formContext: FormContext<any>) => {
-  return formTypeList[formContext?.type || 'add'];
+const useFormType = <T extends IdEntity = IdEntity>(
+  formContext: FormContext<T>,
+) => {
+  return formTypeList[formContext.type || 'add'];
 };
 
-const useTitle = (formProps: FormProps<any>, formContext: FormContext<any>) => {
+const useTitle = <T extends IdEntity = IdEntity>(
+  formProps: FormProps<T>,
+  formContext: FormContext<T>,
+) => {
   const formType = useFormType(formContext);
   return formProps.title || formType.label;
 };
 
-const useIcon = (formContext: FormContext<any>) => {
+const useIcon = <T extends IdEntity = IdEntity>(
+  formContext: FormContext<T>,
+) => {
   const formType = useFormType(formContext);
   return formType.icon;
 };
-
-const ModalButtonComponent: React.FC<{
-  formProps: FormProps<any>;
-  formContext: FormContext<any>;
-  form: FormType<any>;
-}> = observer(({ formProps, formContext, form }) => {
-  const {
-    showConfirm = true,
-    showCancel = true,
-    append = [],
-  } = formProps.modal || {
-    showConfirm: true,
-    showCancel: true,
-    append: [],
-  };
-  let api: GeneralApi<any>;
-  const { event, useApi } = formProps;
-  if (useApi) {
-    if (typeof useApi === 'function') {
-      api = useApi();
-    } else {
-      api = useApi;
-    }
-  }
-
-  const modalButtons: ModalButton<any>[] = [];
-
-  if (
-    (typeof showCancel === 'function' && showCancel(formContext)) ||
-    showCancel
-  ) {
-    modalButtons.push({
-      code: 'cancel',
-      name: '取消',
-      type: 'tertiary',
-      size: 'default',
-      icon: tryGetIcon('IconCrossCircleStroked'),
-      onClick: (formContext) => {
-        if (formProps.onCancel) {
-          formProps.onCancel(formContext);
-        } else {
-          formContext.visible = false;
-        }
-      },
-    });
-  }
-
-  if (
-    ((typeof showConfirm === 'function' && showConfirm(formContext)) ||
-      showConfirm) &&
-    formContext.type !== 'details'
-  ) {
-    modalButtons.push({
-      code: 'confirm',
-      name: '确定',
-      type: 'primary',
-      loading: true,
-      size: 'default',
-      icon: tryGetIcon('IconCheckCircleStroked'),
-      onClick: (formContext) => {
-        // 构建需要校验的字段
-        const { params, onOk, onError } = formProps;
-        form
-          .submit((data) => {
-            // 相同key优先级 默认值 > 表单值
-            // if default value key is undefined but form value is not, choose form value
-            const values = _.assignWith(
-              data,
-              params,
-              (objectValue, sourceValue, key, object, source) => {
-                if (!_.isEmpty(objectValue)) {
-                  return objectValue;
-                }
-                return sourceValue;
-              },
-            );
-            if (api) {
-              formContext.loading = true;
-              api
-                .saveOrUpdate(values)
-                .then((res) => {
-                  if (res.code === 200 && res.data) {
-                    Notification.success({
-                      position: 'top',
-                      content: res.message,
-                    });
-                    try {
-                      // 回调事件
-                      onOk?.(formContext);
-                      event?.onSaveOrUpdateSuccess?.(values);
-                    } catch (err) {
-                      // simple print
-                      console.error(err);
-                    }
-                    formContext.visible = false;
-                  } else {
-                    onError?.(new Error(res.message), formContext);
-                  }
-                })
-                .catch((err) => {
-                  onError?.(err, formContext);
-                })
-                .finally(() => {
-                  formContext.loading = false;
-                });
-            } else {
-              formProps.onOk?.(formContext);
-            }
-          })
-          .catch((err) => {
-            const { showValidateErrorNotification = false } = formProps;
-            if (!showValidateErrorNotification) {
-              return;
-            }
-            // 提示表单错误信息
-            let formErrorMessage = '';
-            if (err.name) {
-              formErrorMessage = err.name;
-            } else if (typeof err === 'object') {
-              formErrorMessage = Object.keys(err)
-                .map((eKey) => {
-                  return err[eKey];
-                })
-                .join(',');
-            }
-            if (!_.isEmpty(formErrorMessage)) {
-              Notification.error({
-                content: formErrorMessage,
-                position: 'top',
-              });
-            }
-          });
-      },
-    });
-  }
-
-  append.forEach((button) => {
-    if (typeof button === 'function') {
-      const maybeButton = button(formContext);
-      if (maybeButton) {
-        modalButtons.push({ ...maybeButton });
-      }
-    } else {
-      modalButtons.push({ ...button });
-    }
-  });
-
-  return (
-    <ButtonGroup className="float-right">
-      {modalButtons.map((button) => {
-        const {
-          code,
-          icon,
-          type,
-          size,
-          loading = false,
-          onClick,
-          name,
-        } = button;
-        return (
-          <Button
-            key={code}
-            icon={icon}
-            type={type}
-            size={size}
-            loading={loading && formContext.loading}
-            onClick={() => onClick?.(formContext)}
-          >
-            {name}
-          </Button>
-        );
-      })}
-    </ButtonGroup>
-  );
-});
 
 const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   const {
@@ -310,7 +142,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   const form = useMemo(() => {
     globalThisPolyfill['__DESIGNABLE_LAYOUT__'] = { prefixCls: 'dn-' };
     return createForm({
-      initialValues: formContext?.getDefaultValues(),
+      initialValues: formContext.getDefaultValues(),
       values: formContext.values,
       effects(form) {
         effects?.(form);
@@ -362,7 +194,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
       }}
       footer={
         columns.length > 0 && (
-          <ModalButtonComponent
+          <FormilyModalButton
             form={form}
             formContext={formContext}
             formProps={formProps}

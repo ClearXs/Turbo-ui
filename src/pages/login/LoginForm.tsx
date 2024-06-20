@@ -24,15 +24,16 @@ import { IconBaidu } from '@/components/Icon/collection/IconBaidu';
 import { IconQQ } from '@/components/Icon/collection/IconQQ';
 import useOAuth2Api from '@/api/system/oauth2';
 import { IconTaobao } from '@/components/Icon/collection/IconTaobao';
-import useRequest from '@/hook/request';
+import useRouteHelper from '@/route/useRouteHelper';
 
 const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
   const authApi = useAuthApi();
   const oauth2Api = useOAuth2Api();
-  const request = useRequest();
   const [loading, setLoading] = useState<boolean>(false);
   const [captcha, setCaptcha] = useState<Captcha | undefined>();
+
+  const loadCurrentUserRoute = useRouteHelper();
 
   useEffect(() => {
     authApi.captcha().then((res) => setCaptcha(res.data as Captcha));
@@ -69,19 +70,21 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               authApi
                 .login(loginInfo)
                 .then((res) => {
-                  if (res.code !== 200) {
-                    reloadCaptcha();
-                  } else {
+                  if (res.code === 200) {
                     // 设置local storage
                     const token = res.data?.tokenValue || '';
                     auth.set(token);
                     // 跳转至首页
                     navigate('/');
+                    loadCurrentUserRoute();
+                  } else {
+                    reloadCaptcha();
                   }
-                  setLoading(false);
                 })
                 .catch((err) => {
                   reloadCaptcha();
+                })
+                .finally(() => {
                   setLoading(false);
                 });
             }}

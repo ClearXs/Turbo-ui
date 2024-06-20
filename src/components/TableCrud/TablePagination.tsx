@@ -37,7 +37,7 @@ const TablePagination = <T extends IdEntity>({
               pageSize,
               total,
             };
-            tableContext?.tableApi.page(tableContext, pagination);
+            tableContext.tableApi.page(pagination);
           }}
         />
       </div>

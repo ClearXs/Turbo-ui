@@ -1,5 +1,5 @@
 import { Dropdown, Notification, TabPane, Tabs } from '@douyinfe/semi-ui';
-import { useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { tryGetIcon } from '../Icon/shared';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import _ from 'lodash';
@@ -9,12 +9,14 @@ import { findRoute } from '@/route/util';
 import { createContentTab } from './util';
 import { observer } from '@formily/reactive-react';
 import { UserTab } from './interface';
+import { TurboRoute } from '@/route/AppRouter';
 
 const ContentTabs = observer(() => {
   const app = useContext(AppContext);
-  const { userRoutes, userTabs, selectTopKey, selectTabKey, selectSideKey } =
-    app;
+  const { userTabs, selectTopKey, selectTabKey, selectSideKey } = app;
   const navigate = useNavigate();
+
+  const routes = useLoaderData() as TurboRoute[];
 
   const closeTab = (tabKey: string) => {
     // 去除关闭的menu tab
@@ -66,16 +68,9 @@ const ContentTabs = observer(() => {
   };
 
   const closeAllTab = () => {
+    toHome();
     // 保留home tab
-    const homeTab = userTabs.find((tab) => tab.itemKey === 'home');
-    if (homeTab) {
-      // 跳转到home
-      app.selectTopKey = homeTab.itemKey as string;
-      navigate(homeTab.path as string);
-      app.userTabs = [homeTab];
-    } else {
-      app.userTabs = [];
-    }
+    app.userTabs = userTabs.slice(0, 1);
   };
 
   const tabClick = (activeKey: string) => {
@@ -115,7 +110,7 @@ const ContentTabs = observer(() => {
   };
 
   useEffect(() => {
-    const homeRoute = findRoute('/home', userRoutes);
+    const homeRoute = findRoute('/home', routes);
     if (homeRoute) {
       const newTabs = createContentTab(userTabs, homeRoute, 'home');
       if (app.selectTabKey === undefined) {

@@ -4,25 +4,21 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from 'react-router-dom';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import * as auth from '@/util/auth';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { CurrentUserRouteState } from '@/store/menu';
 import { MenuTree } from '@/api/system/menu';
-import { importIcon, tryGetIcon } from '@/components/Icon/shared';
+import { importIcon } from '@/components/Icon/shared';
 import _ from 'lodash';
 import Home from '@/pages/home';
 import Login from '@/pages/login';
-import Loading from '../pages/Loading';
 import { withInterceptorComponent } from './Interceptor';
 import Profile from '@/pages/profile';
 import App from '@/App';
-import useAuthApi from '@/api/system/auth';
-import { findRoute } from './util';
-import Preview from './routes';
-import PageNotFound from '@/error/PageNotFound';
-import { ErrorState } from '@/store/error';
+import useRouteHelper from './useRouteHelper';
 import { useAuth } from '@/hook/auth';
+import Loading from '@/pages/Loading';
 
 export type TurboRoute = RouteObject &
   Pick<MenuTree, 'code' | 'alias' | 'sort' | 'name' | 'depth' | 'attrs'> & {
@@ -36,109 +32,14 @@ export type TurboRoute = RouteObject &
     topRouteKey?: string;
     // 路由定义拦截器
     intercept?: (navigate: NavigateFunction) => boolean;
+    // 子级
     children?: TurboRoute[];
   };
 
 const AppRouter: React.FC = () => {
-  const authApi = useAuthApi();
-  const [userRoutes, setUserRouters] = useRecoilState(CurrentUserRouteState);
-  const setError = useSetRecoilState(ErrorState);
-
   const authentication = useAuth();
-
-  const systemRoutePath = useMemo(() => {
-    return ['/', '/home', '/profile', '/login'];
-  }, []);
-
-  const loadCurrentUserRoute = useCallback(() => {
-    const { pathname } = window.location;
-    if (_.isEmpty(userRoutes)) {
-      authApi
-        .getCurrentUserMenu()
-        .then((res) => {
-          if (res.code === 200) {
-            const routes = menuToRoutes(res.data || []);
-            // 根据当前路径获取（可能是刷新的情况，去除/）设置选中的content tab 与 side tab
-            // 如果没有找到则publish error（此时浏览器会提示错误信息并且展示error页面）
-            const route = findRoute(pathname, routes);
-            if (route || systemRoutePath.indexOf(pathname) > -1) {
-              setUserRouters(routes);
-              // 去除error signal
-              setError(undefined);
-              return;
-            }
-          }
-          // 发布菜单错误
-          setError({ status: 404, message: `page ${pathname} not found` });
-        })
-        .catch((error) => {
-          setError({ status: 500, message: error });
-        });
-    }
-  }, []);
-
-  /**
-   * 菜单转换为路由对象
-   * @param menus 菜单
-   * @returns 路由对象
-   */
-  const menuToRoutes = useCallback(
-    (menus: MenuTree[], topRouteKey?: string): TurboRoute[] => {
-      if (_.isEmpty(menus)) {
-        return [];
-      }
-      return menus
-        .filter((m) => m.type !== 'BUTTON')
-        .map((m) => {
-          // 图标组件
-          const IconComponent = tryGetIcon(m.icon as string);
-          const route: TurboRoute = {
-            id: String(m.id),
-            element: findPageComponent(m),
-            children: menuToRoutes(
-              m.children,
-              m.depth === 0 ? m.code : topRouteKey,
-            ),
-            path: m.route,
-            code: m.code,
-            alias: m.alias,
-            sort: m.sort,
-            icon: IconComponent,
-            name: m.name,
-            depth: m.depth,
-            type: 'custom',
-            clearable: true,
-            topRouteKey: m.depth === 0 ? m.code : topRouteKey,
-            attrs: m.attrs,
-          };
-          return route;
-        });
-    },
-    [],
-  );
-
-  /**
-   * find page component. this method will be first find 'PreviewRoutes'
-   *
-   * @param m the menu data
-   */
-  const findPageComponent = useCallback((m: MenuTree): any => {
-    // find preview route
-    const PageComponent = Preview.find((preview) => {
-      // low code domain page
-      if (m.type === 'PAGE') {
-        return (
-          m.route?.startsWith('/domain') && preview.path.startsWith('/domain')
-        );
-      }
-      return preview.path === m.route;
-    })?.element;
-    // exclude parent route ('parent' has children )
-    if (_.isEmpty(m.children) && _.isEmpty(PageComponent)) {
-      return <PageNotFound />;
-    }
-    return PageComponent;
-  }, []);
+  const userRoutes = useRecoilValue(CurrentUserRouteState);
+  const loadCurrentUserRoute = useRouteHelper();
 
   // 增强route功能
   const routerEnhancer = useMemo(() => {
@@ -171,7 +72,7 @@ const AppRouter: React.FC = () => {
 
   useEffect(
     function loadUserRouteIfAuthNotEmpty() {
-      if (!_.isEmpty(authentication)) {
+      if (!_.isEmpty(authentication) && _.isEmpty(userRoutes)) {
         loadCurrentUserRoute();
       }
     },
@@ -214,10 +115,10 @@ const AppRouter: React.FC = () => {
       id: '/',
       path: '/',
       element: <App />,
-      errorElement: <Loading />,
       loader: () => renderRoutes,
       type: 'system',
       children: renderRoutes,
+      errorElement: <Loading />,
       intercept: (navigate: NavigateFunction) => {
         const authentication = auth.get();
         if (_.isEmpty(authentication)) {

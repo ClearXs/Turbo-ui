@@ -1,5 +1,5 @@
 import { IdEntity } from '@/api';
-import { TableContext, TableCrudProps } from './interface';
+import { TableCrudProps } from './interface';
 import {
   Card,
   CardGroup,
@@ -12,27 +12,24 @@ import {
 } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 import { tryGetIcon } from '../Icon/shared';
-import { FormContext } from '../TForm/interface';
 import OperatorButtonSet from './OperatorButtonSet';
-import useTableCrudOperatorBar from './TableCrudOperatorBar';
 import TablePagination from './TablePagination';
-import { useContext } from 'react';
-import { TableCrudContext } from './context/table';
-import { TFormContext } from '../TForm/context/form';
 import { observer } from '@formily/reactive-react';
 import {
   IllustrationNoContent,
   IllustrationNoContentDark,
 } from '@douyinfe/semi-illustrations';
+import { renderOperatorBar } from './TableColumnBuilder';
+import useTableCrudContext from './hook/table';
+import useTableFormContext from './hook/tableForm';
 
 export type CardPageProps<T extends IdEntity> = {
   tableProps: TableCrudProps<T>;
 };
 
 const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
-  const renderOperatorBars = useTableCrudOperatorBar<T>();
-  const tableContext = useContext<TableContext<T>>(TableCrudContext);
-  const formContext = useContext<FormContext<T>>(TFormContext);
+  const tableContext = useTableCrudContext();
+  const formContext = useTableFormContext();
 
   const {
     mode,
@@ -90,9 +87,9 @@ const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
           {showAdd && (
             <div
               onClick={() => {
-                formContext.visible = true;
-                formContext.loading = false;
-                formContext.type = 'add';
+                formContext!.visible = true;
+                formContext!.loading = false;
+                formContext!.type = 'add';
               }}
             >
               <Card
@@ -121,11 +118,7 @@ const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
             </div>
           )}
           {dataSource.map((data, idx) => {
-            const bars = renderOperatorBars(
-              data,
-              props.tableProps['operateBar'],
-              tableContext.tableApi,
-            );
+            const operatorBarList = renderOperatorBar(data, tableContext);
             const cardChecked =
               selectedRowKeys.findIndex((record) => record === data.id) > -1;
             return (
@@ -190,7 +183,7 @@ const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
                         </Typography.Text>
                       ))}
                     <OperatorButtonSet<T>
-                      bars={bars}
+                      bars={operatorBarList}
                       record={data}
                       mode="shrink"
                       className="ml-auto"

@@ -1,5 +1,5 @@
 import { tryGetIcon } from '@/components/Icon';
-import { DialogButton, DialogProps } from '../interface';
+import { DialogButtonProps, DialogProps } from '../interface';
 
 const useBottomButton = ({
   beforeConfirm,
@@ -34,8 +34,9 @@ const useBottomButton = ({
     }
   };
 
-  const modularButtons: DialogButton[] = [];
-  if (showCancel) {
+  const modularButtons: DialogButtonProps[] = [];
+
+  if ((typeof showCancel === 'function' && showCancel()) || showCancel) {
     modularButtons.push({
       code: 'cancel',
       name: '取消',
@@ -47,7 +48,8 @@ const useBottomButton = ({
       },
     });
   }
-  if (showConfirm) {
+
+  if ((typeof showConfirm === 'function' && showConfirm()) || showConfirm) {
     modularButtons.push({
       code: 'confirm',
       name: '确定',

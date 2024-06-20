@@ -2,7 +2,7 @@ import '@/pages/developer/editor';
 import { Layout } from '@douyinfe/semi-ui';
 import MotionContent from './components/MotionContent';
 import MotionHeader from './components/MotionHeader';
-import { useEffect, useMemo } from 'react';
+import { Suspense, useEffect, useMemo } from 'react';
 import { GlobalRegistry } from '@designable/core';
 import { SUPPORT_LOCALES } from './components/MotionHeader/Locales';
 import { useLoaderData, useLocation } from 'react-router-dom';
@@ -18,10 +18,13 @@ import './theme/default.css';
 import { useRecoilValue } from 'recoil';
 import Error from './pages/Error';
 import { ErrorState } from './store/error';
+import _ from 'lodash';
+import { CurrentUserRouteState } from './store/menu';
+
+import SystemApp from '@/components/App/';
+import Loading from './pages/Loading';
 
 export type AppProperty = {
-  // 当前用户route
-  userRoutes: TurboRoute[];
   // 选择顶部菜单的key
   selectTopKey: string | undefined;
   // 选择侧边菜单的key
@@ -34,21 +37,21 @@ export type AppProperty = {
 
 export default function App(): React.ReactNode {
   const error = useRecoilValue(ErrorState);
-  const userRoutes = useLoaderData() as TurboRoute[];
   const location = useLocation();
+  const routes = useLoaderData() as TurboRoute[];
+  const userRoutes = useRecoilValue(CurrentUserRouteState);
 
   const app = useMemo(() => {
     const { pathname } = location;
     const route = findRoute(pathname, userRoutes);
     const app: AppProperty = observable({
-      userRoutes,
       selectTopKey: route ? route.topRouteKey || 'home' : 'home',
       selectSideKey: undefined,
       userTabs: [],
       selectTabKey: undefined,
     });
     return app;
-  }, [userRoutes]);
+  }, []);
 
   useEffect(() => {
     const supportLocales = SUPPORT_LOCALES.map((locales) => locales.value);
@@ -56,7 +59,7 @@ export default function App(): React.ReactNode {
       GlobalRegistry.setDesignerLanguage('zh-cn');
     }
     const { pathname } = location;
-    const route = findRoute(pathname, app.userRoutes);
+    const route = findRoute(pathname, routes);
     if (route) {
       app.selectTopKey = route.topRouteKey;
       app.selectSideKey = route.code;
@@ -70,17 +73,26 @@ export default function App(): React.ReactNode {
       }
       app.selectTabKey = route.code;
     }
-  }, [location]);
-  return error !== undefined ? <Error /> : <AppLayout app={app} />;
+  }, [location.pathname, userRoutes]);
+
+  return error !== undefined ? (
+    <Error />
+  ) : (
+    <Suspense fallback={<Loading />}>
+      <AppLayout app={app} />
+    </Suspense>
+  );
 }
 
 const AppLayout: React.FC<{ app: AppProperty }> = observer(({ app }) => {
   return (
-    <Layout className="h-100vh w-100vw overflow-hidden">
-      <AppContext.Provider value={app}>
-        <MotionHeader />
-        <MotionContent />
-      </AppContext.Provider>
-    </Layout>
+    <SystemApp>
+      <Layout className="h-100vh w-100vw overflow-hidden">
+        <AppContext.Provider value={app}>
+          <MotionHeader />
+          <MotionContent />
+        </AppContext.Provider>
+      </Layout>
+    </SystemApp>
   );
 });

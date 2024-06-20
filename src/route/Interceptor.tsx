@@ -1,4 +1,4 @@
-import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { TurboRoute } from './AppRouter';
 import _ from 'lodash';
 import { useEffect, useMemo, useRef } from 'react';
@@ -47,7 +47,7 @@ export const withInterceptorComponent = (
     const interceptor = useMemo(() => {
       return [AuthenticationInterceptor, new InnerRouteInterceptor(route)].sort(
         (a, b) => {
-          return a.order < b.order;
+          return a.order - b.order;
         },
       );
     }, []);
@@ -55,18 +55,21 @@ export const withInterceptorComponent = (
     useEffect(() => {
       const { pathname } = window.location;
       for (const intcp of interceptor) {
-        const nextExecute =
-          intcp.match(route, pathname) &&
-          intcp.intercept({
-            route,
-            navigate,
-          });
-        if (!nextExecute) {
-          break;
+        if (pathname === route.path) {
+          const nextExecute =
+            intcp.match(route, pathname) &&
+            intcp.intercept({
+              route,
+              navigate,
+            });
+          if (!nextExecute) {
+            break;
+          }
         }
       }
       backRoute.current = findRoute(pathname, userRoutes || []);
     }, [location.pathname]);
+
     return (
       <RouteContext.Provider
         value={{ current: route, back: backRoute.current }}

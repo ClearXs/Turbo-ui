@@ -19,8 +19,6 @@ import { GlobalRegistry, TreeNode } from '@designable/core';
 import { SchemaField } from '@/components/TForm/formily/FormilyForm';
 import { useKernel } from '../../kernel';
 import { observable } from '@formily/reactive';
-import { TableContext } from '@/components/TableCrud/interface';
-import { TableCrudContext } from '@/components/TableCrud/context/table';
 import './styles.less';
 import { DataViewContext } from './context/dataView';
 
@@ -31,7 +29,6 @@ export type IDataFormProps = {
   components?: Record<string, React.FC<any>>;
   effects?: (form: Form) => void;
   scope?: any;
-  tableContext: TableContext<any>;
 };
 
 const DataForm: React.FC<IDataFormProps> = observer((props) => {
@@ -101,11 +98,9 @@ const DataForm: React.FC<IDataFormProps> = observer((props) => {
   return (
     <IconWidget.Provider tooltip>
       <DataViewContext.Provider value={dataView}>
-        <TableCrudContext.Provider value={props.tableContext}>
-          <div className={prefix + '-wrapper'}>
-            <div className={prefix + '-content'}>{render()}</div>
-          </div>
-        </TableCrudContext.Provider>
+        <div className={prefix + '-wrapper'}>
+          <div className={prefix + '-content'}>{render()}</div>
+        </div>
       </DataViewContext.Provider>
     </IconWidget.Provider>
   );

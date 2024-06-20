@@ -26,21 +26,28 @@ export const baseOnColumnCreateISchema = (
   component: string,
   type: SchemaTypes,
 ): ISchema => {
+  const { label, initValue, require, reaction, form, extraText } = column;
+
   const schema: ISchema = {
-    title: column.label,
-    name: column.initValue,
+    title: label,
+    name: initValue,
     type: type,
-    required: column.require as boolean,
-    default: column.initValue,
+    required: require as boolean,
+    default: initValue,
     'x-decorator': 'FormItem',
     'x-component': component,
     'x-validator': [],
-    'x-reactions': column.reaction,
-    'x-display': column.form as boolean,
+    'x-reactions': reaction,
+    'x-display': form,
+    'x-decorator-props': {},
   };
   if (formContext.type === 'details') {
     schema['x-pattern'] = 'disabled';
   }
+  if (extraText) {
+    schema['x-decorator-props']['tooltip'] = extraText;
+  }
+
   return schema;
 };
 

@@ -46,7 +46,9 @@ export default function useListOperatorBar<T extends IdEntity>() {
           Modal.warning({
             title: '是否确定删除?',
             onOk: () => {
-              listApi.remove(formContext, [record.id]);
+              listApi.remove(formContext, [
+                tableContext.helperApi.getId(record),
+              ]);
             },
           });
         },

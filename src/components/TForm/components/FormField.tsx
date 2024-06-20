@@ -54,6 +54,7 @@ export abstract class BaseFormField<
     post: '请选择',
     role: '请选择',
     codeEditor: '请输入',
+    slot: '',
   };
 
   public schema(column: K, index: number): ISchema {
@@ -99,7 +100,7 @@ export abstract class BaseFormField<
       ...(column.rules || []),
       {
         required: column.require && type === 'form',
-        message: `请输入${placeholder}`,
+        message: `${placeholder}`,
       },
     ];
     return {
