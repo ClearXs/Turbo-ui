@@ -11,7 +11,7 @@ export type RelationComponentProps<T extends IdEntity> = {
   Display: React.ReactNode;
 };
 
-export const RelationComponent: React.FC<RelationComponentProps<any>> = ({
+const Relational: React.FC<RelationComponentProps<any>> = ({
   column,
   record,
   decorator,
@@ -56,3 +56,5 @@ export const RelationComponent: React.FC<RelationComponentProps<any>> = ({
     return Display;
   }
 };
+
+export default Relational;

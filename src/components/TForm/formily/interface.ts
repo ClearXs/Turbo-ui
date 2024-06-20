@@ -8,17 +8,24 @@ import {
 } from '../interface';
 import { IFormLayoutProps } from '@formily/semi';
 import { BoAttrSchema, FieldType } from '@designable/core';
+import { IdEntity } from '@/api';
 
-export type FormilyFormProps = IFormLayoutProps & {
-  formProps: FormProps<any>;
-  formContext: FormContext<any>;
-  // reaction 作用域变量
-  scope?: Record<string, object>;
-  // 附加的schema component
-  components?: Record<string, React.FC<any>>;
-  // 副作用
-  effects?: (form: Form) => void;
+export type FormilyFormContext<T extends IdEntity> = FormContext<T> & {
+  coreForm?: Form<T>;
+  setCoreForm(coreForm: Form<T>): void;
 };
+
+export type FormilyFormProps<T extends IdEntity = IdEntity> =
+  IFormLayoutProps & {
+    formProps: FormProps<T>;
+    formContext: FormContext<T>;
+    // reaction 作用域变量
+    scope?: Record<string, object>;
+    // 附加的schema component
+    components?: Record<string, React.FC<any>>;
+    // 副作用
+    effects?: (form: Form) => void;
+  };
 
 export interface SchemaColumn<Column extends FormColumnProps<any>> {
   /**

@@ -6,13 +6,13 @@ import {
   TreeGeneralApi,
 } from '@/api';
 import {
-  DataMode,
   SortColumn,
   TableApi,
+  TableApiEvent,
+  TableApiProps,
   TableContext,
   TableCrudProps,
 } from './interface';
-import { useMemo } from 'react';
 import { Toast } from '@douyinfe/semi-ui';
 import {
   TablePagination,
@@ -25,11 +25,9 @@ const check = <T extends IdEntity>(tableContext: TableContext<T>) => {
     Toast.error('未完成初始化!');
     return true;
   }
-  // api不存在
   if (tableContext.api === undefined) {
     return true;
   }
-  // 不具有api可操作性
   if (tableContext.props.operability === false) {
     return true;
   }
@@ -38,304 +36,365 @@ const check = <T extends IdEntity>(tableContext: TableContext<T>) => {
 
 type EventHandler<T extends IdEntity> = {
   onRemoveAfter: (props: TableCrudProps<T>, ids: T['id'][]) => void;
-  onQueryAfter: (
-    props: TableCrudProps<T>,
-    tableContext: TableContext<T>,
-    pageable?: TablePagination,
-  ) => void;
+  onQueryAfter: (props: TableCrudProps<T>, pageable?: TablePagination) => void;
 };
 
-export default function useTableApi<T extends IdEntity>(
-  mode: TableCrudProps<T>['mode'],
-  dataMode: DataMode,
-) {
-  return useMemo<TableApi<T>>(() => {
-    const eventHandler: EventHandler<T> = {
-      onRemoveAfter: function (props, ids): void {
-        const { event } = props;
-        try {
-          event?.onDeleteSuccess?.(ids);
-        } catch (err) {
-          console.error(err);
-        }
-      },
-      onQueryAfter: function (props, tableContext, pageable): void {
-        const { event } = props;
-        try {
-          event?.onQuerySuccess?.(tableContext, pageable);
-        } catch (err) {
-          console.error(err);
-        }
-      },
-    };
-    if (dataMode === 'local') {
-      return new DefaultTableApi(mode, eventHandler);
-    } else {
-      return new RemoteTableApi(mode, eventHandler);
+class EventHandlerImpl<T extends IdEntity> implements EventHandler<T> {
+  constructor(private tableContext: TableContext<T>) {}
+
+  onRemoveAfter(props: TableCrudProps<T>, ids: T['id'][]) {
+    const { event } = props;
+    try {
+      event?.onDeleteSuccess?.(ids);
+    } catch (err) {
+      console.error(err);
     }
-  }, []);
+  }
+  onQueryAfter(props: TableCrudProps<T>, pageable?: TablePagination) {
+    const { event } = props;
+    try {
+      event?.onQuerySuccess?.(this.tableContext, pageable);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }
 
-class DefaultTableApi<T extends IdEntity> implements TableApi<T> {
-  constructor(
-    private mode: TableCrudProps<T>['mode'],
-    private eventHandler: EventHandler<T>,
-  ) {}
+//
+export class DefaultTableApi<T extends IdEntity> implements TableApi<T> {
+  eventHandler: EventHandler<T>;
 
-  remove(tableContext: TableContext<T>, ids: string[]): void {
-    throw new Error('Method not implemented.');
+  constructor(
+    private tableContext: TableContext<T>,
+    private mode: TableCrudProps<T>['mode'],
+    private formContext?: FormContext<T>,
+  ) {
+    this.eventHandler = new EventHandlerImpl<T>(tableContext);
   }
-  list(tableContext: TableContext<T>): void {
-    // TODO should be add filter
+
+  saveOrUpdate(entity: T, props?: TableApiProps, event?: TableApiEvent): void {
+    const helperApi = this.tableContext.helperApi;
+    const id = this.tableContext.helperApi.getId(entity);
+    const dataSource = this.tableContext.dataSource;
+    if (id) {
+      dataSource.push(entity);
+    } else {
+      const index = helperApi.index(id);
+      dataSource[index] = entity;
+    }
+    event?.onSuccess?.();
+  }
+
+  inlineEdit(id: string, props?: TableApiProps, event?: TableApiEvent): void {
+    this.tableContext?.inlineEditorApi.open(id);
+    event?.onSuccess?.();
+  }
+
+  remove(ids: string[], props?: TableApiProps, event?: TableApiEvent): void {
+    const helperApi = this.tableContext.helperApi;
+    for (const id of ids) {
+      const dataSource = this.tableContext.dataSource;
+      const index = helperApi.index(id);
+      this.tableContext.dataSource = [
+        ...dataSource.slice(0, index),
+        ...dataSource.slice(index + 1),
+      ];
+    }
+    event?.onSuccess?.();
+  }
+
+  list(props?: TableApiProps, event?: TableApiEvent): void {
+    event?.onSuccess?.();
   }
   page(
-    tableContext: TableContext<T>,
-    pageable?: TablePagination | undefined,
+    pageable?: TablePagination,
+    props?: TableApiProps,
+    event?: TableApiEvent,
   ): void {
-    // TODO should be add filter and fake page
+    event?.onSuccess?.();
   }
-  tree(tableContext: TableContext<T>): void {
-    // TODO should be add filter
+  tree(props?: TableApiProps, event?: TableApiEvent): void {
+    event?.onSuccess?.();
   }
   listOrPageOrTree(
-    tableContext: TableContext<T>,
-    pageable?: TablePagination | undefined,
+    pageable?: TablePagination,
+    props?: TableApiProps,
+    event?: TableApiEvent,
   ): void {
     if (this.mode === 'list') {
-      this.list(tableContext);
+      this.list(props, event);
     } else if (this.mode === 'page' || this.mode === 'cardPage') {
-      this.page(tableContext, pageable);
+      this.page(pageable, props, event);
     } else if (this.mode === 'tree') {
-      this.tree(tableContext);
+      this.tree(props, event);
     }
   }
-  details(
-    tableContext: TableContext<T>,
-    formContext: FormContext<T>,
-    id: string,
-  ): void {
-    const { idKey, dataSource } = tableContext;
+
+  details(id: string, props?: TableApiProps, event?: TableApiEvent): void {
+    const { idKey, dataSource } = this.tableContext;
     const value = dataSource.find((data) => data[idKey] === id);
-    formContext.visible = true;
-    formContext.type = 'details';
-    formContext.values = value;
+    this.formContext!.visible = true;
+    this.formContext!.type = 'details';
+    this.formContext!.values = value;
+
+    event?.onSuccess?.();
   }
-  edit(
-    tableContext: TableContext<T>,
-    formContext: FormContext<T>,
-    id: string,
-  ): void {
-    const { idKey, dataSource } = tableContext;
+
+  edit(id: string, props?: TableApiProps, event?: TableApiEvent): void {
+    const { idKey, dataSource } = this.tableContext;
     const value = dataSource.find((data) => data[idKey] === id);
-    formContext.visible = true;
-    formContext.type = 'edit';
-    formContext.values = value;
+    this.formContext!.visible = true;
+    this.formContext!.type = 'edit';
+    this.formContext!.values = value;
+    event?.onSuccess?.();
   }
-  sort(tableContext: TableContext<T>, sortColumn: SortColumn): void {
-    throw new Error('Method not implemented.');
+
+  sort(
+    sortColumn: SortColumn,
+    props?: TableApiProps,
+    event?: TableApiEvent,
+  ): void {
+    // nothing
+  }
+
+  setTableContext(tableContext: TableContext<T>): void {
+    this.tableContext = tableContext;
+  }
+  setFormContext(fromContext: FormContext<T>): void {
+    this.formContext = fromContext;
   }
 }
 
 /**
  * base on remote invoke.
  */
-class RemoteTableApi<T extends IdEntity> implements TableApi<T> {
-  constructor(
-    private mode: TableCrudProps<T>['mode'],
-    private eventHandler: EventHandler<T>,
-  ) {}
+export class RemoteTableApi<T extends IdEntity> implements TableApi<T> {
+  eventHandler: EventHandler<T>;
 
-  remove(tableContext: TableContext<T>, ids: string[]): void {
-    if (check(tableContext)) {
-      return;
-    }
-    tableContext.api?.deleteEntity(ids).then((res) => {
-      if (res.code === 200 && res.data) {
-        Toast.success('删除成功!');
-        // 触发移除后的事件
-        this.eventHandler.onRemoveAfter(tableContext.props, ids);
-        // 判断删除数据是否已经等于当前页的数据
-        const dataSource = tableContext.dataSource;
-        if (
-          ids.length === dataSource.length &&
-          (this.mode === 'page' || this.mode === 'cardPage')
-        ) {
-          let page = tableContext.table.pagination?.currentPage - 1;
-          if (page < 1) {
-            page = 1;
-          }
-          const newPagination: TablePaginationProps = {
-            currentPage: page,
-            pageSize: tableContext.table.pagination?.pageSize,
-            total: tableContext.table.pagination?.total,
-          };
-          this.listOrPageOrTree(tableContext, newPagination);
-        } else {
-          this.listOrPageOrTree(tableContext);
-        }
-      } else {
-        Toast.error('删除失败');
-      }
-    });
+  constructor(
+    private tableContext: TableContext<T>,
+    private mode: TableCrudProps<T>['mode'],
+    private formContext?: FormContext<T>,
+  ) {
+    this.eventHandler = new EventHandlerImpl<T>(tableContext);
   }
-  list(tableContext: TableContext<T>): void {
-    if (check(tableContext)) {
-      return;
-    }
-    const checkedContext = tableContext;
-    tableContext.table.loading = true;
-    const params: GeneralParams<T> = {
-      entity: checkedContext.search as T,
-      orders: checkedContext.table.orders,
-    };
-    checkedContext.api
-      ?.list(params)
+
+  saveOrUpdate(entity: T, props?: TableApiProps, event?: TableApiEvent): void {
+    this.tableContext.api
+      ?.saveOrUpdate(entity)
       .then((res) => {
-        if (res.code === 200) {
-          const data = res.data;
-          checkedContext.dataSource = data as T[];
-          // 触发查询后的事件
-          this.eventHandler.onQueryAfter(
-            tableContext.props,
-            tableContext,
-            undefined,
-          );
+        const { code, data, message } = res;
+        if (code === 200 && data) {
+          (props?.showMessage || true) && Toast.success('保存成功!');
+          event?.onSuccess?.();
+        } else {
+          (props?.showMessage || true) && Toast.error(message);
+          event?.onError?.(new Error(message));
         }
-        checkedContext.table.loading = false;
-        checkedContext.table.selectedRowKeys = [];
-        checkedContext.table.pagination = false;
       })
       .catch((err) => {
-        checkedContext.table.loading = false;
-        checkedContext.table.selectedRowKeys = [];
-        checkedContext.table.pagination = false;
+        event?.onError?.(err);
       });
   }
+
+  inlineEdit(id: string, props?: TableApiProps, event?: TableApiEvent): void {
+    this.tableContext.inlineEditorApi.open(id);
+    event?.onSuccess?.();
+  }
+
+  remove(ids: string[], props?: TableApiProps, event?: TableApiEvent): void {
+    this.tableContext.api
+      ?.deleteEntity(ids)
+      .then((res) => {
+        const { code, data, message } = res;
+        if (code === 200 && data) {
+          (props?.showMessage || true) && Toast.success('删除成功!');
+          // 触发移除后的事件
+          this.eventHandler.onRemoveAfter(this.tableContext.props, ids);
+          // 判断删除数据是否已经等于当前页的数据
+          const dataSource = this.tableContext.dataSource;
+          if (
+            ids.length === dataSource.length &&
+            (this.mode === 'page' || this.mode === 'cardPage')
+          ) {
+            let page = this.tableContext.table.pagination?.currentPage - 1;
+            if (page < 1) {
+              page = 1;
+            }
+            const newPagination: TablePaginationProps = {
+              currentPage: page,
+              pageSize: this.tableContext.table.pagination?.pageSize,
+              total: this.tableContext.table.pagination?.total,
+            };
+            this.listOrPageOrTree(newPagination);
+          } else {
+            this.listOrPageOrTree();
+          }
+          event?.onSuccess?.();
+        } else {
+          (props?.showMessage || true) && Toast.error(message);
+          event?.onError?.(new Error(message));
+        }
+      })
+      .catch((err) => event?.onError?.(err));
+  }
+
+  list(props?: TableApiProps, event?: TableApiEvent): void {
+    this.tableContext.table.loading = true;
+    const params: GeneralParams<T> = {
+      entity: this.tableContext.search as T,
+      orders: this.tableContext.table.orders,
+    };
+    this.tableContext.api
+      ?.list(params)
+      .then((res) => {
+        const { code, data, message } = res;
+        if (code === 200) {
+          this.tableContext.dataSource = data as T[];
+          this.eventHandler.onQueryAfter(this.tableContext.props, undefined);
+          event?.onSuccess?.();
+        } else {
+          event?.onError?.(new Error(message));
+        }
+        this.tableContext.table.loading = false;
+        this.tableContext.table.selectedRowKeys = [];
+        this.tableContext.table.pagination = false;
+      })
+      .catch((err) => {
+        this.tableContext.table.loading = false;
+        this.tableContext.table.selectedRowKeys = [];
+        this.tableContext.table.pagination = false;
+        event?.onError?.(err);
+      });
+  }
+
   page(
-    tableContext: TableContext<T>,
-    pageable?: TablePagination | undefined,
+    pageable?: TablePagination,
+    props?: TableApiProps,
+    event?: TableApiEvent,
   ): void {
-    if (check(tableContext)) {
-      return;
-    }
     const searchPage = (pageable ||
-      tableContext.table.pagination) as TablePagination;
+      this.tableContext.table.pagination) as TablePagination;
     const page = {
       current: searchPage?.currentPage,
       size: searchPage?.pageSize,
     } as Pagination<T>;
-    tableContext.table.loading = true;
+    this.tableContext.table.loading = true;
     // 调用接口
     const params: GeneralParams<T> = {
-      entity: tableContext.search as T,
-      orders: tableContext.table.orders,
+      entity: this.tableContext.search as T,
+      orders: this.tableContext.table.orders,
     };
-    tableContext.api
+    this.tableContext.api
       ?.page(page, params)
       .then((res) => {
-        if (res.code === 200) {
-          const data = res.data;
+        const { code, data, message } = res;
+        if (code === 200) {
           const pageable: TablePagination = {
             currentPage: Number.parseInt(data.current),
             pageSize: Number.parseInt(data.size),
             total: Number.parseInt(data.total || '0'),
           };
-          tableContext.table.loading = false;
-          tableContext.table.selectedRowKeys = [];
-          tableContext.table.pagination = pageable;
-          tableContext.dataSource = data.records as T[];
-          // 触发查询后的事件
-          this.eventHandler.onQueryAfter(
-            tableContext.props,
-            tableContext,
-            pageable,
-          );
+          this.tableContext.table.loading = false;
+          this.tableContext.table.selectedRowKeys = [];
+          this.tableContext.table.pagination = pageable;
+          this.tableContext.dataSource = data.records as T[];
+          this.eventHandler.onQueryAfter(this.tableContext.props, pageable);
+          event?.onSuccess?.();
         } else {
-          tableContext.table.loading = false;
-          tableContext.table.selectedRowKeys = [];
+          event?.onError?.(new Error(message));
+          this.tableContext.table.loading = false;
+          this.tableContext.table.selectedRowKeys = [];
         }
       })
       .catch((err) => {
-        tableContext.table.loading = false;
-        tableContext.table.selectedRowKeys = [];
+        event?.onError?.(err);
+        this.tableContext.table.loading = false;
+        this.tableContext.table.selectedRowKeys = [];
       });
   }
-  tree(tableContext: TableContext<T>): void {
-    if (check(tableContext)) {
-      return;
-    }
-    tableContext.table.loading = true;
+
+  tree(props?: TableApiProps, event?: TableApiEvent): void {
+    this.tableContext.table.loading = true;
     const params: GeneralParams<T> = {
-      entity: tableContext.search as T,
+      entity: this.tableContext.search as T,
     };
-    (tableContext.api as TreeGeneralApi<T>)
+    (this.tableContext.api as TreeGeneralApi<T>)
       .tree(params)
       .then((res) => {
-        if (res.code === 200) {
-          tableContext.dataSource = res.data as T[];
-          // 触发查询后的事件
-          this.eventHandler.onQueryAfter(
-            tableContext.props,
-            tableContext,
-            undefined,
-          );
+        const { code, data, message } = res;
+        if (code === 200) {
+          this.tableContext.dataSource = data;
+          this.eventHandler.onQueryAfter(this.tableContext.props, undefined);
+          event?.onSuccess?.();
+        } else {
+          event?.onError?.(new Error(message));
         }
-        tableContext.table.loading = false;
-        tableContext.table.selectedRowKeys = [];
-        tableContext.table.pagination = false;
+        this.tableContext.table.loading = false;
+        this.tableContext.table.selectedRowKeys = [];
+        this.tableContext.table.pagination = false;
       })
       .catch((err) => {
-        tableContext.table.loading = false;
-        tableContext.table.selectedRowKeys = [];
-        tableContext.table.pagination = false;
+        this.tableContext.table.loading = false;
+        this.tableContext.table.selectedRowKeys = [];
+        this.tableContext.table.pagination = false;
       });
   }
+
   listOrPageOrTree(
-    tableContext: TableContext<T>,
-    pageable?: TablePagination | undefined,
+    pageable?: TablePagination,
+    props?: TableApiProps,
+    event?: TableApiEvent,
   ): void {
     if (this.mode === 'list') {
-      this.list(tableContext);
+      this.list(props, event);
     } else if (this.mode === 'page' || this.mode === 'cardPage') {
-      this.page(tableContext, pageable);
+      this.page(pageable, props, event);
     } else if (this.mode === 'tree') {
-      this.tree(tableContext);
+      this.tree(props, event);
     }
   }
-  details(
-    tableContext: TableContext<T>,
-    formContext: FormContext<T>,
-    id: string,
+
+  details(id: string, props?: TableApiProps, event?: TableApiEvent): void {
+    this.tableContext.api
+      ?.details(id)
+      .then((res) => {
+        const { code, data, message } = res;
+        if (code === 200) {
+          this.formContext!.visible = true;
+          this.formContext!.type = 'details';
+          this.formContext!.values = data;
+          event?.onSuccess?.();
+        } else {
+          event?.onError?.(new Error(message));
+        }
+      })
+      .catch((err) => event?.onError?.(err));
+  }
+
+  edit(id: string, props?: TableApiProps, event?: TableApiEvent): void {
+    this.tableContext.api
+      ?.details(id)
+      .then((res) => {
+        const { code, data, message } = res;
+        if (code === 200 && data) {
+          this.formContext!.visible = true;
+          this.formContext!.type = 'edit';
+          this.formContext!.values = data;
+          event?.onSuccess?.();
+        } else {
+          event?.onError?.(new Error(message));
+        }
+      })
+      .catch((err) => event?.onError?.(err));
+  }
+
+  sort(
+    sortColumn: SortColumn,
+    props?: TableApiProps,
+    event?: TableApiEvent,
   ): void {
-    if (check(tableContext)) {
-      return;
-    }
-    tableContext.api?.details(id).then((res) => {
-      if (res.code === 200) {
-        formContext.visible = true;
-        formContext.type = 'details';
-        formContext.values = res.data;
-      }
-    });
-  }
-  edit(
-    tableContext: TableContext<T>,
-    formContext: FormContext<T>,
-    id: string,
-  ): void {
-    if (check(tableContext)) {
-      return;
-    }
-    tableContext.api?.details(id).then((res) => {
-      if (res.code === 200 && res.data) {
-        formContext.visible = true;
-        formContext.type = 'edit';
-        formContext.values = res.data;
-      }
-    });
-  }
-  sort(tableContext: TableContext<T>, sortColumn: SortColumn): void {
-    const { tableColumns } = tableContext;
+    const { tableColumns } = this.tableContext;
     tableColumns.forEach((col) => {
       if (col.field === sortColumn.property) {
         col.sorter = sortColumn.sorted;
@@ -350,7 +409,18 @@ class RemoteTableApi<T extends IdEntity> implements TableApi<T> {
           property: col.field,
         } as Order;
       });
-    tableContext.table.orders = orders;
-    this.listOrPageOrTree(tableContext);
+    this.tableContext.table.orders = orders;
+    this.listOrPageOrTree();
+  }
+
+  setTableContext(tableContext: TableContext<T>): void {
+    if (tableContext === undefined || check(tableContext)) {
+      throw new Error('not finish initialization.');
+    }
+    this.tableContext = tableContext;
+  }
+
+  setFormContext(fromContext: FormContext<T>): void {
+    this.formContext = fromContext;
   }
 }

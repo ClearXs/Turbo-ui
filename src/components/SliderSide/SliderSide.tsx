@@ -17,6 +17,7 @@ const SliderSide = (props: SliderSideProps) => {
     scrollY = true,
     closable = true,
     size = 'medium',
+    afterClose,
   } = props;
   const { modularButtons, powerfulCancel } = useBottomButton(props);
 
@@ -28,9 +29,11 @@ const SliderSide = (props: SliderSideProps) => {
       visible={visible}
       closeOnEsc={closeOnEsc}
       size={size}
-      onCancel={powerfulCancel}
+      onCancel={() => {
+        powerfulCancel();
+        afterClose?.();
+      }}
       closable={closable}
-      zIndex={2000}
       footer={
         <ButtonGroup className="float-right">
           {modularButtons.map((button) => {

@@ -1,13 +1,11 @@
 import { IdEntity } from '@/api';
-import { OperateToolbar, TableContext } from './interface';
+import { OperateToolbar } from './interface';
 import { tryGetIcon } from '../Icon/shared';
 import { Button, ButtonGroup, Dropdown, Tooltip } from '@douyinfe/semi-ui';
 import _ from 'lodash';
-import { useContext } from 'react';
-import { TableCrudContext } from './context/table';
-import { FormContext } from '../TForm/interface';
-import { TFormContext } from '../TForm/context/form';
 import { observer } from '@formily/reactive-react';
+import useTableCrudContext from './hook/table';
+import useTableFormContext from './hook/tableForm';
 
 export type OperatorButtonSetProps<T extends IdEntity> = {
   bars: OperateToolbar<T>[];
@@ -17,10 +15,10 @@ export type OperatorButtonSetProps<T extends IdEntity> = {
   showButtonName?: boolean;
   className?: string;
   // 支持的模式
-  // composite:  Button 和 Dropdown缩略的联合
+  // composite: Button 和 Dropdown缩略的联合
   // mixed: 根据指定的aggregate与operate bar的数量进行比较 选择Button Or Dropdown
-  // shrink：直接选择dropdown
-  // direct:直接选择Button
+  // shrink: 直接选择dropdown
+  // direct: 直接选择Button
   mode: 'composite' | 'mixed' | 'shrink' | 'direct';
 };
 
@@ -33,8 +31,8 @@ const OperatorButtonSet = observer(
     showButtonName = true,
     className,
   }: OperatorButtonSetProps<T>) => {
-    const tableContext = useContext<TableContext<T>>(TableCrudContext);
-    const formContext = useContext<FormContext<T>>(TFormContext);
+    const tableContext = useTableCrudContext();
+    const formContext = useTableFormContext();
 
     const CompositeButtonSetComponent = (
       retainBars: OperateToolbar<T>[],
@@ -50,8 +48,7 @@ const OperatorButtonSet = observer(
                 size={bar.size}
                 icon={bar.icon}
                 type={bar.type}
-                onClick={(event) => {
-                  event.stopPropagation();
+                onClick={() => {
                   bar.onClick?.(tableContext, formContext, record);
                 }}
               >

@@ -1,7 +1,7 @@
 import { Button, Popover, Tooltip } from '@douyinfe/semi-ui';
 import { Bar } from '../interface';
 import useTableCrudContext from './table';
-import useFormContext from '@/components/TForm/hook/form';
+import useTableFormContext from './tableForm';
 
 // 基于可操作性属性返回可操作性的按钮
 export const useOperabilityBar = () => {
@@ -23,7 +23,7 @@ export const useOperabilityBar = () => {
 
 export const useIconBar = () => {
   const tableContext = useTableCrudContext();
-  const formContext = useFormContext();
+  const formContext = useTableFormContext();
   return <T extends Bar<any>>(barProps: T, on?: () => void) => {
     const {
       code,
@@ -63,7 +63,7 @@ export const useIconBar = () => {
 
 export const useTextIconBar = () => {
   const tableContext = useTableCrudContext();
-  const formContext = useFormContext();
+  const formContext = useTableFormContext();
   return <T extends Bar<any>>(barProps: T, on?: () => void) => {
     const {
       code,

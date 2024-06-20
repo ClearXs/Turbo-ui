@@ -1,5 +1,5 @@
 import { IdEntity } from '@/api';
-import { Switch } from '@douyinfe/semi-ui';
+import { Form, Switch } from '@douyinfe/semi-ui';
 import { BaseTableField, TableSwitchColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';
@@ -9,11 +9,21 @@ export class SwitchTableField<T extends IdEntity> extends BaseTableField<
   TableSwitchColumnProps<T>
 > {
   protected doWrap(column: TableSwitchColumnProps<T>): ColumnProps<T> {
-    const render: ColumnRender<T> = (text, record) => {
+    const render: ColumnRender<T> = (text, record, index) => {
+      const props = this.getGeneralProps(column, 'form');
       const value = record[column.field];
-      return <Switch disabled checked={value} size="small" />;
+      return this.isEditing(column, record) ? (
+        <Form.Switch
+          {...props}
+          noLabel
+          field={`data[${index}][${column.dataIndex}]`}
+          pure
+        />
+      ) : (
+        <Switch disabled checked={value} size="small" />
+      );
     };
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
   public getType(): ColumnType {
     return 'switch';

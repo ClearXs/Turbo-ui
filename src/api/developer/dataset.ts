@@ -35,7 +35,7 @@ export interface Dataset extends TenantEntity, CategoryEntity {
 
 export interface DatasetApi extends GeneralApi<Dataset> {}
 
-class DatasetApiImpl extends GeneralApiImpl<Dataset> implements DatesetApi {}
+class DatasetApiImpl extends GeneralApiImpl<Dataset> implements DatasetApi {}
 
 export default function useDatasetApi(): DatasetApi {
   const request = useRequest();

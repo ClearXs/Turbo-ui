@@ -12,16 +12,10 @@ import TableCrud from '@/components/TableCrud';
 import { useKernel } from '../kernel';
 import { IdEntity } from '@/api';
 import { observer } from '@formily/reactive-react';
-import { useMemo } from 'react';
-import { observable } from '@formily/reactive';
 
 const DataViewPanel = observer(() => {
   const kernel = useKernel();
   const dataView = kernel.getDataView();
-
-  const observerDataViewProps = useMemo(() => {
-    return observable({ tableContext: undefined });
-  }, []);
 
   return (
     <>
@@ -44,9 +38,6 @@ const DataViewPanel = observer(() => {
                   }}
                   operability={false}
                   {...dataView}
-                  getTableContext={(tableContext) =>
-                    (observerDataViewProps.tableContext = tableContext)
-                  }
                 />
               )}
             </ViewPanel>
@@ -54,9 +45,7 @@ const DataViewPanel = observer(() => {
         </WorkspacePanel>
       </Workspace>
       <SettingsPanel title="panels.DataViewSettings">
-        {observerDataViewProps.tableContext && (
-          <DataViewForm tableContext={observerDataViewProps.tableContext} />
-        )}
+        <DataViewForm />
       </SettingsPanel>
     </>
   );

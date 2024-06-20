@@ -7,12 +7,12 @@ import { usePrefix } from '@designable/react';
 import cls from 'classnames';
 import { Button, Typography } from '@douyinfe/semi-ui';
 import { OperateToolbar } from '@/components/TableCrud/interface';
+import BorderedList from '@/components/List/BorderedList';
 import {
   DELETE_LITERAL_OPERATOR_BAR,
   DETAILS_LITERAL_OPERATOR_BAR,
   EDIT_LITERAL_OPERATOR_BAR,
-} from '@/components/TableCrud/TableCrudOperatorBar';
-import BorderedList from '@/components/List/BorderedList';
+} from '@/components/TableCrud/TableColumnBuilder';
 
 export interface OperatorBarSetterProps {
   className?: string;

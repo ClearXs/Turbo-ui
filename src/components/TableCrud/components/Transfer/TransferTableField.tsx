@@ -9,7 +9,7 @@ export class TransferTableField<T extends IdEntity> extends BaseTableField<
   TableTransferColumnProps<T>
 > {
   doWrap(column: TableTransferColumnProps<T>): ColumnProps<T> {
-    return { ...column };
+    return { ...column, render: this.withColumnRender(column, undefined) };
   }
 
   public getType(): ColumnType {

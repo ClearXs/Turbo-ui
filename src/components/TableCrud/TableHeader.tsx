@@ -23,22 +23,14 @@ const TableHeader = observer(
     }, []);
 
     const tableContext = useContext<TableContext<T>>(TableCrudContext);
-
+    const { columns = [], params, search = {} } = props.tableProps;
     const {
-      columns = [],
-      params,
-      search: {
-        show = true,
-        disabled = false,
-        showSearch = true,
-        showReset = true,
-      } = {
-        show: true,
-        disabled: false,
-        showSearch: true,
-        showReset: true,
-      },
-    } = props.tableProps;
+      show = true,
+      disabled = false,
+      showSearch = true,
+      showReset = true,
+    } = search || {};
+
     // 不调用tableContext.getTableColumns，避免都更改内部columns导致搜索项更改，从而杜绝页面大规模的动画
     const searchColumns = columns
       .filter((col) => {
@@ -87,6 +79,7 @@ const TableHeader = observer(
               params,
             );
             tableContext.search = values;
+            tableContext.inlineEditorApi.clear();
           }}
         >
           搜索
@@ -103,6 +96,7 @@ const TableHeader = observer(
           onClick={() => {
             formApiRef.current?.reset();
             tableContext.search = params || {};
+            tableContext.inlineEditorApi.clear();
           }}
         >
           重制

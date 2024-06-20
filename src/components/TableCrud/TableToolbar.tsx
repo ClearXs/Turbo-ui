@@ -16,11 +16,9 @@ import {
   TableToolbarProps,
   Toolbar,
 } from './interface';
-import { FormContext } from '../TForm/interface';
 import { IdEntity } from '@/api';
 import { useContext, useMemo } from 'react';
 import { TableCrudContext } from './context/table';
-import { TFormContext } from '../TForm/context/form';
 import Modular from '../Modular/Modular';
 import { useIconBar, useOperabilityBar, useTextIconBar } from './hook/bar';
 import DraggableColumnList from './DraggableColumnList';
@@ -83,7 +81,6 @@ export const ORDERED_LITERAL_TOOLBAR: Toolbar<any> = {
 };
 
 const renderableToolbar = <T extends IdEntity>(
-  formContext: FormContext<T>,
   tableContext: TableContext<T>,
   tableProps: TableCrudProps<T>,
   operabilityBar: <T extends Bar<any>>(props: T) => T,
@@ -142,7 +139,6 @@ const renderableToolbar = <T extends IdEntity>(
             title: '是否确定删除',
             onConfirm: () => {
               tableContext.tableApi.remove(
-                tableContext,
                 tableContext.table.selectedRowKeys as string[],
               );
             },
@@ -158,7 +154,8 @@ const renderableToolbar = <T extends IdEntity>(
     const refreshToolbar: Toolbar<T> = {
       ...REFRESH_LITERAL_TOOLBAR,
       onClick(tableContext, formContext) {
-        tableContext.tableApi.listOrPageOrTree(tableContext);
+        tableContext.tableApi.listOrPageOrTree();
+        tableContext.inlineEditorApi.clear();
       },
     };
     toolbar.push(operabilityBar(refreshToolbar));
@@ -194,14 +191,14 @@ const renderableToolbar = <T extends IdEntity>(
               const { checked } = e.target;
               const newColumns = [...temporaryColumns];
               newColumns.forEach((column) => (column.table = checked));
-              tableContext.setTableColumns(newColumns);
+              tableContext.tableColumns = newColumns;
             }}
           >
             全选 {`${displayColumns.length}/${temporaryColumns.length}`}
           </Checkbox>
           <DraggableColumnList<T>
             columns={temporaryColumns}
-            onDrop={(columns) => tableContext.setTableColumns(columns)}
+            onDrop={(columns) => (tableContext.tableColumns = columns)}
             onCheck={(column) => {
               const newColumns = [...temporaryColumns];
               newColumns.forEach((col) => {
@@ -209,7 +206,7 @@ const renderableToolbar = <T extends IdEntity>(
                   col.table = true;
                 }
               });
-              tableContext.setTableColumns(newColumns);
+              tableContext.tableColumns = newColumns;
             }}
           />
         </div>
@@ -235,7 +232,7 @@ const renderableToolbar = <T extends IdEntity>(
                   onChange={(e) => {
                     const value = e.target.value;
                     column.sortOrder = value;
-                    tableContext.tableApi.sort(tableContext, {
+                    tableContext.tableApi.sort({
                       property: column.field,
                       order: value,
                       sorted: true,
@@ -268,17 +265,11 @@ function TableToolbar<T extends IdEntity>(props: TableToolbarProps<T>) {
   const { show = true } = tableProps.toolbar || {};
   const { showModelSwitch = true } = tableProps.toolbar || {};
   const tableContext = useContext<TableContext<T>>(TableCrudContext);
-  const formContext = useContext<FormContext<T>>(TFormContext);
   const textIconBar = useTextIconBar();
   const iconBar = useIconBar();
   const operabilityBar = useOperabilityBar();
 
-  const toolbar = renderableToolbar(
-    formContext,
-    tableContext,
-    tableProps,
-    operabilityBar,
-  );
+  const toolbar = renderableToolbar(tableContext, tableProps, operabilityBar);
 
   return (
     show && (

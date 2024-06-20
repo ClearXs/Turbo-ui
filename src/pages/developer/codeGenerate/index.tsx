@@ -30,6 +30,7 @@ const CodeGenerateComponent = () => {
         RightComponent={
           <CategoryTableCrud<CodeGenerate>
             mode="page"
+            modal={{ closeOnEsc: false }}
             columns={CodeGeneratorHelper.getColumns()}
             useApi={CodeGeneratorHelper.getApi}
             funcCode="codeGenerate"

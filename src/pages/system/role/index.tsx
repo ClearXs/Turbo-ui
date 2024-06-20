@@ -12,7 +12,7 @@ import useRoleMenuApi from '@/api/system/rolemenu';
 import Modular from '@/components/Modular/Modular';
 import { IconAuthorize } from '@/components/Icon/collection/IconAuthorize';
 
-const Role: React.FC = () => {
+const RoleComponent: React.FC = () => {
   const roleApi = useRoleApi();
   const [showGrant, setShowGrant] = useState<boolean>(false);
   const roleRef = useRef<Role>();
@@ -88,4 +88,4 @@ const Role: React.FC = () => {
   );
 };
 
-export default Role;
+export default RoleComponent;

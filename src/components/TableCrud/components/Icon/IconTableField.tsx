@@ -25,7 +25,7 @@ export class IconTableField<T extends IdEntity> extends BaseTableField<
         <Typography.Text>{iconName}</Typography.Text>
       );
     };
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
 
   public getType(): ColumnType {

@@ -8,6 +8,7 @@ import {
 import { FormColumnProps, FormContext, FormProps } from '../TForm/interface';
 import { TableColumnDecorator } from './table';
 import { PopoverProps } from '@douyinfe/semi-ui/lib/es/popover';
+import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 
 export type ViewModel =
   // 无分页列表
@@ -75,13 +76,21 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   id?: string;
   // table 视图模式
   mode: ViewModel;
+  // table width
+  width?: string | number;
+  // table height
   height?: string | 'auto';
+  // fixed table
+  fixed?: boolean;
   // 数据源
   dataSource?: T[];
   // 数据字段
   columns: TableColumnProps<T>[];
   // 是否具有可操作（意味着能否用是否api进行crud、能否点击操作按钮进行操作...）
   operability?: boolean;
+  // whether disable assigned value in column
+  // default is true
+  disableDefaultBehavior?: boolean;
   // search参数
   search?: {
     // 是否显示search
@@ -118,6 +127,8 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   };
   // 操作列
   operateBar?: {
+    // 是否行内编辑
+    showInlineEdit?: boolean | ((record: T) => boolean);
     // 是否显示编辑操作
     showEdit?: boolean | ((record: T) => boolean);
     // 是否显示删除操作
@@ -174,6 +185,16 @@ export type TableColumnProps<T extends IdEntity> = FormColumnProps<T> &
     table?: boolean | ((tableContext: TableContext<T>) => boolean);
     // 是否支持搜索，如果true则把column展示在搜索栏中，默认false
     search?: boolean | ((tableContext: TableContext<T>) => boolean);
+    // whether column editable
+    // default is true
+    editable?: boolean;
+    // column render
+    render?: (
+      text: string,
+      record: T,
+      index: number,
+      tableContext: TableContext<T>,
+    ) => React.ReactNode;
   };
 
 // card column 属性
@@ -196,12 +217,18 @@ export type TableContext<T extends IdEntity> = {
   idKey: string;
   // table props
   props: TableCrudProps<T>;
+  // inline editor props
+  inlineEditor: InlineEditor<T>;
   // table 模式
   mode: TableCrudProps<T>['mode'];
   // entity api
   api?: GeneralApi<T>;
   // table api
   tableApi: TableApi<T>;
+  // inline editor api
+  inlineEditorApi: InlineEditorApi<T>;
+  // table helper api
+  helperApi: HelperApi<T>;
   // table columns
   tableColumns: TableColumnProps<T>[];
   // 表头搜索值
@@ -226,6 +253,8 @@ export type TableContext<T extends IdEntity> = {
   dataSource: T[];
   // table columns decorator
   decorator: TableColumnDecorator<T>;
+  // the table form context
+  formContext?: FormContext<T>;
   // 刷新table，使其重新调用接口（TODO 可能会出现预想不到情况）
   refresh: () => void;
 
@@ -252,43 +281,96 @@ export type TableContext<T extends IdEntity> = {
    * get select rows
    */
   getSelectedRows(): T[];
+
+  /**
+   * set form context
+   *
+   * @param formContext the form context instance
+   */
+  setFormContext(formContext: FormContext<T>): void;
 };
 
+export interface TableApiEvent {
+  // when invoke api success callback
+  onSuccess?: (data?: any) => void;
+  // when failed to invoke api callback
+  onError?: (err: Error) => void;
+}
+
+export interface TableApiProps {
+  showMessage?: boolean;
+}
+
 export interface TableApi<T extends IdEntity> {
-  // 移除table数据
-  remove(tableContext: TableContext<T>, ids: string[]): void;
-  // list table数据
-  list(tableContext: TableContext<T>): void;
-  // page table数据
-  page(tableContext: TableContext<T>, pageable?: TablePagination): void;
-  // tree table数据
-  tree(tableContext: TableContext<T>): void;
-  listOrPageOrTree(
-    tableContext: TableContext<T>,
+  saveOrUpdate(entity: T, props?: TableApiProps, event?: TableApiEvent): void;
+  // remove data
+  remove(ids: string[], props?: TableApiProps, event?: TableApiEvent): void;
+  // list table data
+  list(props?: TableApiProps, event?: TableApiEvent): void;
+  // page table data
+  page(
     pageable?: TablePagination,
+    props?: TableApiProps,
+    event?: TableApiEvent,
   ): void;
-  // 数据详情
-  details(
-    tableContext: TableContext<T>,
-    formContext: FormContext<T>,
-    id: string,
+  // tree table data
+  tree(props?: TableApiProps, event?: TableApiEvent): void;
+  listOrPageOrTree(
+    pageable?: TablePagination,
+    props?: TableApiProps,
+    event?: TableApiEvent,
   ): void;
-  // 编辑
-  edit(
-    tableContext: TableContext<T>,
-    formContext: FormContext<T>,
-    id: string,
+  // data details
+  details(id: string, props?: TableApiProps, event?: TableApiEvent): void;
+  // edit data
+  edit(id: string, props?: TableApiProps, event?: TableApiEvent): void;
+  // inline edit
+  inlineEdit(id: string, props?: TableApiProps, event?: TableApiEvent): void;
+  // sort data
+  sort(
+    sortColumn: SortColumn,
+    props?: TableApiProps,
+    event?: TableApiEvent,
   ): void;
-  // sort 排序
-  sort(tableContext: TableContext<T>, sortColumn: SortColumn): void;
+  setTableContext(tableContext: TableContext<T>): void;
+  setFormContext(fromContext: FormContext<T>): void;
 }
 
 export type RenderOperatorBarType<T extends IdEntity> = (
   record: T,
+  tableContext: TableContext<T>,
   operateBar?: TableCrudProps<T>['operateBar'],
-  tableApi?: TableApi<T>,
 ) => OperateToolbar<T>[];
 
 export type TableToolbarProps<T extends IdEntity> = {
   tableProps: TableCrudProps<T>;
+};
+
+export type ApiSet<T extends IdEntity> = {
+  tableApi: TableApi<T>;
+  inlineEditorApi: InlineEditorApi<T>;
+  helperApi: HelperApi<T>;
+};
+
+export type InlineEditorApi<T extends IdEntity> = {
+  open: (id: T['id']) => void;
+  save: (id: T['id']) => void;
+  isEditing: (id: T['id']) => boolean;
+  contains: (id: T['id']) => boolean;
+  finish: (id: T['id']) => void;
+  clear: () => void;
+  hasElement: () => boolean;
+  setFormApi: (formApi: FormApi<{ data: T[] }>) => void;
+};
+
+export type InlineEditor<T extends IdEntity> = {
+  modCount: number;
+  editing: Map<T['id'], boolean>;
+};
+
+export type HelperApi<T extends IdEntity> = {
+  getId: (entity: T) => T['id'];
+  // entity in table dataSource index
+  index: (id: T['id']) => number;
+  indexOfEntity: (entity: T) => number;
 };

@@ -27,3 +27,4 @@ export * from './IconOrgManager';
 export * from './IconCode';
 export * from './IconGenerate';
 export * from './IconTemplateManager';
+export * from './IconAutoNumber';

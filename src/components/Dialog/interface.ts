@@ -15,9 +15,9 @@ export type DialogProps = {
   // 是否显示关闭按钮
   closable?: boolean;
   // 是否显示确认操作
-  showConfirm?: boolean;
+  showConfirm?: boolean | (() => boolean);
   // 是否显示取消操作
-  showCancel?: boolean;
+  showCancel?: boolean | (() => boolean);
   // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
   append?: DialogButtonProps[];
   // 是否显示Y轴滑动轮

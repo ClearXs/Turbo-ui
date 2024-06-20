@@ -5,6 +5,7 @@ import ConstantTag from '@/components/Tag/ConstantTag';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { findTreeConstant } from '@/constant/util';
 import { ColumnType } from '@/components/TForm/interface';
+import { Form } from '@douyinfe/semi-ui';
 
 export class CascadeTableField<T extends IdEntity> extends BaseTableField<
   T,
@@ -12,11 +13,30 @@ export class CascadeTableField<T extends IdEntity> extends BaseTableField<
 > {
   doWrap(column: TableCascadeColumnProps<T>): ColumnProps<T> {
     const render = (text: string, record: T, index: number) => {
+      const props = this.getGeneralProps(column, 'form');
+      const { optionTree } = column;
+
+      const treeConstant =
+        typeof optionTree === 'function'
+          ? optionTree(this.decorator.getFormContext())
+          : optionTree;
       const value = record[column.field];
-      let dic = findTreeConstant(value, column.optionTree);
-      return dic ? <ConstantTag constant={dic} /> : value;
+      const dic = findTreeConstant(value, treeConstant);
+      return this.isEditing(column, record) ? (
+        <Form.Cascader
+          {...props}
+          treeData={dic}
+          noLabel
+          field={`data[${index}][${column.dataIndex}]`}
+          pure
+        ></Form.Cascader>
+      ) : dic ? (
+        <ConstantTag constant={dic} />
+      ) : (
+        value
+      );
     };
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
 
   public getType(): ColumnType {

@@ -4,7 +4,7 @@ import { BaseTableField } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';
 import { findConstant } from '@/constant/util';
-import { RelationComponent } from '../RelationField';
+import Relational from '../RelationField';
 import { TableUserColumnProps } from '.';
 
 export class UserTableField<T extends IdEntity> extends BaseTableField<
@@ -20,7 +20,7 @@ export class UserTableField<T extends IdEntity> extends BaseTableField<
       const constants = formContext?.dataSet['user'] || [];
       const constant = findConstant(value, constants);
       const Display = constant ? (
-        <RelationComponent
+        <Relational
           column={column}
           record={record}
           decorator={decorator}
@@ -31,7 +31,7 @@ export class UserTableField<T extends IdEntity> extends BaseTableField<
       );
       return Display;
     };
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
 
   public getType(): ColumnType {

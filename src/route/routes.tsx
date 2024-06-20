@@ -21,6 +21,7 @@ import Cloudstorageconfig from '@/pages/developer/cloudstorageconfig';
 import IconList from '@/pages/developer/icon';
 import CodeGenerateTemplateComponent from '@/pages/developer/codeGenerateTemplate';
 import CodeGenerateComponent from '@/pages/developer/codeGenerate';
+import SequenceComponent from '@/pages/developer/sequence';
 
 // 预定义加载组件
 type PreviewRoute = {
@@ -117,5 +118,9 @@ export default [
   {
     path: '/domain/:id',
     element: <Domain />,
+  },
+  {
+    path: '/developer/sequence',
+    element: <SequenceComponent />,
   },
 ] as PreviewRoute[];

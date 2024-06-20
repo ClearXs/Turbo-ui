@@ -7,7 +7,10 @@ import {
   TableSelectColumnProps,
   TableSlotColumnProps,
 } from '@/components/TableCrud/components';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import {
+  TableColumnProps,
+  TableContext,
+} from '@/components/TableCrud/interface';
 import { Helper } from '@/components/interface';
 import { CodeGenerateSource } from '@/constant/codeGenerateSource';
 import { Button } from '@douyinfe/semi-ui';
@@ -18,11 +21,16 @@ import useDataSourceApi from '@/api/developer/datasource';
 import { FormJsonObjectColumnProps } from '@/components/TForm/components';
 import { useRunScope } from '@/components/TForm/formily/scope/run';
 import { transformToDataView } from '../editor/util';
+import usePageApi from '@/api/developer/page';
+import App from '@/components/App';
 
 const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
   getColumns: () => {
     const runScope = useRunScope();
     const dataSourceApi = useDataSourceApi();
+    const pageApi = usePageApi();
+    const { sliderSide } = App.useApp();
+
     return [
       {
         label: '模块名称',
@@ -50,6 +58,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        extraText: '比如：/code',
       },
       {
         label: '模块请求路径',
@@ -59,6 +68,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        extraText: '比如：/dev/code/generate',
       },
       {
         label: '模块版本号',
@@ -96,7 +106,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
       } as TableSelectColumnProps<CodeGenerate>,
       {
         label: '来源',
-        field: 'domain',
+        field: 'source',
         ellipsis: true,
         align: 'center',
         type: 'select',
@@ -119,7 +129,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
           url: '/api/dev/page/list',
         },
         reaction: {
-          dependencies: ['domain'],
+          dependencies: ['source'],
           fulfill: {
             schema: {
               'x-visible': "{{$deps[0] === 'page'}}",
@@ -135,6 +145,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         type: 'jsonObject',
         line: true,
         require: true,
+        table: false,
         columns: [
           {
             label: '数据源',
@@ -157,9 +168,9 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
             reaction: {
               dependencies: ['datatable.dataSource'],
               fulfill: {
-                run: runScope.setFieldState(
-                  'datatable.table',
-                  (form, field, formContext, args) => {
+                run: runScope.setFieldStateList({
+                  path: 'datatable.table',
+                  func: (form, field, formContext, args) => {
                     const maybeDataSourceId = args && args[0];
                     if (!_.isEmpty(maybeDataSourceId)) {
                       dataSourceApi
@@ -179,13 +190,13 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
                         });
                     }
                   },
-                ),
+                }),
               },
             },
           } as TableCascadeColumnProps<CodeGenerate>,
         ],
         reaction: {
-          dependencies: ['domain'],
+          dependencies: ['source'],
           fulfill: {
             schema: {
               'x-visible': "{{$deps[0] === 'datatable'}}",
@@ -201,42 +212,85 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         type: 'slot',
         shown: (
           <Button theme="borderless" type="primary" block>
-            编辑
+            查看
           </Button>
         ),
         component: (formContext: FormContext<any>) => {
-          const dataView = formContext.getValue('dataView');
+          let dataView: DataView = formContext.getValue('dataView');
+          try {
+            const maybeStringDataView = dataView;
+            dataView = JSON.parse(maybeStringDataView);
+          } catch (err) {}
           return (
-            <CodeGenerateEditor formContext={formContext} dataView={dataView} />
+            <CodeGenerateEditor
+              formContext={formContext}
+              dataView={dataView}
+              displayDetails={formContext.type === 'details'}
+            />
           );
         },
         reaction: {
-          dependencies: ['datatable.table'],
+          dependencies: ['datatable.table', 'pageId'],
           fulfill: {
-            run: runScope.setFieldState(
-              'dataView',
-              (form, filed, formContext, args) => {
-                const tableName = args?.[0];
-                if (_.isEmpty(tableName)) {
-                  return;
+            run: runScope.setFieldState({
+              path: 'dataView',
+              func: (form, field, formContext, deps) => {
+                const tableName = deps?.[0];
+                const pageId = deps?.[1];
+                if (!_.isEmpty(tableName)) {
+                  const values = formContext.getValues() as CodeGenerate;
+                  dataSourceApi
+                    .showTable(
+                      values.datatable['dataSource'],
+                      values.datatable['table'],
+                    )
+                    .then((res) => {
+                      const { code, data } = res;
+                      if (code === 200) {
+                        // transform to data view
+                        const dataView = transformToDataView(data);
+                        formContext.setValue('dataView', dataView);
+                      }
+                    });
                 }
-                const values = formContext.getValues() as CodeGenerate;
-                dataSourceApi
-                  .showTable(
-                    values.datatable['dataSource'],
-                    values.datatable['table'],
-                  )
-                  .then((res) => {
+                if (!_.isEmpty(pageId)) {
+                  pageApi.details(pageId).then((res) => {
                     const { code, data } = res;
                     if (code === 200) {
-                      // transform to data view
-                      const dataView = transformToDataView(data);
-                      formContext.setValue('dataView', dataView);
+                      formContext.setValue('dataView', data.dataview);
                     }
                   });
+                }
               },
-            ),
+            }),
           },
+        },
+        render: (text, record, index, tableContext) => {
+          return (
+            <Button
+              theme="borderless"
+              type="primary"
+              block
+              onClick={() => {
+                const formContext = (tableContext as TableContext<any>)
+                  .formContext;
+                const dataView: string = record.dataView;
+                sliderSide.show({
+                  showConfirm: false,
+                  content: (
+                    <CodeGenerateEditor
+                      formContext={formContext!}
+                      dataView={JSON.parse(dataView)}
+                      displayDetails={true}
+                    />
+                  ),
+                  size: 'large',
+                });
+              }}
+            >
+              查看
+            </Button>
+          );
         },
       } as TableSlotColumnProps<CodeGenerate>,
     ] as TableColumnProps<CodeGenerate>[];

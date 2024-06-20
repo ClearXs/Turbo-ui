@@ -8,7 +8,7 @@ export class SliderTableField<T extends IdEntity> extends BaseTableField<
   TableSliderColumnProps<T>
 > {
   doWrap(column: TableSliderColumnProps<T>): ColumnProps<T> {
-    return { ...column };
+    return { ...column, render: this.withColumnRender(column, undefined) };
   }
 
   public getType(): ColumnType {

@@ -17,7 +17,7 @@ export class JsonObjectTableField<T extends IdEntity> extends BaseTableField<
         </Tooltip>
       );
     };
-    return { ...column, render: column.render || render };
+    return { ...column, render: this.withColumnRender(column, render) };
   }
 
   public getType(): ColumnType {
