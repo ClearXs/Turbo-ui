@@ -1,5 +1,7 @@
 import useRequest from '@/hook/request';
-import { BaseEntity, CategoryEntity, GeneralApi, GeneralApiImpl } from '..';
+import { BaseEntity, CategoryEntity, GeneralApi, GeneralApiImpl, R } from '..';
+import { CodeGenerateTemplate } from './codeGenerateTemplate';
+import { LanguageName } from '@uiw/codemirror-extensions-langs';
 
 export interface CodeGenerate extends BaseEntity, CategoryEntity {
   /**
@@ -71,9 +73,32 @@ export interface CodeGenerate extends BaseEntity, CategoryEntity {
   categoryId: string;
 }
 
-export interface CodeGenerateApi extends GeneralApi<CodeGenerate> {}
+export interface CodeContent {
+  filename: string;
+  content: string;
+  language: LanguageName;
+  template: CodeGenerateTemplate;
+}
 
-class CodeGenerateApiImpl extends GeneralApiImpl<CodeGenerate> {}
+export interface CodeGenerateApi extends GeneralApi<CodeGenerate> {
+  preview: (id: string) => Promise<R<CodeContent[]>>;
+  generate: (id: string) => Promise<void>;
+}
+
+class CodeGenerateApiImpl
+  extends GeneralApiImpl<CodeGenerate>
+  implements CodeGenerateApi
+{
+  preview(id: string): Promise<R<CodeContent[]>> {
+    return this.request
+      .get(this.apiPath + `/preview/${id}`)
+      .then((res) => res.data);
+  }
+
+  generate(id: string): Promise<void> {
+    return this.request.get(this.apiPath + `/generate/${id}`).then();
+  }
+}
 
 export default function useCodeGenerateApi(): CodeGenerateApi {
   const request = useRequest();

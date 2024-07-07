@@ -73,6 +73,8 @@ const DataSource: React.FC = () => {
                 title: value.name,
                 content: <TableGrid dataSourceId={value.id} />,
                 size: 'full-width',
+                showConfirm: false,
+                showCancel: false,
               });
             },
           },

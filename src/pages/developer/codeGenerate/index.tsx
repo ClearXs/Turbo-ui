@@ -5,11 +5,17 @@ import TreePanel from '@/components/Tree/TreePanel';
 import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import { useState } from 'react';
-import { CodeGenerate } from '@/api/developer/codeGenerate';
+import useCodeGenerateApi, { CodeGenerate } from '@/api/developer/codeGenerate';
 import { tryGetIcon } from '@/components/Icon';
+import App from '@/components/App';
+import { Toast } from '@douyinfe/semi-ui';
+import PreviewCodeContent from './PreviewCodeContent';
+import { open } from '@/util/auth';
 
 const CodeGenerateComponent = () => {
   const [categoryId, setCategoryId] = useState<string>();
+  const codeGenerateApi = useCodeGenerateApi();
+  const { sliderSide } = App.useApp();
 
   return (
     <>
@@ -43,12 +49,33 @@ const CodeGenerateComponent = () => {
                   name: '预览',
                   icon: tryGetIcon('IconEyeOpened'),
                   type: 'primary',
+                  onClick(tableContext, formContext, value) {
+                    codeGenerateApi.preview(value.id).then((res) => {
+                      const { code, data, message } = res;
+                      if (code === 200) {
+                        sliderSide.info({
+                          size: 'large',
+                          title: value.moduleName,
+                          content: (
+                            <PreviewCodeContent codeContentList={data} />
+                          ),
+                          showConfirm: false,
+                          showCancel: false,
+                        });
+                      } else {
+                        Toast.error(message);
+                      }
+                    });
+                  },
                 },
                 {
                   code: 'generate',
                   name: '生成',
                   icon: tryGetIcon('IconGenerate'),
                   type: 'primary',
+                  onClick(tableContext, formContext, value) {
+                    open(`/api/dev/code/generate/generate/${value.id}`);
+                  },
                 },
                 {
                   code: 'translate',

@@ -32,9 +32,6 @@ const QueryFilterSetter: React.FC<QueryFilterSetterProps> = observer(
 
     return (
       <FoldItem className={cls(prefix, props.className)} label={field.title}>
-        <FoldItem.Base>
-          <Button>asd</Button>
-        </FoldItem.Base>
         <FoldItem.Extra>
           <DraggableColumnList
             columns={queryFilterColumns}
