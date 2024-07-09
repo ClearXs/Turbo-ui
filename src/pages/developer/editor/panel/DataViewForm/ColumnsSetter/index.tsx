@@ -23,9 +23,6 @@ const ColumnsSetter: React.FC<ColumnsSetterProps> = observer((props) => {
 
   return (
     <FoldItem className={cls(prefix, props.className)} label={field.title}>
-      <FoldItem.Base>
-        <Button>asd</Button>
-      </FoldItem.Base>
       <FoldItem.Extra>
         <DraggableColumnList
           columns={draggableColumns}

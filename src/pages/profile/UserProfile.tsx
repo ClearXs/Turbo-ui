@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import * as local from '@/util/local';
 import * as headers from '@/util/constant';
+import * as auth from '@/util/auth';
 import useAuthApi from '@/api/system/auth';
 import { IconCamera } from '@douyinfe/semi-icons';
 
@@ -41,7 +42,7 @@ export default function UserProfile() {
                 // 设置local storage
                 const data = res.data;
                 const token = data.token?.tokenValue || '';
-                local.set(headers.Authentication, token as string);
+                auth.set(token);
                 setCurrentUser(newCurrentUser);
                 setSave(false);
                 Notification.success({ position: 'top', content: '修改成功!' });
@@ -112,7 +113,9 @@ export default function UserProfile() {
                 action="/api/sys/attachment/upload"
                 name="file"
                 onSuccess={(res) => {
-                  setAvatar(res['data']['filepath']);
+                  const filepath = res['data']['filepath'];
+                  const downloadUrl = `/api/sys/attachment/download?path=${filepath}`;
+                  setAvatar(downloadUrl);
                 }}
                 onError={(error, file, fileList, xhr) => {
                   Notification.error({

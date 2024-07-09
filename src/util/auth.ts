@@ -28,3 +28,16 @@ export const clear = () => {
   local.remove(constants.Authentication);
   cookies.remove(constants.Authentication);
 };
+
+/**
+ * from window add token by url
+ *
+ * @param url
+ */
+export const open = (url: string) => {
+  const authPair = `${constants.Authentication}=${get()}`;
+  const authUrl = url.includes('?')
+    ? url.concat(`&${authPair}`)
+    : url.concat(`?${authPair}`);
+  window.open(authUrl);
+};

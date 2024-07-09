@@ -5,7 +5,7 @@ import useDataSourceApi, {
 import Binary from '@/components/Binary';
 import TableCrud from '@/components/TableCrud';
 import { TableColumnProps } from '@/components/TableCrud/interface';
-import { Radio, RadioGroup, Spin, Toast } from '@douyinfe/semi-ui';
+import { Radio, RadioGroup, Spin, Toast, Typography } from '@douyinfe/semi-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type ITableGridProps = {
@@ -22,22 +22,24 @@ const TableNavigation: React.FC<{
   );
 
   return (
-    <RadioGroup type="pureCard" direction="vertical" value={chooseTable}>
-      {tableColumns.map((tableColumn) => {
-        return (
-          <Radio
-            value={tableColumn.tableName}
-            extra={tableColumn.table.comment}
-            onChange={(e) => {
-              setChooseTable(e.target.value);
-              onChange(tableColumn);
-            }}
-          >
-            {tableColumn.tableName}
-          </Radio>
-        );
-      })}
-    </RadioGroup>
+    <div className="h-96">
+      <RadioGroup type="pureCard" direction="vertical" value={chooseTable}>
+        {tableColumns.map((tableColumn) => {
+          return (
+            <Radio
+              value={tableColumn.tableName}
+              extra={tableColumn.table.comment}
+              onChange={(e) => {
+                setChooseTable(e.target.value);
+                onChange(tableColumn);
+              }}
+            >
+              {tableColumn.tableName}
+            </Radio>
+          );
+        })}
+      </RadioGroup>
+    </div>
   );
 };
 
@@ -71,10 +73,7 @@ const TableGrid: React.FC<ITableGridProps> = ({ dataSourceId }) => {
         label: '字段类型',
         ellipsis: true,
         align: 'center',
-        type: 'input',
-        render: (text, record) => {
-          return record.dataType?.dslType?.name;
-        },
+        type: 'select',
       },
       {
         label: '是否主键',
@@ -154,16 +153,27 @@ const TableGrid: React.FC<ITableGridProps> = ({ dataSourceId }) => {
           />
         }
         RightComponent={
-          <TableCrud<ColumnDef>
-            mode="list"
-            height="auto"
-            dataSource={columnDefs}
-            columns={getColumns()}
-            search={{ show: false }}
-            toolbar={{
-              show: false,
-            }}
-          />
+          <div className="flex flex-col gap-1">
+            <Typography.Title heading={6}>
+              {selectTableColumnRef.current?.tableName}
+            </Typography.Title>
+            <TableCrud<ColumnDef>
+              id="dslName"
+              mode="list"
+              height="45vh"
+              dataSource={columnDefs}
+              columns={getColumns()}
+              search={{ show: false }}
+              toolbar={{
+                show: false,
+              }}
+              operateBar={{
+                showEdit: false,
+                showDetails: false,
+                showInlineEdit: true,
+              }}
+            />
+          </div>
         }
       />
     </Spin>

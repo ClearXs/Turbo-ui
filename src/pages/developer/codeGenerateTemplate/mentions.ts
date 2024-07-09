@@ -1,8 +1,6 @@
 import { Completion } from '@/components/CodeEditor';
-import mvel from '@/components/CodeEditor/mentions/mvel';
-import utility from '@/components/CodeEditor/mentions/utility';
 
-export default [
+const boMentions = [
   {
     label: '@{module.name}',
     detail: '模块名称',
@@ -35,19 +33,51 @@ export default [
     info: '比如developer',
   },
   {
-    label: '@{table.comment}',
-    detail: '表注释',
-    info: 'like 模板管理',
+    label: '@{schema.name}',
+    detail: '业务对象名称',
   },
   {
-    label: '@{table.name}',
-    detail: '表名',
-    info: 'like code_template',
+    label: '@{schema.code}',
+    detail: '业务对象code',
+  },
+  {
+    label: '@{schema.attrs}',
+    detail: '属性集合',
+  },
+  {
+    label: '@{column.id}',
+    detail: '属性id',
+  },
+  {
+    label: '@{column.key}',
+    detail: '属性key',
+  },
+  {
+    label: '@{column.field}',
+    detail: '属性字段',
   },
   {
     label: '@{column.name}',
-    detail: '字段名',
+    detail: '属性名称',
   },
-  ...mvel,
-  ...utility,
+  {
+    label: '@{column.type}',
+    detail: '属性类型',
+  },
+  {
+    label: '@{column.getJavaType}',
+    detail: '获取Java类型',
+  },
 ] as Completion[];
+
+const boHelperMentions = [
+  {
+    label: '@{helper.getJavaType(boAttr)}',
+    detail: 'get java type',
+    section: {
+      name: 'utility',
+    },
+  },
+] as Completion[];
+
+export default [...boMentions, ...boHelperMentions];

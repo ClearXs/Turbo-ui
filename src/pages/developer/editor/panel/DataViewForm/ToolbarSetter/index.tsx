@@ -52,9 +52,6 @@ const ToolBarSetter: React.FC<ToolBarSetterProps> = observer((props) => {
 
   return (
     <FoldItem className={cls(prefix, props.className)} label={field.title}>
-      <FoldItem.Base>
-        <Button>asd</Button>
-      </FoldItem.Base>
       <FoldItem.Extra>
         <BorderedList
           dataSource={toolbars}
