@@ -1,7 +1,6 @@
 import { createSchemaField, observer } from '@formily/react';
 import { FormilyFormProps } from './interface';
 import {
-  Form,
   FormItem,
   DatePicker,
   Checkbox,
@@ -29,9 +28,9 @@ import {
   Slider,
   ArrayItems,
   ArrayBase,
+  Form,
 } from '@formily/semi';
 import { useMemo } from 'react';
-import { createForm } from '@formily/core';
 import React from 'react';
 import { Icon, Color } from './components';
 import { toSchema } from './schema';
@@ -45,6 +44,8 @@ import { globalThisPolyfill } from '@formily/shared';
 import CodeEditor from './components/CodeEditor';
 import DEFAULT_SCOPES from './scope';
 import FormilyModalButton from './FormilyModalButton';
+
+globalThisPolyfill['__DESIGNABLE_LAYOUT__'] = { prefixCls: 'dn-' };
 
 const Text: React.FC<{
   value?: string;
@@ -139,17 +140,6 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
 
   const { columns, decorator } = formContext;
 
-  const form = useMemo(() => {
-    globalThisPolyfill['__DESIGNABLE_LAYOUT__'] = { prefixCls: 'dn-' };
-    return createForm({
-      initialValues: formContext.getDefaultValues(),
-      values: formContext.values,
-      effects(form) {
-        effects?.(form);
-      },
-    });
-  }, [formContext.values]);
-
   const schema = useMemo(() => {
     return toSchema(columns, formContext, (column, index) =>
       decorator.schema(column, index),
@@ -165,7 +155,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
 
   const InternalFormily = (
     <TFormContext.Provider value={formContext}>
-      <Form form={form} {...formliyProps}>
+      <Form form={formContext.coreForm} {...formliyProps}>
         <SchemaField
           schema={schema}
           components={components}
@@ -194,11 +184,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
       }}
       footer={
         columns.length > 0 && (
-          <FormilyModalButton
-            form={form}
-            formContext={formContext}
-            formProps={formProps}
-          />
+          <FormilyModalButton formContext={formContext} formProps={formProps} />
         )
       }
     >

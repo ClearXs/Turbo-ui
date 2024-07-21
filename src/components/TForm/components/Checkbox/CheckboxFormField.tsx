@@ -1,7 +1,7 @@
 import { IdEntity } from '@/api';
 import { FormCheckboxColumnProps } from './interface';
 import { Form } from '@douyinfe/semi-ui';
-import { ColumnType, FormColumnProps, FormContext } from '../../interface';
+import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { ReactNode } from 'react';
 
@@ -22,15 +22,7 @@ export class CheckboxFormField<T extends IdEntity> extends BaseFormField<
         extraText={column.extraText}
         options={column.options}
         onChange={(value) => {
-          const values = { ...formContext?.values } || {};
-          values[props.field] = value;
-          const newContext = {
-            ...formContext,
-            visible: true,
-            values,
-          };
-          formContext?.newContext(newContext as FormContext<T>);
-          formContext?.formApi?.setValue(props.field, value);
+          formContext.setValue(props.field, value);
         }}
       />
     );

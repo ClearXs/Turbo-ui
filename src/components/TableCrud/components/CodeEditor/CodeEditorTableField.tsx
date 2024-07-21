@@ -3,7 +3,7 @@ import { BaseTableField } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';
 import { TableCodeEditorColumnProps } from './interface';
-import { Button, Tooltip, Typography } from '@douyinfe/semi-ui';
+import { Button, Empty, Popover, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { IconJson } from '@/components/Icon/collection/IconJson';
 
 export class CodeEditorTableField<T extends IdEntity> extends BaseTableField<
@@ -13,15 +13,30 @@ export class CodeEditorTableField<T extends IdEntity> extends BaseTableField<
   protected doWrap(column: TableCodeEditorColumnProps<T>): ColumnProps<T> {
     const render = (value: any, record: T, index: number) => {
       return (
-        <Tooltip
+        <Popover
           content={
-            <Typography.Paragraph ellipsis={{ rows: 3 }} type="tertiary">
-              {value && JSON.stringify(value, null, '\t')}
-            </Typography.Paragraph>
+            value === undefined ? (
+              <Empty>没有数据</Empty>
+            ) : (
+              <div className="p-2">
+                {value.split('\n').map((codeLine, index) => {
+                  return (
+                    <Typography.Paragraph
+                      key={index}
+                      type="primary"
+                      spacing="extended"
+                      className="whitespace-pre-line"
+                    >
+                      {codeLine}
+                    </Typography.Paragraph>
+                  );
+                })}
+              </div>
+            )
           }
         >
           <Button icon={<IconJson />} theme="borderless" />
-        </Tooltip>
+        </Popover>
       );
     };
     return { ...column, render: this.withColumnRender(column, render) };

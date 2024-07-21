@@ -14,6 +14,48 @@ export interface FormField<T extends IdEntity, K extends FormColumnProps<T>> {
   schema(column: K, index: number): ISchema;
   from(index: number, schema: BoAttrSchema): FormColumnProps<T> | undefined;
   getDefaultSpan(): FormColumnProps<T>['span'];
+  // get column filed value handler
+  getValueHandler(): ValueHandler;
+}
+
+/**
+ * form filed value handler
+ *
+ * @type InType specific form value type
+ * @type OutType specific data transfer type
+ */
+export interface ValueHandler<InType = any, OutType = any> {
+  /**
+   * out type value to in type value
+   *
+   * @param outValue the maybe out type value
+   */
+  toInValue(outValue?: OutType): InType | undefined;
+
+  /**
+   * in type value to out type value
+   *
+   * @param inValue the maybe in type value
+   */
+  toOutValue(inValue?: InType): OutType | undefined;
+}
+
+export class DirectlyValueHandler implements ValueHandler {
+  toInValue(outValue?: any) {
+    return outValue;
+  }
+  toOutValue(inValue?: any) {
+    return inValue;
+  }
+}
+
+export class JsonValueHandler implements ValueHandler<Object, string> {
+  toInValue(outValue?: string): Object | undefined {
+    return outValue ? JSON.parse(outValue) : outValue;
+  }
+  toOutValue(inValue?: Object): string | undefined {
+    return inValue ? JSON.stringify(inValue) : inValue;
+  }
 }
 
 export abstract class BaseFormField<
@@ -114,6 +156,10 @@ export abstract class BaseFormField<
       trigger: column.validateTrigger,
       disabled: column.disabled || false,
     };
+  }
+
+  public getValueHandler(): ValueHandler {
+    return new DirectlyValueHandler();
   }
 
   /**

@@ -2,71 +2,16 @@ import { IdEntity } from '@/api';
 import { OperateToolbar, TableColumnProps, TableContext } from './interface';
 import OperatorButtonSet from './OperatorButtonSet';
 import _ from 'lodash';
-import { tryGetIcon } from '../Icon';
 import Modular from '../Modular/Modular';
-
-export const INLINE_EDIT_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
-  code: 'inlineEdit',
-  name: '行内编辑',
-  type: 'primary',
-  size: 'small',
-  internal: true,
-  icon: tryGetIcon('IconEdit'),
-};
-
-export const INLINE_SAVE_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
-  code: 'inlineSave',
-  name: '保存',
-  type: 'primary',
-  size: 'small',
-  internal: true,
-  icon: tryGetIcon('IconSave'),
-};
-
-export const INLINE_CANCEL_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
-  code: 'inlineCancel',
-  name: '取消',
-  type: 'primary',
-  size: 'small',
-  internal: true,
-  icon: tryGetIcon('IconClose'),
-};
-
-export const EDIT_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
-  code: 'edit',
-  name: '编辑',
-  type: 'primary',
-  size: 'small',
-  internal: true,
-  icon: tryGetIcon('IconEditStroked'),
-};
-
-export const DETAILS_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
-  code: 'details',
-  name: '详情',
-  type: 'primary',
-  size: 'small',
-  icon: tryGetIcon('IconBriefStroked'),
-  internal: true,
-};
-
-export const DELETE_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
-  code: 'delete',
-  name: '删除',
-  type: 'danger',
-  size: 'small',
-  internal: true,
-  icon: tryGetIcon('IconDeleteStroked'),
-};
-
-export const COPY_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
-  code: 'copy',
-  name: '复制',
-  type: 'primary',
-  size: 'small',
-  internal: true,
-  icon: tryGetIcon('IconCopy'),
-};
+import {
+  COPY_LITERAL_OPERATOR_BAR,
+  DELETE_LITERAL_OPERATOR_BAR,
+  DETAILS_LITERAL_OPERATOR_BAR,
+  EDIT_LITERAL_OPERATOR_BAR,
+  INLINE_CANCEL_LITERAL_OPERATOR_BAR,
+  INLINE_EDIT_LITERAL_OPERATOR_BAR,
+  INLINE_SAVE_LITERAL_OPERATOR_BAR,
+} from '../Bar/collection';
 
 const COPY_IGNORE_KEYS = [
   'id',
@@ -190,35 +135,35 @@ export const renderOperatorBar = <T extends IdEntity>(
       showInlineEdit) &&
     !isEditing
   ) {
-    const editOperatorBar: OperateToolbar<T> = {
+    const inlineEditOperatorBar: OperateToolbar<T> = {
       ...INLINE_EDIT_LITERAL_OPERATOR_BAR,
       onClick(tableContext, formContext, value) {
         tableContext?.tableApi.inlineEdit(id);
       },
     };
-    bars.push(editOperatorBar);
+    bars.push(inlineEditOperatorBar);
   }
 
   // inline save operation
   if (isEditing) {
-    const editOperatorBar: OperateToolbar<T> = {
+    const inlineSaveOperatorBar: OperateToolbar<T> = {
       ...INLINE_SAVE_LITERAL_OPERATOR_BAR,
       onClick(tableContext, formContext, value) {
         inlineEditorApi.save(id);
       },
     };
-    bars.push(editOperatorBar);
+    bars.push(inlineSaveOperatorBar);
   }
 
   // inline cancel operation
   if (isEditing) {
-    const editOperatorBar: OperateToolbar<T> = {
+    const inlineCancelOperatorBar: OperateToolbar<T> = {
       ...INLINE_CANCEL_LITERAL_OPERATOR_BAR,
       onClick(tableContext, formContext, value) {
         inlineEditorApi.finish(helperApi.getId(value));
       },
     };
-    bars.push(editOperatorBar);
+    bars.push(inlineCancelOperatorBar);
   }
 
   // 编辑
@@ -277,7 +222,7 @@ export const renderOperatorBar = <T extends IdEntity>(
         );
         formContext.type = 'add';
         formContext.visible = true;
-        formContext.values = copyValues;
+        formContext.setValues(copyValues);
       },
     };
     bars.push(copyOperatorBar);

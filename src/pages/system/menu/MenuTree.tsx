@@ -41,9 +41,11 @@ const MenuTreeComponent: React.FC<{
       onClick: (tableContext, formContext, record) => {
         formContext.visible = true;
         formContext.type = 'add';
-        formContext.values = Object.assign(
-          { parentId: record.id },
-          formContext.getDefaultValues(),
+        formContext.setValues(
+          Object.assign(
+            { parentId: record.id },
+            formContext.getDefaultValues(),
+          ),
         );
       },
     });
@@ -57,9 +59,11 @@ const MenuTreeComponent: React.FC<{
       onClick: (tableContext, formContext, record) => {
         formContext.visible = true;
         formContext.type = 'add';
-        formContext.values = Object.assign(
-          { parentId: record.parentId },
-          formContext.getDefaultValues(),
+        formContext.setValues(
+          Object.assign(
+            { parentId: record.parentId },
+            formContext.getDefaultValues(),
+          ),
         );
       },
     });

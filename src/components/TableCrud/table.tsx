@@ -41,6 +41,7 @@ import {
 import { ISchema } from '@formily/json-schema';
 import { BoAttrSchema } from '@designable/core';
 import { GlobalSchemaColumnRegistry } from '../TForm/formily/schema';
+import { FormField } from '../TForm/components';
 
 export interface TableColumnDecorator<T extends IdEntity>
   extends FormColumnDecorator<T> {
@@ -213,6 +214,12 @@ class TableColumnDecoratorImpl<T extends IdEntity>
 
   getDefaultSpan(column: FormColumnProps<T>): FormColumnProps<T>['span'] {
     return TableColumnFactory.get(column.type, this).getDefaultSpan();
+  }
+
+  getField<K extends FormColumnProps<T>>(
+    column: FormColumnProps<T>,
+  ): FormField<T, K> {
+    return TableColumnFactory.get(column.type, this);
   }
 }
 

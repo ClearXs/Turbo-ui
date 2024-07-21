@@ -88,6 +88,15 @@ export interface FormColumnDecorator<T extends IdEntity> {
    * 获取relation apis
    */
   getRelationApis(): Map<string, GeneralApi<any>>;
+
+  /**
+   * according to column get {@link FormColumnProps} instance
+   *
+   * @param column the {@link FormColumnProps} instance
+   */
+  getField<K extends FormColumnProps<T>>(
+    column: FormColumnProps<T>,
+  ): FormField<T, K>;
 }
 
 export class UndefinedFormField<T extends IdEntity> extends BaseFormField<
@@ -237,6 +246,12 @@ export class FormColumnDecoratorImpl<T extends IdEntity>
         this,
       )?.getDefaultSpan() || 6
     );
+  }
+
+  getField<K extends FormColumnProps<T>>(
+    column: FormColumnProps<T>,
+  ): FormField<T, K> {
+    return FormColumnFactory.get(column.type, this);
   }
 }
 

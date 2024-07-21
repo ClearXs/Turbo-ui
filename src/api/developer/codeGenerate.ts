@@ -12,32 +12,27 @@ export interface CodeGenerate extends BaseEntity, CategoryEntity {
   /**
    * 模块名称
    */
-  moduleName: string;
+  instanceName: string;
 
   /**
    * 模块Key
    */
-  moduleKey: string;
-
-  /**
-   * 模块包路径
-   */
-  modulePackagePath: string;
+  instanceKey: string;
 
   /**
    * 模块请求路径
    */
-  moduleRequestPath: string;
+  requestPath: string;
 
   /**
    * 版本号
    */
-  moduleVersion: string;
+  instanceVersion: string;
 
   /**
    * 作者
    */
-  moduleAuthor: string;
+  author: string;
 
   /**
    * 所属子系统KEY
@@ -71,6 +66,11 @@ export interface CodeGenerate extends BaseEntity, CategoryEntity {
    * 分类ID;子系统分类
    */
   categoryId: string;
+
+  /**
+   * 是否忽略常用字段
+   */
+  ignoreDefaultField: boolean;
 }
 
 export interface CodeContent {

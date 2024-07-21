@@ -3,6 +3,7 @@ import { BaseTableField } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/TForm/interface';
 import { TableSlotColumnProps } from './interface';
+import { JsonValueHandler, ValueHandler } from '@/components/TForm/components';
 
 export class SlotTableField<T extends IdEntity> extends BaseTableField<
   T,
@@ -14,5 +15,9 @@ export class SlotTableField<T extends IdEntity> extends BaseTableField<
 
   public getType(): ColumnType {
     return 'slot';
+  }
+
+  public getValueHandler(): ValueHandler {
+    return new JsonValueHandler();
   }
 }

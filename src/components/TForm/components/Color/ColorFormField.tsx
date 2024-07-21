@@ -1,10 +1,10 @@
 import { IdEntity } from '@/api';
 import { Form, Radio, RadioGroup, Space } from '@douyinfe/semi-ui';
-import { ColumnType, FormColumnProps, FormContext } from '../../interface';
+import { ColumnType, FormColumnProps } from '../../interface';
 import { ReactNode } from 'react';
 import { BaseFormField } from '..';
 import { FormColorColumnProps } from '.';
-import { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
+import Tag, { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
 
 export class ColorFormField<T extends IdEntity> extends BaseFormField<
   T,
@@ -43,19 +43,11 @@ export class ColorFormField<T extends IdEntity> extends BaseFormField<
             type="pureCard"
             mode="advanced"
             disabled={this.decorator.getFormContext()?.type === 'details'}
-            value={this.decorator.getFormContext()?.values?.[props.field]}
+            value={this.decorator.getFormContext()?.getValue(props.field)}
             onChange={(e) => {
               const formContext = this.decorator.getFormContext();
               const { value } = e.target;
-              const values = { ...formContext?.values } || {};
-              values[props.field] = value;
-              const newContext = {
-                ...formContext,
-                visible: true,
-                values,
-              };
-              formContext?.newContext(newContext as FormContext<T>);
-              formContext?.formApi?.setValue(props.field, value);
+              formContext.setValue(props.field, value);
             }}
           >
             {this.colorList.map((item) => (

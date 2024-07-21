@@ -38,15 +38,7 @@ export class IconFormField<T extends IdEntity> extends BaseFormField<
                     tooltip={true}
                     chooseIcon={(icon) => {
                       const formContext = this.decorator.getFormContext();
-                      const values = { ...formContext?.values } || {};
-                      values[props.field] = icon;
-                      const newContext = {
-                        ...formContext,
-                        visible: true,
-                        values,
-                      };
-                      formContext?.newContext(newContext as FormContext<T>);
-                      formContext?.formApi?.setValue(props.field, icon);
+                      formContext.setValue(props.field, icon);
                       modal.destroy();
                     }}
                     splitNum={3}
@@ -71,7 +63,7 @@ export class IconFormField<T extends IdEntity> extends BaseFormField<
               )
             }
           >
-            {tryGetIcon(this.decorator.getFormContext()?.values?.[props.field])}
+            {tryGetIcon(this.decorator.getFormContext()?.getValue(props.field))}
           </Avatar>
         </Form.Slot>
       </>

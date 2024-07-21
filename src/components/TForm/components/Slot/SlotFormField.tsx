@@ -1,6 +1,6 @@
 import { IdEntity } from '@/api';
 import { ColumnType, FormColumnProps } from '../../interface';
-import { BaseFormField } from '..';
+import { BaseFormField, JsonValueHandler, ValueHandler } from '..';
 import { FormSlotColumnProps } from './interface';
 
 /**
@@ -23,5 +23,9 @@ export class SlotFormField<T extends IdEntity> extends BaseFormField<
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
     return 6;
+  }
+
+  public getValueHandler(): ValueHandler {
+    return new JsonValueHandler();
   }
 }

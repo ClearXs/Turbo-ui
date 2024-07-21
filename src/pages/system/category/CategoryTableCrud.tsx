@@ -14,6 +14,7 @@ import { useRef, useState } from 'react';
 import { TreePanelApi } from '@/components/Tree';
 import _ from 'lodash';
 import Modular from '@/components/Modular/Modular';
+import { SET_CATEGORY_LITERAL_TOOLBAR } from '@/components/Bar/collection';
 
 export type CategoryTableCrudToolbar<T extends CategoryEntity> =
   TableCrudProps<T>['toolbar'] & {
@@ -43,13 +44,9 @@ const CategoryTableCrud = <T extends CategoryEntity>(
 
   const { showSetCategory = true, append = [] } = toolbar;
 
-  showSetCategory &&
-    append.push({
-      code: 'setCategory',
-      name: '设置分类',
-      position: 'left',
-      type: 'primary',
-      icon: tryGetIcon('IconGridView'),
+  if (showSetCategory) {
+    const setCategoryToolbar: Toolbar<T> = {
+      ...SET_CATEGORY_LITERAL_TOOLBAR,
       onClick: (tableContext, formContext) => {
         const {
           dataSource,
@@ -64,9 +61,13 @@ const CategoryTableCrud = <T extends CategoryEntity>(
         });
         setShowCategoryTree(true);
       },
-    } as Toolbar<T>);
+    };
+    append.push(setCategoryToolbar);
+  }
+
   toolbar.append = append;
   newProps.toolbar = toolbar;
+
   return (
     <>
       <TableCrud<T>

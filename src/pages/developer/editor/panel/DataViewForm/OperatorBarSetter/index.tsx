@@ -5,14 +5,14 @@ import { FoldItem } from '@designable/react-settings-form';
 import { useField } from '@formily/react';
 import { usePrefix } from '@designable/react';
 import cls from 'classnames';
-import { Button, Typography } from '@douyinfe/semi-ui';
+import { Typography } from '@douyinfe/semi-ui';
 import { OperateToolbar } from '@/components/TableCrud/interface';
 import BorderedList from '@/components/List/BorderedList';
 import {
   DELETE_LITERAL_OPERATOR_BAR,
   DETAILS_LITERAL_OPERATOR_BAR,
   EDIT_LITERAL_OPERATOR_BAR,
-} from '@/components/TableCrud/TableColumnBuilder';
+} from '@/components/Bar/collection';
 
 export interface OperatorBarSetterProps {
   className?: string;

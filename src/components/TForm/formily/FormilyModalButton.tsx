@@ -1,21 +1,21 @@
 import { GeneralApi, IdEntity } from '@/api';
-import { FormContext } from '../interface';
 import { FormProps, ModalButton } from '../interface';
-import { Form as CoreForm } from '@formily/core';
-import { tryGetIcon } from '@/components/Icon';
 import _ from 'lodash';
 import { Button, ButtonGroup, Notification } from '@douyinfe/semi-ui';
+import {
+  CANCEL_MODAL_BUTTON,
+  CONFIRM_MODAL_BUTTON,
+} from '@/components/Bar/collection';
+import { FormilyFormContext } from './interface';
 
 export type IFormilyModalButtonProps<T extends IdEntity = IdEntity> = {
   formProps: FormProps<T>;
-  formContext: FormContext<T>;
-  form: CoreForm<T>;
+  formContext: FormilyFormContext<T>;
 };
 
 export default function FormilyModalButton<T extends IdEntity = IdEntity>({
   formProps,
   formContext,
-  form,
 }: IFormilyModalButtonProps<T>) {
   const {
     showConfirm = true,
@@ -42,20 +42,17 @@ export default function FormilyModalButton<T extends IdEntity = IdEntity>({
     (typeof showCancel === 'function' && showCancel(formContext)) ||
     showCancel
   ) {
-    modalButtons.push({
-      code: 'cancel',
-      name: '取消',
-      type: 'tertiary',
-      size: 'default',
-      icon: tryGetIcon('IconCrossCircleStroked'),
-      onClick: (formContext) => {
+    const cancelModalButton: ModalButton<T> = {
+      ...CANCEL_MODAL_BUTTON,
+      onClick(formContext) {
         if (formProps.onCancel) {
           formProps.onCancel(formContext);
         } else {
           formContext.visible = false;
         }
       },
-    });
+    };
+    modalButtons.push(cancelModalButton);
   }
 
   if (
@@ -63,21 +60,16 @@ export default function FormilyModalButton<T extends IdEntity = IdEntity>({
       showConfirm) &&
     formContext.type !== 'details'
   ) {
-    modalButtons.push({
-      code: 'confirm',
-      name: '确定',
-      type: 'primary',
-      loading: true,
-      size: 'default',
-      icon: tryGetIcon('IconCheckCircleStroked'),
-      onClick: (formContext) => {
+    const confirmModalButton: ModalButton<T> = {
+      ...CONFIRM_MODAL_BUTTON,
+      onClick() {
         // 构建需要校验的字段
         const { params, onOk, onError } = formProps;
-        form
-          .submit((data) => {
+        formContext
+          .coreForm!.submit((data) => {
             // 相同key优先级 默认值 > 表单值
             // if default value key is undefined but form value is not, choose form value
-            const values = _.assignWith(
+            const tempValues = _.assignWith(
               data,
               params,
               (objectValue, sourceValue, key, object, source) => {
@@ -87,6 +79,23 @@ export default function FormilyModalButton<T extends IdEntity = IdEntity>({
                 return sourceValue;
               },
             );
+
+            // handle out values
+            const values: Partial<T> = {};
+            for (const field in tempValues) {
+              const v = tempValues[field];
+              const column = formContext.getColumn(field);
+              if (column) {
+                const outValue = formContext.decorator
+                  .getField(column)
+                  .getValueHandler()
+                  .toOutValue(v);
+                values[field] = outValue;
+              } else {
+                values[field] = v;
+              }
+            }
+
             if (api) {
               formContext.loading = true;
               api
@@ -144,7 +153,8 @@ export default function FormilyModalButton<T extends IdEntity = IdEntity>({
             }
           });
       },
-    });
+    };
+    modalButtons.push(confirmModalButton);
   }
 
   append.forEach((button) => {

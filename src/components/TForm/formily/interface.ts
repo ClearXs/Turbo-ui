@@ -11,14 +11,14 @@ import { BoAttrSchema, FieldType } from '@designable/core';
 import { IdEntity } from '@/api';
 
 export type FormilyFormContext<T extends IdEntity> = FormContext<T> & {
-  coreForm?: Form<T>;
+  coreForm: Form<T>;
   setCoreForm(coreForm: Form<T>): void;
 };
 
 export type FormilyFormProps<T extends IdEntity = IdEntity> =
   IFormLayoutProps & {
     formProps: FormProps<T>;
-    formContext: FormContext<T>;
+    formContext: FormilyFormContext<T>;
     // reaction 作用域变量
     scope?: Record<string, object>;
     // 附加的schema component

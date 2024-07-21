@@ -16,7 +16,7 @@ import {
   ORDERED_LITERAL_TOOLBAR,
   REFRESH_LITERAL_TOOLBAR,
   SHOW_COLUMN_LITERAL_TOOLBAR,
-} from '@/components/TableCrud/TableToolbar';
+} from '@/components/Bar/collection';
 
 export interface ToolBarSetterProps {
   className?: string;

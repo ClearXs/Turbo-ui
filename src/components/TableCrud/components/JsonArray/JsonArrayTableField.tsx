@@ -5,6 +5,7 @@ import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { TableJsonArrayColumnProps } from '.';
 import { Button, Tooltip } from '@douyinfe/semi-ui';
 import { IconJson } from '@/components/Icon/collection/IconJson';
+import { JsonValueHandler, ValueHandler } from '@/components/TForm/components';
 
 export class JsonArrayTableField<T extends IdEntity> extends BaseTableField<
   T,
@@ -23,5 +24,9 @@ export class JsonArrayTableField<T extends IdEntity> extends BaseTableField<
 
   public getType(): ColumnType {
     return 'jsonArray';
+  }
+
+  public getValueHandler(): ValueHandler {
+    return new JsonValueHandler();
   }
 }
