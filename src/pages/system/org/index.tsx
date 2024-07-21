@@ -43,9 +43,11 @@ const Org: React.FC = () => {
             icon: tryGetIcon('IconPeer'),
             onClick: (tableContext, formContext, record) => {
               formContext.visible = true;
-              formContext.values = Object.assign(
-                { parentId: record.id },
-                formContext.getDefaultValues(),
+              formContext.setValues(
+                Object.assign(
+                  { parentId: record.id },
+                  formContext.getDefaultValues(),
+                ),
               );
             },
           },
@@ -56,9 +58,11 @@ const Org: React.FC = () => {
             icon: tryGetIcon('IconSubordinate'),
             onClick: (tableContext, formContext, record) => {
               formContext.visible = true;
-              formContext.values = Object.assign(
-                { parentId: record.parentId },
-                formContext.getDefaultValues(),
+              formContext.setValues(
+                Object.assign(
+                  { parentId: record.parentId },
+                  formContext.getDefaultValues(),
+                ),
               );
             },
           },

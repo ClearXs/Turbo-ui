@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { observer } from '@formily/reactive-react';
 import useTableCrudContext from './hook/table';
 import useTableFormContext from './hook/tableForm';
+import { useTFormContext } from '../TForm/context/form';
 
 export type OperatorButtonSetProps<T extends IdEntity> = {
   bars: OperateToolbar<T>[];
@@ -32,7 +33,7 @@ const OperatorButtonSet = observer(
     className,
   }: OperatorButtonSetProps<T>) => {
     const tableContext = useTableCrudContext();
-    const formContext = useTableFormContext();
+    const formContext = useTableFormContext() || useTFormContext();
 
     const CompositeButtonSetComponent = (
       retainBars: OperateToolbar<T>[],

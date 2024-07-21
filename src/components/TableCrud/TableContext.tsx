@@ -113,8 +113,8 @@ export default class TableContextImpl<T extends IdEntity>
   }
 
   getTableColumns(
-    exclusiveOperate?: boolean | undefined,
-    immediateFilter?: boolean | undefined,
+    exclusiveOperate?: boolean,
+    immediateFilter?: boolean,
   ): TableColumnProps<T>[] {
     return new TableColumnsBuilder(this.tableColumns || [], this)
       .sync()

@@ -60,7 +60,6 @@ class EventHandlerImpl<T extends IdEntity> implements EventHandler<T> {
   }
 }
 
-//
 export class DefaultTableApi<T extends IdEntity> implements TableApi<T> {
   eventHandler: EventHandler<T>;
 
@@ -135,7 +134,7 @@ export class DefaultTableApi<T extends IdEntity> implements TableApi<T> {
     const value = dataSource.find((data) => data[idKey] === id);
     this.formContext!.visible = true;
     this.formContext!.type = 'details';
-    this.formContext!.values = value;
+    this.formContext!.setValues(value!);
 
     event?.onSuccess?.();
   }
@@ -145,7 +144,7 @@ export class DefaultTableApi<T extends IdEntity> implements TableApi<T> {
     const value = dataSource.find((data) => data[idKey] === id);
     this.formContext!.visible = true;
     this.formContext!.type = 'edit';
-    this.formContext!.values = value;
+    this.formContext!.setValues(value!);
     event?.onSuccess?.();
   }
 
@@ -363,7 +362,7 @@ export class RemoteTableApi<T extends IdEntity> implements TableApi<T> {
         if (code === 200) {
           this.formContext!.visible = true;
           this.formContext!.type = 'details';
-          this.formContext!.values = data;
+          this.formContext!.setValues(data);
           event?.onSuccess?.();
         } else {
           event?.onError?.(new Error(message));
@@ -380,7 +379,7 @@ export class RemoteTableApi<T extends IdEntity> implements TableApi<T> {
         if (code === 200 && data) {
           this.formContext!.visible = true;
           this.formContext!.type = 'edit';
-          this.formContext!.values = data;
+          this.formContext!.setValues(data);
           event?.onSuccess?.();
         } else {
           event?.onError?.(new Error(message));

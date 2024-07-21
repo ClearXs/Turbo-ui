@@ -33,8 +33,8 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
 
     return [
       {
-        label: '模块名称',
-        field: 'moduleName',
+        label: '实例名称',
+        field: 'instanceName',
         ellipsis: true,
         align: 'center',
         search: true,
@@ -42,8 +42,8 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         require: true,
       },
       {
-        label: '模块Key',
-        field: 'moduleKey',
+        label: '实例Key',
+        field: 'instanceKey',
         ellipsis: true,
         align: 'center',
         type: 'input',
@@ -51,40 +51,62 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         table: false,
       },
       {
-        label: '模块包路径',
-        field: 'modulePackagePath',
+        label: '版本号',
+        field: 'instanceVersion',
         ellipsis: true,
         table: false,
         align: 'center',
         type: 'input',
-        require: true,
-        extraText: '比如：/code',
       },
       {
-        label: '模块请求路径',
-        field: 'moduleRequestPath',
+        label: '请求路径',
+        field: 'requestPath',
         ellipsis: true,
         table: false,
         align: 'center',
         type: 'input',
         require: true,
+        line: true,
         extraText: '比如：/dev/code/generate',
       },
       {
-        label: '模块版本号',
-        field: 'moduleVersion',
+        label: '作者',
+        field: 'author',
         ellipsis: true,
-        table: false,
         align: 'center',
         type: 'input',
       },
       {
-        label: '作者',
-        field: 'moduleAuthor',
+        label: '是否忽略常用字段',
+        field: 'ignoreDefaultField',
+        table: false,
         ellipsis: true,
         align: 'center',
-        type: 'input',
+        type: 'switch',
+        initValue: true,
+        extraText: '比如忽略id, createTime, tenantId等系统默认字段',
       },
+      {
+        label: '子系统',
+        field: 'categoryId',
+        ellipsis: true,
+        align: 'center',
+        type: 'select',
+        require: true,
+        table: false,
+        showClear: true,
+        line: true,
+        remote: {
+          url: '/api/sys/category/list',
+          params: [
+            {
+              key: 'terms',
+              value: [{ field: 'funcCode', value: 'codeGenerate' }],
+            },
+          ],
+        },
+        extraText: '该选项会决定实例所属于的模块!',
+      } as TableSelectColumnProps<CodeGenerate>,
       {
         label: '模板集',
         field: 'templateCategoryId',
@@ -94,6 +116,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         require: true,
         table: false,
         showClear: true,
+        line: true,
         remote: {
           url: '/api/sys/category/list',
           params: [
@@ -216,11 +239,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
           </Button>
         ),
         component: (formContext: FormContext<any>) => {
-          let dataView: DataView = formContext.getValue('dataView');
-          try {
-            const maybeStringDataView = dataView;
-            dataView = JSON.parse(maybeStringDataView);
-          } catch (err) {}
+          const dataView: DataView = formContext.getValue('dataView');
           return (
             <CodeGenerateEditor
               formContext={formContext}

@@ -8,12 +8,14 @@ import useRequest from '@/hook/request';
 import FormliyForm from './formily/FormilyForm';
 import { loadDataSet } from './util/column';
 import FormilyFormContextImpl from './formily/FormilyFormContext';
+import { createForm } from '@formily/core';
 
 function TForm<T extends IdEntity>(props: FormProps<T>) {
   const dicApi = useDicApi();
   const request = useRequest();
   const formContext = useMemo(() => {
-    const formContext = new FormilyFormContextImpl<T>(props);
+    const coreForm = createForm();
+    const formContext = new FormilyFormContextImpl<T>(props, coreForm);
     // 加载表单数据集
     loadDataSet(formContext, dicApi, request);
     return formContext;
@@ -43,7 +45,6 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
       feedbackLayout="loose"
       tooltipLayout="text"
       scope={props.scope}
-      effects={(form) => formContext.setCoreForm(form)}
     />
   );
 }

@@ -23,62 +23,15 @@ import Modular from '../Modular/Modular';
 import { useIconBar, useOperabilityBar, useTextIconBar } from './hook/bar';
 import DraggableColumnList from './DraggableColumnList';
 import BorderedList from '../List/BorderedList';
-
-export const ADD_LITERAL_TOOLBAR: Toolbar<any> = {
-  code: 'add',
-  name: '新增',
-  position: 'left',
-  type: 'primary',
-  icon: tryGetIcon('IconCopyAdd'),
-};
-
-export const DELETE_LITERAL_TOOLBAR: Toolbar<any> = {
-  code: 'delete',
-  name: '删除',
-  position: 'left',
-  type: 'danger',
-  icon: tryGetIcon('IconDelete'),
-};
-
-export const REFRESH_LITERAL_TOOLBAR: Toolbar<any> = {
-  code: 'refresh',
-  name: '刷新',
-  position: 'right',
-  type: 'primary',
-  icon: tryGetIcon('IconRefresh'),
-};
-
-export const IMPORT_LITERAL_TOOLBAR: Toolbar<any> = {
-  code: 'import',
-  name: '导入',
-  position: 'right',
-  type: 'primary',
-  icon: tryGetIcon('IconDescend2'),
-};
-
-export const EXPORT_LITERAL_TOOLBAR: Toolbar<any> = {
-  code: 'export',
-  name: '导出',
-  position: 'right',
-  type: 'primary',
-  icon: tryGetIcon('IconDownloadStroked'),
-};
-
-export const SHOW_COLUMN_LITERAL_TOOLBAR: Toolbar<any> = {
-  code: 'columns',
-  name: '显示列',
-  position: 'right',
-  type: 'primary',
-  icon: tryGetIcon('IconGridSquare'),
-};
-
-export const ORDERED_LITERAL_TOOLBAR: Toolbar<any> = {
-  code: 'ordered',
-  name: '排序',
-  position: 'right',
-  type: 'primary',
-  icon: tryGetIcon('IconSortStroked'),
-};
+import {
+  ADD_LITERAL_TOOLBAR,
+  DELETE_LITERAL_TOOLBAR,
+  EXPORT_LITERAL_TOOLBAR,
+  IMPORT_LITERAL_TOOLBAR,
+  ORDERED_LITERAL_TOOLBAR,
+  REFRESH_LITERAL_TOOLBAR,
+  SHOW_COLUMN_LITERAL_TOOLBAR,
+} from '../Bar/collection';
 
 const renderableToolbar = <T extends IdEntity>(
   tableContext: TableContext<T>,
@@ -118,7 +71,7 @@ const renderableToolbar = <T extends IdEntity>(
       onClick(tableContext, formContext) {
         formContext.type = 'add';
         formContext.visible = true;
-        formContext.values = {};
+        formContext.setValues(formContext.getDefaultValues());
       },
     };
     toolbar.push(operabilityBar(addToolbar));

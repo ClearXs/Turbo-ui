@@ -163,7 +163,7 @@ const CodeGenerateEditor: React.FC<ICodeGenerateEditorProps> = ({
         const columns = fieldColumnTableApiRef.current!.getDataSource();
         const dataView = dataViewFormContextRef.current!.getValues();
         dataView.columns = columns;
-        formContext.setValue('dataView', JSON.stringify(dataView));
+        formContext.setValue('dataView', dataView);
         instance.destroy();
       },
     };

@@ -1,6 +1,7 @@
 import { Tree, TreeGeneralApi } from '@/api';
 import { OperateToolbar, Toolbar } from '../TableCrud/interface';
 import { FormColumnProps, FormContext } from '../TForm/interface';
+import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
 export type TreePanelProps<T extends Tree> = {
   columns: FormColumnProps<T>[];
@@ -15,7 +16,7 @@ export type TreePanelProps<T extends Tree> = {
     // 是否显示全选按钮，当属性multiple = true时生效
     showSelectAll?: boolean;
     // 是否显示取消全选按钮，当属性multiple = true时生效
-    showUnSelectAll?: boolean;
+    showDeSelectAll?: boolean;
     // 自定义追加
     append?: Toolbar<T>[];
   };
@@ -58,10 +59,10 @@ export type TreePanelProps<T extends Tree> = {
 };
 
 export interface TreePanelApi<T extends Tree> {
-  tree: (formContext: FormContext<T> | undefined) => void;
-  details: (formContext: FormContext<T>, record: T) => void;
-  edit: (formContext: FormContext<T>, record: T) => void;
-  remove: (formContext: FormContext<T>, ids: string[]) => void;
+  tree: () => void;
+  details: (record: T) => void;
+  edit: (record: T) => void;
+  remove: (ids: string[]) => void;
   // 单选情况下获取选中的key
   getSelectKey: () => string;
   // 多选情况下获取选中的所有值
@@ -70,6 +71,30 @@ export interface TreePanelApi<T extends Tree> {
   selectAll: () => void;
   // 多选情况下，取消全选
   unSelectAll: () => void;
+}
+
+export interface TreePanelContext<T extends Tree> {
+  // tree panel props
+  props: TreePanelProps<T>;
+  // tree panel loading
+  loading: boolean;
+  // tree data source
+  tree: TreeNodeData[];
+  dataSource: T[];
+  // select key
+  selectKey: string;
+  // select multi keys
+  selectKeys: string[];
+  // tree element all keys
+  allKeys: string[];
+  // the table form context
+  formContext?: FormContext<T>;
+  /**
+   * set form context
+   *
+   * @param formContext the form context instance
+   */
+  setFormContext(formContext: FormContext<T>): void;
 }
 
 export type RenderOperatorBarType<T extends Tree> = (

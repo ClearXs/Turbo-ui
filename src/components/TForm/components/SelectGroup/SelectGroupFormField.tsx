@@ -1,6 +1,6 @@
 import { IdEntity } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
-import { ColumnType, FormColumnProps, FormContext } from '../../interface';
+import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormSelectGroupColumnProps } from '.';
 import SelectGroup from '@/components/SelectGroup';
@@ -21,16 +21,9 @@ export class SelectGroupFormField<T extends IdEntity> extends BaseFormField<
         <SelectGroup
           {...props}
           {...column}
-          value={formContext?.values?.[props.field]}
+          value={formContext?.getValue(props.field)}
           onChange={(v) => {
-            const values = { ...formContext?.values } || {};
-            values[props.field] = v;
-            const newContext = {
-              ...formContext,
-              visible: true,
-              values,
-            };
-            formContext?.newContext(newContext as FormContext<T>);
+            formContext.setValue(props.field, v);
           }}
         />
       </Form.Slot>

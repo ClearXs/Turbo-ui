@@ -12,7 +12,7 @@ export interface ListPanelProps<T extends IdEntity> {
     // 是否显示全选按钮，当属性multiple = true时生效
     showSelectAll?: boolean;
     // 是否显示取消全选按钮，当属性multiple = true时生效
-    showUnSelectAll?: boolean;
+    showDeselectAll?: boolean;
     // 自定义追加
     append?: Toolbar<T>[];
   };
@@ -42,10 +42,10 @@ export interface ListPanelProps<T extends IdEntity> {
 }
 
 export interface ListPanelApi<T extends IdEntity> {
-  list: (formContext: FormContext<T>) => void;
-  details: (formContext: FormContext<T>, record: T) => void;
-  edit: (formContext: FormContext<T>, record: T) => void;
-  remove: (formContext: FormContext<T>, ids: string[]) => void;
+  list: () => void;
+  details: (record: T) => void;
+  edit: (record: T) => void;
+  remove: (ids: string[]) => void;
   // 全选
   selectAll: () => void;
   // 取消全选
@@ -56,11 +56,26 @@ export interface ListPanelApi<T extends IdEntity> {
   getSelectKeys: () => string[];
 }
 
-export type RenderOperatorBarType<T extends IdEntity> = (
-  record: T,
-  operateBar: ListPanelProps<T>['operateBar'],
-  listApi: ListPanelApi<T>,
-) => OperateToolbar<T>[];
+export interface ListPanelContext<T extends IdEntity> {
+  props: ListPanelProps<T>;
+  loading: boolean;
+  // the wrap original data source to list
+  list: TreeNodeData[];
+  // the original list panel data source
+  dataSource: T[];
+  // the list select key
+  selectKey: string;
+  // the list select keys
+  selectKeys: string[];
+  // the table form context
+  formContext?: FormContext<T>;
+  /**
+   * set form context
+   *
+   * @param formContext the form context instance
+   */
+  setFormContext(formContext: FormContext<T>): void;
+}
 
 // drag
 export type DraggableListProps<T extends DraggableItemProps> =
