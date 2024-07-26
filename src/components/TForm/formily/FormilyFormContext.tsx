@@ -18,6 +18,18 @@ export default class FormilyFormContextImpl<T extends IdEntity>
     define(this, {
       setCoreForm: action,
     });
+
+    this.validate = (pattern: any) => {
+      this.coreForm.validate(pattern);
+    };
+
+    this.submit = (onSubmit: any) => {
+      this.coreForm.submit(onSubmit);
+    };
+
+    this.reset = (pattern, options) => {
+      this.coreForm.reset(pattern, options);
+    };
   }
 
   getValue(field: keyof T): any {
