@@ -1,9 +1,11 @@
 import usePostApi, { Post, PostApi } from '@/api/system/post';
+import useReaction from '@/components/TForm/formily/reaction';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { Helper } from '@/components/interface';
 
 const PostHelper: Helper<Post, PostApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '岗位名称',
@@ -21,6 +23,7 @@ const PostHelper: Helper<Post, PostApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '岗位序号',

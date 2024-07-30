@@ -19,7 +19,7 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
     // 加载表单数据集
     loadDataSet(formContext, dicApi, request);
     return formContext;
-  }, []);
+  }, [props.params]);
 
   // 设置api
   const relationApis: Map<string, GeneralApi<T>> = new Map();

@@ -1,4 +1,5 @@
 import useOrgApi, { Org, OrgApi } from '@/api/system/org';
+import useReaction from '@/components/TForm/formily/reaction';
 import { TableTreeSelectColumnProps } from '@/components/TableCrud/components';
 import { Helper } from '@/components/interface';
 import { treeMap } from '@/util/tree';
@@ -7,6 +8,7 @@ import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
 const OrgHelper: Helper<Org, OrgApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '名称',
@@ -25,8 +27,8 @@ const OrgHelper: Helper<Org, OrgApi> = {
         align: 'center',
         require: true,
         extraText: '编码需要唯一',
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
-
       {
         label: '类型',
         field: 'type',

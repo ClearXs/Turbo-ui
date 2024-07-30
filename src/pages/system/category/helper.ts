@@ -2,11 +2,13 @@ import useCategoryApi, {
   CategoryApi,
   CategoryTree,
 } from '@/api/system/category';
+import useReaction from '@/components/TForm/formily/reaction';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { Helper } from '@/components/interface';
 
 const CategoryHelper: Helper<CategoryTree, CategoryApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '分类名称',
@@ -24,6 +26,7 @@ const CategoryHelper: Helper<CategoryTree, CategoryApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '分类排序',

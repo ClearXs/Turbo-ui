@@ -2,9 +2,11 @@ import useFormApi, { Form, FormApi } from '@/api/developer/form';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { Helper } from '@/components/interface';
 import BoHelper from '../bo/helper';
+import useReaction from '@/components/TForm/formily/reaction';
 
 const FormHelper: Helper<Form, FormApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '表单名称',
@@ -22,6 +24,7 @@ const FormHelper: Helper<Form, FormApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '表单数据',

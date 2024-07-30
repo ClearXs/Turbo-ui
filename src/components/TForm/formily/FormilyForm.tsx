@@ -42,7 +42,6 @@ import { IdEntity } from '@/api';
 import { TFormContext } from '../context/form';
 import { globalThisPolyfill } from '@formily/shared';
 import CodeEditor from './components/CodeEditor';
-import DEFAULT_SCOPES from './scope';
 import FormilyModalButton from './FormilyModalButton';
 
 globalThisPolyfill['__DESIGNABLE_LAYOUT__'] = { prefixCls: 'dn-' };
@@ -159,7 +158,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
         <SchemaField
           schema={schema}
           components={components}
-          scope={{ $context: formContext, ...scope, ...DEFAULT_SCOPES }}
+          scope={{ $context: formContext, ...scope }}
         />
       </Form>
       {slotBottom}

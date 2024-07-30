@@ -4,9 +4,11 @@ import { Helper } from '@/components/interface';
 import BoHelper from '../bo/helper';
 import FormHelper from '../form/helper';
 import MenuHelper from '@/pages/system/menu/helper';
+import useReaction from '@/components/TForm/formily/reaction';
 
 const PageHelper: Helper<Page, PageApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '页面名称',
@@ -25,6 +27,7 @@ const PageHelper: Helper<Page, PageApi> = {
         search: true,
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '表单',

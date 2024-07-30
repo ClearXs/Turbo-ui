@@ -2,9 +2,12 @@ import useDatasetApi, { Dataset, DatasetApi } from '@/api/developer/dataset';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { Helper } from '@/components/interface';
 import { DatasetSource } from './source';
+import useReaction from '@/components/TForm/formily/reaction';
 
 const DatasetHelper: Helper<Dataset, DatasetApi> = {
   getColumns: () => {
+    const reaction = useReaction();
+
     return [
       {
         label: '数据集名称',
@@ -22,6 +25,7 @@ const DatasetHelper: Helper<Dataset, DatasetApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '来源类型',

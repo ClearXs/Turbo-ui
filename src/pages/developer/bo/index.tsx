@@ -2,18 +2,18 @@ import { useMemo } from 'react';
 import BoHelper from './helper';
 import { CategoryTree } from '@/api/system/category';
 import useBoApi, { Bo } from '@/api/developer/bo';
-import CategoryHelper from '@/pages/system/category/helper';
 import TreePanel from '@/components/Tree/TreePanel';
 import Binary from '@/components/Binary';
 import { Notification } from '@douyinfe/semi-ui';
 import ModularBoTable from './ModularBoTable';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
-import { tryGetIcon } from '@/components/Icon';
+import { directGetIcon, tryGetIcon } from '@/components/Icon';
 import { TableContext } from '@/components/TableCrud/interface';
 import { ModularProps } from '@/components/Modular/interface';
 import { observer } from '@formily/reactive-react';
 import { observable } from '@formily/reactive';
 import Modular from '@/components/Modular/Modular';
+import CategoryHelper from '@/pages/system/category/helper';
 
 type BoInternalProps = {
   showBoTable: boolean;
@@ -22,7 +22,7 @@ type BoInternalProps = {
   boChangedFunc?: ModularProps['beforeCancel'];
 };
 
-const Bo: React.FC = observer(() => {
+const BoComponent: React.FC = observer(() => {
   const props: BoInternalProps = useMemo(() => {
     return observable({
       showBoTable: false,
@@ -98,7 +98,7 @@ const Bo: React.FC = observer(() => {
                   code: 'details',
                   name: '明细',
                   type: 'primary',
-                  icon: tryGetIcon('IconDetails', 'system'),
+                  icon: directGetIcon('IconDetails', 'system'),
                   onClick(tableContext, formContext, value) {
                     props.bo = value;
                     props.showBoTable = true;
@@ -120,4 +120,4 @@ const Bo: React.FC = observer(() => {
   );
 });
 
-export default Bo;
+export default BoComponent;

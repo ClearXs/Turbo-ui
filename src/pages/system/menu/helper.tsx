@@ -11,6 +11,7 @@ import {
   TableCheckboxColumnProps,
   TableTreeSelectColumnProps,
 } from '@/components/TableCrud/components';
+import useReaction from '@/components/TForm/formily/reaction';
 
 const loadMenuTreeData = (
   menus: MenuTree[],
@@ -36,6 +37,7 @@ const loadMenuTreeData = (
 
 const MenuHelper: Helper<MenuTree, MenuApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '名称',
@@ -55,6 +57,7 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         require: true,
         table: false,
         extraText: '编码需要唯一',
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '图标',

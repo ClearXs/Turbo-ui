@@ -7,11 +7,13 @@ import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { useMemo, useState } from 'react';
 import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
 import TreePanel from '@/components/Tree/TreePanel';
+import useReaction from '@/components/TForm/formily/reaction';
 
 const Dictionary: React.FC = () => {
   const [dicId, setDicId] = useState<string>();
 
   const columns: FormColumnProps<Dic>[] = useMemo(() => {
+    const reaction = useReaction();
     return [
       {
         label: '名称',
@@ -29,6 +31,7 @@ const Dictionary: React.FC = () => {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '类型',
