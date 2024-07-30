@@ -98,7 +98,7 @@ const ModularBoTable: React.FC<ModularBoTableProps> = observer(
           RightComponent={
             props.boTableId ? (
               <TableCrud<BoAttributeTree>
-                mode="page"
+                mode="list"
                 columns={BoAttributeHelper.getColumns()}
                 useApi={BoTableHelper.getApi}
                 event={{

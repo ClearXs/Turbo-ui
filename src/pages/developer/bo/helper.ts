@@ -12,9 +12,11 @@ import {
   TableTreeSelectColumnProps,
 } from '@/components/TableCrud/components';
 import DataSourceHelper from '../datasource/helper';
+import useReaction from '@/components/TForm/formily/reaction';
 
 const BoHelper: Helper<Bo, BoApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '业务对象名称',
@@ -32,6 +34,7 @@ const BoHelper: Helper<Bo, BoApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '数据源',
@@ -72,6 +75,7 @@ const BoHelper: Helper<Bo, BoApi> = {
 
 const BoTableHelper: Helper<BoAttributeTree, BoAttributeApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '表名称',
@@ -89,6 +93,7 @@ const BoTableHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '表字段',
@@ -97,6 +102,7 @@ const BoTableHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('field', ['code'], 'snake'),
       },
       {
         label: '所属于业务对象ID',
@@ -114,6 +120,7 @@ const BoTableHelper: Helper<BoAttributeTree, BoAttributeApi> = {
 
 const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
   getColumns: () => {
+    const reaction = useReaction();
     return [
       {
         label: '属性名称',
@@ -131,6 +138,7 @@ const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '属性字段',
@@ -139,6 +147,7 @@ const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        reaction: reaction.setWord('field', ['code'], 'snake'),
       },
       {
         label: '属性类型',
@@ -150,6 +159,7 @@ const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         table: true,
         filterTreeNode: true,
         expandAll: true,
+        initValue: 'varchar',
         treeData: () => {
           return toTreeNode(BoAttributeTypes);
         },

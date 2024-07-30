@@ -2,21 +2,17 @@ import { Field, Form } from '@formily/core';
 import { FormContext } from '../../interface';
 import { IdEntity } from '@/api';
 
-export type Func<T extends IdEntity = IdEntity, Value = any> = (
-  form: Form,
-  field: Field,
+export type Effect<T extends IdEntity = IdEntity, Value = any> = (
   formContext: FormContext<T>,
+  field: Field,
   deps?: Value[],
 ) => void;
-
-export type ScopeFunc = {
-  [key: string]: {
-    [key: string]: Func;
-  };
-};
 
 export type SetFieldStateArgs<T extends IdEntity = IdEntity, Value = any> = {
   // set field state path
   path: Field['path']['entire'];
-  func: Func<T, Value>;
+  // dependencies
+  dependencies: (keyof T)[];
+  // effect
+  effect: Effect<T, Value>;
 };

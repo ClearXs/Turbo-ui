@@ -19,17 +19,17 @@ import CodeGenerateEditor from './editor';
 import { FormContext } from '@/components/TForm/interface';
 import useDataSourceApi from '@/api/developer/datasource';
 import { FormJsonObjectColumnProps } from '@/components/TForm/components';
-import { useRunScope } from '@/components/TForm/formily/scope/run';
 import { transformToDataView } from '../editor/util';
 import usePageApi from '@/api/developer/page';
 import App from '@/components/App';
+import useReaction from '@/components/TForm/formily/reaction';
 
 const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
   getColumns: () => {
-    const runScope = useRunScope();
     const dataSourceApi = useDataSourceApi();
     const pageApi = usePageApi();
     const { sliderSide } = App.useApp();
+    const reaction = useReaction();
 
     return [
       {
@@ -188,34 +188,28 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
             type: 'select',
             require: true,
             table: false,
-            reaction: {
+            reaction: reaction.setFieldState({
+              path: 'datatable.table',
               dependencies: ['datatable.dataSource'],
-              fulfill: {
-                run: runScope.setFieldStateList({
-                  path: 'datatable.table',
-                  func: (form, field, formContext, args) => {
-                    const maybeDataSourceId = args && args[0];
-                    if (!_.isEmpty(maybeDataSourceId)) {
-                      dataSourceApi
-                        .showTables(maybeDataSourceId)
-                        .then((res) => {
-                          const { code, data } = res;
-                          if (code === 200) {
-                            field.setDataSource(
-                              data.map((table) => {
-                                return {
-                                  label: table.tableName,
-                                  value: table.tableName,
-                                };
-                              }),
-                            );
-                          }
-                        });
+              effect: (formContext, field, args) => {
+                const maybeDataSourceId = args && args[0];
+                if (!_.isEmpty(maybeDataSourceId)) {
+                  dataSourceApi.showTables(maybeDataSourceId).then((res) => {
+                    const { code, data } = res;
+                    if (code === 200) {
+                      field.setDataSource(
+                        data.map((table) => {
+                          return {
+                            label: table.tableName,
+                            value: table.tableName,
+                          };
+                        }),
+                      );
                     }
-                  },
-                }),
+                  });
+                }
               },
-            },
+            }),
           } as TableCascadeColumnProps<CodeGenerate>,
         ],
         reaction: {
@@ -248,42 +242,38 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
             />
           );
         },
-        reaction: {
+        reaction: reaction.setFieldState({
+          path: 'dataView',
           dependencies: ['datatable.table', 'pageId'],
-          fulfill: {
-            run: runScope.setFieldState({
-              path: 'dataView',
-              func: (form, field, formContext, deps) => {
-                const tableName = deps?.[0];
-                const pageId = deps?.[1];
-                if (!_.isEmpty(tableName)) {
-                  const values = formContext.getValues() as CodeGenerate;
-                  dataSourceApi
-                    .showTable(
-                      values.datatable['dataSource'],
-                      values.datatable['table'],
-                    )
-                    .then((res) => {
-                      const { code, data } = res;
-                      if (code === 200) {
-                        // transform to data view
-                        const dataView = transformToDataView(data);
-                        formContext.setValue('dataView', dataView);
-                      }
-                    });
+          effect: (formContext, field, deps) => {
+            const tableName = deps?.[0];
+            const pageId = deps?.[1];
+            if (!_.isEmpty(tableName)) {
+              const values = formContext.getValues() as CodeGenerate;
+              dataSourceApi
+                .showTable(
+                  values.datatable['dataSource'],
+                  values.datatable['table'],
+                )
+                .then((res) => {
+                  const { code, data } = res;
+                  if (code === 200) {
+                    // transform to data view
+                    const dataView = transformToDataView(data);
+                    formContext.setValue('dataView', dataView);
+                  }
+                });
+            }
+            if (!_.isEmpty(pageId)) {
+              pageApi.details(pageId).then((res) => {
+                const { code, data } = res;
+                if (code === 200) {
+                  formContext.setValue('dataView', data.dataview);
                 }
-                if (!_.isEmpty(pageId)) {
-                  pageApi.details(pageId).then((res) => {
-                    const { code, data } = res;
-                    if (code === 200) {
-                      formContext.setValue('dataView', data.dataview);
-                    }
-                  });
-                }
-              },
-            }),
+              });
+            }
           },
-        },
+        }),
         render: (text, record, index, tableContext) => {
           return (
             <Button
