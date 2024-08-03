@@ -33,7 +33,7 @@ export default class FormilyFormContextImpl<T extends IdEntity>
   }
 
   getValue(field: keyof T): any {
-    return this.coreForm.getValuesIn(field);
+    return this.coreForm.getValuesIn(field as string);
   }
 
   getValues(): Partial<T> {
@@ -41,7 +41,7 @@ export default class FormilyFormContextImpl<T extends IdEntity>
   }
 
   setValue(field: keyof T, value: any): void {
-    this.coreForm.setValuesIn(field, value);
+    this.coreForm.setValuesIn(field as string, value);
   }
 
   setValues(values: Partial<T>): void {

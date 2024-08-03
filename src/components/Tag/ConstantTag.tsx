@@ -34,10 +34,10 @@ const ConstantTag = (props: ConstantTagProps) => {
 
 export const toTreeNode = (treeConstant?: TreeConstant[]): TreeNodeData[] => {
   return (
-    treeConstant?.map((constant) => {
+    treeConstant?.map((constant, i) => {
       return {
         key: constant.value,
-        label: <ConstantTag constant={constant} />,
+        label: <ConstantTag constant={constant} key={i + constant.depth} />,
         value: constant.value,
         disabled: constant.depth === 0,
         children: toTreeNode(constant.children),

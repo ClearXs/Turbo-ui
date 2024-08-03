@@ -88,10 +88,14 @@ const ModularBoTable: React.FC<ModularBoTableProps> = observer(
               params={{ boId, attrType: 'table' }}
               first={true}
               onSelectChange={(boTableId) => (props.boTableId = boTableId)}
-              depth={0}
-              root="业务对象"
               expandAll
-              toolbar={{ showAdd: false }}
+              root={{ name: '业务对象' }}
+              operateBar={{
+                showAdd(record, treePanelContext) {
+                  return treePanelContext.dataSource.length < 1;
+                },
+                showSubordinate: true,
+              }}
               addDefaultValue={{ boId, attrType: 'table' }}
             />
           }

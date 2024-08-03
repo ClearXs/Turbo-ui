@@ -74,6 +74,24 @@ export const COPY_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
   icon: tryGetIcon('IconCopy'),
 };
 
+export const ADD_SUBORDINATE_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
+  code: 'addSubordinate',
+  name: '添加下级',
+  type: 'primary',
+  size: 'small',
+  internal: true,
+  icon: tryGetIcon('IconSubordinate'),
+};
+
+export const ADD_PEER_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
+  code: 'addPeer',
+  name: '添加同级',
+  type: 'primary',
+  size: 'small',
+  internal: true,
+  icon: tryGetIcon('IconPeer'),
+};
+
 export const ADD_LITERAL_TOOLBAR: Toolbar<any> = {
   code: 'add',
   name: '新增',

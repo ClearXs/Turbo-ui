@@ -32,7 +32,11 @@ export default class TreePanelApiImpl<T extends Tree>
           // 添加根结点显示名称，该结点为虚拟结点
           if (root) {
             const rootNode: Partial<T> = {};
-            rootNode.name = root;
+            if (typeof root === 'object') {
+              rootNode.name = root.name;
+            } else {
+              rootNode.name = root;
+            }
             rootNode.children = node;
             rootNode.id = VIRTUAL_ROOT_VALUE;
             node = [rootNode];
@@ -41,25 +45,44 @@ export default class TreePanelApiImpl<T extends Tree>
           let treeData = loadTreeData(
             node,
             (tree) => {
-              const bars = renderTreeOperatorBar(props, this, tree).filter(
-                (bar) => {
-                  // 如果是ROOT结点，过滤编辑和删除
-                  if (
-                    tree.id === VIRTUAL_ROOT_VALUE &&
-                    (bar.code === 'edit' ||
-                      bar.code === 'delete' ||
-                      bar.code === 'details')
-                  ) {
-                    return false;
-                  }
+              const bars = renderTreeOperatorBar(
+                this.treePanelContext,
+                this,
+                tree,
+              ).filter((bar) => {
+                const code = bar.code;
+                // 如果是ROOT结点，过滤编辑和删除
+                if (
+                  tree.id === VIRTUAL_ROOT_VALUE &&
+                  (code === 'edit' ||
+                    code === 'delete' ||
+                    code === 'details' ||
+                    code === 'addSubordinate' ||
+                    code === 'addPeer')
+                ) {
+                  return false;
+                }
 
-                  // 非ROOT节点，过滤新增
-                  if (tree.id !== VIRTUAL_ROOT_VALUE && bar.code === 'add') {
-                    return false;
+                // 判断root是否需要add按钮
+                if (
+                  tree.id === VIRTUAL_ROOT_VALUE &&
+                  typeof root === 'object'
+                ) {
+                  const { showAdd = true } = root.toolbar || {};
+                  if (
+                    (typeof showAdd === 'function' &&
+                      showAdd(this.treePanelContext)) ||
+                    showAdd
+                  ) {
+                    return true;
                   }
-                  return true;
-                },
-              );
+                }
+                // 非ROOT节点，过滤新增
+                if (tree.id !== VIRTUAL_ROOT_VALUE && bar.code === 'add') {
+                  return false;
+                }
+                return true;
+              });
               // 尝试读取columns中 类型为select的数据，使用其用作label渲染
               const { columns } = props;
               const constants = columns

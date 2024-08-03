@@ -106,27 +106,6 @@ const formTypeList: Record<string, Constant> = {
   },
 };
 
-const useFormType = <T extends IdEntity = IdEntity>(
-  formContext: FormContext<T>,
-) => {
-  return formTypeList[formContext.type || 'add'];
-};
-
-const useTitle = <T extends IdEntity = IdEntity>(
-  formProps: FormProps<T>,
-  formContext: FormContext<T>,
-) => {
-  const formType = useFormType(formContext);
-  return formProps.title || formType.label;
-};
-
-const useIcon = <T extends IdEntity = IdEntity>(
-  formContext: FormContext<T>,
-) => {
-  const formType = useFormType(formContext);
-  return formType.icon;
-};
-
 const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   const {
     formProps,
@@ -144,9 +123,6 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
       decorator.schema(column, index),
     );
   }, [formContext.dataSet, formContext.type, formContext.visible]);
-
-  const title = useTitle(formProps, formContext);
-  const icon = useIcon(formContext);
 
   const { slotBottom, modal } = formProps;
 
@@ -169,8 +145,8 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
     <React.Fragment>{InternalFormily}</React.Fragment>
   ) : (
     <Modal
-      title={title}
-      icon={icon}
+      title={formContext.title}
+      icon={formContext.icon}
       visible={formContext.visible}
       closeOnEsc={closeOnEsc}
       size={size}

@@ -41,7 +41,7 @@ const Menu = () => {
             code: 'addSubordinate',
             name: '添加下级',
             type: 'primary',
-            icon: tryGetIcon('IconPeer'),
+            icon: tryGetIcon('IconSubordinate'),
             onClick: (tableContext, formContext, record) => {
               formContext.visible = true;
               formContext.setValues(
@@ -56,7 +56,7 @@ const Menu = () => {
             code: 'addPeer',
             name: '添加同级',
             type: 'primary',
-            icon: tryGetIcon('IconSubordinate'),
+            icon: tryGetIcon('IconPeer'),
             onClick: (tableContext, formContext, record) => {
               formContext.visible = true;
               formContext.setValues(

@@ -211,6 +211,10 @@ export type FormColumnProps<T extends IdEntity> = {
 };
 
 export type FormContext<T extends IdEntity> = {
+  // title
+  title?: string;
+  // form icon
+  icon?: React.ReactNode;
   // 弹窗类型
   type: FormStatus;
   // Form props

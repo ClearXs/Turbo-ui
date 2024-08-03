@@ -5,7 +5,7 @@ import useBoAttributeApi, {
 } from '@/api/developer/boattribute';
 import { TableColumnProps } from '@/components/TableCrud/interface';
 import { Helper } from '@/components/interface';
-import { BoAttributeTypes } from './boattributetype';
+import BO_ATTRIBUTE_TREE from './boattributetype';
 import { toTreeNode } from '@/components/Tag/ConstantTag';
 import {
   TableSelectColumnProps,
@@ -161,7 +161,7 @@ const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         expandAll: true,
         initValue: 'varchar',
         treeData: () => {
-          return toTreeNode(BoAttributeTypes);
+          return toTreeNode(BO_ATTRIBUTE_TREE.getTreeData());
         },
       } as TableTreeSelectColumnProps<BoAttributeTree>,
       {
@@ -171,6 +171,19 @@ const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         align: 'center',
         type: 'number',
         table: false,
+        reaction: reaction.withRun({
+          target: 'type',
+          fulfill: ($self, $target) => {
+            const typeValue = $target?.value;
+            const attribute = BO_ATTRIBUTE_TREE.findTree(typeValue);
+            if (attribute?.precision) {
+              $self.setDisplay('visible');
+              $self.setValue(attribute.precision);
+            } else {
+              $self.setDisplay('hidden');
+            }
+          },
+        }),
       },
       {
         label: '小数位',
@@ -179,6 +192,20 @@ const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         align: 'center',
         type: 'number',
         table: false,
+        max: 5,
+        reaction: reaction.withRun({
+          target: 'type',
+          fulfill: ($self, $target) => {
+            const typeValue = $target?.value;
+            const attribute = BO_ATTRIBUTE_TREE.findTree(typeValue);
+            if (attribute?.scale) {
+              $self.setDisplay('visible');
+              $self.setValue(attribute.scale);
+            } else {
+              $self.setDisplay('hidden');
+            }
+          },
+        }),
       },
       {
         label: '是否主键',
