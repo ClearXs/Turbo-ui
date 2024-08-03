@@ -1,64 +1,111 @@
 import { tryGetIcon } from '@/components/Icon/shared';
-import { Constant, TreeConstant } from '@/constant';
+import { TreeConstant } from '@/constant';
+import Tree from '@/shared/tree';
 
-export const NUMBER = { value: 'number', label: '数字型' } as Constant;
-
-export const CHARACTER = { value: 'character', label: '字符型' } as Constant;
+export type BoAttributeTreeType = TreeConstant & {
+  scale?: number;
+  precision?: number;
+};
 
 export const BoAttributeTypes = [
   {
+    tag: 'blue',
     value: 'number',
     label: '数字型',
-    icon: tryGetIcon('IconBookH5Stroked'),
+    icon: tryGetIcon('IconInteger'),
     depth: 0,
     children: [
-      { value: 'bigint', label: 'bigint' },
-      { value: 'smallint', label: 'smallint' },
-      { value: 'int', label: 'int' },
-      { value: 'bit', label: 'bit' },
-      { value: 'tinyint', label: 'tinyint' },
-      { value: 'number', label: 'number' },
-      { value: 'double', label: 'double' },
-      { value: 'float', label: 'float' },
-      { value: 'decimal', label: 'decimal' },
+      { tag: 'blue', value: 'bigint', label: 'bigint', precision: 64 },
+      { tag: 'blue', value: 'smallint', label: 'smallint', precision: 32 },
+      { tag: 'blue', value: 'int', label: 'int', precision: 64 },
+      { tag: 'blue', value: 'bit', label: 'bit', precision: 4 },
+      { tag: 'blue', value: 'tinyint', label: 'tinyint', precision: 16 },
+      {
+        tag: 'blue',
+        value: 'number',
+        label: 'number',
+        precision: 16,
+        scale: 2,
+      },
+      {
+        tag: 'blue',
+        value: 'double',
+        label: 'double',
+        precision: 16,
+        scale: 2,
+      },
+      { tag: 'blue', value: 'float', label: 'float', precision: 16, scale: 2 },
+      {
+        tag: 'blue',
+        value: 'decimal',
+        label: 'decimal',
+        precision: 16,
+        scale: 2,
+      },
     ],
   },
   {
     value: 'character',
     label: '字符型',
-    icon: tryGetIcon('IconTextStroked'),
+    tag: 'amber',
+    icon: tryGetIcon('IconCharacter'),
     depth: 0,
     children: [
       {
+        tag: 'amber',
         value: 'char',
         label: 'char',
+        precision: 64,
       },
       {
+        tag: 'amber',
         value: 'varchar',
         label: 'varchar',
+        precision: 64,
       },
       {
-        value: 'nvarchar',
-        label: 'nvarchar',
+        tag: 'amber',
+        value: 'longvarchar',
+        label: 'text',
       },
     ],
   },
   {
     value: 'datetime',
     label: '时间型',
-    icon: tryGetIcon('IconCalendarClock'),
+    icon: tryGetIcon('IconTime'),
+    tag: 'cyan',
     children: [
       {
+        tag: 'cyan',
         value: 'time',
         label: 'time',
+        precision: 6,
       },
       {
+        tag: 'cyan',
         value: 'timestamp',
         label: 'timestamp',
       },
       {
+        tag: 'cyan',
         value: 'date',
         label: 'date',
+        precision: 6,
+      },
+    ],
+  },
+  {
+    value: 'other',
+    label: '其他类型',
+    icon: tryGetIcon('IconCalendarClock'),
+    tag: 'indigo',
+    children: [
+      {
+        tag: 'indigo',
+        value: 'boolean',
+        label: 'boolean',
+        precision: 1,
       },
     ],
   },
@@ -67,16 +114,23 @@ export const BoAttributeTypes = [
     label: '高级类型',
     icon: tryGetIcon('IconFolderStroked'),
     depth: 0,
+    tag: 'yellow',
     children: [
       {
+        tag: 'yellow',
         value: 'object',
         label: 'object',
         extra: 'json对象类型',
       },
       {
+        tag: 'yellow',
         value: 'array',
         label: 'array',
       },
     ],
   },
-] as TreeConstant[];
+] as BoAttributeTreeType[];
+
+const BO_ATTRIBUTE_TREE = new Tree(BoAttributeTypes);
+
+export default BO_ATTRIBUTE_TREE;

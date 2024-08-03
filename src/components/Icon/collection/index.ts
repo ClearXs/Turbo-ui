@@ -28,3 +28,6 @@ export * from './IconCode';
 export * from './IconGenerate';
 export * from './IconTemplateManager';
 export * from './IconAutoNumber';
+export * from './IconCharacter';
+export * from './IconInteger';
+export * from './IconTime';

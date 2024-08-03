@@ -1,10 +1,11 @@
 import { IdEntity } from '@/api';
-import { SetFieldStateArgs } from './interface';
+import { RunArgs, SetFieldStateArgs } from './interface';
 import { IScopeContext } from '@formily/json-schema';
 import { Field } from '@formily/core';
 import _, { isArray } from 'lodash';
 import { getFeature, Word } from './word';
 import { FormContext } from '../../interface';
+import { triggerUserReactions } from './transformer';
 
 export type ReactionFunc = (field: Field, scope: IScopeContext) => void;
 
@@ -18,6 +19,7 @@ export type Reaction<T extends IdEntity> = {
   ) => ReactionFunc;
   setFieldState: (arg: SetFieldStateArgs<T>) => ReactionFunc;
   setFieldStateList: (...args: SetFieldStateArgs<T>[]) => ReactionFunc[];
+  withRun: (args: RunArgs) => ReactionFunc;
 };
 
 export default function useReaction<T extends IdEntity>(): Reaction<T> {
@@ -58,19 +60,22 @@ export default function useReaction<T extends IdEntity>(): Reaction<T> {
       }
       return (field, scope) => {
         field.form.setFieldState(path, () => {
-          if (field.path?.entire === path) {
-            const $context: FormContext<T> = scope['$context'];
-            const form = field.form;
-            const $deps = dependencies.map((dep) => {
-              return form.getValuesIn(dep as string);
-            });
-            effect?.($context, field, $deps);
-          }
+          const $context: FormContext<T> = scope['$context'];
+          const form = field.form;
+          const $deps = dependencies.map((dep) => {
+            return form.getValuesIn(dep as string);
+          });
+          effect?.($context, field, $deps);
         });
       };
     },
     setFieldStateList(...args) {
       return args.map((arg) => this.setFieldState(arg));
+    },
+    withRun(args) {
+      return (field, scope) => {
+        triggerUserReactions(field, args, scope);
+      };
     },
   };
 }

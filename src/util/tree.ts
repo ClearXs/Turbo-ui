@@ -66,6 +66,11 @@ export const find = <T extends Tree>(
     if (element[key] === v) {
       return element;
     }
-    return find(element.children, key, v);
+    const children = element.children;
+    const ele = children && find(children, key, v);
+    if (ele) {
+      return ele;
+    }
   }
+  return undefined;
 };

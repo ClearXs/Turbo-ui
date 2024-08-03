@@ -132,7 +132,7 @@ export const renderOperatorBar = <T extends IdEntity>(
   // 行内编辑
   if (
     ((typeof showInlineEdit === 'function' && showInlineEdit(record)) ||
-      showInlineEdit) &&
+      showInlineEdit === true) &&
     !isEditing
   ) {
     const inlineEditOperatorBar: OperateToolbar<T> = {
@@ -167,7 +167,10 @@ export const renderOperatorBar = <T extends IdEntity>(
   }
 
   // 编辑
-  if ((typeof showEdit === 'function' && showEdit(record)) || showEdit) {
+  if (
+    (typeof showEdit === 'function' && showEdit(record)) ||
+    showEdit === true
+  ) {
     const editOperatorBar: OperateToolbar<T> = {
       ...EDIT_LITERAL_OPERATOR_BAR,
       onClick(tableContext, formContext, value) {
@@ -179,7 +182,7 @@ export const renderOperatorBar = <T extends IdEntity>(
   // 详情
   if (
     (typeof showDetails === 'function' && showDetails(record)) ||
-    showDetails
+    showDetails === true
   ) {
     const detailsOperatorBar: OperateToolbar<T> = {
       ...DETAILS_LITERAL_OPERATOR_BAR,
@@ -190,7 +193,10 @@ export const renderOperatorBar = <T extends IdEntity>(
     bars.push(detailsOperatorBar);
   }
   // 删除
-  if ((typeof showDelete === 'function' && showDelete(record)) || showDelete) {
+  if (
+    (typeof showDelete === 'function' && showDelete(record)) ||
+    showDelete === true
+  ) {
     const deleteOperatorBar: OperateToolbar<T> = {
       ...DELETE_LITERAL_OPERATOR_BAR,
       onClick(tableContext, formContext, value) {
@@ -206,7 +212,10 @@ export const renderOperatorBar = <T extends IdEntity>(
     bars.push(deleteOperatorBar);
   }
   // 复制
-  if ((typeof showCopy === 'function' && showCopy(record)) || showCopy) {
+  if (
+    (typeof showCopy === 'function' && showCopy(record)) ||
+    showCopy === true
+  ) {
     const copyOperatorBar: OperateToolbar<T> = {
       ...COPY_LITERAL_OPERATOR_BAR,
       onClick(tableContext, formContext, value) {

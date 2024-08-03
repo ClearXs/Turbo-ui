@@ -3,10 +3,28 @@ import { FormColumnProps, FormContext } from './interface';
 import { getFormColumnDecorator } from '.';
 import { action, define, observable } from '@formily/reactive';
 import _ from 'lodash';
+import { Constant } from '@/constant';
+
+const formTypeList: Record<string, Constant> = {
+  add: {
+    value: 'add',
+    label: '添加',
+  },
+  edit: {
+    value: 'edit',
+    label: '编辑',
+  },
+  details: {
+    value: 'details',
+    label: '明细',
+  },
+};
 
 export default class FormContextImpl<T extends IdEntity>
   implements FormContext<T>
 {
+  title: FormContext<T>['title'];
+  icon: FormContext<T>['icon'];
   type: FormContext<T>['type'];
   props: FormContext<T>['props'];
   visible: FormContext<T>['visible'];
@@ -20,7 +38,6 @@ export default class FormContextImpl<T extends IdEntity>
   validate?: FormContext<T>['validate'];
   submit?: FormContext<T>['submit'];
   reset?: FormContext<T>['reset'];
-
   formValues: Partial<T>;
 
   constructor(props: FormContext<T>['props']) {
@@ -33,8 +50,10 @@ export default class FormContextImpl<T extends IdEntity>
     this.dataSet = {};
     this.valid = false;
     this.validating = false;
+    const formType = formTypeList[this.type || 'add'];
+    this.title = props.title || formType.label;
+    this.icon = formType.icon;
     this.formValues = {};
-
     this.columns =
       props.columns.filter((column) => {
         let showForm;

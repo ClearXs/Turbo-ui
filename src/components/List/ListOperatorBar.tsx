@@ -16,7 +16,10 @@ export default function renderListPanelOperatorBar<T extends IdEntity>(
   const { showEdit = true, showDelete = true, append = [] } = operateBar || {};
 
   // 编辑
-  if ((typeof showEdit === 'function' && showEdit(record)) || showEdit) {
+  if (
+    (typeof showEdit === 'function' && showEdit(record)) ||
+    showEdit === true
+  ) {
     const editOperatorBar: OperateToolbar<T> = {
       ...EDIT_LITERAL_OPERATOR_BAR,
       onClick: (tableContext, formContext, record) => {
@@ -27,7 +30,10 @@ export default function renderListPanelOperatorBar<T extends IdEntity>(
   }
 
   // 删除
-  if ((typeof showDelete === 'function' && showDelete(record)) || showDelete) {
+  if (
+    (typeof showDelete === 'function' && showDelete(record)) ||
+    showDelete === true
+  ) {
     const deleteOperatorBar: OperateToolbar<T> = {
       ...DELETE_LITERAL_OPERATOR_BAR,
       onClick(tableContext, formContext, value) {

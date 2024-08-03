@@ -5,7 +5,6 @@ import { useEffect, useMemo } from 'react';
 import _ from 'lodash';
 import { find } from '@/util/tree';
 import TForm from '../TForm/TForm';
-import { TFormContext } from '../TForm/context/form';
 import { FormTreeSelectColumnProps } from '../TForm/components';
 import TreePanelContextImpl from './TreePanelContext';
 import TreeToolbar from './TreeToolbar';

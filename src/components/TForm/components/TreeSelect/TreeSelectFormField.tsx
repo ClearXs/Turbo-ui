@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Tree } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
@@ -7,7 +7,7 @@ import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { ISchema } from '@formily/json-schema';
 import _ from 'lodash';
 
-export class TreeSelectFormField<T extends IdEntity> extends BaseFormField<
+export class TreeSelectFormField<T extends Tree> extends BaseFormField<
   T,
   FormTreeSelectColumnProps<T>
 > {

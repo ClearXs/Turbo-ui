@@ -11,6 +11,8 @@ export type Constant<Value = any> = {
   tag?: TagColor;
   // 常量额外显示内容
   extra?: string;
+  // 其他属性
+  [key: string]: any;
 };
 
 // 构成group的常量
@@ -20,5 +22,5 @@ export type GroupConstant<Value = any> = Constant<Value> & {
 
 export type TreeConstant<Value = any> = Constant<Value> & {
   depth: number;
-  children?: TreeConstant<Value>[];
+  children?: TreeConstant[];
 };

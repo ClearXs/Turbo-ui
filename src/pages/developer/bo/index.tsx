@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import BoHelper from './helper';
 import { CategoryTree } from '@/api/system/category';
 import useBoApi, { Bo } from '@/api/developer/bo';
@@ -23,6 +23,8 @@ type BoInternalProps = {
 };
 
 const BoComponent: React.FC = observer(() => {
+  const [categoryId, setCategoryId] = useState<string>();
+
   const props: BoInternalProps = useMemo(() => {
     return observable({
       showBoTable: false,
@@ -42,11 +44,7 @@ const BoComponent: React.FC = observer(() => {
             params={{ funcCode: 'bo' }}
             addDefaultValue={{ funcCode: 'bo' }}
             useApi={CategoryHelper.getApi}
-            onSelectChange={(categoryId) => {
-              if (props.tableContext && categoryId) {
-                props.tableContext.search['categoryId'] = categoryId;
-              }
-            }}
+            onSelectChange={setCategoryId}
             depth={0}
             root="业务对象分类"
             expandAll
@@ -58,6 +56,7 @@ const BoComponent: React.FC = observer(() => {
             columns={BoHelper.getColumns()}
             funcCode="bo"
             useApi={BoHelper.getApi}
+            params={{ categoryId: categoryId }}
             getTableContext={(tableContext) =>
               (props.tableContext = tableContext)
             }

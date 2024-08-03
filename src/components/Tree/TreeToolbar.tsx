@@ -48,7 +48,7 @@ const renderToolbar = <T extends Tree>(
   treeApi: TreePanelApi<T>,
 ) => {
   const bars: Toolbar<T>[] = [];
-  const { toolbar = {}, multiple } = props;
+  const { toolbar = {} } = props;
   const {
     showAdd = false,
     showSelectAll = false,

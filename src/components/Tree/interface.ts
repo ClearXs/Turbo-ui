@@ -3,6 +3,14 @@ import { OperateToolbar, Toolbar } from '../TableCrud/interface';
 import { FormColumnProps, FormContext } from '../TForm/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
+export type TreePanelRoot<T extends Tree> = {
+  name: Tree['name'];
+  toolbar?: {
+    // 是否显示增加按钮
+    showAdd?: boolean | ((treePanelContext: TreePanelContext<T>) => boolean);
+  };
+};
+
 export type TreePanelProps<T extends Tree> = {
   columns: FormColumnProps<T>[];
   // 用于初始化查询参数，如果存在的话
@@ -22,14 +30,30 @@ export type TreePanelProps<T extends Tree> = {
   };
   // 操作栏
   operateBar?: {
-    // 是否显示怎增加操作
-    showAdd?: boolean | ((record: T) => boolean);
-    // 是否显示编辑操作
-    showEdit?: boolean | ((record: T) => boolean);
-    // 是否显示删除操作
-    showDelete?: boolean | ((record: T) => boolean);
-    // 是否显示怎详情操作
-    showDetails?: boolean | ((record: T) => boolean);
+    // 是否显示怎增加操作，默认true
+    showAdd?:
+      | boolean
+      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+    // 是否显示编辑操作，默认true
+    showEdit?:
+      | boolean
+      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+    // 是否显示删除操作，默认true
+    showDelete?:
+      | boolean
+      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+    // 是否显示怎详情操作, 默认true
+    showDetails?:
+      | boolean
+      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+    // 是否显示添加下级，默认false
+    showSubordinate?:
+      | boolean
+      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+    // 是否显示添加同级，默认false
+    showPeer?:
+      | boolean
+      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
     // 自定义追加
     append?: (OperateToolbar<T> | ((record: T) => OperateToolbar<T>))[];
   };
@@ -46,7 +70,7 @@ export type TreePanelProps<T extends Tree> = {
   // 初始化值
   initValue?: Tree['id'];
   // 根结点名称，如果赋值将会创建一个ROOT的虚拟结点
-  root?: Tree['name'];
+  root?: Tree['name'] | TreePanelRoot<T>;
   // api
   useApi: () => TreeGeneralApi<T>;
   // 当选中结点时回调
