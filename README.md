@@ -1,7 +1,5 @@
 [English](./README.en-US.md) | 简体中文
 
-<img src="./docs/logo.png" >
-
 <h2 align="center">简约 · 实用 · 前沿 · 创新</h2>
 
 ## 概要

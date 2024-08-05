@@ -42,6 +42,23 @@ const CodeGenerateComponent = () => {
             funcCode="codeGenerate"
             params={{ categoryId: categoryId }}
             scope={CodeGeneratorHelper.getScope?.()}
+            toolbar={{
+              append: [
+                {
+                  code: 'batchGenerate',
+                  name: '批量生成',
+                  icon: tryGetIcon('IconGenerate'),
+                  type: 'primary',
+                  position: 'left',
+                  onClick(tableContext, formContext) {
+                    const ids = tableContext.getSelectedRowKeys();
+                    open(
+                      `/api/dev/code/generate/batch-generate/${ids.join(',')}`,
+                    );
+                  },
+                },
+              ],
+            }}
             operateBar={{
               append: [
                 {

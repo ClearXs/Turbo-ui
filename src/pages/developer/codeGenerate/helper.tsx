@@ -3,7 +3,6 @@ import useCodeGenerateApi, {
   CodeGenerateApi,
 } from '@/api/developer/codeGenerate';
 import {
-  TableCascadeColumnProps,
   TableSelectColumnProps,
   TableSlotColumnProps,
 } from '@/components/TableCrud/components';
@@ -19,15 +18,17 @@ import CodeGenerateEditor from './editor';
 import { FormContext } from '@/components/TForm/interface';
 import useDataSourceApi from '@/api/developer/datasource';
 import { FormJsonObjectColumnProps } from '@/components/TForm/components';
-import { transformToDataView } from '../editor/util';
+import * as editorUtils from '../editor/util';
 import usePageApi from '@/api/developer/page';
 import App from '@/components/App';
 import useReaction from '@/components/TForm/formily/reaction';
+import useBoApi from '@/api/developer/bo';
 
 const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
   getColumns: () => {
     const dataSourceApi = useDataSourceApi();
     const pageApi = usePageApi();
+    const boApi = useBoApi();
     const { sliderSide } = App.useApp();
     const reaction = useReaction();
 
@@ -49,6 +50,9 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         type: 'input',
         require: true,
         table: false,
+        extraText:
+          '比如Generate, 代表生成器,该值影响着生成的Controller、Service等类的名称!(建议采用英文首字母大写)',
+        reaction: reaction.setWord('instanceKey', ['instanceName'], 'pinyin'),
       },
       {
         label: '版本号',
@@ -67,7 +71,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         type: 'input',
         require: true,
         line: true,
-        extraText: '比如：/dev/code/generate',
+        extraText: '比如：/dev/code',
       },
       {
         label: '作者',
@@ -148,6 +152,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         require: true,
         table: false,
         showClear: true,
+        filter: true,
         remote: {
           url: '/api/dev/page/list',
         },
@@ -156,6 +161,28 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
           fulfill: {
             schema: {
               'x-visible': "{{$deps[0] === 'page'}}",
+            },
+          },
+        },
+      } as TableSelectColumnProps<CodeGenerate>,
+      {
+        label: 'BO对象',
+        field: 'boId',
+        ellipsis: true,
+        align: 'center',
+        type: 'select',
+        require: true,
+        table: false,
+        showClear: true,
+        filter: true,
+        remote: {
+          url: '/api/dev/bo/list',
+        },
+        reaction: {
+          dependencies: ['source'],
+          fulfill: {
+            schema: {
+              'x-visible': "{{$deps[0] === 'bo'}}",
             },
           },
         },
@@ -188,6 +215,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
             type: 'select',
             require: true,
             table: false,
+            filter: true,
             reaction: reaction.setFieldState({
               path: 'datatable.table',
               dependencies: ['datatable.dataSource'],
@@ -210,7 +238,7 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
                 }
               },
             }),
-          } as TableCascadeColumnProps<CodeGenerate>,
+          } as TableSelectColumnProps<CodeGenerate>,
         ],
         reaction: {
           dependencies: ['source'],
@@ -244,10 +272,11 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
         },
         reaction: reaction.setFieldState({
           path: 'dataView',
-          dependencies: ['datatable.table', 'pageId'],
+          dependencies: ['datatable.table', 'pageId', 'boId'],
           effect: (formContext, field, deps) => {
             const tableName = deps?.[0];
             const pageId = deps?.[1];
+            const boId = deps?.[2];
             if (!_.isEmpty(tableName)) {
               const values = formContext.getValues() as CodeGenerate;
               dataSourceApi
@@ -259,7 +288,10 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
                   const { code, data } = res;
                   if (code === 200) {
                     // transform to data view
-                    const dataView = transformToDataView(data);
+                    const dataView =
+                      editorUtils.default.transformToDataViewFormTableColumn(
+                        data,
+                      );
                     formContext.setValue('dataView', dataView);
                   }
                 });
@@ -269,6 +301,16 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
                 const { code, data } = res;
                 if (code === 200) {
                   formContext.setValue('dataView', data.dataview);
+                }
+              });
+            }
+            if (!_.isEmpty(boId)) {
+              boApi.schema(boId).then((res) => {
+                const { code, data } = res;
+                if (code === 200) {
+                  const dataView =
+                    editorUtils.default.transformToDataViewFormBoSchema(data);
+                  formContext.setValue('dataView', dataView);
                 }
               });
             }
