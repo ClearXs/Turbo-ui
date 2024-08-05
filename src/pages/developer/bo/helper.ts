@@ -102,6 +102,7 @@ const BoTableHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        extraText: '对应于数据库表，建议采用snake命名法',
         reaction: reaction.setWord('field', ['code'], 'snake'),
       },
       {
@@ -147,6 +148,7 @@ const BoAttributeHelper: Helper<BoAttributeTree, BoAttributeApi> = {
         align: 'center',
         type: 'input',
         require: true,
+        extraText: '对应于数据库字段，建议采用snake命名法',
         reaction: reaction.setWord('field', ['code'], 'snake'),
       },
       {

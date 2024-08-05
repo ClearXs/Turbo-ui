@@ -229,10 +229,9 @@ export const from = <Column extends FormColumnProps<any>>(
     const rootSchema = attrSchemas[0];
     if (rootSchema.attrType !== 'table') return [];
     const schemas = rootSchema.children || [];
-    const columns = schemas
+    return schemas
       .map((schema, index) => mapping(index, schema))
       .filter((column) => !_.isEmpty(column));
-    return columns;
   }
   return [];
 };

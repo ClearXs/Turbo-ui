@@ -35,10 +35,7 @@ import React from 'react';
 import { Icon, Color } from './components';
 import { toSchema } from './schema';
 import { Modal } from '@douyinfe/semi-ui';
-import { FormContext, FormProps } from '../interface';
-import { Constant } from '@/constant';
 import _ from 'lodash';
-import { IdEntity } from '@/api';
 import { TFormContext } from '../context/form';
 import { globalThisPolyfill } from '@formily/shared';
 import CodeEditor from './components/CodeEditor';
@@ -90,21 +87,6 @@ export const SchemaField = createSchemaField({
     CodeEditor,
   },
 });
-
-const formTypeList: Record<string, Constant> = {
-  add: {
-    value: 'add',
-    label: '添加',
-  },
-  edit: {
-    value: 'edit',
-    label: '编辑',
-  },
-  details: {
-    value: 'details',
-    label: '明细',
-  },
-};
 
 const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   const {
