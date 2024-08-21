@@ -9,7 +9,7 @@ import * as auth from '@/util/auth';
 import { useRecoilValue } from 'recoil';
 import { CurrentUserRouteState } from '@/store/menu';
 import { MenuTree } from '@/api/system/menu';
-import { importIcon } from '@/components/Icon/shared';
+import { importIcon } from '@/components/icon/shared';
 import _ from 'lodash';
 import Home from '@/pages/home';
 import Login from '@/pages/login';

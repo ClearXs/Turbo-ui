@@ -5,7 +5,7 @@ import { Button, ButtonGroup, Notification } from '@douyinfe/semi-ui';
 import {
   CANCEL_MODAL_BUTTON,
   CONFIRM_MODAL_BUTTON,
-} from '@/components/Bar/collection';
+} from '@/components/bar/collection';
 import { FormilyFormContext } from './interface';
 import { observer } from '@formily/reactive-react';
 

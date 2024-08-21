@@ -1,5 +1,5 @@
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
-import { tryGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../icon/shared';
 import { treeMap } from '@/util/tree';
 import { Tree } from '@/api';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { ShowModular } from '../Modular/useModular';
-import { ShowSliderSide } from '../SliderSide/useSliderSide';
+import { ShowModular } from '../modular/useModular';
+import { ShowSliderSide } from '../slider-side/useSliderSide';
 
 export interface useAppProps {
   modular: ShowModular;

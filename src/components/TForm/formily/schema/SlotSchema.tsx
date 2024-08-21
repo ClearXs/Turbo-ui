@@ -5,11 +5,11 @@ import {
   baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
 import { observer } from '@formily/reactive-react';
-import { FormSlotColumnProps, Handler, Mode } from '../../components/Slot';
+import { FormSlotColumnProps, Handler, Mode } from '../../components/slot';
 import useFormContext from '../../hook/form';
-import Modular from '@/components/Modular/Modular';
+import Modular from '@/components/modular/Modular';
 import React, { useRef } from 'react';
-import App from '@/components/App';
+import App from '@/components/app';
 
 const SlotSchema: SchemaColumn<FormSlotColumnProps<any>> = {
   adapt: (column, formContext) => {

@@ -1,4 +1,4 @@
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import MessageTemplateHelper from './helper';
 import { MessageLog } from '@/api/message/log';
 

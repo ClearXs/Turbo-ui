@@ -2,8 +2,8 @@ import useCategoryApi, {
   CategoryApi,
   CategoryTree,
 } from '@/api/system/category';
-import useReaction from '@/components/TForm/formily/reaction';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import useReaction from '@/components/tform/formily/reaction';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 
 const CategoryHelper: Helper<CategoryTree, CategoryApi> = {

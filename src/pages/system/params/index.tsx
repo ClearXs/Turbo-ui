@@ -1,4 +1,4 @@
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import ParamsHelper from './helper';
 import { Params } from '@/api/system/params';
 

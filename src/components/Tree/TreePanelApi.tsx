@@ -2,13 +2,13 @@ import { Tree, TreeGeneralApi } from '@/api';
 import { TreePanelApi, TreePanelContext } from './interface';
 import { VIRTUAL_ROOT_VALUE } from './contant';
 import { loadTreeData } from './tree';
-import { FormSelectColumnProps } from '../TForm/components';
-import OperatorButtonSet from '../TableCrud/OperatorButtonSet';
+import { FormSelectColumnProps } from '../tform/components';
+import OperatorButtonSet from '../table-crud/OperatorButtonSet';
 import { Notification, Space } from '@douyinfe/semi-ui';
-import ConstantTag from '../Tag/ConstantTag';
+import ConstantTag from '../tag/ConstantTag';
 import { expand } from '@/util/tree';
 import renderTreeOperatorBar from './TreeOperatorBar';
-import { TFormContext } from '../TForm/context/form';
+import { TFormContext } from '../tform/context/form';
 
 export default class TreePanelApiImpl<T extends Tree>
   implements TreePanelApi<T>

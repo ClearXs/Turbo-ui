@@ -1,20 +1,20 @@
 import { CategoryEntity } from '@/api';
-import { tryGetIcon } from '@/components/Icon/shared';
-import TableCrud from '@/components/TableCrud';
+import { tryGetIcon } from '@/components/icon/shared';
+import TableCrud from '@/components/table-crud';
 import {
   TableContext,
   TableCrudProps,
   Toolbar,
-} from '@/components/TableCrud/interface';
-import TreePanel from '@/components/Tree/TreePanel';
+} from '@/components/table-crud/interface';
+import TreePanel from '@/components/tree/TreePanel';
 import { Notification } from '@douyinfe/semi-ui';
 import CategoryHelper from './helper';
 import useCategoryApi, { CategoryTree } from '@/api/system/category';
 import { useRef, useState } from 'react';
-import { TreePanelApi } from '@/components/Tree';
+import { TreePanelApi } from '@/components/tree';
 import _ from 'lodash';
-import Modular from '@/components/Modular/Modular';
-import { SET_CATEGORY_LITERAL_TOOLBAR } from '@/components/Bar/collection';
+import Modular from '@/components/modular/Modular';
+import { SET_CATEGORY_LITERAL_TOOLBAR } from '@/components/bar/collection';
 
 export type CategoryTableCrudToolbar<T extends CategoryEntity> =
   TableCrudProps<T>['toolbar'] & {

@@ -1,6 +1,6 @@
 import useOrgApi, { Org, OrgApi } from '@/api/system/org';
-import useReaction from '@/components/TForm/formily/reaction';
-import { TableTreeSelectColumnProps } from '@/components/TableCrud/components';
+import useReaction from '@/components/tform/formily/reaction';
+import { TableTreeSelectColumnProps } from '@/components/table-crud/components';
 import { Helper } from '@/components/interface';
 import { treeMap } from '@/util/tree';
 import { Tag } from '@douyinfe/semi-ui';

@@ -6,7 +6,7 @@ import {
 } from './SchemaColumn';
 import { observer } from '@formily/reactive-react';
 import { FormCodeEditorColumnProps } from '../../components';
-import CodeEditor from '@/components/CodeEditor/CodeEditor';
+import CodeEditor from '@/components/code-editor/CodeEditor';
 
 const CodeEditorSchema: SchemaColumn<FormCodeEditorColumnProps<any>> = {
   adapt: (column, formContext) => {

@@ -1,9 +1,9 @@
-import Binary from '@/components/Binary';
-import TreePanel from '@/components/Tree/TreePanel';
+import Binary from '@/components/binary';
+import TreePanel from '@/components/tree/TreePanel';
 import { BoAttributeHelper, BoTableHelper } from './helper';
 import { useEffect, useMemo } from 'react';
 import { BoAttributeTree } from '@/api/developer/boattribute';
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import _ from 'lodash';
 import { Empty, Toast } from '@douyinfe/semi-ui';
 import {
@@ -12,7 +12,7 @@ import {
 } from '@douyinfe/semi-illustrations';
 import { observable } from '@formily/reactive';
 import { observer } from '@formily/react';
-import Modular from '@/components/Modular/Modular';
+import Modular from '@/components/modular/Modular';
 import useBoApi from '@/api/developer/bo';
 
 export type ModularBoTableProps = {

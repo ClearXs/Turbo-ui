@@ -1,13 +1,13 @@
 import useDicApi, { Dic } from '@/api/system/dic';
-import { FormColumnProps } from '@/components/TForm/interface';
-import TableCrud from '@/components/TableCrud';
+import { FormColumnProps } from '@/components/tform/interface';
+import TableCrud from '@/components/table-crud';
 import { DIC_TYPE } from '@/constant/dicType';
 import { Divider, Empty, Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { useMemo, useState } from 'react';
 import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
-import TreePanel from '@/components/Tree/TreePanel';
-import useReaction from '@/components/TForm/formily/reaction';
+import TreePanel from '@/components/tree/TreePanel';
+import useReaction from '@/components/tform/formily/reaction';
 
 const Dictionary: React.FC = () => {
   const [dicId, setDicId] = useState<string>();

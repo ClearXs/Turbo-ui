@@ -1,8 +1,8 @@
 import useDatasetApi, { Dataset, DatasetApi } from '@/api/developer/dataset';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import { DatasetSource } from './source';
-import useReaction from '@/components/TForm/formily/reaction';
+import useReaction from '@/components/tform/formily/reaction';
 
 const DatasetHelper: Helper<Dataset, DatasetApi> = {
   getColumns: () => {

@@ -1,6 +1,6 @@
 FROM nginx:stable-alpine-perl
 
-LABEL cc.allio.uno.turbo.author=jiangw1027@gmail.com
+LABEL author=jiangw1027@gmail.com
 
 COPY dist/  /usr/share/nginx/html/
 

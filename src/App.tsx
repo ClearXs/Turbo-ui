@@ -1,18 +1,18 @@
 import '@/pages/developer/editor';
 import { Layout } from '@douyinfe/semi-ui';
-import MotionContent from './components/MotionContent';
-import MotionHeader from './components/MotionHeader';
+import MotionContent from './components/motion-content';
+import MotionHeader from './components/motion-header';
 import { Suspense, useEffect, useMemo } from 'react';
 import { GlobalRegistry } from '@designable/core';
-import { SUPPORT_LOCALES } from './components/MotionHeader/Locales';
+import { SUPPORT_LOCALES } from './components/motion-header/Locales';
 import { useLoaderData, useLocation } from 'react-router-dom';
 import { TurboRoute } from './route/AppRouter';
 import { observable } from '@formily/reactive';
 import { findRoute } from './route/util';
 import { AppContext } from './context';
 import { observer } from '@formily/reactive-react';
-import { UserTab } from './components/MotionContent/interface';
-import { createContentTab } from './components/MotionContent/util';
+import { UserTab } from './components/motion-content/interface';
+import { createContentTab } from './components/motion-content/util';
 import './locales';
 import './theme/default.css';
 import { useRecoilValue } from 'recoil';
@@ -21,7 +21,7 @@ import { ErrorState } from './store/error';
 import _ from 'lodash';
 import { CurrentUserRouteState } from './store/menu';
 
-import SystemApp from '@/components/App/';
+import SystemApp from '@/components/app';
 import Loading from './pages/Loading';
 
 export type AppProperty = {

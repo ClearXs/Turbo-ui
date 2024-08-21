@@ -1,9 +1,9 @@
-import ListPanel from '@/components/List';
+import ListPanel from '@/components/list';
 import RoleHelper from './helper';
 import useRoleApi, { Role } from '@/api/system/role';
 import useUserRoleApi from '@/api/system/userrole';
 import { useEffect, useState } from 'react';
-import { ListPanelProps } from '@/components/List/interface';
+import { ListPanelProps } from '@/components/list/interface';
 
 export type RoleListProps = {
   userId?: string;

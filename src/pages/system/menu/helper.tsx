@@ -5,13 +5,13 @@ import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { treeMap } from '@/util/tree';
-import { tryGetIcon } from '@/components/Icon/shared';
-import { MENU_ATTR } from '@/constant/menuAttr';
+import { tryGetIcon } from '@/components/icon/shared';
+import { MENU_ATTR } from '@/constant/menuAttributes';
 import {
   TableCheckboxColumnProps,
   TableTreeSelectColumnProps,
-} from '@/components/TableCrud/components';
-import useReaction from '@/components/TForm/formily/reaction';
+} from '@/components/table-crud/components';
+import useReaction from '@/components/tform/formily/reaction';
 
 const loadMenuTreeData = (
   menus: MenuTree[],

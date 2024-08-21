@@ -1,6 +1,6 @@
 import { Tree } from '@/api';
 import { TreePanelApi, TreePanelContext } from '.';
-import { OperateToolbar } from '../TableCrud/interface';
+import { OperateToolbar } from '../table-crud/interface';
 import {
   ADD_LITERAL_OPERATOR_BAR,
   ADD_PEER_LITERAL_OPERATOR_BAR,
@@ -8,8 +8,8 @@ import {
   DELETE_LITERAL_OPERATOR_BAR,
   DETAILS_LITERAL_OPERATOR_BAR,
   EDIT_LITERAL_OPERATOR_BAR,
-} from '../Bar/collection';
-import Modular from '../Modular/Modular';
+} from '../bar/collection';
+import Modular from '../modular/Modular';
 
 export default function renderTreeOperatorBar<T extends Tree>(
   treePanelContext: TreePanelContext<T>,

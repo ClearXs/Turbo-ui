@@ -1,9 +1,9 @@
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import { MessageConfig } from '@/api/message/config';
 import MessageConfigHelper from './helper';
-import { IconSender } from '@/components/Icon/collection/IconSender';
-import TForm from '@/components/TForm/TForm';
-import { FormJsonObjectColumnProps } from '@/components/TForm/components';
+import { IconSender } from '@/components/icon/collection/IconSender';
+import TForm from '@/components/tform/TForm';
+import { FormJsonObjectColumnProps } from '@/components/tform/components';
 import { Toast } from '@douyinfe/semi-ui';
 import useMessageApi from '@/api/message/message';
 

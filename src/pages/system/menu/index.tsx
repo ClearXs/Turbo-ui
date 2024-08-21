@@ -1,6 +1,6 @@
 import { MenuTree } from '@/api/system/menu';
-import TableCrud from '@/components/TableCrud/TableCrud';
-import { tryGetIcon } from '@/components/Icon/shared';
+import TableCrud from '@/components/table-crud/TableCrud';
+import { tryGetIcon } from '@/components/icon/shared';
 import _ from 'lodash';
 import MenuHelper from './helper';
 

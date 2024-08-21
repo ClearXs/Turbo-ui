@@ -1,6 +1,6 @@
-import { tryGetIcon } from '../Icon';
-import { OperateToolbar, Toolbar } from '../TableCrud/interface';
-import { ModalButton } from '../TForm/interface';
+import { tryGetIcon } from '../icon';
+import { OperateToolbar, Toolbar } from '../table-crud/interface';
+import { ModalButton } from '../tform/interface';
 
 export const INLINE_EDIT_LITERAL_OPERATOR_BAR: OperateToolbar<any> = {
   code: 'inlineEdit',

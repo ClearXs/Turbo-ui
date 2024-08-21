@@ -1,5 +1,5 @@
 import useUserApi, { User, UserApi } from '@/api/system/user';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { USER_STATUS } from '@/constant/userStatus';
 import { Helper } from '@/components/interface';
 import { UserSource } from '@/constant/userSource';

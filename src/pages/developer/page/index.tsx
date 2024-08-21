@@ -1,19 +1,19 @@
 import { useMemo, useRef, useState } from 'react';
 import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
-import TreePanel from '@/components/Tree/TreePanel';
+import TreePanel from '@/components/tree/TreePanel';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
-import Binary from '@/components/Binary';
+import Binary from '@/components/binary';
 import _ from 'lodash';
 import usePageApi, { Page as PageEntity } from '@/api/developer/page';
 import PageHelper from './helper';
 import { Notification, Toast } from '@douyinfe/semi-ui';
 import FormEditor from '../editor/FormEditor';
-import { tryGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/icon';
 import MenuTreeComponent from '@/pages/system/menu/MenuTree';
-import { TreePanelApi } from '@/components/Tree';
+import { TreePanelApi } from '@/components/tree';
 import { MenuTree } from '@/api/system/menu';
-import Modular from '@/components/Modular/Modular';
+import Modular from '@/components/modular/Modular';
 import useBoApi from '@/api/developer/bo';
 
 const Page: React.FC = () => {

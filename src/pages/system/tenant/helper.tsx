@@ -1,5 +1,5 @@
 import useTenantApi, { Tenant, TenantApi } from '@/api/system/tenant';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 
 const TenantHelper: Helper<Tenant, TenantApi> = {

@@ -2,7 +2,7 @@ import { GeneralApi, IdEntity } from '@/api';
 import {
   TableColumnProps,
   TableCrudProps,
-} from '@/components/TableCrud/interface';
+} from '@/components/table-crud/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
 // 页面帮助接口，构建通用化功能。如，table、list-panel、tree-panel...

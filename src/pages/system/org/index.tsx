@@ -1,7 +1,7 @@
 import { Org as OrgEntity } from '@/api/system/org';
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import OrgHelper from './helper';
-import { tryGetIcon } from '@/components/Icon/shared';
+import { tryGetIcon } from '@/components/icon/shared';
 
 const Org: React.FC = () => {
   return (

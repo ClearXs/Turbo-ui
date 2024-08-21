@@ -1,5 +1,5 @@
 import useMessageLogApi, { MessageLog, MessageLogApi } from '@/api/message/log';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import { SendStatus } from '@/constant/sendStatus';
 import _ from 'lodash';

@@ -1,7 +1,7 @@
 import { Tree } from '@/api';
 import { TreePanelContext, TreePanelProps } from './interface';
 import { action, define, observable } from '@formily/reactive';
-import { FormContext } from '../TForm/interface';
+import { FormContext } from '../tform/interface';
 
 export default class TreePanelContextImpl<T extends Tree>
   implements TreePanelContext<T>

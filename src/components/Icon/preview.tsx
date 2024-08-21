@@ -1,4 +1,4 @@
-import { tryGetIcon } from '@/components/Icon/shared';
+import { tryGetIcon } from '@/components/icon/shared';
 import IconList, { IconViewProps } from '@/pages/developer/icon';
 import { IconCamera } from '@douyinfe/semi-icons';
 import { Avatar, Modal } from '@douyinfe/semi-ui';

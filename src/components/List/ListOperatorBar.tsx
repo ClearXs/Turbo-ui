@@ -1,11 +1,11 @@
 import { IdEntity } from '@/api';
 import { ListPanelApi, ListPanelProps } from './interface';
-import { OperateToolbar } from '../TableCrud/interface';
+import { OperateToolbar } from '../table-crud/interface';
 import {
   DELETE_LITERAL_OPERATOR_BAR,
   EDIT_LITERAL_OPERATOR_BAR,
-} from '../Bar/collection';
-import Modular from '../Modular/Modular';
+} from '../bar/collection';
+import Modular from '../modular/Modular';
 
 export default function renderListPanelOperatorBar<T extends IdEntity>(
   record: T,

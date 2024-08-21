@@ -4,9 +4,9 @@ import { ColumnType, FormColumnProps, FormContext } from '../../interface';
 import { BaseFormField } from '..';
 import { FormIconColumnProps } from '.';
 import { IconCamera } from '@douyinfe/semi-icons';
-import { tryGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/icon';
 import IconList from '@/pages/developer/icon';
-import Modular from '@/components/Modular/Modular';
+import Modular from '@/components/modular/Modular';
 
 export class IconFormField<T extends IdEntity> extends BaseFormField<
   T,

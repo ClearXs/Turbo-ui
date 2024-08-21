@@ -2,8 +2,8 @@ import useDataSourceApi, {
   DataSource,
   DataSourceApi,
 } from '@/api/developer/datasource';
-import { TableTreeSelectColumnProps } from '@/components/TableCrud/components';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableTreeSelectColumnProps } from '@/components/table-crud/components';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Constant } from '@/constant';
 import { Helper } from '@/components/interface';
 import { Space, Tag } from '@douyinfe/semi-ui';

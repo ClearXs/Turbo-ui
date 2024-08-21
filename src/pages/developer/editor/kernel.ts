@@ -7,9 +7,9 @@ import {
 } from '@designable/formily-transformer';
 import { useContext } from 'react';
 import { KernelContext } from './context';
-import { from } from '@/components/TForm/formily/schema';
-import { TableCrudProps } from '@/components/TableCrud/interface';
-import { TreePanelProps } from '@/components/Tree';
+import { from } from '@/components/tform/formily/schema';
+import { TableCrudProps } from '@/components/table-crud/interface';
+import { TreePanelProps } from '@/components/tree';
 import { IdEntity } from '@/api';
 
 // 数据视图

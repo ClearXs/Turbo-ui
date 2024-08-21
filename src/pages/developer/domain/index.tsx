@@ -2,10 +2,10 @@ import usePageApi, { PageView } from '@/api/developer/page';
 import { Toast } from '@douyinfe/semi-ui';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import TreePanel from '@/components/Tree/TreePanel';
-import TableCrud from '@/components/TableCrud';
+import TreePanel from '@/components/tree/TreePanel';
+import TableCrud from '@/components/table-crud';
 import _ from 'lodash';
-import Binary from '@/components/Binary';
+import Binary from '@/components/binary';
 import useDomainApi, { DomainEntity } from '@/api/developer/domain';
 
 const Domain = () => {

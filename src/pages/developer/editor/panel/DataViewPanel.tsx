@@ -7,8 +7,8 @@ import {
   Workspace,
   WorkspacePanel,
 } from '@designable/react';
-import DataViewForm from './DataViewForm/DataViewForm';
-import TableCrud from '@/components/TableCrud';
+import DataViewForm from './data-view-form/DataViewForm';
+import TableCrud from '@/components/table-crud';
 import { useKernel } from '../kernel';
 import { IdEntity } from '@/api';
 import { observer } from '@formily/reactive-react';

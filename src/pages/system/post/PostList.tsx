@@ -1,6 +1,6 @@
-import ListPanel from '@/components/List';
+import ListPanel from '@/components/list';
 import { useEffect, useState } from 'react';
-import { ListPanelProps } from '@/components/List/interface';
+import { ListPanelProps } from '@/components/list/interface';
 import useUserPosteApi from '@/api/system/userpost';
 import PostHelper from './helper';
 import usePostApi, { Post } from '@/api/system/post';

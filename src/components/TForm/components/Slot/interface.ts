@@ -1,9 +1,9 @@
 import { IdEntity } from '@/api';
 import { FormColumnProps, FormContext } from '../../interface';
-import { SliderSideProps } from '@/components/SliderSide/interface';
-import { ModularProps } from '@/components/Modular/interface';
-import { SliderSideReturnHooksType } from '@/components/SliderSide/useSliderSide';
-import { ModularReturnHooksType } from '@/components/Modular/useModular';
+import { SliderSideProps } from '@/components/slider-side/interface';
+import { ModularProps } from '@/components/modular/interface';
+import { SliderSideReturnHooksType } from '@/components/slider-side/useSliderSide';
+import { ModularReturnHooksType } from '@/components/modular/useModular';
 
 export type Mode = 'modal' | 'slider';
 
