@@ -1,27 +1,35 @@
-site_name: turbo-ui
-repo_name: turbo-ui
+site_name: Turbo UI
+repo_name: Turbo UI
 repo_url: https://github.com/ClearXs/Turbo-ui
 site_author: J.x (jiangw1027@gmail.com)
 copyright: Copyright &copy; 2023 - 2024 ClearXs
 
 nav:
-  - README.md
+  - index.md
+  - 快速开始:
+      - 指南: gettingstart/introduction.md
+  - 目录结构: directory.md
+  - 权限: auth.md
+  - 配置: config.md
+  - 国际化: i18n.md
+  - 路由: route.md
+  - 状态管理: state.md
+  - 主题: theme.md
+  - 规则: rules.md
+  - 组件:
+      - components/index.md
+      - App: components/app.md
+      - TForm: components/tform.md
+      - TableCrud: components/tablecrud.md
+  - 杂项记录: other.md
 
 theme:
   # https://squidfunk.github.io/mkdocs-material/creating-your-site/#configuration
   name: material
+  language: zh
   # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/
   palette:
-    - scheme: default
-      toggle:
-        icon: material/brightness-7
-      primary: indigo
-      accent: light blue
-    - scheme: slate
-      toggle:
-        icon: material/brightness-4
-      primary: indigo
-      accent: grey
+    primary: black
   # https://squidfunk.github.io/mkdocs-material/setup/changing-the-fonts/
   font:
     text: Nunito Sans
@@ -67,6 +75,7 @@ plugins:
         - zh
       separator: '[\s\u200b\-]'
   - offline
+
 #
 # Extensions
 #
@@ -118,7 +127,17 @@ markdown_extensions:
       nbsp: true # use \<space> to create &nbsp;
   # - pymdownx.keys # syntax ++ctrl+c++ does not look clear in MD document
   - pymdownx.progressbar
+  - markdown.extensions.attr_list
 extra:
   version:
     provider: mike
   disqus: 'vuquangtrong-github-io'
+
+extra_css:
+  - 'stylesheets/simpleLightbox.min.css'
+  - 'stylesheets/extension.css'
+
+extra_javascript:
+  - 'javascripts/jquery-3.7.1.min.js'
+  - 'javascripts/simpleLightbox.min.js'
+  - 'javascripts/extension.js'
