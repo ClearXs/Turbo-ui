@@ -1,5 +1,5 @@
 // 基于semi的icon提供列表
-import { Icon, IconSystem, getIconModel } from '@/components/Icon/shared';
+import { Icon, IconSystem, getIconModel } from '@/components/icon/shared';
 import {
   Col,
   Empty,

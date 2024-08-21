@@ -1,8 +1,8 @@
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import useSequenceApi, { Sequence } from '@/api/developer/sequence';
 import SequenceHelper from './helper';
-import { directGetIcon } from '@/components/Icon';
-import App from '@/components/App';
+import { directGetIcon } from '@/components/icon';
+import App from '@/components/app';
 import { Toast, Typography } from '@douyinfe/semi-ui';
 
 const SequenceComponent: React.FC = () => {

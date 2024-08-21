@@ -1,5 +1,5 @@
 import { Post } from '@/api/system/post';
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import PostHelper from './helper';
 
 const Post = () => {

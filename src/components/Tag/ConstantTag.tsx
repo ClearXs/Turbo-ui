@@ -1,6 +1,6 @@
 import { Constant, TreeConstant } from '@/constant';
 import { Tag, Tooltip, Typography } from '@douyinfe/semi-ui';
-import { tryGetIcon } from '../Icon/shared';
+import { tryGetIcon } from '../icon/shared';
 import { TagProps } from '@douyinfe/semi-ui/lib/es/tag';
 import _ from 'lodash';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';

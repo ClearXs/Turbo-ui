@@ -3,7 +3,7 @@ import { ListPanelProps } from './interface';
 import { useEffect, useMemo } from 'react';
 import Tree from '@douyinfe/semi-ui/lib/es/tree';
 import { Spin } from '@douyinfe/semi-ui';
-import TForm from '../TForm/TForm';
+import TForm from '../tform/TForm';
 import _ from 'lodash';
 import ListPanelContextImpl from './ListPanelContext';
 import ListPanelApiImpl from './ListPanelApi';

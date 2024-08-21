@@ -2,7 +2,7 @@ import useSequenceApi, {
   Sequence,
   SequenceApi,
 } from '@/api/developer/sequence';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import swiftGenType from '@/constant/swiftGenType';
 

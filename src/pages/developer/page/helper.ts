@@ -1,10 +1,10 @@
 import usePageApi, { Page, PageApi } from '@/api/developer/page';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import BoHelper from '../bo/helper';
 import FormHelper from '../form/helper';
 import MenuHelper from '@/pages/system/menu/helper';
-import useReaction from '@/components/TForm/formily/reaction';
+import useReaction from '@/components/tform/formily/reaction';
 
 const PageHelper: Helper<Page, PageApi> = {
   getColumns: () => {

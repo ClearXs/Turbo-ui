@@ -1,4 +1,4 @@
-import { tryGetIcon } from '@/components/Icon/shared';
+import { tryGetIcon } from '@/components/icon/shared';
 import { TreeConstant } from '@/constant';
 import Tree from '@/shared/tree';
 

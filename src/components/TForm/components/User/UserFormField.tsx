@@ -2,7 +2,7 @@ import { IdEntity } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
-import ConstantTag from '@/components/Tag/ConstantTag';
+import ConstantTag from '@/components/tag/ConstantTag';
 import { ISchema } from '@formily/json-schema';
 import { FormUserColumnProps } from '.';
 

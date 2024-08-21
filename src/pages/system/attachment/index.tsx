@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import { PROVIDER } from '@/constant/provider';
 import useAttachmentApi, { Attachment } from '@/api/system/attachment';
-import { tryGetIcon } from '@/components/Icon/shared';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { tryGetIcon } from '@/components/icon/shared';
+import { TableColumnProps } from '@/components/table-crud/interface';
 
 export default function (): React.ReactNode {
   const columns: TableColumnProps<Attachment>[] = useMemo(() => {

@@ -7,7 +7,7 @@ import { findRoute } from './util';
 import { ErrorState } from '@/store/error';
 import { MenuTree } from '@/api/system/menu';
 import { TurboRoute } from './AppRouter';
-import { tryGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/icon';
 import Preview from './routes';
 import PageNotFound from '@/error/PageNotFound';
 

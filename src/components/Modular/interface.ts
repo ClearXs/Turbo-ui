@@ -1,5 +1,5 @@
 import { ModalReactProps } from '@douyinfe/semi-ui/lib/es/modal';
-import { DialogButtonProps, DialogProps } from '../Dialog/interface';
+import { DialogButtonProps, DialogProps } from '../dialog/interface';
 
 export type ModularProps = DialogProps & {
   // 大小

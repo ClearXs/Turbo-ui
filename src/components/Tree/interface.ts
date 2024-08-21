@@ -1,6 +1,6 @@
 import { Tree, TreeGeneralApi } from '@/api';
-import { OperateToolbar, Toolbar } from '../TableCrud/interface';
-import { FormColumnProps, FormContext } from '../TForm/interface';
+import { OperateToolbar, Toolbar } from '../table-crud/interface';
+import { FormColumnProps, FormContext } from '../tform/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
 export type TreePanelRoot<T extends Tree> = {

@@ -7,7 +7,7 @@ import {
 } from '@designable/core';
 import { DnFC } from '@designable/react';
 import { createFieldSchema } from '@designable/formily-semi';
-import { Color as TurboColor } from '@/components/TForm/formily/components';
+import { Color as TurboColor } from '@/components/tform/formily/components';
 import Locales from '../../locales/color';
 import Schema from '../../schema/color';
 

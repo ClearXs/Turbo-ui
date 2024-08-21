@@ -1,16 +1,16 @@
 import { useRef, useState } from 'react';
 import useRoleApi, { Role } from '@/api/system/role';
-import TableCrud from '@/components/TableCrud';
+import TableCrud from '@/components/table-crud';
 import { Notification } from '@douyinfe/semi-ui';
 import MenuTreeComponent from '../menu/MenuTree';
-import { OperateToolbar } from '@/components/TableCrud/interface';
+import { OperateToolbar } from '@/components/table-crud/interface';
 import RoleHelper from './helper';
-import { TreePanelApi } from '@/components/Tree/interface';
+import { TreePanelApi } from '@/components/tree/interface';
 import { MenuTree as MenuEntity } from '@/api/system/menu';
 import _ from 'lodash';
 import useRoleMenuApi from '@/api/system/rolemenu';
-import Modular from '@/components/Modular/Modular';
-import { IconAuthorize } from '@/components/Icon/collection/IconAuthorize';
+import Modular from '@/components/modular/Modular';
+import { IconAuthorize } from '@/components/icon/collection/IconAuthorize';
 
 const RoleComponent: React.FC = () => {
   const roleApi = useRoleApi();

@@ -1,12 +1,12 @@
 import { IdEntity } from '@/api';
 import { ListPanelApi, ListPanelProps } from './interface';
-import { Toolbar } from '../TableCrud/interface';
+import { Toolbar } from '../table-crud/interface';
 import { Button, Space } from '@douyinfe/semi-ui';
 import {
   ADD_LITERAL_TOOLBAR,
   DESELECT_ALL_LITERAL_TOOLBAR,
   SELECT_ALL_LITERAL_TOOLBAR,
-} from '../Bar/collection';
+} from '../bar/collection';
 import { useListPanelContext } from './context/listPanel';
 
 export interface ListToolbarProps<T extends IdEntity> {

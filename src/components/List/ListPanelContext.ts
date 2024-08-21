@@ -1,6 +1,6 @@
 import { IdEntity } from '@/api';
 import { ListPanelContext } from './interface';
-import { FormContext } from '../TForm/interface';
+import { FormContext } from '../tform/interface';
 import { action, define, observable } from '@formily/reactive';
 
 export default class ListPanelContextImpl<T extends IdEntity>

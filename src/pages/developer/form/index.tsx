@@ -2,14 +2,14 @@ import { Toast } from '@douyinfe/semi-ui';
 import { useMemo, useRef, useState } from 'react';
 import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
-import TreePanel from '@/components/Tree/TreePanel';
+import TreePanel from '@/components/tree/TreePanel';
 import { Form as FormEntity } from '@/api/developer/form';
 import FormHelper from './helper';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
-import Binary from '@/components/Binary';
+import Binary from '@/components/binary';
 import _ from 'lodash';
 import FormEditor from '../editor/FormEditor';
-import { tryGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/icon';
 import useBoApi from '@/api/developer/bo';
 
 const Form: React.FC = () => {

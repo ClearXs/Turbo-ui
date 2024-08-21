@@ -42,8 +42,8 @@ import {
   Rate,
   Slider,
 } from '@designable/formily-semi';
-import { Icon } from '../components/Icon';
-import { Color } from '../components/Color';
+import { Icon } from '../components/icon';
+import { Color } from '../components/color';
 import { observer } from '@formily/reactive-react';
 import { SettingsForm } from '@designable/react-settings-form';
 import { PreviewWidget } from '../widget/PreviewWidget';

@@ -1,5 +1,5 @@
-import Modular from '../Modular/Modular';
-import SliderSide from '../SliderSide';
+import Modular from '../modular/Modular';
+import SliderSide from '../slider-side';
 import { DialogProps } from './interface';
 
 export type DialogType = 'slider' | 'modular';

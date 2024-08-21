@@ -1,5 +1,5 @@
 import useParamsApi, { Params, ParamsApi } from '@/api/system/params';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 
 const ParamsHelper: Helper<Params, ParamsApi> = {

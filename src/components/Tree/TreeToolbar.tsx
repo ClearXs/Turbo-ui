@@ -4,8 +4,8 @@ import {
   ADD_LITERAL_TOOLBAR,
   DESELECT_ALL_LITERAL_TOOLBAR,
   SELECT_ALL_LITERAL_TOOLBAR,
-} from '../Bar/collection';
-import { Toolbar } from '../TableCrud/interface';
+} from '../bar/collection';
+import { Toolbar } from '../table-crud/interface';
 import { Button, Space } from '@douyinfe/semi-ui';
 import { useTreePanelContext } from './context/treePanel';
 

@@ -2,17 +2,17 @@ import { useMemo, useState } from 'react';
 import BoHelper from './helper';
 import { CategoryTree } from '@/api/system/category';
 import useBoApi, { Bo } from '@/api/developer/bo';
-import TreePanel from '@/components/Tree/TreePanel';
-import Binary from '@/components/Binary';
+import TreePanel from '@/components/tree/TreePanel';
+import Binary from '@/components/binary';
 import { Notification } from '@douyinfe/semi-ui';
 import ModularBoTable from './ModularBoTable';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
-import { directGetIcon, tryGetIcon } from '@/components/Icon';
-import { TableContext } from '@/components/TableCrud/interface';
-import { ModularProps } from '@/components/Modular/interface';
+import { directGetIcon, tryGetIcon } from '@/components/icon';
+import { TableContext } from '@/components/table-crud/interface';
+import { ModularProps } from '@/components/modular/interface';
 import { observer } from '@formily/reactive-react';
 import { observable } from '@formily/reactive';
-import Modular from '@/components/Modular/Modular';
+import Modular from '@/components/modular/Modular';
 import CategoryHelper from '@/pages/system/category/helper';
 
 type BoInternalProps = {

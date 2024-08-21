@@ -17,13 +17,13 @@ import {
   IconWeibo,
 } from '@douyinfe/semi-icons';
 import useAuthApi, { Captcha, LoginInfo } from '@/api/system/auth';
-import { IconWechat } from '@/components/Icon/collection/IconWechat';
-import { IconWechatEnterprise } from '@/components/Icon/collection/IconWechatEnterprise';
-import { IconGitee } from '@/components/Icon/collection/IconGitee';
-import { IconBaidu } from '@/components/Icon/collection/IconBaidu';
-import { IconQQ } from '@/components/Icon/collection/IconQQ';
+import { IconWechat } from '@/components/icon/collection/IconWechat';
+import { IconWechatEnterprise } from '@/components/icon/collection/IconWechatEnterprise';
+import { IconGitee } from '@/components/icon/collection/IconGitee';
+import { IconBaidu } from '@/components/icon/collection/IconBaidu';
+import { IconQQ } from '@/components/icon/collection/IconQQ';
 import useOAuth2Api from '@/api/system/oauth2';
-import { IconTaobao } from '@/components/Icon/collection/IconTaobao';
+import { IconTaobao } from '@/components/icon/collection/IconTaobao';
 import useRouteHelper from '@/route/useRouteHelper';
 
 const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {

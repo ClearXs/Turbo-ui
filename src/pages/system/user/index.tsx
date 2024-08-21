@@ -1,23 +1,23 @@
 import useOrgApi, { Org } from '@/api/system/org';
 import useUserApi, { UserApi, User as UserEntity } from '@/api/system/user';
-import SliderSide from '@/components/SliderSide';
-import TableCrud from '@/components/TableCrud';
-import { TableContext } from '@/components/TableCrud/interface';
+import SliderSide from '@/components/slider-side';
+import TableCrud from '@/components/table-crud';
+import { TableContext } from '@/components/table-crud/interface';
 import { Notification } from '@douyinfe/semi-ui';
 import { useRef, useState } from 'react';
 import UserHelper from './helper';
 import OrgHelper from '../org/helper';
 import { Role } from '@/api/system/role';
-import { ListPanelApi } from '@/components/List/interface';
-import { TreePanelApi } from '@/components/Tree/interface';
+import { ListPanelApi } from '@/components/list/interface';
+import { TreePanelApi } from '@/components/tree/interface';
 import RoleList from '../role/RoleList';
 import _ from 'lodash';
 import PostList from '../post/PostList';
 import Post from '../post';
 import ChangePasswordForm from './ChangePassword';
-import TreePanel from '@/components/Tree/TreePanel';
-import Binary from '@/components/Binary';
-import { tryGetIcon } from '@/components/Icon';
+import TreePanel from '@/components/tree/TreePanel';
+import Binary from '@/components/binary';
+import { tryGetIcon } from '@/components/icon';
 
 export const User: React.FC = () => {
   const userApi = useUserApi();

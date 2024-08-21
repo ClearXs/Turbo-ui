@@ -3,7 +3,7 @@ import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormSelectColumnProps } from '.';
-import ConstantTag from '@/components/Tag/ConstantTag';
+import ConstantTag from '@/components/tag/ConstantTag';
 import { ISchema } from '@formily/json-schema';
 
 export class SelectFormField<T extends IdEntity> extends BaseFormField<

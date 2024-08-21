@@ -2,8 +2,8 @@ import useMessageConfigApi, {
   MessageConfig,
   MessageConfigApi,
 } from '@/api/message/config';
-import { FormJsonObjectColumnProps } from '@/components/TForm/components';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { FormJsonObjectColumnProps } from '@/components/tform/components';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import { NotificationType } from '@/constant/notificationType';
 import { RetryStrategy } from '@/constant/retryStrategy';

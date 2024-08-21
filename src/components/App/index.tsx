@@ -1,7 +1,7 @@
 import React, { Component, useMemo } from 'react';
 import AppContext, { useAppProps } from './context';
-import useModularHolder from '../Modular/useModularHolder';
-import useSliderSideHolder from '../SliderSide/useSliderSideHolder';
+import useModularHolder from '../modular/useModularHolder';
+import useSliderSideHolder from '../slider-side/useSliderSideHolder';
 
 export interface AppProps {
   style?: React.CSSProperties;

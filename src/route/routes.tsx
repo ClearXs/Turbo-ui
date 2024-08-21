@@ -17,10 +17,10 @@ import Bo from '@/pages/developer/bo';
 import Form from '@/pages/developer/form';
 import Dataset from '@/pages/developer/dataset';
 import Page from '@/pages/developer/page';
-import Cloudstorageconfig from '@/pages/developer/cloudstorageconfig';
+import StorageConfig from '@/pages/developer/storage-config';
 import IconList from '@/pages/developer/icon';
-import CodeGenerateTemplateComponent from '@/pages/developer/codeGenerateTemplate';
-import CodeGenerateComponent from '@/pages/developer/codeGenerate';
+import CodeGenerateTemplateComponent from '@/pages/developer/code-generate-template';
+import CodeGenerateComponent from '@/pages/developer/code-generate';
 import SequenceComponent from '@/pages/developer/sequence';
 
 // 预定义加载组件
@@ -103,8 +103,8 @@ export default [
     element: <IconList />,
   },
   {
-    path: '/developer/cloudstorageconfig',
-    element: <Cloudstorageconfig />,
+    path: '/developer/storageconfig',
+    element: <StorageConfig />,
   },
   {
     path: '/developer/codeGenerateTemplate',

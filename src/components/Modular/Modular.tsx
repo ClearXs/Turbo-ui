@@ -3,8 +3,8 @@ import { ModularProps } from './interface';
 import { createRoot } from 'react-dom/client';
 import { Suspense } from 'react';
 import cls from 'classnames';
-import useBottomButton from '../Dialog/hook/useBottomButton';
-import useIcon from '../Dialog/hook/useIcon';
+import useBottomButton from '../dialog/hook/useBottomButton';
+import useIcon from '../dialog/hook/useIcon';
 
 // 封装Modal组件
 const Modular = (props: ModularProps) => {

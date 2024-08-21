@@ -3,16 +3,16 @@ import useBoAttributeApi, {
   BoAttributeApi,
   BoAttributeTree,
 } from '@/api/developer/boattribute';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import BO_ATTRIBUTE_TREE from './boattributetype';
-import { toTreeNode } from '@/components/Tag/ConstantTag';
+import { toTreeNode } from '@/components/tag/ConstantTag';
 import {
   TableSelectColumnProps,
   TableTreeSelectColumnProps,
-} from '@/components/TableCrud/components';
+} from '@/components/table-crud/components';
 import DataSourceHelper from '../datasource/helper';
-import useReaction from '@/components/TForm/formily/reaction';
+import useReaction from '@/components/tform/formily/reaction';
 
 const BoHelper: Helper<Bo, BoApi> = {
   getColumns: () => {

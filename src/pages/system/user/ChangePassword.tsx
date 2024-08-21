@@ -1,6 +1,6 @@
 import { IdEntity } from '@/api';
-import TForm from '@/components/TForm/TForm';
-import { FormColumnProps, FormContext } from '@/components/TForm/interface';
+import TForm from '@/components/tform/TForm';
+import { FormColumnProps, FormContext } from '@/components/tform/interface';
 
 export type ChangePasswordType = IdEntity & {
   rawPassword: string;

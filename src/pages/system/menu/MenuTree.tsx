@@ -2,11 +2,11 @@ import useMenuApi, { MenuTree } from '@/api/system/menu';
 import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { MENU_TYPE } from '@/constant/menuType';
-import { TreePanelApi, TreePanelProps } from '@/components/Tree/interface';
+import { TreePanelApi, TreePanelProps } from '@/components/tree/interface';
 import MenuHelper from './helper';
-import TreePanel from '@/components/Tree/TreePanel';
-import { OperateToolbar } from '@/components/TableCrud/interface';
-import { tryGetIcon } from '@/components/Icon';
+import TreePanel from '@/components/tree/TreePanel';
+import { OperateToolbar } from '@/components/table-crud/interface';
+import { tryGetIcon } from '@/components/icon';
 
 const MenuTreeComponent: React.FC<{
   menuIds?: string[];

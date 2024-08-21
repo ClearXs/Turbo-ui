@@ -2,9 +2,9 @@ import useDataSourceApi, {
   ColumnDef,
   TableColumn,
 } from '@/api/developer/datasource';
-import Binary from '@/components/Binary';
-import TableCrud from '@/components/TableCrud';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import Binary from '@/components/binary';
+import TableCrud from '@/components/table-crud';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Radio, RadioGroup, Spin, Toast, Typography } from '@douyinfe/semi-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 

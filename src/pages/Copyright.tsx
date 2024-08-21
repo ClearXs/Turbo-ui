@@ -1,4 +1,4 @@
-import { tryGetIcon } from '@/components/Icon';
+import { tryGetIcon } from '@/components/icon';
 import { Button, Layout, Typography } from '@douyinfe/semi-ui';
 
 export default function Copyright() {

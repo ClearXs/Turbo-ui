@@ -1,6 +1,6 @@
 import usePostApi, { Post, PostApi } from '@/api/system/post';
-import useReaction from '@/components/TForm/formily/reaction';
-import { TableColumnProps } from '@/components/TableCrud/interface';
+import useReaction from '@/components/tform/formily/reaction';
+import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 
 const PostHelper: Helper<Post, PostApi> = {
