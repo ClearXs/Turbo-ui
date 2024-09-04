@@ -1,5 +1,5 @@
 {
-  "name": "ClearX-Turbo",
+  "name": "turbo-ui",
   "version": "0.1.1",
   "description": "Turbo快速开发框架",
   "license": "MIT",
@@ -11,7 +11,8 @@
     "axios",
     "prettier",
     "recoil",
-    "formily"
+    "formily",
+    "storybook"
   ],
   "repository": {
     "type": "git",
@@ -32,7 +33,10 @@
     "format+lint": "prettier \"src/**/*.{js,jsx,ts,tsx,css,scss}\" --write && eslint src --ext .js,.jsx,.ts,.tsx --fix",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:cover": "vitest run --coverage"
+    "test:cover": "vitest run --coverage",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build -o ./docs/storybook",
+    "serve-storybook": "serve ./docs/storybook"
   },
   "dependencies": {
     "@designable/core": "0.0.1-beta.27",
@@ -82,6 +86,15 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@chromatic-com/storybook": "^1.8.0",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/addon-interactions": "^8.2.9",
+    "@storybook/addon-links": "^8.2.9",
+    "@storybook/addon-onboarding": "^8.2.9",
+    "@storybook/blocks": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-vite": "^8.2.9",
+    "@storybook/test": "^8.2.9",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
@@ -101,12 +114,14 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-storybook": "^0.8.0",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "jsdom": "^24.1.1",
     "less": "^4.2.0",
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",
     "sass": "^1.77.8",
+    "storybook": "^8.2.9",
     "tailwindcss": "^3.4.10",
     "vite": "^5.4.2",
     "vitest": "^2.0.5"

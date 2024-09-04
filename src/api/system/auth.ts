@@ -95,7 +95,7 @@ export default function useAuthApi() {
    * 获取当前用户菜单
    */
   const getCurrentUserMenu = (): Promise<R<MenuTree[]>> => {
-    return request.get('/api/auth/menus').then((res) => {
+    return request.get('/api/auth/current-user-menus').then((res) => {
       return res.data;
     });
   };

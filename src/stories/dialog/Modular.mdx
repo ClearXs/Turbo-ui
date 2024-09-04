@@ -1,0 +1,86 @@
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as ModularStories from './Modular.stories';
+
+<Meta title="Component/Modular" of={ModularStories} />
+
+## Introduction
+
+`Modular` 组件封装于 [Semi-UI Modal] (https://semi.design/zh-CN/show/modal), 在其基础上, 提供了更多自定义的属性。
+
+每一个 `Modular` 组件都会默认的Footer部分都会包含'确认'、'取消'按钮, 可以通过属性`showConfirm`以及`showCancel`进行取消。
+
+### reference
+
+```react
+import Modular from '@/components/modular';
+import useModularHolder from '@/components/modular/useModularHolder';
+import useModular from '@/components/modular/useModular';
+```
+
+## Sample
+
+[👉快速进行调试](?path=/story/component-modular--default)
+
+<Canvas of={ModularStories.Default} />
+
+## Property
+
+<Controls of={ModularStories.Default} />
+
+## Hook
+
+[👉快速进行调试](?path=/story/component-modular--hook)
+
+Hook方式是`Modular`提供的一种使用组件的方式，可以通过类似下面的代码使用:
+
+```react
+ const [showModular, modularContextHolder] = useModularHolder();
+    const HookModular = () => {
+      const modular = useModular();
+      return (
+        <Button onClick={() => modular.info({ ...args })}>
+          use hook open modular
+        </Button>
+      );
+    };
+    return (
+      <>
+        <ModularContext.Provider value={showModular}>
+          <HookModular />
+        </ModularContext.Provider>
+        {modularContextHolder}
+      </>
+    );
+```
+
+<Canvas of={ModularStories.Hook} />
+
+## Static
+
+[👉快速进行调试](?path=/story/component-modular--static)
+
+Static允许使用者可以直接调用`Modular`的静态方法，进行弹窗显示:
+
+```react
+ <Button onClick={() => Modular.info({ ...args })}>
+        open static modular
+</Button>
+```
+
+<Canvas of={ModularStories.Static} />
+
+## Title
+
+[👉快速进行调试](?path=/story/component-modular--title)
+
+`Modualr` 的 Title 支持字符串或者`ReactNode`类型
+
+<Canvas of={ModularStories.Title} />
+
+## Footer
+
+[👉快速进行调试](?path=/story/component-modular--footer)
+
+`Modular` 的 Footer 允许自定义按钮。
+
+<Canvas of={ModularStories.Footer} />

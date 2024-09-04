@@ -14,9 +14,8 @@ const useBottomButton = ({
     try {
       if (beforeConfirm) {
         beforeConfirm(onConfirm);
-      } else {
-        onConfirm?.();
       }
+      onConfirm?.();
     } catch (err) {
       console.error(err);
     }
@@ -26,9 +25,8 @@ const useBottomButton = ({
     try {
       if (beforeCancel) {
         beforeCancel(onCancel);
-      } else {
-        onCancel?.();
       }
+      onCancel?.();
     } catch (err) {
       console.error(err);
     }

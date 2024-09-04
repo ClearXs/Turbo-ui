@@ -1,4 +1,4 @@
-import React, { Component, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import AppContext, { useAppProps } from './context';
 import useModularHolder from '../modular/useModularHolder';
 import useSliderSideHolder from '../slider-side/useSliderSideHolder';
