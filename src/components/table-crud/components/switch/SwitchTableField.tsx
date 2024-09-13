@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { Form, Switch } from '@douyinfe/semi-ui';
 import { BaseTableField, TableSwitchColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
 
-export class SwitchTableField<T extends IdEntity> extends BaseTableField<
+export class SwitchTableField<T extends Entity> extends BaseTableField<
   T,
   TableSwitchColumnProps<T>
 > {

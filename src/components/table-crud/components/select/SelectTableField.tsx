@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import ConstantTag from '@/components/tag/ConstantTag';
 import { BaseTableField, TableSelectColumnProps } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
@@ -8,7 +8,7 @@ import Relational from '../RelationField';
 import { Form } from '@douyinfe/semi-ui';
 import { Constant } from '@/constant';
 
-export class SelectTableField<T extends IdEntity> extends BaseTableField<
+export class SelectTableField<T extends Entity> extends BaseTableField<
   T,
   TableSelectColumnProps<T>
 > {

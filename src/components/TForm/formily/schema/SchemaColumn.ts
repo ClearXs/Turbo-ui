@@ -6,7 +6,7 @@ import {
 } from '../../interface';
 import _ from 'lodash';
 import { SchemaColumn, SchemaColumnRegistry } from '../interface';
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ISchema, SchemaTypes } from '@formily/json-schema';
 import { uid } from '@/util/utils';
 import { chunk } from '../../util/util';
@@ -66,7 +66,7 @@ export const baseOnBoAttrSchemaCreateColumn = <
 
   return {
     field: schema.key,
-    require: binding ? schema['props']?.['required'] ?? false : false,
+    require: binding ? (schema['props']?.['required'] ?? false) : false,
     label: schema.name,
     index,
     span: schema.span || 12,
@@ -141,7 +141,7 @@ export const GlobalSchemaColumnRegistry: SchemaColumnRegistry = {
   },
 };
 
-export const toSchema = <T extends IdEntity>(
+export const toSchema = <T extends Entity>(
   columns: FormColumnProps<T>[],
   formContext: FormContext<T>,
   mapping: (column: FormColumnProps<T>, index: number) => ISchema = (

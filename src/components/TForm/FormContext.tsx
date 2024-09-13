@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { GeneralApi, Entity } from '@/api';
 import { FormColumnProps, FormContext } from './interface';
 import { getFormColumnDecorator } from '.';
 import { action, define, observable } from '@formily/reactive';
@@ -20,7 +20,7 @@ const formTypeList: Record<string, Constant> = {
   },
 };
 
-export default class FormContextImpl<T extends IdEntity>
+export default class FormContextImpl<T extends Entity>
   implements FormContext<T>
 {
   title: FormContext<T>['title'];
@@ -47,6 +47,7 @@ export default class FormContextImpl<T extends IdEntity>
     this.loading = false;
     this.decorator = props.decorator || getFormColumnDecorator(this);
     this.decorator.setFormContext(this);
+
     this.dataSet = {};
     this.valid = false;
     this.validating = false;
@@ -64,6 +65,17 @@ export default class FormContextImpl<T extends IdEntity>
         }
         return column.type !== 'undefined' && showForm !== false;
       }) || [];
+
+    // set relation api
+    const relationApis: Map<string, GeneralApi<T>> = new Map();
+    for (const column of this.columns) {
+      const { relation } = column;
+      if (relation) {
+        relation.helper.getApi &&
+          relationApis.set(column.field, relation.helper.getApi());
+      }
+    }
+    this.decorator.setRelationApis(relationApis);
 
     define(this, {
       type: observable,

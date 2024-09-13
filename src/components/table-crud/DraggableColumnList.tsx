@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { Identifier, XYCoord } from 'dnd-core';
 import { useRef, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
@@ -11,14 +11,14 @@ import ButtonSpace from '../button-space/ButtonSpace';
 import { useIconBar } from './hook/bar';
 import useTableCrudContext from './hook/table';
 
-export type DraggableBar<T extends IdEntity> = Omit<Bar<T>, 'onClick'> & {
+export type DraggableBar<T extends Entity> = Omit<Bar<T>, 'onClick'> & {
   onClick?: (
     tableContext: TableContext<T>,
     column: TableColumnProps<T>,
   ) => void;
 };
 
-export type DraggableColumnListProps<T extends IdEntity> = {
+export type DraggableColumnListProps<T extends Entity> = {
   columns: TableColumnProps<T>[];
   // check回调，当该属性存在时显示check
   onCheck?: (column: TableColumnProps<T>) => void;
@@ -126,7 +126,7 @@ const DropListItem = (props: DragListItemProps) => {
   );
 };
 
-const DraggableColumnList = <T extends IdEntity>(
+const DraggableColumnList = <T extends Entity>(
   props: DraggableColumnListProps<T>,
 ) => {
   const tableContext = useTableCrudContext();

@@ -1,9 +1,9 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormColumnProps, RemoteProps } from '../../interface';
 import { GroupConstant } from '@/constant';
 
 // Select Group 组件
-export type FormSelectGroupColumnProps<T extends IdEntity> =
+export type FormSelectGroupColumnProps<T extends Entity> =
   FormColumnProps<T> & {
     // 是否可搜索
     filter?: boolean;

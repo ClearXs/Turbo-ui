@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { TableCascadeColumnProps } from './interface';
 import { BaseTableField } from '..';
 import ConstantTag from '@/components/tag/ConstantTag';
@@ -7,7 +7,7 @@ import { findTreeConstant } from '@/constant/util';
 import { ColumnType } from '@/components/tform/interface';
 import { Form } from '@douyinfe/semi-ui';
 
-export class CascadeTableField<T extends IdEntity> extends BaseTableField<
+export class CascadeTableField<T extends Entity> extends BaseTableField<
   T,
   TableCascadeColumnProps<T>
 > {

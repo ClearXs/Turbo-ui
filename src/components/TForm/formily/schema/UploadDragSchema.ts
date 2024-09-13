@@ -6,19 +6,15 @@ import {
   baseOnColumnCreateISchema,
   baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
-import { FormUploadDragColumnProps } from '../../components';
+import { FormUploadDragProps } from '../../components';
 
-const UploadDragSchema: SchemaColumn<FormUploadDragColumnProps<any>> = {
+const UploadDragSchema: SchemaColumn<FormUploadDragProps<any>> = {
   adapt: (column, formContext) => {
     return {
-      ...baseOnColumnCreateISchema(
-        column,
-        formContext,
-        'Upload.Dragger',
-        'array',
-      ),
+      ...baseOnColumnCreateISchema(column, formContext, 'Upload', 'array'),
       'x-component-props': {
         ..._.omit(column, [...ExclusiveColumnKeyProps]),
+        draggable: true,
       },
     };
   },
@@ -31,7 +27,4 @@ const UploadDragSchema: SchemaColumn<FormUploadDragColumnProps<any>> = {
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('uploadDrag', UploadDragSchema);
-GlobalSchemaColumnRegistry.addComponentColumnMapping(
-  'Upload.Dragger',
-  'uploadDrag',
-);
+GlobalSchemaColumnRegistry.addComponentColumnMapping('Upload', 'uploadDrag');

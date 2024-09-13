@@ -1,13 +1,5 @@
 module.exports = {
-  extends: [
-    'airbnb',
-    'prettier',
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:import/recommended',
-    'plugin:jsx-a11y/recommended',
-    'eslint-config-prettier',
-  ],
+  extends: ['airbnb', 'prettier', 'eslint:recommended', 'plugin:react/recommended', 'plugin:import/recommended', 'plugin:jsx-a11y/recommended', 'eslint-config-prettier', 'plugin:storybook/recommended'],
   plugins: ['react', 'react-hooks', 'prettier', 'jsx-a11y', 'import'],
   settings: {
     react: {

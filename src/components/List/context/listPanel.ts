@@ -1,11 +1,11 @@
 import { createContext, useContext } from 'react';
 import { ListPanelContext } from '../interface';
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 
 export const TListPanelContext = createContext<ListPanelContext<any>>(null);
 
 export const useListPanelContext = <
-  T extends IdEntity,
+  T extends Entity,
 >(): ListPanelContext<T> => {
   return useContext(TListPanelContext);
 };

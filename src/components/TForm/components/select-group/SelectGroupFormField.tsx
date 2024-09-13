@@ -1,11 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormSelectGroupColumnProps } from '.';
 import SelectGroup from '@/components/select-group';
 
-export class SelectGroupFormField<T extends IdEntity> extends BaseFormField<
+export class SelectGroupFormField<T extends Entity> extends BaseFormField<
   T,
   FormSelectGroupColumnProps<T>
 > {
@@ -35,6 +35,6 @@ export class SelectGroupFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

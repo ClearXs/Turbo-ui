@@ -1,0 +1,374 @@
+import { Meta, Canvas, Controls, PureArgsTable } from '@storybook/blocks';
+import * as TableStories from './TableCrud.stories';
+import { columnArgsType } from './column';
+
+<Meta title="Component/TableCrud" of={TableStories} />
+
+## common
+
+`TableColumnProps` 继承于 [FormColumnProps（详细可以点击进入查看，在此就不列出相关属性）](?path=/docs/component-tform--column) 以及部分 [SEMIUI Table Column](https://semi.design/zh-CN/show/table)属性。
+
+<PureArgsTable rows={columnArgsType} />
+
+## TableInputColumnProps
+
+<Canvas of={TableStories.Input} />
+
+`[type=input]` 类型派生自 [FormInputColumnProps](?path=/docs/component-tform--column#forminputcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableInputColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormInputColumnProps<T>;
+```
+
+## TableNumberColumnProps
+
+<Canvas of={TableStories.Number} />
+
+`[type=number]` 类型派生自 [FormInputColumnProps](?path=/docs/component-tform--column#formnumbercolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableNumberColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormNumberColumnProps<T>;
+```
+
+## TableTextareaColumnProps
+
+<Canvas of={TableStories.Textarea} />
+
+`[type=textarea]` 类型派生自 [FormTextareaColumnProps](?path=/docs/component-tform--column#formtextareacolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableTextareaColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormTextareaColumnProps<T>;
+```
+
+## TablePasswordColumnProps
+
+<Canvas of={TableStories.Password} />
+
+`[type=password]` 类型派生自 [FormPasswordColumnProps](?path=/docs/component-tform--column#formpasswordcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TablePasswordColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormPasswordColumnProps<T>;
+```
+
+## TableRateColumnProps
+
+<Canvas of={TableStories.Rate} />
+
+`[type=rate]` 类型派生自 [FormRateColumnProps](?path=/docs/component-tform--column#formratecolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableRateColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormRateColumnProps<T>;
+```
+
+## TableSliderColumnProps
+
+<Canvas of={TableStories.Slider} />
+
+`[type=slider]` 类型派生自 [FormSliderColumnProps](?path=/docs/component-tform--column#formslidercolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableSliderColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormSliderColumnProps<T>;
+```
+
+## TableSelectColumnProps
+
+<Canvas of={TableStories.Select} />
+
+`[type=select]` 类型派生自 [FormSelectColumnProps](?path=/docs/component-tform--column#formselectcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableSelectColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormSelectColumnProps<T>;
+```
+
+## TableTreeSelectColumnProps
+
+<Canvas of={TableStories.TreeSelect} />
+
+`[type=treeSelect]` 类型派生自 [FormTreeSelectColumnProps](?path=/docs/component-tform--column#formtreeselectcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableTreeSelectColumnProps<T extends Tree> = CardColumnProps<T> &
+  Omit<FormTreeSelectColumnProps<T>, 'treeData'> & {
+    treeData:
+      | TreeNodeData[]
+      | ((
+          tableContext?: TableContext<T>,
+          formContext?: FormContext<T>,
+        ) => TreeNodeData[]);
+  };
+```
+
+## TableCascadeColumnProps
+
+<Canvas of={TableStories.Cascade} />
+
+`[type=cascade]` 类型派生自 [FormCascadeColumnProps](?path=/docs/component-tform--column#formcascadecolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableCascadeColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormCascadeColumnProps<T>;
+```
+
+## TableTransferColumnProps
+
+<Canvas of={TableStories.Transfer} />
+
+`[type=transfer]` 类型派生自 [FormTransferColumnProps](?path=/docs/component-tform--column#formtransfercolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableTransferColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormTransferColumnProps<T>;
+```
+
+## TableRadioColumnProps
+
+<Canvas of={TableStories.Radio} />
+
+`[type=radio]` 类型派生自 [FormRadioColumnProps](?path=/docs/component-tform--column#formradiocolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableRadioColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormRadioColumnProps<T>;
+```
+
+## TableCheckboxColumnProps
+
+<Canvas of={TableStories.Checkbox} />
+
+`[type=checkbox]` 类型派生自 [FormCheckboxColumnProps](?path=/docs/component-tform--column#formcheckboxcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableCheckboxColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormCheckboxColumnProps<T>;
+```
+
+## TableSwitchColumnProps
+
+<Canvas of={TableStories.Switch} />
+
+`[type=switch]` 类型派生自 [FormSwitchColumnProps](?path=/docs/component-tform--column#formswitchcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableSwitchColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormSwitchColumnProps<T>;
+```
+
+## TableDateColumnProps
+
+<Canvas of={TableStories.Date} />
+
+`[type=date]` 类型派生自 [FormDateColumnProps](?path=/docs/component-tform--column#formdatecolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableDateColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormDateColumnProps<T>;
+```
+
+## TableDateRangeColumnProps
+
+<Canvas of={TableStories.DateRange} />
+
+`[type=dateRange]` 类型派生自 [FormDateRangeColumnProps](?path=/docs/component-tform--column#formdaterangecolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableDateRangeColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormDateRangeColumnProps<T>;
+```
+
+## TableTimeColumnProps
+
+<Canvas of={TableStories.Time} />
+
+`[type=time]` 类型派生自 [FormTimeColumnProps](?path=/docs/component-tform--column#formtimecolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableTimeColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormTimeColumnProps<T>;
+```
+
+## TableTimeRangeColumnProps
+
+<Canvas of={TableStories.TimeRange} />
+
+`[type=timeRange]` 类型派生自 [FormTimeRangeColumnProps](?path=/docs/component-tform--column#formtimerangecolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableTimeRangeColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormTimeRangeColumnProps<T>;
+```
+
+## TableUploadColumnProps
+
+<Canvas of={TableStories.Upload} />
+
+`[type=upload]` 类型派生自 [FormUploadProps](?path=/docs/component-tform--column#formuploadprops)
+
+下面是其类型定义：
+
+```tsx
+type TableUploadColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormUploadProps<T>;
+```
+
+## TableUploadDragColumnProps
+
+<Canvas of={TableStories.UploadDrag} />
+
+`[type=uploadDrag]` 类型派生自 [FormUploadDragProps](?path=/docs/component-tform--column#formuploaddragprops)
+
+下面是其类型定义：
+
+```tsx
+type TableUploadDragColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormUploadDragProps<T>;
+```
+
+## TableIconColumnProps
+
+<Canvas of={TableStories.Icon} />
+
+`[type=icon]` 类型派生自 [FormIconColumnProps](?path=/docs/component-tform--column#formiconcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableIconColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormIconColumnProps<T>;
+```
+
+## TableColorColumnProps
+
+<Canvas of={TableStories.Color} />
+
+`[type=icon]` 类型派生自 [FormColorColumnProps](?path=/docs/component-tform--column#formcolorcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableColorColumnProps<T extends Entity> = CardColumnProps<T> &
+  TableColumnProps<T>;
+```
+
+## TableSelectGroupColumnProps
+
+<Canvas of={TableStories.SelectGroup} />
+
+`[type=selectGroup]` 类型派生自 [FormSelectGroupColumnProps](?path=/docs/component-tform--column#formselectgroupcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableSelectGroupColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormSelectGroupColumnProps<T>;
+```
+
+## TableJsonObjectColumnProps
+
+<Canvas of={TableStories.JsonObject} />
+
+`[type=jsonObject]` 类型派生自 [FormJsonObjectColumnProps](?path=/docs/component-tform--column#formjsonobjectcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableJsonObjectColumnProps<T extends Entity> =
+  FormJsonObjectColumnProps<T>;
+```
+
+## TableJsonArrayColumnProps
+
+<Canvas of={TableStories.JsonArray} />
+
+`[type=JsonArray]` 类型派生自 [FormJsonArrayColumnProps](?path=/docs/component-tform--column#formjsonarraycolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableJsonArrayColumnProps<T extends Entity> = FormJsonArrayColumnProps<T>;
+```
+
+## TableUserColumnProps | TableRoleColumnProps | TableOrgColumnProps | TablePostColumnProps
+
+- TableUserColumnProps: 系统内置用户。
+  <Canvas of={TableStories.User} />
+  `[type=user]` 类型派生自
+  [FormUserColumnProps](?path=/docs/component-tform--column#formusercolumnprops--formrolecolumnprops--formorgcolumnprops--formpostcolumnprops)。
+- TableRoleColumnProps: 系统内置角色。
+  <Canvas of={TableStories.Role} />
+  `[type=role]` 类型派生自
+  [FormRoleColumnProps](?path=/docs/component-tform--column#formusercolumnprops--formrolecolumnprops--formorgcolumnprops--formpostcolumnprops)。
+- TableOrgColumnProps: 系统内置组织。
+  <Canvas of={TableStories.Org} />
+  `[type=org]` 类型派生自
+  [FormOrgColumnProps](?path=/docs/component-tform--column#formusercolumnprops--formrolecolumnprops--formorgcolumnprops--formpostcolumnprops)。
+- TablePostColumnProps: 系统内置岗位。
+  <Canvas of={TableStories.Post} />
+  `[type=post]` 类型派生自
+  [FormPostColumnProps](?path=/docs/component-tform--column#formusercolumnprops--formrolecolumnprops--formorgcolumnprops--formpostcolumnprops)。
+
+## TableCodeEditorColumnProps
+
+<Canvas of={TableStories.CodeEditor} />
+
+`[type=codeEditor]` 类型派生自 [FormCodeEditorColumnProps](?path=/docs/component-tform--column#formcodeeditorcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableCodeEditorColumnProps<T extends Entity> =
+  FormCodeEditorColumnProps<T>;
+```
+
+## TableSlotColumnProps
+
+<Canvas of={TableStories.Slot} />
+
+`[type=slot]` 类型派生自 [FormSlotColumnProps](?path=/docs/component-tform--column#formslotcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type TableSlotColumnProps<T extends Entity> = TableColumnProps<T> &
+  FormSlotColumnProps<T>;
+```

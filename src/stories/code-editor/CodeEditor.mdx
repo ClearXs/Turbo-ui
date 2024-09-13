@@ -1,0 +1,16 @@
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as CodeEditorStories from './CodeEditor.stories';
+
+<Meta title="Component/CodeEditor" of={CodeEditorStories} />
+
+## Introduction
+
+CodeEditor 组件是封装自[codemirror](https://codemirror.net/)，额外包含了language属性以及mentions属性等
+
+## Sample
+
+<Canvas of={CodeEditorStories.Default} />
+
+## Property
+
+<Controls of={CodeEditorStories.Default} />

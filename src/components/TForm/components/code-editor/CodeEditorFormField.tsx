@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { ReactNode } from 'react';
@@ -7,7 +7,7 @@ import { FormCodeEditorColumnProps } from './interface';
 /**
  * @see formily/schema/CodeEditorSchema.tsx
  */
-export class CodeEditorFormField<T extends IdEntity> extends BaseFormField<
+export class CodeEditorFormField<T extends Entity> extends BaseFormField<
   T,
   FormCodeEditorColumnProps<T>
 > {

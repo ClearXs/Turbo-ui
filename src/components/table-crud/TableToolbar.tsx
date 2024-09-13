@@ -16,7 +16,7 @@ import {
   TableToolbarProps,
   Toolbar,
 } from './interface';
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { useContext, useMemo } from 'react';
 import { TableCrudContext } from './context/table';
 import Modular from '../modular/Modular';
@@ -33,7 +33,7 @@ import {
   SHOW_COLUMN_LITERAL_TOOLBAR,
 } from '../bar/collection';
 
-const renderableToolbar = <T extends IdEntity>(
+const renderableToolbar = <T extends Entity>(
   tableContext: TableContext<T>,
   tableProps: TableCrudProps<T>,
   operabilityBar: <T extends Bar<any>>(props: T) => T,
@@ -134,9 +134,7 @@ const renderableToolbar = <T extends IdEntity>(
         <div className="w-96 h-64 max-h-64 p-3 overflow-y-auto flex flex-col gap-2">
           <Typography.Title heading={6}>
             显示列
-            <Tooltip content="支持拖动，顺序即为展示的顺序">
-              {tryGetIcon('IconHelpCircleStroked')}
-            </Tooltip>
+            <Tooltip content="支持拖动，顺序即为展示的顺序">❓</Tooltip>
           </Typography.Title>
           <Checkbox
             checked={displayColumns.length === temporaryColumns.length}
@@ -212,7 +210,7 @@ const renderableToolbar = <T extends IdEntity>(
   return toolbar;
 };
 
-function TableToolbar<T extends IdEntity>(props: TableToolbarProps<T>) {
+function TableToolbar<T extends Entity>(props: TableToolbarProps<T>) {
   const { tableProps } = props;
 
   const { show = true } = tableProps.toolbar || {};

@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import * as local from '@/util/local';
 import * as headers from '@/util/constant';
 import useAuthApi from '@/api/system/auth';
+import { directGetIcon } from '@/components/icon';
 
 const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
           >
             <TabPane tab="默认注册" itemKey="default">
               <Form
+                labelWidth={100}
                 onSubmit={async (data) => {
                   setLoading(true);
                   authApi
@@ -55,12 +57,12 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                       setLoading(false);
                     });
                 }}
-                labelPosition="left"
               >
                 <Form.Input
                   field="username"
                   label="账号"
                   placeholder="请输入账号"
+                  prefix={directGetIcon('IconUser')}
                   rules={[{ required: true, message: '请输入账号' }]}
                 />
                 <Form.Input
@@ -69,6 +71,7 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                   label="密码"
                   placeholder="请输入密码"
                   mode="password"
+                  prefix={directGetIcon('IconLock')}
                   rules={[
                     {
                       required: true,
@@ -81,12 +84,14 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                   field="phone"
                   placeholder="请输入手机号码"
                   rules={[{ required: true, message: '请输入手机号码' }]}
+                  prefix={directGetIcon('IconPhoneStroke')}
                 />
                 <Form.Input
                   field="email"
                   type="email"
                   label="邮箱"
                   placeholder="请输入邮箱"
+                  prefix={directGetIcon('IconMail')}
                 />
                 <Button className="mt-6" block size="large" htmlType="submit">
                   提交
@@ -94,19 +99,20 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               </Form>
             </TabPane>
             <TabPane tab="验证码注册" itemKey="captcha">
-              <Form labelPosition="left">
+              <Form labelWidth={100}>
                 <Form.Input
                   label="手机号码"
                   field="phone"
                   placeholder="请输入手机号码"
                   rules={[{ required: true, message: '请输入手机号码' }]}
+                  prefix={directGetIcon('IconPhoneStroke')}
                 />
                 <div className="flex align-middle items-center">
                   <Form.Input
                     field="captcha"
                     label="验证码"
                     placeholder="请输入验证码"
-                    labelPosition="left"
+                    prefix={directGetIcon('IconInbox')}
                     rules={[
                       {
                         required: true,
@@ -114,7 +120,7 @@ const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                       },
                     ]}
                   />
-                  <Button className="ml-auto">获取验证码</Button>
+                  <Button className="ml-auto mt-auto  ">获取验证码</Button>
                 </div>
                 <Button className="mt-6" block size="large" htmlType="submit">
                   提交

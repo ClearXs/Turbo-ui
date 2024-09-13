@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import {
   ColumnType,
   FormColumnProps,
@@ -57,7 +57,7 @@ DEFAULT_REMOTE_DATA.set('role', DEFAULT_ROLE_REMOTE);
  * @param dicApi the dic api
  * @param request the internal request
  */
-export const loadDataSet = <T extends IdEntity>(
+export const loadDataSet = <T extends Entity>(
   formContext: FormContext<T>,
   dicApi: DicApi,
   request: InternalRequest,
@@ -93,7 +93,7 @@ export const loadDataSet = <T extends IdEntity>(
  * @param request the internal request
  * @returns  promise of record type
  */
-const loadRemote = <T extends IdEntity>(
+const loadRemote = <T extends Entity>(
   combinationColumns: FormColumnProps<T>[],
   request: InternalRequest,
 ): Promise<Record<string, Constant[]>>[] => {
@@ -187,7 +187,7 @@ const loadRemote = <T extends IdEntity>(
  * @param dicApi the dic api
  * @returns promise of record type
  */
-const loadDictionary = <T extends IdEntity>(
+const loadDictionary = <T extends Entity>(
   combinationColumns: FormColumnProps<T>[],
   dicApi: DicApi,
 ): Promise<Record<string, any>>[] => {

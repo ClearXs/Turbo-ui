@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { InlineEditorApi, TableContext } from './interface';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import _ from 'lodash';
 import { Toast } from '@douyinfe/semi-ui';
 
-export default class InlineEditorApiImpl<T extends IdEntity>
+export default class InlineEditorApiImpl<T extends Entity>
   implements InlineEditorApi<T>
 {
   formApi?: FormApi<{ data: T[] }>;

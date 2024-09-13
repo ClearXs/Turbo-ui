@@ -1,11 +1,14 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { TablePasswordColumnProps } from '.';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
 import { Form, Typography } from '@douyinfe/semi-ui';
+import { observer } from '@formily/reactive-react';
+import { useState } from 'react';
+import { directGetIcon } from '@/components/icon';
 
-export class PasswordTableField<T extends IdEntity> extends BaseTableField<
+export class PasswordTableField<T extends Entity> extends BaseTableField<
   T,
   TablePasswordColumnProps<T>
 > {
@@ -21,9 +24,7 @@ export class PasswordTableField<T extends IdEntity> extends BaseTableField<
           pure
         />
       ) : (
-        <Typography.Text ellipsis={{ showTooltip: true }}>
-          {text}
-        </Typography.Text>
+        <PasswordLabel label={text} column={column} />
       );
     };
     return { ...column, render: this.withColumnRender(column, render) };
@@ -33,3 +34,43 @@ export class PasswordTableField<T extends IdEntity> extends BaseTableField<
     return 'password';
   }
 }
+
+const PasswordLabel: React.FC<{
+  label: string;
+  column: TablePasswordColumnProps<any>;
+}> = observer(({ label, column }) => {
+  const [password, setPassword] = useState<string>(
+    ['*'.repeat(label.length)].join(),
+  );
+
+  const [whetherPlain, setWhetherPlain] = useState<boolean>(false);
+
+  return (
+    <div className="flex gap-2">
+      <Typography.Text
+        ellipsis={{
+          showTooltip: column.ellipsis === undefined ? true : column.ellipsis,
+        }}
+        style={{ maxWidth: column.width }}
+      >
+        {password}
+      </Typography.Text>
+
+      <div
+        className="cursor-pointer"
+        onClick={() => {
+          if (!whetherPlain) {
+            setPassword(label);
+          } else {
+            setPassword(['*'.repeat(label.length)].join());
+          }
+          setWhetherPlain(!whetherPlain);
+        }}
+      >
+        {whetherPlain
+          ? directGetIcon('IconEyeClosedSolid')
+          : directGetIcon('IconEyeOpened')}
+      </div>
+    </div>
+  );
+});

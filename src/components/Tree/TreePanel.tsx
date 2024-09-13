@@ -1,4 +1,4 @@
-import { Tree } from '@/api';
+import { Tree, TreeGeneralApi } from '@/api';
 import { TreePanelProps } from './interface';
 import { Tree as SemiTree, Spin } from '@douyinfe/semi-ui';
 import { useEffect, useMemo } from 'react';
@@ -17,7 +17,6 @@ import { TPanelContext } from './context/treePanel';
 const TreePanel = observer(<T extends Tree>(props: TreePanelProps<T>) => {
   const {
     columns,
-    getTreePanelApi,
     multiple = false,
     initValues = [],
     initValue,
@@ -26,16 +25,28 @@ const TreePanel = observer(<T extends Tree>(props: TreePanelProps<T>) => {
     useApi,
     onChange,
     onSelectChange,
+    getTreePanelApi,
+    getTreePanelContext,
   } = props;
-  const api = useApi();
+
+  let api: TreeGeneralApi<T>;
+  if (typeof useApi === 'function') {
+    api = useApi();
+  } else {
+    api = useApi;
+  }
 
   const treePanelContext = useMemo(() => {
     return new TreePanelContextImpl<T>(props);
   }, []);
 
+  getTreePanelContext?.(treePanelContext);
+
   const treePanelApi = useMemo(() => {
     return new TreePanelApiImpl<T>(treePanelContext, api);
   }, []);
+
+  getTreePanelApi?.(treePanelApi);
 
   useEffect(() => {
     if (multiple) {
@@ -49,11 +60,9 @@ const TreePanel = observer(<T extends Tree>(props: TreePanelProps<T>) => {
     treePanelApi.tree();
   }, []);
 
-  getTreePanelApi?.(treePanelApi);
-
   // 构建树型视图的数据
   if (columns) {
-    columns.forEach((col) => {
+    for (const col of columns) {
       if (col.type === 'treeSelect') {
         const treeCol = col as FormTreeSelectColumnProps<T>;
         if (treeCol.self) {
@@ -62,7 +71,7 @@ const TreePanel = observer(<T extends Tree>(props: TreePanelProps<T>) => {
             treePanelContext.tree;
         }
       }
-    });
+    }
   }
 
   return (

@@ -2,7 +2,7 @@ import Table from '@douyinfe/semi-ui/lib/es/table';
 import TableHeader from './TableHeader';
 import { useEffect, useMemo } from 'react';
 import _ from 'lodash';
-import { GeneralApi, IdEntity } from '@/api';
+import { GeneralApi, Entity } from '@/api';
 import TableToolbar from './TableToolbar';
 import { TableContext, TableCrudProps } from './interface';
 import CardPage from './CardPage';
@@ -14,12 +14,12 @@ import { observer } from '@formily/reactive-react';
 import { Form } from '@douyinfe/semi-ui';
 import TableContextImpl from './TableContext';
 
-type ObserverTableCrudProps<T extends IdEntity> = {
+type ObserverTableCrudProps<T extends Entity> = {
   tableContext: TableContext<T>;
   tableProps: TableCrudProps<T>;
 };
 
-function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
+function TableCrud<T extends Entity>(props: TableCrudProps<T>) {
   let api: GeneralApi<T>;
   const { useApi } = props;
   if (useApi) {
@@ -40,7 +40,7 @@ function TableCrud<T extends IdEntity>(props: TableCrudProps<T>) {
 }
 
 const ObserverTableCrud: React.FC<ObserverTableCrudProps<any>> = observer(
-  <T extends IdEntity>(props: ObserverTableCrudProps<T>) => {
+  <T extends Entity>(props: ObserverTableCrudProps<T>) => {
     const { tableProps, tableContext } = props;
     const { tableApi } = tableContext;
 
@@ -105,7 +105,7 @@ const ObserverTableCrud: React.FC<ObserverTableCrudProps<any>> = observer(
 );
 
 const useViewTable = observable(
-  <T extends IdEntity>({
+  <T extends Entity>({
     tableContext,
     tableProps,
   }: ObserverTableCrudProps<T>) => {

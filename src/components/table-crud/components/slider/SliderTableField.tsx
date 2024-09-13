@@ -1,9 +1,9 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField, TableSliderColumnProps } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
 
-export class SliderTableField<T extends IdEntity> extends BaseTableField<
+export class SliderTableField<T extends Entity> extends BaseTableField<
   T,
   TableSliderColumnProps<T>
 > {

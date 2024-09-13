@@ -6,20 +6,23 @@ import {
   baseOnColumnCreateISchema,
   baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
-import { FormDateRangeColumnProps } from '../../components';
+import { FormDateRangeColumnProps, defaults } from '../../components';
 
 const DateRangeSchema: SchemaColumn<FormDateRangeColumnProps<any>> = {
   adapt: (column, formContext) => {
+    const props = {
+      ...defaults.default,
+      ..._.omit(column, [...ExclusiveColumnKeyProps]),
+      type: 'dateRange',
+    };
     return {
       ...baseOnColumnCreateISchema(
         column,
         formContext,
-        'DatePicker.RangePicker',
+        'DatePicker',
         'string[]',
       ),
-      'x-component-props': {
-        ..._.omit(column, [...ExclusiveColumnKeyProps]),
-      },
+      'x-component-props': props,
     };
   },
   reverse: (index, schema) => {
@@ -31,7 +34,4 @@ const DateRangeSchema: SchemaColumn<FormDateRangeColumnProps<any>> = {
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('dateRange', DateRangeSchema);
-GlobalSchemaColumnRegistry.addComponentColumnMapping(
-  'DatePicker.RangePicker',
-  'dateRange',
-);
+GlobalSchemaColumnRegistry.addComponentColumnMapping('DatePicker', 'dateRange');

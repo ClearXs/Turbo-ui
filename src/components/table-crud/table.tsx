@@ -1,5 +1,5 @@
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-import { GeneralApi, IdEntity } from '@/api';
+import { GeneralApi, Entity } from '@/api';
 import { TableColumnProps, TableContext } from './interface';
 import { ColumnType, FormColumnProps, FormContext } from '../tform/interface';
 import { FormColumnDecorator } from '../tform/form';
@@ -43,7 +43,7 @@ import { BoAttrSchema } from '@designable/core';
 import { GlobalSchemaColumnRegistry } from '../tform/formily/schema';
 import { FormField } from '../tform/components';
 
-export interface TableColumnDecorator<T extends IdEntity>
+export interface TableColumnDecorator<T extends Entity>
   extends FormColumnDecorator<T> {
   /**
    * 增强 table column props 并转换为column
@@ -63,7 +63,7 @@ export interface TableColumnDecorator<T extends IdEntity>
   setTableContext(tableContext: TableContext<T>): void;
 }
 
-export class UndefinedTableField<T extends IdEntity> extends BaseTableField<
+export class UndefinedTableField<T extends Entity> extends BaseTableField<
   T,
   any
 > {
@@ -77,7 +77,7 @@ export class UndefinedTableField<T extends IdEntity> extends BaseTableField<
 }
 
 export class TableColumnFactory {
-  public static get<T extends IdEntity, K extends FormColumnProps<T>>(
+  public static get<T extends Entity, K extends FormColumnProps<T>>(
     type: ColumnType,
     decorator: TableColumnDecorator<T>,
   ): TableField<T, K> {
@@ -142,14 +142,13 @@ export class TableColumnFactory {
         return new CodeEditorTableField<T>(decorator);
       case 'slot':
         return new SlotTableField<T>(decorator);
-      case 'undefined':
       default:
         return new UndefinedTableField<T>(decorator);
     }
   }
 }
 
-class TableColumnDecoratorImpl<T extends IdEntity>
+class TableColumnDecoratorImpl<T extends Entity>
   implements TableColumnDecorator<T>
 {
   private relationApis: Map<string, GeneralApi<any>> = new Map();
@@ -223,7 +222,7 @@ class TableColumnDecoratorImpl<T extends IdEntity>
   }
 }
 
-export function getTableDecorator<T extends IdEntity>(
+export function getTableDecorator<T extends Entity>(
   tableContext?: TableContext<T>,
   formContext?: FormContext<T>,
 ): TableColumnDecorator<T> {

@@ -90,7 +90,9 @@ export const SchemaField = createSchemaField({
 
 const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   const {
-    formProps,
+    slotBottom,
+    modal,
+    onCancel,
     formContext,
     effects,
     scope = {},
@@ -106,11 +108,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
     );
   }, [formContext.dataSet, formContext.type, formContext.visible]);
 
-  const { slotBottom, modal } = formProps;
-
-  const { abandon = false, size = 'large', closeOnEsc = true } = modal || {};
-
-  const InternalFormily = (
+  const InternalForm = (
     <TFormContext.Provider value={formContext}>
       <Form form={formContext.coreForm} {...formliyProps}>
         <SchemaField
@@ -123,29 +121,29 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
     </TFormContext.Provider>
   );
 
-  return abandon ? (
-    <React.Fragment>{InternalFormily}</React.Fragment>
+  return (modal?.abandon ?? false) ? (
+    <>{InternalForm}</>
   ) : (
     <Modal
       title={formContext.title}
       icon={formContext.icon}
       visible={formContext.visible}
-      closeOnEsc={closeOnEsc}
-      size={size}
+      closeOnEsc={modal?.closeOnEsc ?? true}
+      size={modal?.size ?? 'medium'}
       onCancel={() => {
-        if (formProps.onCancel) {
-          formProps.onCancel(formContext);
+        if (onCancel) {
+          onCancel(formContext);
         } else {
           formContext.visible = false;
         }
       }}
       footer={
         columns.length > 0 && (
-          <FormilyModalButton formContext={formContext} formProps={formProps} />
+          <FormilyModalButton formContext={formContext} formProps={props} />
         )
       }
     >
-      {InternalFormily}
+      {InternalForm}
     </Modal>
   );
 });

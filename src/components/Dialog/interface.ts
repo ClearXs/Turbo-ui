@@ -1,10 +1,10 @@
 export type DialogProps = {
   type?: 'success' | 'info' | 'error' | 'warning';
   // 标题
-  title?: React.ReactNode;
+  title?: string | React.ReactNode;
   // 优先取content
   content?: string | React.ReactNode;
-  // 是否可见
+  // 是否可见，默认为true
   visible?: boolean;
   // 是否加载
   loading?: boolean;
@@ -12,7 +12,7 @@ export type DialogProps = {
   icon?: React.ReactNode;
   // 内置元素
   children?: React.ReactNode;
-  // 是否显示关闭按钮
+  // 是否显示关闭按钮，默认为true
   closable?: boolean;
   // 是否显示确认操作
   showConfirm?: boolean | (() => boolean);
@@ -20,11 +20,11 @@ export type DialogProps = {
   showCancel?: boolean | (() => boolean);
   // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
   append?: DialogButtonProps[];
-  // 是否显示Y轴滑动轮
+  // 是否显示Y轴滑动轮，默认为true
   scrollY?: boolean;
-  // 是否显示X轴滑动轮
+  // 是否显示X轴滑动轮，默认为true
   scrollX?: boolean;
-  // closeOnEsc
+  // closeOnEsc，默认为true
   closeOnEsc?: boolean;
   // confirm before，当存在返回值时不会立即调用onConfirm，由使用方确定是否使用
   beforeConfirm?: (thenConfirm?: DialogProps['onConfirm']) => void;

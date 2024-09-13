@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormSliderColumnProps } from '.';
 
-export class SliderFormField<T extends IdEntity> extends BaseFormField<
+export class SliderFormField<T extends Entity> extends BaseFormField<
   T,
   FormSliderColumnProps<T>
 > {
@@ -13,7 +13,7 @@ export class SliderFormField<T extends IdEntity> extends BaseFormField<
     type: 'search' | 'form',
   ): React.ReactNode {
     const props = this.getGeneralProps(column, type);
-    return <Form.TextArea {...props} />;
+    return <Form.Slider {...props} />;
   }
 
   public getType(): ColumnType {
@@ -21,6 +21,6 @@ export class SliderFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

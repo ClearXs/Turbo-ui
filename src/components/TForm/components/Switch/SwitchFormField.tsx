@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormSwitchColumnProps } from '.';
 
-export class SwitchFormField<T extends IdEntity> extends BaseFormField<
+export class SwitchFormField<T extends Entity> extends BaseFormField<
   T,
   FormSwitchColumnProps<T>
 > {
@@ -21,6 +21,6 @@ export class SwitchFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

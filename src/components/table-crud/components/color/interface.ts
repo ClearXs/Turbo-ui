@@ -1,6 +1,6 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { CardColumnProps, TableColumnProps } from '../../interface';
 
 // color
-export type TableColorColumnProps<T extends IdEntity> = CardColumnProps<T> &
-  TableColumnProps<T> & {};
+export type TableColorColumnProps<T extends Entity> = CardColumnProps<T> &
+  TableColumnProps<T>;

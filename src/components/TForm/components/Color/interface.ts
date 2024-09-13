@@ -1,5 +1,5 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormColumnProps } from '../../interface';
 
 // color
-export type FormColorColumnProps<T extends IdEntity> = FormColumnProps<T> & {};
+export type FormColorColumnProps<T extends Entity> = FormColumnProps<T>;

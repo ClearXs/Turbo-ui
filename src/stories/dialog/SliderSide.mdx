@@ -1,0 +1,72 @@
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as SilderSideStories from './SliderSide.stories';
+
+<Meta of={SilderSideStories} />
+
+## Introduction
+
+与 [Modular](?path=/docs/component-modular--docs)类似, SliderSide组件也是使用自 [SemiUI SideSheet](https://semi.design/zh-CN/show/sidesheet). 并提供了与[Modular](?path=/docs/component-modular--docs)组件类似的属性。
+
+## Sample
+
+[👉快速进行调试](?path=/story/component-sliderside--default)
+
+<Canvas of={SilderSideStories.Default} />
+
+## Property
+
+<Controls of={SilderSideStories.Default} />
+
+## Hook
+
+[👉快速进行调试](?path=/story/component-sliderside--hook)
+
+Hook方式是`SliderSide`提供的一种使用组件的方式，可以通过类似下面的代码使用:
+
+```react
+  const [showSliderSide, sliderSideContextHolder] = useSliderSideHolder();
+    const HookSliderSide = () => {
+      const sliderSide = useSliderSide();
+      return (
+        <Button onClick={() => sliderSide.info({ ...args })}>
+          open slider side
+        </Button>
+      );
+    };
+    return (
+      <>
+        <SliderSideContext.Provider value={showSliderSide}>
+          <HookSliderSide />
+        </SliderSideContext.Provider>
+        {sliderSideContextHolder}
+      </>
+    );
+```
+
+<Canvas of={SilderSideStories.Hook} />
+
+## Static
+
+[👉快速进行调试](?path=/story/component-sliderside--static)
+
+Static允许使用者可以直接调用`SliderSide`的静态方法，进行弹窗显示:
+
+```react
+   <Button onClick={() => SliderSide.info({ ...args })}>
+        open slider side
+   </Button>
+```
+
+<Canvas of={SilderSideStories.Static} />
+
+## Title
+
+[👉快速进行调试](?path=/story/component-sliderside--title)
+
+<Canvas of={SilderSideStories.Title} />
+
+## Footer
+
+[👉快速进行调试](?path=/story/component-sliderside--footer)
+
+<Canvas of={SilderSideStories.Footer} />

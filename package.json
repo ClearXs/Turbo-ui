@@ -1,5 +1,5 @@
 {
-  "name": "ClearX-Turbo",
+  "name": "turbo-ui",
   "version": "0.1.1",
   "description": "Turbo快速开发框架",
   "license": "MIT",
@@ -11,7 +11,8 @@
     "axios",
     "prettier",
     "recoil",
-    "formily"
+    "formily",
+    "storybook"
   ],
   "repository": {
     "type": "git",
@@ -32,7 +33,10 @@
     "format+lint": "prettier \"src/**/*.{js,jsx,ts,tsx,css,scss}\" --write && eslint src --ext .js,.jsx,.ts,.tsx --fix",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:cover": "vitest run --coverage"
+    "test:cover": "vitest run --coverage",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build -o ./docs/storybook",
+    "serve-storybook": "serve ./docs/storybook"
   },
   "dependencies": {
     "@designable/core": "0.0.1-beta.27",
@@ -56,14 +60,17 @@
     "@formily/semi": "0.0.6-beta.0",
     "@formily/shared": "^2.3.2",
     "@nextjournal/lang-clojure": "^1.0.0",
+    "@semi-bot/semi-theme-strapi": "^0.1.4",
     "@uiw/codemirror-extensions-langs": "^4.23.0",
     "@uiw/codemirror-extensions-mentions": "^4.23.0",
     "@uiw/react-codemirror": "^4.23.0",
     "axios": "^1.7.4",
     "classnames": "^2.5.1",
     "dnd-core": "^16.0.1",
+    "framer-motion": "^11.5.4",
     "iconoir": "^7.8.0",
     "iconoir-react": "^7.8.0",
+    "install": "^0.13.0",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
@@ -82,6 +89,15 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@chromatic-com/storybook": "^1.8.0",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/addon-interactions": "^8.2.9",
+    "@storybook/addon-links": "^8.2.9",
+    "@storybook/addon-onboarding": "^8.2.9",
+    "@storybook/blocks": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-vite": "^8.2.9",
+    "@storybook/test": "^8.2.9",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
@@ -101,14 +117,17 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-storybook": "^0.8.0",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "jsdom": "^24.1.1",
     "less": "^4.2.0",
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",
     "sass": "^1.77.8",
+    "storybook": "^8.2.9",
     "tailwindcss": "^3.4.10",
     "vite": "^5.4.2",
+    "vite-plugin-semi-theme": "^0.5.0",
     "vitest": "^2.0.5"
   }
 }

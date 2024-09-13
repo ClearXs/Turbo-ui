@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField, JsonValueHandler, ValueHandler } from '..';
 import { FormSlotColumnProps } from './interface';
@@ -6,7 +6,7 @@ import { FormSlotColumnProps } from './interface';
 /**
  *  @see formily/schema/SlotSchema.tsx
  */
-export class SlotFormField<T extends IdEntity> extends BaseFormField<
+export class SlotFormField<T extends Entity> extends BaseFormField<
   T,
   FormSlotColumnProps<T>
 > {
@@ -22,7 +22,7 @@ export class SlotFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 
   public getValueHandler(): ValueHandler {

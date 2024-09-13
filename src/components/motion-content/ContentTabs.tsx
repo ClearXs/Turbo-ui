@@ -125,6 +125,7 @@ const ContentTabs = observer(() => {
   return (
     <Tabs
       className="w-[100%]"
+      style={{ backgroundColor: 'var(--semi-color-bg-0)' }}
       type="card"
       onTabClick={(activeKey) => tabClick(activeKey)}
       onTabClose={(tabKey) => closeTab(tabKey)}

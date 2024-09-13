@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ListPanelApi, ListPanelProps } from './interface';
 import { OperateToolbar } from '../table-crud/interface';
 import {
@@ -7,7 +7,7 @@ import {
 } from '../bar/collection';
 import Modular from '../modular/Modular';
 
-export default function renderListPanelOperatorBar<T extends IdEntity>(
+export default function renderListPanelOperatorBar<T extends Entity>(
   record: T,
   operateBar: ListPanelProps<T>['operateBar'],
   listApi: ListPanelApi<T>,

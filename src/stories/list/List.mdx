@@ -1,0 +1,48 @@
+import {
+  Meta,
+  Canvas,
+  Controls,
+  Stories,
+  PureArgsTable,
+} from '@storybook/blocks';
+import * as ListStories from './List.stories';
+import {
+  listPanelApiArgsType,
+  listPanelContextArgsType,
+  listPanelOperatorBarArgsType,
+  listPanelToolbarArgsType,
+} from './list';
+
+<Meta title="Component/List" of={ListStories} />
+
+## Introudction
+
+`TreePanel` 与 [TableCurd](?path=/docs/component-tablecrud--docs) 类似，是一个以列表结构 CRUD相关操作，其内部通过在 [SEMIUI List](https://semi.design/zh-CN/show/list) 基础上完成了**配置约定视图**。
+
+- 基于 [SEMIUI List](https://semi.design/zh-CN/show/list)
+- 适用于列表侧。
+- 丰富的组件属性。
+
+## Qucik Start
+
+<Canvas of={ListStories.Default} />
+
+## Property
+
+<Controls of={ListStories.Default} />
+
+### ListPanelToolbar
+
+<PureArgsTable rows={listPanelToolbarArgsType} />
+
+### ListPanelOperatorBar
+
+<PureArgsTable rows={listPanelOperatorBarArgsType} />
+
+### ListPanelApi
+
+<PureArgsTable rows={listPanelApiArgsType} />
+
+### ListPanelContext
+
+<PureArgsTable rows={listPanelContextArgsType} />

@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { OperateToolbar, TableColumnProps, TableContext } from './interface';
 import OperatorButtonSet from './OperatorButtonSet';
 import _ from 'lodash';
@@ -27,7 +27,7 @@ const COPY_IGNORE_KEYS = [
   'children',
 ];
 
-export default class TableColumnsBuilder<T extends IdEntity> {
+export default class TableColumnsBuilder<T extends Entity> {
   constructor(
     private columns: TableColumnProps<T>[],
     private tableContext: TableContext<T>,
@@ -88,7 +88,6 @@ export default class TableColumnsBuilder<T extends IdEntity> {
         },
       } as TableColumnProps<T>);
     }
-    // 过滤
     const filterColumns = immediateFilter
       ? columns.filter((column) => {
           return (
@@ -105,7 +104,7 @@ export default class TableColumnsBuilder<T extends IdEntity> {
   }
 }
 
-export const renderOperatorBar = <T extends IdEntity>(
+export const renderOperatorBar = <T extends Entity>(
   record: T,
   tableContext: TableContext<T>,
 ): OperateToolbar<T>[] => {

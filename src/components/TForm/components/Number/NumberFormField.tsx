@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormNumberColumnProps } from './interface';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 
-export class NumberFormField<T extends IdEntity> extends BaseFormField<
+export class NumberFormField<T extends Entity> extends BaseFormField<
   T,
   FormNumberColumnProps<T>
 > {
@@ -20,6 +20,6 @@ export class NumberFormField<T extends IdEntity> extends BaseFormField<
     return 'number';
   }
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

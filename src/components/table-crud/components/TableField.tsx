@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { TableColumnProps } from '../interface';
 import { BaseFormField, FormField } from '@/components/tform/components';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
@@ -6,7 +6,7 @@ import { TableColumnDecorator } from '../table';
 import { FormColumnFactory } from '@/components/tform';
 import { ISchema } from '@formily/json-schema';
 
-export interface TableField<T extends IdEntity, K extends TableColumnProps<T>>
+export interface TableField<T extends Entity, K extends TableColumnProps<T>>
   extends FormField<T, K> {
   /**
    * 增强 table column props 并转换为column
@@ -16,7 +16,7 @@ export interface TableField<T extends IdEntity, K extends TableColumnProps<T>>
 }
 
 export abstract class BaseTableField<
-    T extends IdEntity,
+    T extends Entity,
     K extends TableColumnProps<T>,
   >
   extends BaseFormField<T, K>

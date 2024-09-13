@@ -6,20 +6,18 @@ import {
   baseOnColumnCreateISchema,
   baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
-import { FormTimeRangeColumnProps } from '../../components';
+import { FormTimeRangeColumnProps, defaults } from '../../components';
 
 const TimeRangeSchema: SchemaColumn<FormTimeRangeColumnProps<any>> = {
   adapt: (column, formContext) => {
+    const props = {
+      ...defaults,
+      ..._.omit(column, [...ExclusiveColumnKeyProps]),
+      type: 'timeRange',
+    };
     return {
-      ...baseOnColumnCreateISchema(
-        column,
-        formContext,
-        'TimePicker.RangePicker',
-        'string',
-      ),
-      'x-component-props': {
-        ..._.omit(column, [...ExclusiveColumnKeyProps]),
-      },
+      ...baseOnColumnCreateISchema(column, formContext, 'TimePicker', 'string'),
+      'x-component-props': props,
     };
   },
   reverse: (index, schema) => {
@@ -31,7 +29,4 @@ const TimeRangeSchema: SchemaColumn<FormTimeRangeColumnProps<any>> = {
 };
 
 GlobalSchemaColumnRegistry.addSchemaColumn('timeRange', TimeRangeSchema);
-GlobalSchemaColumnRegistry.addComponentColumnMapping(
-  'TimePicker.RangePicker',
-  'timeRange',
-);
+GlobalSchemaColumnRegistry.addComponentColumnMapping('TimePicker', 'timeRange');

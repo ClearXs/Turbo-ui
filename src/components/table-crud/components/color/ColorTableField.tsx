@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField, TableColorColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { Tag } from '@douyinfe/semi-ui';
 import { ColumnType } from '@/components/tform/interface';
 
-export class ColorTableField<T extends IdEntity> extends BaseTableField<
+export class ColorTableField<T extends Entity> extends BaseTableField<
   T,
   TableColorColumnProps<T>
 > {

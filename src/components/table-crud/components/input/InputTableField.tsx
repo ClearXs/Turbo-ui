@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField, TableInputColumnProps } from '..';
 import { ColumnType } from '@/components/tform/interface';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { Form, Typography } from '@douyinfe/semi-ui';
 
-export class InputTableField<T extends IdEntity> extends BaseTableField<
+export class InputTableField<T extends Entity> extends BaseTableField<
   T,
   TableInputColumnProps<T>
 > {
@@ -19,7 +19,12 @@ export class InputTableField<T extends IdEntity> extends BaseTableField<
           pure
         />
       ) : (
-        <Typography.Text ellipsis={{ showTooltip: true }}>
+        <Typography.Text
+          ellipsis={{
+            showTooltip: column.ellipsis === undefined ? true : column.ellipsis,
+          }}
+          style={{ maxWidth: column.width }}
+        >
           {text}
         </Typography.Text>
       );

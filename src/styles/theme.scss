@@ -1,0 +1,10 @@
+@import '@semi-bot/semi-theme-strapi/semi.css';
+@import '@semi-bot/semi-theme-strapi/scss/index.scss';
+
+body,
+body[theme-mode='light'] .semi-always-light {
+}
+
+body[theme-mode='dark'],
+body .semi-always-dark {
+}

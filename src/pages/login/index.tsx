@@ -67,13 +67,13 @@ const Login: React.FC = () => {
           {!switchRegister && (
             <>
               <LoginForm tenantId={tenantId} />
-              <div className="flex justify-center absolute bottom-5">
-                <Typography className="my-auto">没有账号？</Typography>
+              <div className="flex justify-center absolute bottom-5 gap-1">
+                <Typography className="my-auto">没有账号?</Typography>
                 <Button
                   onClick={() => setSwitchRegister(true)}
                   className="flex gap-1"
                 >
-                  立即注册
+                  👉立即注册
                 </Button>
               </div>
             </>
