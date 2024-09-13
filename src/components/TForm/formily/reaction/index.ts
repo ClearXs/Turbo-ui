@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { RunArgs, SetFieldStateArgs } from './interface';
 import { IScopeContext } from '@formily/json-schema';
 import { Field } from '@formily/core';
@@ -9,7 +9,7 @@ import { triggerUserReactions } from './transformer';
 
 export type ReactionFunc = (field: Field, scope: IScopeContext) => void;
 
-export type Reaction<T extends IdEntity> = {
+export type Reaction<T extends Entity> = {
   // set word transform
   // like a => A...
   setWord: (
@@ -22,7 +22,7 @@ export type Reaction<T extends IdEntity> = {
   withRun: (args: RunArgs) => ReactionFunc;
 };
 
-export default function useReaction<T extends IdEntity>(): Reaction<T> {
+export default function useReaction<T extends Entity>(): Reaction<T> {
   return {
     setWord(path, dependencies, word) {
       return this.setFieldState({

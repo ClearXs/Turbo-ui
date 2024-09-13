@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { TableContext } from './interface';
 import { Pagination, Typography } from '@douyinfe/semi-ui';
 import { TablePaginationProps as SemiTablePaginationProps } from '@douyinfe/semi-ui/lib/es/table';
@@ -11,7 +11,7 @@ export type TablePaginationProps = {
   total: SemiTablePaginationProps['total'];
 };
 
-const TablePagination = <T extends IdEntity>({
+const TablePagination = <T extends Entity>({
   pageSize = 10,
   currentPage = 1,
   total = 0,

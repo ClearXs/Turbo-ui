@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api';
+import { GeneralApi, Entity } from '@/api';
 
 import {
   HelperApi,
@@ -15,8 +15,9 @@ import { DefaultTableApi, RemoteTableApi } from './TableApi';
 import InlineEditorApiImpl from './InlineEditorApi';
 import TableColumnsBuilder from './TableColumnBuilder';
 import { FormContext } from '../tform/interface';
+import { TablePagination } from '@douyinfe/semi-ui/lib/es/table';
 
-export default class TableContextImpl<T extends IdEntity>
+export default class TableContextImpl<T extends Entity>
   implements TableContext<T>
 {
   idKey: TableContext<T>['idKey'];

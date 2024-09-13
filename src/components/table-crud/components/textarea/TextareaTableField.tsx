@@ -1,11 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { TableTextareaColumnProps } from '.';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
 import { Form, Typography } from '@douyinfe/semi-ui';
 
-export class TextareaTableField<T extends IdEntity> extends BaseTableField<
+export class TextareaTableField<T extends Entity> extends BaseTableField<
   T,
   TableTextareaColumnProps<T>
 > {
@@ -20,7 +20,12 @@ export class TextareaTableField<T extends IdEntity> extends BaseTableField<
           pure
         />
       ) : (
-        <Typography.Text ellipsis={{ showTooltip: true }}>
+        <Typography.Text
+          ellipsis={{
+            showTooltip: column.ellipsis === undefined ? true : column.ellipsis,
+          }}
+          style={{ maxWidth: column.width }}
+        >
           {text}
         </Typography.Text>
       );

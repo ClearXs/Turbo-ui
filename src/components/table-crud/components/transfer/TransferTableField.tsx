@@ -1,10 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { TableTransferColumnProps } from '.';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
 
-export class TransferTableField<T extends IdEntity> extends BaseTableField<
+// TODO: 未经过验证
+export class TransferTableField<T extends Entity> extends BaseTableField<
   T,
   TableTransferColumnProps<T>
 > {

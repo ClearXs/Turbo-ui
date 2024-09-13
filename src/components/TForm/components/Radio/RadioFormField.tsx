@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormRadioColumnProps } from './interface';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 
-export class RadioFormField<T extends IdEntity> extends BaseFormField<
+export class RadioFormField<T extends Entity> extends BaseFormField<
   T,
   FormRadioColumnProps<T>
 > {
@@ -21,6 +21,6 @@ export class RadioFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

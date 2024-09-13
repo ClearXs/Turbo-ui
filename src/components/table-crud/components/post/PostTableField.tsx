@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import ConstantTag from '@/components/tag/ConstantTag';
 import { BaseTableField } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
@@ -7,7 +7,7 @@ import { findConstant } from '@/constant/util';
 import Relational from '../RelationField';
 import { TablePostColumnProps } from '.';
 
-export class PostTableField<T extends IdEntity> extends BaseTableField<
+export class PostTableField<T extends Entity> extends BaseTableField<
   T,
   TablePostColumnProps<T>
 > {

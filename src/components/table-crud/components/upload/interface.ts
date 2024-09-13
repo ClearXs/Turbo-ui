@@ -1,13 +1,14 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { CardColumnProps } from '../../interface';
 import {
-  FormUploadDragColumnProps,
+  FormUploadDragProps,
   FormUploadProps,
 } from '@/components/tform/components';
 
 // upload
-export type TableUploadColumnProps<T extends IdEntity> = CardColumnProps<T> &
+export type TableUploadColumnProps<T extends Entity> = CardColumnProps<T> &
   FormUploadProps<T>;
+
 // upload drag
-export type TableUploadDragColumnProps<T extends IdEntity> =
-  CardColumnProps<T> & FormUploadDragColumnProps<T>;
+export type TableUploadDragColumnProps<T extends Entity> = CardColumnProps<T> &
+  FormUploadDragProps<T>;

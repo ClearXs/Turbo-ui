@@ -4,6 +4,7 @@ import {
   Form,
   Space,
   Spin,
+  Toast,
   Tooltip,
   Typography,
 } from '@douyinfe/semi-ui';
@@ -25,6 +26,7 @@ import { IconQQ } from '@/components/icon/collection/IconQQ';
 import useOAuth2Api from '@/api/system/oauth2';
 import { IconTaobao } from '@/components/icon/collection/IconTaobao';
 import useRouteHelper from '@/route/useRouteHelper';
+import { directGetIcon } from '@/components/icon';
 
 const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();
@@ -57,6 +59,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
       <div className="w-4/5">
         <Spin spinning={loading}>
           <Form
+            labelWidth={80}
             onSubmit={async (data) => {
               setLoading(true);
               const loginInfo: LoginInfo = {
@@ -70,30 +73,31 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               authApi
                 .login(loginInfo)
                 .then((res) => {
-                  if (res.code === 200) {
+                  const { code, message, data } = res;
+                  if (code === 200) {
                     // 设置local storage
-                    const token = res.data?.tokenValue || '';
+                    const token = data?.tokenValue || '';
                     auth.set(token);
                     // 跳转至首页
                     navigate('/');
                     loadCurrentUserRoute();
                   } else {
-                    reloadCaptcha();
+                    Toast.error(message);
                   }
                 })
                 .catch((err) => {
-                  reloadCaptcha();
+                  Toast.error(err.message);
                 })
                 .finally(() => {
                   setLoading(false);
                 });
             }}
-            labelPosition="left"
           >
             <Form.Input
               field="username"
               label="账号"
               placeholder="请输入账号"
+              prefix={directGetIcon('IconUser')}
               rules={[{ required: true, message: '请输入账号' }]}
             />
             <Form.Input
@@ -102,6 +106,7 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
               label="密码"
               placeholder="请输入密码"
               mode="password"
+              prefix={directGetIcon('IconLock')}
               rules={[{ required: true, message: '请输入密码' }]}
             />
             <div className="flex">
@@ -110,12 +115,13 @@ const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                 label="验证码"
                 placeholder="请输入验证码"
                 maxLength={4}
+                prefix={directGetIcon('IconInbox')}
                 rules={[{ required: true, message: '请输入验证码' }]}
               />
               <Tooltip content="刷新验证码">
                 <img
                   src={captcha?.base64 || ''}
-                  className="w-24 h-12 ml-auto max-w-24"
+                  className="w-24 h-10 ml-auto max-w-24 mt-auto"
                   onClick={reloadCaptcha}
                 />
               </Tooltip>

@@ -60,14 +60,17 @@
     "@formily/semi": "0.0.6-beta.0",
     "@formily/shared": "^2.3.2",
     "@nextjournal/lang-clojure": "^1.0.0",
+    "@semi-bot/semi-theme-strapi": "^0.1.4",
     "@uiw/codemirror-extensions-langs": "^4.23.0",
     "@uiw/codemirror-extensions-mentions": "^4.23.0",
     "@uiw/react-codemirror": "^4.23.0",
     "axios": "^1.7.4",
     "classnames": "^2.5.1",
     "dnd-core": "^16.0.1",
+    "framer-motion": "^11.5.4",
     "iconoir": "^7.8.0",
     "iconoir-react": "^7.8.0",
+    "install": "^0.13.0",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
@@ -124,6 +127,7 @@
     "storybook": "^8.2.9",
     "tailwindcss": "^3.4.10",
     "vite": "^5.4.2",
+    "vite-plugin-semi-theme": "^0.5.0",
     "vitest": "^2.0.5"
   }
 }

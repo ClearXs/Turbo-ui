@@ -68,6 +68,9 @@ dependencies:
   '@nextjournal/lang-clojure':
     specifier: ^1.0.0
     version: 1.0.0
+  '@semi-bot/semi-theme-strapi':
+    specifier: ^0.1.4
+    version: 0.1.4
   '@uiw/codemirror-extensions-langs':
     specifier: ^4.23.0
     version: 4.23.0(@codemirror/autocomplete@6.18.0)(@codemirror/language-data@6.5.1)(@codemirror/language@6.10.2)(@codemirror/legacy-modes@6.4.1)(@codemirror/state@6.4.1)(@codemirror/view@6.32.0)(@lezer/common@1.2.1)(@lezer/highlight@1.2.1)(@lezer/javascript@1.4.17)(@lezer/lr@1.4.2)
@@ -86,12 +89,18 @@ dependencies:
   dnd-core:
     specifier: ^16.0.1
     version: 16.0.1
+  framer-motion:
+    specifier: ^11.5.4
+    version: 11.5.4(react-dom@18.3.1)(react@18.3.1)
   iconoir:
     specifier: ^7.8.0
     version: 7.8.0
   iconoir-react:
     specifier: ^7.8.0
     version: 7.8.0(react@18.3.1)
+  install:
+    specifier: ^0.13.0
+    version: 0.13.0
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
@@ -256,6 +265,9 @@ devDependencies:
   vite:
     specifier: ^5.4.2
     version: 5.4.2(less@4.2.0)(sass@1.77.8)
+  vite-plugin-semi-theme:
+    specifier: ^0.5.0
+    version: 0.5.0
   vitest:
     specifier: ^2.0.5
     version: 2.0.5(jsdom@24.1.1)(less@4.2.0)(sass@1.77.8)
@@ -3494,6 +3506,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@semi-bot/semi-theme-strapi@0.1.4:
+    resolution: {integrity: sha512-tdQmJlLKS3mggWhkrqLMS1hCjfHrmWFNtEY9fJ4qZr5cNs4ohHIyOlDUY2515fGGW9jiOAkVm8lCRomFbD1v3g==}
+    dev: false
 
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -6787,6 +6803,25 @@ packages:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
     dev: true
 
+  /framer-motion@11.5.4(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-E+tb3/G6SO69POkdJT+3EpdMuhmtCh9EWuK4I1DnIC23L7tFPrl8vxP+LSovwaw6uUr73rUbpb4FgK011wbRJQ==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tslib: 2.6.3
+    dev: false
+
   /fresh@0.5.2:
     resolution: {integrity: sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==}
     engines: {node: '>= 0.6'}
@@ -7250,6 +7285,11 @@ packages:
 
   /inline-style-parser@0.2.3:
     resolution: {integrity: sha512-qlD8YNDqyTKTyuITrDOffsl6Tdhv+UC4hcdAVuQsK4IMQ99nSgd1MIA/Q+jQYoh9r3hVUXhYh7urSRmXPkW04g==}
+    dev: false
+
+  /install@0.13.0:
+    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
+    engines: {node: '>= 0.10'}
     dev: false
 
   /internal-slot@1.0.7:
@@ -11435,6 +11475,12 @@ packages:
       - sugarss
       - supports-color
       - terser
+    dev: true
+
+  /vite-plugin-semi-theme@0.5.0:
+    resolution: {integrity: sha512-OHy0vpNGUFSf/0aO0KT7y6otbijWaFoa5EBXlfs+ldua6/q8R9k2fIG/5ww0nltjIZFqLMvbXZaHb2F1eUEW0A==}
+    dependencies:
+      sass: 1.77.8
     dev: true
 
   /vite@5.4.2(less@4.2.0)(sass@1.77.8):

@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { ColumnType } from '@/components/tform/interface';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
@@ -7,7 +7,7 @@ import { Button, Tooltip } from '@douyinfe/semi-ui';
 import { IconJson } from '@/components/icon/collection/IconJson';
 import { JsonValueHandler, ValueHandler } from '@/components/tform/components';
 
-export class JsonArrayTableField<T extends IdEntity> extends BaseTableField<
+export class JsonArrayTableField<T extends Entity> extends BaseTableField<
   T,
   TableJsonArrayColumnProps<T>
 > {

@@ -1,0 +1,66 @@
+@import './theme.scss';
+
+body,
+body[theme-mode='default'] .semi-always-light {
+  /* --semi-color-nav-bg: #ede3e7; */
+}
+
+.semi-card-body {
+  padding: 10px;
+}
+
+.semi-tabs-content {
+  padding: 0;
+}
+
+.semi-button {
+  font-size: 12px;
+}
+
+/* 修复spin 动画元素没有居中问题 */
+.semi-spin-block .semi-spin-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.semi-table-tbody > .semi-table-row > .semi-table-row-cell {
+  padding: 12px;
+}
+
+.semi-cascader-option-lists ul > li {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 8px;
+}
+
+.semi-tabs-content {
+  padding: unset !important;
+}
+
+.semi-navigation-horizontal {
+  border-bottom: unset;
+}
+
+.semi-navigation {
+  border-right: unset;
+}
+
+.semi-navigation {
+  background-color: var(--semi-color-bg-1);
+}
+
+.semi-navigation-vertical {
+  .semi-navigation-list-wrapper {
+    padding-top: unset;
+  }
+}
+
+.semi-table-thead
+  > .semi-table-row
+  > .semi-table-row-head.semi-table-cell-fixed-left::before {
+  background-color: var(--semi-color-bg-0);
+}
+
+.semi-table-thead > .semi-table-row > .semi-table-row-head {
+  background-color: var(--semi-color-bg-0);
+}

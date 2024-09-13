@@ -54,7 +54,7 @@ export class TreeSelectFormField<T extends Tree> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 
   public getType(): ColumnType {

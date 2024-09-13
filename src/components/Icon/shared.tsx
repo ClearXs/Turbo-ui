@@ -133,7 +133,7 @@ export const directGetIcon = (
   }
   const iconModel = getIconModel(type);
   const IconComponent = iconModel.getIcon(icon)?.component;
-  return IconComponent && <IconComponent />;
+  return IconComponent && <IconComponent {...props} />;
 };
 
 /**

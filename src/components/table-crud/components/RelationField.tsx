@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { Button } from '@douyinfe/semi-ui';
 import { TableColumnProps } from '../interface';
 import { TableColumnDecorator } from '../table';
 import TForm from '@/components/tform/TForm';
 
-export type RelationComponentProps<T extends IdEntity> = {
+export type RelationComponentProps<T extends Entity> = {
   column: TableColumnProps<T>;
   record: T;
   decorator: TableColumnDecorator<T>;

@@ -1,27 +1,32 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormColumnProps, FormContext } from '../../interface';
 import { SliderSideProps } from '@/components/slider-side/interface';
 import { ModularProps } from '@/components/modular/interface';
 import { SliderSideReturnHooksType } from '@/components/slider-side/useSliderSide';
 import { ModularReturnHooksType } from '@/components/modular/useModular';
 
-export type Mode = 'modal' | 'slider';
+export type Mode = 'directly' | 'modal' | 'slider';
 
 // slot component
-export type FormSlotColumnProps<T extends IdEntity> = FormColumnProps<T> & {
+export type FormSlotColumnProps<T extends Entity> = FormColumnProps<T> & {
   // set slot display mode
-  // have tow choose
-  // 1.modal
-  // 2.slider
-  // default is slider
+  // have three choose
+  // 1.directly
+  // 2.modal
+  // 3.slider
+  // default is directly
   mode?: Mode;
-  // show to form component
-  shown?: React.ReactNode | ((formContext: FormContext<T>) => React.ReactNode);
-  // open a dialog render the component
+  // render component
   component?:
     | React.FC<SlotComponentProps>
     | ((formContext: FormContext<T>) => React.ReactNode);
-
+  // show to component when mode is modal or slider
+  // allow react or literal string (when wrapper Button for literal string )
+  shown?:
+    | React.ReactNode
+    | ((formContext: FormContext<T>) => React.ReactNode)
+    | string
+    | ((formContext: FormContext<T>) => string);
   modal?: Omit<
     ModularProps,
     | 'onConfirm'

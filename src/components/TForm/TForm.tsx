@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormProps } from './interface';
 import { Suspense, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -10,9 +10,10 @@ import { loadDataSet } from './util/column';
 import FormilyFormContextImpl from './formily/FormilyFormContext';
 import { createForm } from '@formily/core';
 
-function TForm<T extends IdEntity>(props: FormProps<T>) {
+function TForm<T extends Entity>(props: FormProps<T>) {
   const dicApi = useDicApi();
   const request = useRequest();
+
   const formContext = useMemo(() => {
     const coreForm = createForm();
     const formContext = new FormilyFormContextImpl<T>(props, coreForm);
@@ -21,35 +22,37 @@ function TForm<T extends IdEntity>(props: FormProps<T>) {
     return formContext;
   }, [props.params]);
 
-  // 设置api
-  const relationApis: Map<string, GeneralApi<T>> = new Map();
-  for (const column of formContext.columns) {
-    const { relation } = column;
-    if (relation) {
-      relation.helper.getApi &&
-        relationApis.set(column.field, relation.helper.getApi());
-    }
-  }
-  formContext.decorator.setRelationApis(relationApis);
-
   props.getFormContext?.(formContext);
+
+  const {
+    colon = false,
+    labelWidth = 120,
+    labelAlign = 'right',
+    wrapperAlign = 'left',
+    feedbackLayout = 'loose',
+    tooltipLayout = 'text',
+    size = 'default',
+    layout = 'horizontal',
+    direction = 'ltr',
+    bordered = false,
+    ...remainingProps
+  } = props;
 
   return (
     <FormliyForm
-      formProps={props}
       formContext={formContext}
-      labelWidth={120}
-      colon={false}
-      labelAlign="right"
-      wrapperAlign="left"
-      feedbackLayout="loose"
-      tooltipLayout="text"
-      scope={props.scope}
+      colon={colon}
+      labelAlign={labelAlign}
+      wrapperAlign={wrapperAlign}
+      feedbackLayout={feedbackLayout}
+      tooltipLayout={tooltipLayout}
+      labelWidth={labelWidth}
+      {...remainingProps}
     />
   );
 }
 
-TForm.open = <T extends IdEntity>(props: FormProps<T>) => {
+TForm.open = <T extends Entity>(props: FormProps<T>) => {
   // create a dom in adapter?
   const div = document.createElement('div');
   const container = createRoot(div);

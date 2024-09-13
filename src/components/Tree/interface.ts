@@ -11,75 +11,83 @@ export type TreePanelRoot<T extends Tree> = {
   };
 };
 
+export type TreePanelToolbar<T extends Tree> = {
+  // 是否显示增加按钮
+  showAdd?: boolean;
+  // 是否显示全选按钮，当属性multiple = true时生效
+  showSelectAll?: boolean;
+  // 是否显示取消全选按钮，当属性multiple = true时生效
+  showDeSelectAll?: boolean;
+  // 自定义追加
+  append?: Toolbar<T>[];
+};
+
+export type TreePanelOperatorBar<T extends Tree> = {
+  // 是否显示怎增加操作，默认true
+  showAdd?:
+    | boolean
+    | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+  // 是否显示编辑操作，默认true
+  showEdit?:
+    | boolean
+    | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+  // 是否显示删除操作，默认true
+  showDelete?:
+    | boolean
+    | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+  // 是否显示怎详情操作, 默认true
+  showDetails?:
+    | boolean
+    | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+  // 是否显示添加下级，默认false
+  showSubordinate?:
+    | boolean
+    | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+  // 是否显示添加同级，默认false
+  showPeer?:
+    | boolean
+    | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
+  // 自定义追加
+  append?: (OperateToolbar<T> | ((record: T) => OperateToolbar<T>))[];
+};
+
 export type TreePanelProps<T extends Tree> = {
+  // columns 集合
   columns: FormColumnProps<T>[];
   // 用于初始化查询参数，如果存在的话
   params?: Partial<T>;
-  // 用于在添加时的默认值
+  // 用于在新增时的默认值
   addDefaultValue?: Partial<T>;
   // 工具栏
-  toolbar?: {
-    // 是否显示增加按钮
-    showAdd?: boolean;
-    // 是否显示全选按钮，当属性multiple = true时生效
-    showSelectAll?: boolean;
-    // 是否显示取消全选按钮，当属性multiple = true时生效
-    showDeSelectAll?: boolean;
-    // 自定义追加
-    append?: Toolbar<T>[];
-  };
+  toolbar?: TreePanelToolbar<T>;
   // 操作栏
-  operateBar?: {
-    // 是否显示怎增加操作，默认true
-    showAdd?:
-      | boolean
-      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
-    // 是否显示编辑操作，默认true
-    showEdit?:
-      | boolean
-      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
-    // 是否显示删除操作，默认true
-    showDelete?:
-      | boolean
-      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
-    // 是否显示怎详情操作, 默认true
-    showDetails?:
-      | boolean
-      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
-    // 是否显示添加下级，默认false
-    showSubordinate?:
-      | boolean
-      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
-    // 是否显示添加同级，默认false
-    showPeer?:
-      | boolean
-      | ((record: T, treePanelContext: TreePanelContext<T>) => boolean);
-    // 自定义追加
-    append?: (OperateToolbar<T> | ((record: T) => OperateToolbar<T>))[];
-  };
+  operateBar?: TreePanelOperatorBar<T>;
   // 是否展开所有项
   expandAll?: boolean;
   // 需求树结点深度，如果不传默认所有
   depth?: number;
   // 是否多选
   multiple?: boolean;
+  // 初始化值
+  initValue?: Tree['id'];
   // 初始值（list key值），开启multiple时生效
   initValues?: string[];
   // 是否选中第一个
   first?: boolean;
-  // 初始化值
-  initValue?: Tree['id'];
   // 根结点名称，如果赋值将会创建一个ROOT的虚拟结点
   root?: Tree['name'] | TreePanelRoot<T>;
   // api
-  useApi: () => TreeGeneralApi<T>;
+  useApi: (() => TreeGeneralApi<T>) | TreeGeneralApi<T>;
   // 当选中结点时回调
   onSelectChange?: (value?: string) => void;
   // 选中时回调
-  onChange?: (value: T | undefined) => void;
+  onChange?: (value?: T) => void;
   // 渲染每个结点label的样式
-  label?: (tree: T) => any;
+  label?: (tree: T) => string | React.ReactNode;
+  // 获取 TreePanelApi
   getTreePanelApi?: (treePanelApi: TreePanelApi<T>) => void;
+  // 获取 TreePanelContext
+  getTreePanelContext?: (context: TreePanelContext<T>) => void;
 };
 
 export interface TreePanelApi<T extends Tree> {
@@ -111,14 +119,14 @@ export interface TreePanelContext<T extends Tree> {
   selectKeys: string[];
   // tree element all keys
   allKeys: string[];
-  // the table form context
+  // the tree form context
   formContext?: FormContext<T>;
   /**
    * set form context
    *
    * @param formContext the form context instance
    */
-  setFormContext(formContext: FormContext<T>): void;
+  setFormContext: (formContext: FormContext<T>) => void;
 }
 
 export type RenderOperatorBarType<T extends Tree> = (

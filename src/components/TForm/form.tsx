@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api';
+import { GeneralApi, Entity } from '@/api';
 import {
   ColumnType,
   FormColumnProps,
@@ -41,8 +41,10 @@ import {
 import { ISchema } from '@formily/json-schema';
 import { BoAttrSchema } from '@designable/core';
 import { GlobalSchemaColumnRegistry } from './formily/schema';
+import { DateRangeFormField } from './components/date/DateRangeFormField';
+import { TimeRangeFormField } from './components/date/TimeRangeFormField';
 
-export interface FormColumnDecorator<T extends IdEntity> {
+export interface FormColumnDecorator<T extends Entity> {
   /**
    * 通过把column渲染为Form组件
    * @param column table字段实体
@@ -99,7 +101,7 @@ export interface FormColumnDecorator<T extends IdEntity> {
   ): FormField<T, K>;
 }
 
-export class UndefinedFormField<T extends IdEntity> extends BaseFormField<
+export class UndefinedFormField<T extends Entity> extends BaseFormField<
   T,
   any
 > {
@@ -117,7 +119,7 @@ export class UndefinedFormField<T extends IdEntity> extends BaseFormField<
 }
 
 export class FormColumnFactory {
-  public static get<T extends IdEntity, K extends FormColumnProps<T>>(
+  public static get<T extends Entity, K extends FormColumnProps<T>>(
     type: ColumnType,
     decorator: FormColumnDecorator<T>,
   ): FormField<T, K> {
@@ -157,9 +159,11 @@ export class FormColumnFactory {
       case 'transfer':
         return new TransferFormField<T>(decorator);
       case 'dateRange':
+        return new DateRangeFormField<T>(decorator);
       case 'time':
+        return new TimeRangeFormField<T>(decorator);
       case 'timeRange':
-        return new DateFormField<T>(decorator);
+        return new TimeRangeFormField<T>(decorator);
       case 'upload':
         return new UploadFormField<T>(decorator);
       case 'uploadDrag':
@@ -187,7 +191,7 @@ export class FormColumnFactory {
   }
 }
 
-export class FormColumnDecoratorImpl<T extends IdEntity>
+export class FormColumnDecoratorImpl<T extends Entity>
   implements FormColumnDecorator<T>
 {
   private relationApis: Map<string, GeneralApi<any>> = new Map();
@@ -255,7 +259,7 @@ export class FormColumnDecoratorImpl<T extends IdEntity>
   }
 }
 
-export function getFormColumnDecorator<T extends IdEntity>(
+export function getFormColumnDecorator<T extends Entity>(
   formContext: FormContext<T>,
 ): FormColumnDecorator<T> {
   return new FormColumnDecoratorImpl<T>(formContext);

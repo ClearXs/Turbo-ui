@@ -1,11 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import FormContextImpl from '../FormContext';
 import { FormilyFormContext } from './interface';
 import { Form } from '@formily/core';
 import FormContext from '../FormContext';
 import { action, define } from '@formily/reactive';
 
-export default class FormilyFormContextImpl<T extends IdEntity>
+export default class FormilyFormContextImpl<T extends Entity>
   extends FormContextImpl<T>
   implements FormilyFormContext<T>
 {

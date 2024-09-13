@@ -1,15 +1,15 @@
 import { Field } from '@formily/core';
 import { FormContext } from '../../interface';
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { IScopeContext, SchemaEffectTypes } from '@formily/json-schema';
 
-export type Effect<T extends IdEntity = IdEntity, Value = any> = (
+export type Effect<T extends Entity = Entity, Value = any> = (
   formContext: FormContext<T>,
   field: Field,
   deps?: Value[],
 ) => void;
 
-export type SetFieldStateArgs<T extends IdEntity = IdEntity, Value = any> = {
+export type SetFieldStateArgs<T extends Entity = Entity, Value = any> = {
   // set field state path
   path: Field['path']['entire'];
   // dependencies
@@ -18,7 +18,7 @@ export type SetFieldStateArgs<T extends IdEntity = IdEntity, Value = any> = {
   effect: Effect<T, Value>;
 };
 
-export type Dependent<T extends IdEntity = any> =
+export type Dependent<T extends Entity = any> =
   | keyof T
   | {
       path: string;

@@ -3,7 +3,6 @@ import {
   Badge,
   Button,
   Dropdown,
-  Modal,
   Nav,
   Notification,
 } from '@douyinfe/semi-ui';
@@ -33,6 +32,9 @@ import { CurrentUserRouteState } from '@/store/menu';
 import Modular from '../modular/Modular';
 import { useAuth } from '@/hook/auth';
 import { TurboRoute } from '@/route/AppRouter';
+import { changeTheme } from '@/theme';
+
+import logo from '../../../public/favicon.png';
 
 const MotionHeader = observer(() => {
   const app = useContext(AppContext);
@@ -82,7 +84,7 @@ const MotionHeader = observer(() => {
   }, []);
 
   return (
-    <Header className="h-16 w-[100%]">
+    <Header className="h-14 w-[100%]">
       <Nav
         mode="horizontal"
         selectedKeys={(selectTopKey && [selectTopKey]) || []}
@@ -95,7 +97,10 @@ const MotionHeader = observer(() => {
           }}
           className="cursor-pointer"
         >
-          <Nav.Header text="Turbo" />
+          <Nav.Header
+            text="Turbo"
+            logo={<img src={logo} height={24} width={24}></img>}
+          />
         </div>
         {renderMenu(topMenus, 'top', app)}
         <Nav.Footer>
@@ -134,8 +139,24 @@ const MotionHeader = observer(() => {
             clickToHide
             render={
               <Dropdown.Menu>
-                <Dropdown.Item type="primary">默认</Dropdown.Item>
-                <Dropdown.Item>暗色</Dropdown.Item>
+                <Dropdown.Item
+                  active={app.theme === 'light'}
+                  onClick={() => {
+                    app.theme = 'light';
+                    changeTheme('light');
+                  }}
+                >
+                  默认
+                </Dropdown.Item>
+                <Dropdown.Item
+                  active={app.theme === 'dark'}
+                  onClick={() => {
+                    app.theme = 'dark';
+                    changeTheme('dark');
+                  }}
+                >
+                  暗色
+                </Dropdown.Item>
               </Dropdown.Menu>
             }
           >
@@ -208,7 +229,9 @@ const MotionHeader = observer(() => {
                       mode: 'simply',
                       title: '修改密码',
                       columns: changePasswordColumns,
-                      size: 'small',
+                      modal: {
+                        size: 'small',
+                      },
                       immediateVisible: false,
                       onOk(formContext) {
                         if (currentUser === undefined) {
@@ -255,13 +278,15 @@ const MotionHeader = observer(() => {
                 <Dropdown.Item
                   onClick={() => {
                     Modular.show({
-                      content: '是否退出登陆',
+                      title: '退出登录',
+                      size: 'small',
+                      content: '是否退出登陆❓',
                       onConfirm: () => {
                         authApi.logout().then((res) => {
                           if (res.code === 200 && res.data) {
                             // 1.清除token
                             auth.clear();
-                            // 2.重定向
+                            // 2.重定向s
                             navigate('/login');
                             // 3.清除用户路由
                             setUserRouters([]);

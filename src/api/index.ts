@@ -8,10 +8,13 @@ export interface R<T> {
   data: T;
 }
 
-export interface IdEntity {
+export interface Entity {
+  [key: string]: any;
+}
+
+export interface IdEntity extends Entity {
   // 主键
   id: string;
-  [key: string]: any;
 }
 
 // 基础实体类型
@@ -128,7 +131,7 @@ export interface Pagination<T> {
 }
 
 // 通用查询参数
-export interface GeneralParams<T extends IdEntity> {
+export interface GeneralParams<T extends Entity> {
   entity?: Partial<T>;
   orders?: Order[];
 }
@@ -154,14 +157,14 @@ interface RemoteQueryParam {
 /**
  * 通用模板接口定义
  */
-export interface GeneralApi<T extends IdEntity> {
+export interface GeneralApi<T extends Entity> {
   /**
    * 保存
    *
    * @param entity 实体
    * @returns true or false
    */
-  save: (entity: T) => Promise<R<boolean>>;
+  save: (entity: Partial<T>) => Promise<R<boolean>>;
 
   /**
    * 编辑
@@ -169,14 +172,14 @@ export interface GeneralApi<T extends IdEntity> {
    * @param entity 实体
    * @returns true or false
    */
-  edit: (entity: T) => Promise<R<boolean>>;
+  edit: (entity: Partial<T>) => Promise<R<boolean>>;
 
   /**
    * 保存或者更新
    * @param entity 实体
    * @returns true or false
    */
-  saveOrUpdate: (entity: T) => Promise<R<boolean>>;
+  saveOrUpdate: (entity: Partial<T>) => Promise<R<boolean>>;
 
   /**
    * 批量保存或者更新
@@ -184,7 +187,7 @@ export interface GeneralApi<T extends IdEntity> {
    * @param entity 实体
    * @returns true or false
    */
-  batchSaveOrUpdate: (entity: T[]) => Promise<R<boolean>>;
+  batchSaveOrUpdate: (entity: Partial<T>[]) => Promise<R<boolean>>;
 
   /**
    * 删除
@@ -252,19 +255,19 @@ export class GeneralApiImpl<T extends IdEntity> implements GeneralApi<T> {
     }
   }
 
-  save(entity: T): Promise<R<boolean>> {
+  save(entity: Partial<T>): Promise<R<boolean>> {
     return this.request.post(this.apiPath + '/save', entity).then((res) => {
       return res.data;
     });
   }
 
-  edit(entity: T): Promise<R<boolean>> {
+  edit(entity: Partial<T>): Promise<R<boolean>> {
     return this.request.put(this.apiPath + '/edit', entity).then((res) => {
       return res.data;
     });
   }
 
-  saveOrUpdate(entity: T): Promise<R<boolean>> {
+  saveOrUpdate(entity: Partial<T>): Promise<R<boolean>> {
     return this.request
       .post(this.apiPath + '/save-or-update', entity)
       .then((res) => {
@@ -272,7 +275,7 @@ export class GeneralApiImpl<T extends IdEntity> implements GeneralApi<T> {
       });
   }
 
-  batchSaveOrUpdate(entity: T[]): Promise<R<boolean>> {
+  batchSaveOrUpdate(entity: Partial<T>[]): Promise<R<boolean>> {
     return this.request
       .post(this.apiPath + '/batch-save-or-update', entity)
       .then((res) => {

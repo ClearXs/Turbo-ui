@@ -13,12 +13,10 @@ const config: StorybookConfig = {
     name: '@storybook/react-vite',
     options: {},
   },
-
   async viteFinal(config) {
     // Merge custom configuration into the default config
     const { mergeConfig } = await import('vite');
     const { resolve } = await import('path');
-
     return mergeConfig(config, {
       resolve: {
         ...config.resolve,

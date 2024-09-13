@@ -114,16 +114,7 @@ const useRequest = () => {
       },
       (err) => {
         if (err instanceof AxiosError) {
-          const errCode = err.response?.status || err.status;
-          // 错误消息展示
-          const msg = err.response?.data?.message || err.response?.statusText;
-          Toast.error(msg);
-          // 认证失败
-          if (errCode === 401) {
-            auth.clear();
-            setError?.({ status: 401, message: msg });
-          }
-          return Promise.reject(err);
+          return Promise.reject(err.response.data);
         } else {
           return Promise.reject(err);
         }

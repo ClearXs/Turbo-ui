@@ -31,11 +31,14 @@ export const format = (
  * @param format yyyy-MM-dd 默认值为yyyy-MM-dd HH:mm:ss
  */
 export const parse = (
-  date: Date,
+  date: Date | string,
   format: string = PATTERN_DATETIME,
 ): string | undefined => {
-  if (date) {
+  if (typeof date === 'string') {
+    return moment(date).format(format);
+  } else {
     return moment(date).format(format);
   }
+
   return undefined;
 };

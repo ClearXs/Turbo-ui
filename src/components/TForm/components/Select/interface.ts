@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormColumnProps, RemoteProps } from '../../interface';
 import { SelectProps } from '@douyinfe/semi-ui/lib/es/select';
 import { Constant } from '@/constant';
 
 // Select 组件
-export type FormSelectColumnProps<T extends IdEntity> = FormColumnProps<T> &
+export type FormSelectColumnProps<T extends Entity> = FormColumnProps<T> &
   Omit<SelectProps, 'optionList'> & {
     // 常量值
     optionList?: Constant[];

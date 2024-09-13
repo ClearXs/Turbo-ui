@@ -1,11 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
 import { TableSlotColumnProps } from './interface';
 import { JsonValueHandler, ValueHandler } from '@/components/tform/components';
 
-export class SlotTableField<T extends IdEntity> extends BaseTableField<
+export class SlotTableField<T extends Entity> extends BaseTableField<
   T,
   TableSlotColumnProps<T>
 > {

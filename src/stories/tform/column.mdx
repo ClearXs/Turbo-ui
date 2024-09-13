@@ -1,0 +1,526 @@
+import { Meta, Canvas, Controls, PureArgsTable } from '@storybook/blocks';
+import * as FormStories from './TForm.stories';
+import {
+  columnArgsType,
+  inputColumnArgsType,
+  selectColumnArgsType,
+  remotePropsType,
+  cascadeColumnArgsType,
+  checkboxArgsType,
+  selectGroupArgsType,
+  jsonObjectArgsType,
+  jsonArrayArgsType,
+  slotArgsType,
+} from './column';
+
+<Meta title="Component/TForm" of={FormStories} />
+
+## Common
+
+`FormColumnProps` 的定义, 是实现配置约定UI的重要手段。 `FormColumnProps` 配置多而杂, 在此列出该表格, 供开发过程中进行查阅😀
+
+> 导入
+>
+> ```typescrit
+> import { FormColumnProps } from '@/components/tform'
+> ```
+
+<PureArgsTable rows={columnArgsType} />
+
+在接下部分详细介绍对于每一种 `column` 的类型。
+
+## FormInputColumnProps
+
+<Canvas of={FormStories.Input} />
+
+`[type=input]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)， 与[SEMIUI的Input组件](https://semi.design/zh-CN/input/input)。
+
+下面是其类型定义：
+
+```tsx
+type FormInputColumnProps<T extends Entity> = FormColumnProps<T> & InputProps;
+```
+
+## FormNumberColumnProps
+
+<Canvas of={FormStories.Number} />
+
+`[type=number]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Number组件](https://semi.design/zh-CN/input/inputnumber)
+
+下面是其类型定义：
+
+```tsx
+type FormNumberColumnProps<T extends Entity> = FormColumnProps<T> &
+  InputNumberProps;
+```
+
+## FormTextareaColumnProps
+
+<Canvas of={FormStories.Textarea} />
+
+`[type=textarea]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Input组件](https://semi.design/zh-CN/input/input)
+
+下面是其类型定义：
+
+```tsx
+type FormTextareaColumnProps<T extends Entity> = FormColumnProps<T> &
+  TextAreaProps;
+```
+
+## FormPasswordColumnProps
+
+<Canvas of={FormStories.Password} />
+
+`[type=password]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)
+
+下面是其类型定义：
+
+```tsx
+type FormPasswordColumnProps<T extends Entity> = FormColumnProps<T>;
+```
+
+## FormRateColumnProps
+
+<Canvas of={FormStories.Rate} />
+
+`[type=rate]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Rating组件](https://semi.design/zh-CN/input/rating)
+
+下面是其类型定义：
+
+```tsx
+type FormRateColumnProps<T extends Entity> = FormColumnProps<T> &
+  RatingItemProps;
+```
+
+## FormSliderColumnProps
+
+<Canvas of={FormStories.Slider} />
+
+`[type=slider]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Slider组件](https://semi.design/zh-CN/input/slider)
+
+下面是其类型定义：
+
+```tsx
+type FormSliderColumnProps<T extends Entity> = FormColumnProps<T> & SliderProps;
+```
+
+## FormSelectColumnProps
+
+<Canvas of={FormStories.Select} />
+
+`[type=select]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Select](https://semi.design/zh-CN/input/select)
+
+```tsx
+type FormSelectColumnProps<T extends Entity> = FormColumnProps<T> &
+  Omit<SelectProps, 'optionList'> & {
+    optionList?: Constant[];
+    dictionary?: string;
+    remote?: RemoteProps;
+  };
+```
+
+可以看到上面的类型定义，该组件在SEMIUI基础上，增加两个特别的属性，`dictionary` 以及 `remote`。该两个属性是为了适配TubroUI的整体系统而进行设计，
+也就是可以根据系统的字典值的Key(dictionary的值)，或者自定义参数调用远程接口。[查看RemoteProps详细属性](?path=/docs/component-tform--column#remoteprops)
+
+<PureArgsTable rows={selectColumnArgsType} />
+
+## FormTreeSelectColumnProps
+
+<Canvas of={FormStories.TreeSelect} />
+
+`[type=treeSelect]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的TreeSelect](https://semi.design/zh-CN/input/treeselect)
+
+下面是其类型定义：
+
+```tsx
+type FormTreeSelectColumnProps<T extends Tree> = FormColumnProps<T> &
+  Omit<TreeSelectProps, 'treeData'> & {
+    self?: boolean;
+    treeTransform?: (
+      tree: T[],
+      labelRender?: (tree: T) => React.ReactNode,
+    ) => TreeNodeData[];
+    treeData:
+      | TreeNodeData[]
+      | ((formContext?: FormContext<T>) => TreeNodeData[]);
+    remote?: RemoteProps<TreeConstant>;
+  };
+```
+
+## FormCascadeColumnProps
+
+<Canvas of={FormStories.Cascade} />
+
+`[type=cascade]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Cascade](https://semi.design/zh-CN/input/cascader)
+
+下面是其类型定义：
+
+```tsx
+type FormCascadeColumnProps<T extends Entity> = FormColumnProps<T> &
+  CascaderProps & {
+    optionTree:
+      | TreeConstant[]
+      | ((formContext: FormContext<T>) => TreeConstant[]);
+  };
+```
+
+<PureArgsTable rows={cascadeColumnArgsType} />
+
+## FormTransferColumnProps
+
+<Canvas of={FormStories.Transfer} />
+
+`[type=transfer]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Transfer](https://semi.design/zh-CN/input/transfer)
+
+下面是其类型定义：
+
+```tsx
+type FormTransferColumnProps<T extends Entity> = FormColumnProps<T> &
+  TransferProps;
+```
+
+## FormRadioColumnProps
+
+<Canvas of={FormStories.Radio} />
+
+`[type=radio]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Radio](https://semi.design/zh-CN/input/radio)
+
+下面是其类型定义：
+
+```tsx
+type FormRadioColumnProps<T extends Entity> = FormColumnProps<T> & RadioProps;
+```
+
+## FormCheckboxColumnProps
+
+<Canvas of={FormStories.Checkbox} />
+
+`[type=checkbox]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)
+
+下面是其类型定义：
+
+```tsx
+type FormCheckboxColumnProps<T extends Entity> = FormColumnProps<T> & {
+  options?: Constant[];
+  extraText?: string;
+};
+```
+
+<PureArgsTable rows={checkboxArgsType} />
+
+## FormSwitchColumnProps
+
+<Canvas of={FormStories.Switch} />
+
+`[type=switch]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Switch](https://semi.design/zh-CN/input/switch)
+
+下面是其类型定义：
+
+```tsx
+type FormSwitchColumnProps<T extends Entity> = FormColumnProps<T> & SwitchProps;
+```
+
+## FormDateColumnProps
+
+<Canvas of={FormStories.Date} />
+
+`[type=date]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Date](https://semi.design/zh-CN/input/datepicker)
+
+下面是其类型定义：
+
+```tsx
+type FormDateColumnProps<T extends Entity> = FormColumnProps<T> &
+  DateInputProps & {
+    // 默认为datetime
+    dateType?:
+      | 'date'
+      | 'dateRange'
+      | 'year'
+      | 'month'
+      | 'dateTime'
+      | 'dateTimeRange'
+      | 'monthRange';
+  };
+```
+
+## FormDateRangeColumnProps
+
+<Canvas of={FormStories.DateRange} />
+
+`[type=dateRange]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Date](https://semi.design/zh-CN/input/datepicker)
+
+下面是其类型定义：
+
+```tsx
+type FormDateRangeColumnProps<T extends Entity> = FormColumnProps<T> &
+  DatePickerProps & {
+    // 默认为datetime
+    dateType?:
+      | 'date'
+      | 'dateRange'
+      | 'year'
+      | 'month'
+      | 'dateTime'
+      | 'dateTimeRange'
+      | 'monthRange';
+  };
+```
+
+## FormTimeColumnProps
+
+<Canvas of={FormStories.Time} />
+
+`[type=time]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Date](https://semi.design/zh-CN/input/datepicker)
+
+下面是其类型定义：
+
+```tsx
+type FormTimeColumnProps<T extends Entity> = FormColumnProps<T> &
+  TimeInputProps & {
+    // 默认为datetime
+    dateType?:
+      | 'date'
+      | 'dateRange'
+      | 'year'
+      | 'month'
+      | 'dateTime'
+      | 'dateTimeRange'
+      | 'monthRange';
+  };
+```
+
+## FormTimeRangeColumnProps
+
+<Canvas of={FormStories.TimeRange} />
+
+`[type=timeRange]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Date](https://semi.design/zh-CN/input/datepicker)
+
+下面是其类型定义：
+
+```tsx
+type FormTimeRangeColumnProps<T extends Entity> = FormColumnProps<T> &
+  TimePickerProps & {
+    // 默认为datetime
+    dateType?:
+      | 'date'
+      | 'dateRange'
+      | 'year'
+      | 'month'
+      | 'dateTime'
+      | 'dateTimeRange'
+      | 'monthRange';
+  };
+```
+
+## FormUploadProps
+
+<Canvas of={FormStories.Upload} />
+
+`[type=upload]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Date](https://semi.design/zh-CN/input/upload)
+
+下面是其类型定义：
+
+```tsx
+type FormUploadProps<T extends Entity> = FormColumnProps<T> & UploadProps;
+```
+
+## FormUploadDragProps
+
+<Canvas of={FormStories.UploadDrag} />
+
+`[type=UploadDrag]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)，与[SEMIUI的Date](https://semi.design/zh-CN/input/upload)
+
+下面是其类型定义：
+
+```tsx
+type FormUploadDragProps<T extends Entity> = FormColumnProps<T> & UploadProps;
+```
+
+## FormIconColumnProps
+
+<Canvas of={FormStories.Icon} />
+
+`[type=icon]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)
+
+下面是其类型定义：
+
+```tsx
+export type FormIconColumnProps<T extends Entity> = FormColumnProps<T>;
+```
+
+## FormColorColumnProps
+
+<Canvas of={FormStories.Color} />
+
+`[type=color]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)
+
+下面是其类型定义：
+
+```tsx
+export type FormColorColumnProps<T extends Entity> = FormColumnProps<T>;
+```
+
+## FormSelectGroupColumnProps
+
+<Canvas of={FormStories.SelectGroup} />
+
+`[type=selectGroup]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)。内置使用[FormSelectColumnProps](?path=/docs/component-tform--column#formselectcolumnprops)
+
+下面是其类型定义：
+
+```tsx
+type FormSelectGroupColumnProps<T extends Entity> = FormColumnProps<T> & {
+  filter?: boolean;
+  multiple?: boolean;
+  optionList?: GroupConstant[];
+  remote?: RemoteProps;
+};
+```
+
+<PureArgsTable rows={selectGroupArgsType} />
+
+## FormJsonObjectColumnProps
+
+JsonObject允许构建嵌套式的表单配置项，他的 `columns` 属性允许像配置 `column` 一样配置 配置渲染的表单项 一个简单的配置如下：
+
+```json
+[
+  {
+    field: 'id',
+    type: 'jsonObject',
+    label: 'id',
+    columns: [
+      {
+        field: 'name',
+        type: 'input',
+        label: 'name',
+      },
+      {
+        field: 'password',
+        type: 'password',
+        label: 'password',
+      },
+    ],
+  },
+];
+```
+
+<Canvas of={FormStories.JsonObject} />
+
+`[type=jsonObject]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)。
+
+下面是其类型定义：
+
+```tsx
+type FormJsonObjectColumnProps<T extends Entity> = FormColumnProps<T> & {
+  // definition json columns
+  columns: FormColumnProps<T>[];
+};
+```
+
+<PureArgsTable rows={jsonObjectArgsType} />
+
+## FormJsonArrayColumnProps
+
+JsonArray的机制类似于JsonObject，只不过最后渲染出来的是数组对象，一个简单的配置如下：
+
+```json
+[
+  {
+    "field": "id",
+    "type": "jsonArray",
+    "label": "id",
+    "columns": [
+      {
+        "field": "name",
+        "type": "input",
+        "label": "name"
+      },
+      {
+        "field": "password",
+        "type": "password",
+        "label": "password"
+      }
+    ]
+  }
+]
+```
+
+<Canvas of={FormStories.JsonArray} />
+
+`[type=jsonArray]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)。
+
+下面是其类型定义：
+
+```tsx
+type FormJsonArrayColumnProps<T extends Entity> = FormColumnProps<T> & {
+  // definition json columns
+  columns: FormColumnProps<T>[];
+};
+```
+
+<PureArgsTable rows={jsonObjectArgsType} />
+
+## FormUserColumnProps | FormRoleColumnProps | FormOrgColumnProps | FormPostColumnProps
+
+以下四者皆是派生于[FormSelectColumnProps](?path=/docs/component-tform--column#formselectcolumnprops)，通过内置[RemoteProps](?path=/docs/component-tform--column#remoteprops)，来实现
+
+- FormUserColumnProps: 系统内置用户。
+  <Canvas of={FormStories.User} />
+  `[type=user]` 类型派生自
+  [FormColumnProps](?path=/docs/component-tform--column#common)。
+- FormRoleColumnProps: 系统内置角色。
+  <Canvas of={FormStories.Role} />
+  `[type=role]` 类型派生自
+  [FormColumnProps](?path=/docs/component-tform--column#common)。
+- FormOrgColumnProps: 系统内置组织。
+  <Canvas of={FormStories.Org} />
+  `[type=org]` 类型派生自
+  [FormColumnProps](?path=/docs/component-tform--column#common)。
+- FormPostColumnProps: 系统内置岗位。
+  <Canvas of={FormStories.Post} />
+  `[type=post]` 类型派生自
+  [FormColumnProps](?path=/docs/component-tform--column#common)。
+
+## FormCodeEditorColumnProps
+
+<Canvas of={FormStories.CodeEditor} />
+
+`CodeEditor` 表单组件，拓展于系统内置组件，详细可以查看👉 [详情](?path=/docs/component-codeeditor--docs)
+
+`[type=codeEditor]` 类型派生自 [FormColumnProps](?path=/docs/component-tform--column#common)。以及 `CodeEditorProps`.
+
+下面是其类型定义：
+
+```tsx
+type FormCodeEditorColumnProps<T extends Entity> = FormColumnProps<T> &
+  Pick<CodeEditorProps, 'language' | 'completion' | 'basicSetup'>;
+```
+
+## FormSlotColumnProps
+
+`FormSlotColumnProps` 允许用户自定义表单组件，这对于有些时候是有很大帮助的。
+
+<Canvas of={FormStories.Slot} />
+
+<PureArgsTable rows={slotArgsType} />
+
+## RemoteProps
+
+一个通用远程调用属性定义，下面是一个示例：
+
+```json
+{
+  "url": "/api/sys/user/list",
+  "method": "post",
+  "mapping": [
+    { "key": "code", "value": "code" },
+    { "key": "data", "value": "data" },
+    { "key": "success", "value": 200 },
+    { "key": "value", "value": "id" },
+    { "key": "label", "value": "username" }
+  ]
+}
+```
+
+<PureArgsTable rows={remotePropsType} />

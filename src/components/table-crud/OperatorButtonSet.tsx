@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { OperateToolbar } from './interface';
 import { tryGetIcon } from '../icon/shared';
 import { Button, ButtonGroup, Dropdown, Tooltip } from '@douyinfe/semi-ui';
@@ -8,7 +8,7 @@ import useTableCrudContext from './hook/table';
 import useTableFormContext from './hook/tableForm';
 import { useTFormContext } from '../tform/context/form';
 
-export type OperatorButtonSetProps<T extends IdEntity> = {
+export type OperatorButtonSetProps<T extends Entity> = {
   bars: OperateToolbar<T>[];
   record: T;
   // 当达到给定值时，使操作按钮缩略聚集起来。
@@ -24,7 +24,7 @@ export type OperatorButtonSetProps<T extends IdEntity> = {
 };
 
 const OperatorButtonSet = observer(
-  <T extends IdEntity>({
+  <T extends Entity>({
     bars,
     record,
     aggregate = 3,

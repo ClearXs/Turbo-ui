@@ -1,11 +1,11 @@
-import { GeneralApi, IdEntity } from '@/api';
+import { GeneralApi, Entity } from '@/api';
 import { ListPanelApi, ListPanelContext } from './interface';
 import OperatorButtonSet from '../table-crud/OperatorButtonSet';
 import { Notification } from '@douyinfe/semi-ui';
 import renderListPanelOperatorBar from './ListOperatorBar';
 import { TFormContext } from '../tform/context/form';
 
-export default class ListPanelApiImpl<T extends IdEntity>
+export default class ListPanelApiImpl<T extends Entity>
   implements ListPanelApi<T>
 {
   constructor(

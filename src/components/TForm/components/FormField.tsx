@@ -1,11 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ColumnType, FormColumnProps } from '../interface';
 import { FormColumnDecorator } from '..';
 import { ISchema } from '@formily/json-schema';
 import { GlobalSchemaColumnRegistry } from '../formily/schema';
 import { BoAttrSchema } from '@designable/core';
 
-export interface FormField<T extends IdEntity, K extends FormColumnProps<T>> {
+export interface FormField<T extends Entity, K extends FormColumnProps<T>> {
   /**
    * 通过把column渲染为Form组件
    * @param type 区分column是搜索还是表单渲染
@@ -59,7 +59,7 @@ export class JsonValueHandler implements ValueHandler<Object, string> {
 }
 
 export abstract class BaseFormField<
-  T extends IdEntity,
+  T extends Entity,
   K extends FormColumnProps<T>,
 > implements FormField<T, K>
 {
@@ -80,7 +80,7 @@ export abstract class BaseFormField<
     undefined: '请输入',
     checkbox: '请选择',
     switch: '请选择',
-    password: '请选择',
+    password: '请输入',
     rate: '请选择',
     slider: '请选择',
     transfer: '请选择',

@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity, GeneralApi } from '@/api';
 import { ListPanelProps } from './interface';
 import { useEffect, useMemo } from 'react';
 import Tree from '@douyinfe/semi-ui/lib/es/tree';
@@ -11,7 +11,7 @@ import ListToolbar from './ListToolbar';
 import { observer } from '@formily/reactive-react';
 import { TListPanelContext } from './context/listPanel';
 
-const ListPanel = observer(<T extends IdEntity>(props: ListPanelProps<T>) => {
+const ListPanel = observer(<T extends Entity>(props: ListPanelProps<T>) => {
   const {
     columns,
     multiple = false,
@@ -19,17 +19,27 @@ const ListPanel = observer(<T extends IdEntity>(props: ListPanelProps<T>) => {
     initValue,
     useApi,
     getListPanelApi,
+    getListPanelContext,
   } = props;
 
-  const api = useApi();
+  let api: GeneralApi<T>;
+  if (typeof useApi === 'function') {
+    api = useApi();
+  } else {
+    api = useApi;
+  }
 
   const context = useMemo(() => {
     return new ListPanelContextImpl<T>(props);
   }, []);
 
+  getListPanelContext?.(context);
+
   const listApi = useMemo(() => {
     return new ListPanelApiImpl<T>(context, api);
   }, []);
+
+  getListPanelApi?.(listApi);
 
   useEffect(() => {
     if (multiple) {
@@ -42,8 +52,6 @@ const ListPanel = observer(<T extends IdEntity>(props: ListPanelProps<T>) => {
   useEffect(() => {
     listApi.list();
   }, []);
-
-  getListPanelApi?.(listApi);
 
   return (
     <>

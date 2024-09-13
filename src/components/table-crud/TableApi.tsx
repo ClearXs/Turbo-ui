@@ -1,6 +1,6 @@
 import {
   GeneralParams,
-  IdEntity,
+  Entity,
   Order,
   Pagination,
   TreeGeneralApi,
@@ -20,7 +20,7 @@ import {
 } from '@douyinfe/semi-ui/lib/es/table';
 import { FormContext } from '../tform/interface';
 
-const check = <T extends IdEntity>(tableContext: TableContext<T>) => {
+const check = <T extends Entity>(tableContext: TableContext<T>) => {
   if (tableContext === undefined) {
     Toast.error('未完成初始化!');
     return true;
@@ -34,12 +34,12 @@ const check = <T extends IdEntity>(tableContext: TableContext<T>) => {
   return false;
 };
 
-type EventHandler<T extends IdEntity> = {
+type EventHandler<T extends Entity> = {
   onRemoveAfter: (props: TableCrudProps<T>, ids: T['id'][]) => void;
   onQueryAfter: (props: TableCrudProps<T>, pageable?: TablePagination) => void;
 };
 
-class EventHandlerImpl<T extends IdEntity> implements EventHandler<T> {
+class EventHandlerImpl<T extends Entity> implements EventHandler<T> {
   constructor(private tableContext: TableContext<T>) {}
 
   onRemoveAfter(props: TableCrudProps<T>, ids: T['id'][]) {
@@ -60,7 +60,7 @@ class EventHandlerImpl<T extends IdEntity> implements EventHandler<T> {
   }
 }
 
-export class DefaultTableApi<T extends IdEntity> implements TableApi<T> {
+export class DefaultTableApi<T extends Entity> implements TableApi<T> {
   eventHandler: EventHandler<T>;
 
   constructor(
@@ -167,7 +167,7 @@ export class DefaultTableApi<T extends IdEntity> implements TableApi<T> {
 /**
  * base on remote invoke.
  */
-export class RemoteTableApi<T extends IdEntity> implements TableApi<T> {
+export class RemoteTableApi<T extends Entity> implements TableApi<T> {
   eventHandler: EventHandler<T>;
 
   constructor(

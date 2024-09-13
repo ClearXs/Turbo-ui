@@ -1,11 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField, TableIconColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { tryGetIcon } from '@/components/icon';
 import { Tooltip, Typography } from '@douyinfe/semi-ui';
 import { ColumnType } from '@/components/tform/interface';
 
-export class IconTableField<T extends IdEntity> extends BaseTableField<
+export class IconTableField<T extends Entity> extends BaseTableField<
   T,
   TableIconColumnProps<T>
 > {

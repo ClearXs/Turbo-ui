@@ -6,15 +6,17 @@ import {
   baseOnColumnCreateISchema,
   baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
-import { FormDateColumnProps } from '../../components';
+import { FormDateColumnProps, defaults } from '../../components';
 
 const DateSchema: SchemaColumn<FormDateColumnProps<any>> = {
   adapt: (column, formContext) => {
+    const props = {
+      ...defaults,
+      ..._.omit(column, [...ExclusiveColumnKeyProps]),
+    };
     return {
       ...baseOnColumnCreateISchema(column, formContext, 'DatePicker', 'string'),
-      'x-component-props': {
-        ..._.omit(column, [...ExclusiveColumnKeyProps]),
-      },
+      'x-component-props': props,
     };
   },
   reverse: (index, schema) => {

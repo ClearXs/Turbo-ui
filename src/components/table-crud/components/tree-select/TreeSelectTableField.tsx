@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Tree } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { TableTreeSelectColumnProps } from '.';
@@ -7,7 +7,7 @@ import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
 import { ISchema } from '@formily/json-schema';
 
-export class TreeSelectTableField<T extends IdEntity> extends BaseTableField<
+export class TreeSelectTableField<T extends Tree> extends BaseTableField<
   T,
   TableTreeSelectColumnProps<T>
 > {

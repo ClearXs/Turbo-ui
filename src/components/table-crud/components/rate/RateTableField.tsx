@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField, TableRateColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
-import { Form } from '@douyinfe/semi-ui';
+import { Form, Rating } from '@douyinfe/semi-ui';
 
-export class RateTableField<T extends IdEntity> extends BaseTableField<
+export class RateTableField<T extends Entity> extends BaseTableField<
   T,
   TableRateColumnProps<T>
 > {
@@ -19,7 +19,7 @@ export class RateTableField<T extends IdEntity> extends BaseTableField<
           pure
         />
       ) : (
-        text
+        <Rating value={text} disabled></Rating>
       );
     };
     return { ...column, render: this.withColumnRender(column, render) };

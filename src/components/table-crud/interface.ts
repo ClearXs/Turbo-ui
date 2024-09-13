@@ -1,14 +1,23 @@
-import { GeneralApi, IdEntity, Order } from '@/api';
+import { GeneralApi, Entity, Order } from '@/api';
 import {
   ColumnProps,
   SortOrder,
   TablePagination,
   TableProps,
 } from '@douyinfe/semi-ui/lib/es/table';
-import { FormColumnProps, FormContext, FormProps } from '../tform/interface';
+import {
+  FormColumnProps,
+  FormContext,
+  FormEvent,
+  FormProps,
+} from '../tform/interface';
 import { TableColumnDecorator } from './table';
 import { PopoverProps } from '@douyinfe/semi-ui/lib/es/popover';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
+
+export type ArgType<T extends Entity> = {
+  [name in keyof T]?: T[name];
+};
 
 export type ViewModel =
   // 无分页列表
@@ -22,10 +31,7 @@ export type ViewModel =
   // 无限滚动的列表
   | 'scrollingList';
 
-// 数据模式
-export type DataMode = 'local' | 'remote';
-
-export type Bar<T extends IdEntity> = {
+export type Bar<T extends Entity> = {
   code:
     | 'add'
     | 'delete'
@@ -52,12 +58,12 @@ export type Bar<T extends IdEntity> = {
   ) => void;
 };
 
-export type Toolbar<T extends IdEntity> = Bar<T> & {
+export type Toolbar<T extends Entity> = Bar<T> & {
   position: 'left' | 'right';
 };
 
 // 操作列类型
-export type OperateToolbar<T extends IdEntity> = Omit<Bar<T>, 'onClick'> & {
+export type OperateToolbar<T extends Entity> = Omit<Bar<T>, 'onClick'> & {
   // 是否是内置提供的按钮
   internal?: boolean;
   // 点击操作
@@ -68,18 +74,18 @@ export type OperateToolbar<T extends IdEntity> = Omit<Bar<T>, 'onClick'> & {
   ) => void;
 };
 
-export type TableCrudProps<T extends IdEntity> = Omit<
+export type TableCrudProps<T extends Entity> = Pick<
   TableProps<T>,
-  'columns' | 'pagination'
+  'title' | 'bordered'
 > & {
   // table row key标识，默认为id
   id?: string;
   // table 视图模式
   mode: ViewModel;
   // table width
-  width?: string | number;
+  width?: string | number | 'auto';
   // table height
-  height?: string | 'auto';
+  height?: string | number | 'auto';
   // fixed table
   fixed?: boolean;
   // 数据源
@@ -92,93 +98,122 @@ export type TableCrudProps<T extends IdEntity> = Omit<
   // default is true
   disableDefaultBehavior?: boolean;
   // search参数
-  search?: {
-    // 是否显示search
-    show?: boolean;
-    // 是否禁用search字段，默认为false
-    disabled?: boolean;
-    // 是否显示search按钮，默认为true
-    showSearch?: boolean;
-    // 是否显示reset按钮，默认为true
-    showReset?: boolean;
-  };
+  search?: TableSearch;
   // table工具栏，组件中包含默认的工具栏，可以自定义添加
-  toolbar?: {
-    // 是否显示toolbar
-    show?: boolean;
-    // 是否显示增加按钮
-    showAdd?: boolean;
-    // 是否显示批量删除按钮
-    showBatchDelete?: boolean;
-    // 是否显示刷新
-    showRefresh?: boolean;
-    // 是否显示导出按钮
-    showExport?: boolean;
-    // 是否显示导入按钮
-    showImport?: boolean;
-    // 是否展示显示列
-    showColumns?: boolean;
-    // 是否展示排序
-    showOrdered?: boolean;
-    // 是否显示模式切换
-    showModelSwitch?: boolean;
-    // 自定义追加
-    append?: Toolbar<T>[];
-  };
+  toolbar?: TableToolbar<T>;
   // 操作列
-  operateBar?: {
-    // 是否行内编辑
-    showInlineEdit?: boolean | ((record: T) => boolean);
-    // 是否显示编辑操作
-    showEdit?: boolean | ((record: T) => boolean);
-    // 是否显示删除操作
-    showDelete?: boolean | ((record: T) => boolean);
-    // 是否显示详情操作
-    showDetails?: boolean | ((record: T) => boolean);
-    // 是否显示复制操作
-    showCopy?: boolean | ((record: T) => boolean);
-    // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
-    append?: (
-      | OperateToolbar<T>
-      | ((record: T) => OperateToolbar<T> | undefined)
-    )[];
-  };
+  operateBar?: TableOperateBar<T>;
   // 使用方传入，触发初始化的筛选
-  params?: Partial<T>;
+  params?: ArgType<T>;
   // 卡片模式下生效
-  card?: {
-    // 卡片点击
-    onClick?: (record: T) => void;
-    // 渲染卡片标题，如果没有则为空
-    renderTitle?: (record: T) => React.ReactNode;
-    // 渲染卡片内容，如果没有则为空
-    renderContent?: (record: T) => React.ReactNode;
-    // 渲染卡片页脚，如果没有则为空
-    renderFooter?: (record: T) => React.ReactNode;
-  };
+  card?: TableCard<T>;
+  // form modal
   modal?: FormProps<T>['modal'];
-  // table使用的api
+  // table使用的curd api
   useApi?: (() => GeneralApi<T>) | GeneralApi<T>;
   // 内置事件回调
-  event?: {
-    // 当删除成功后进行的回调
-    onDeleteSuccess?: (ids: T['id'][]) => void;
-    onQuerySuccess?: (
-      tableContext: TableContext<T>,
-      pageable?: TablePagination,
-    ) => void;
-  } & FormProps<T>['event'];
+  event?: TableEvent<T>;
   // 获取table context实例
   getTableContext?: (tableContext: TableContext<T>) => void;
   // form reaction scope
   scope?: FormProps<T>['scope'];
+  // 是否展开所有的数据，当mode=cardPage时生效
+  expandAllRows?: boolean;
+};
+
+export type TableSearch = {
+  // 是否显示search
+  show?: boolean;
+  // 是否禁用search字段，默认为false
+  disabled?: boolean;
+  // 是否显示search按钮，默认为true
+  showSearch?: boolean;
+  // 是否显示reset按钮，默认为true
+  showReset?: boolean;
+};
+
+export type TableToolbar<T extends Entity> = {
+  // 是否显示toolbar
+  show?: boolean;
+  // 是否显示增加按钮
+  showAdd?: boolean;
+  // 是否显示批量删除按钮
+  showBatchDelete?: boolean;
+  // 是否显示刷新
+  showRefresh?: boolean;
+  // 是否显示导出按钮
+  showExport?: boolean;
+  // 是否显示导入按钮
+  showImport?: boolean;
+  // 是否展示显示列
+  showColumns?: boolean;
+  // 是否展示排序
+  showOrdered?: boolean;
+  // 是否显示模式切换
+  showModelSwitch?: boolean;
+  // 自定义追加
+  append?: Toolbar<T>[];
+};
+
+export type TableOperateBar<T extends Entity> = {
+  // 是否行内编辑
+  showInlineEdit?: boolean | ((record: T) => boolean);
+  // 是否显示编辑操作
+  showEdit?: boolean | ((record: T) => boolean);
+  // 是否显示删除操作
+  showDelete?: boolean | ((record: T) => boolean);
+  // 是否显示详情操作
+  showDetails?: boolean | ((record: T) => boolean);
+  // 是否显示复制操作
+  showCopy?: boolean | ((record: T) => boolean);
+  // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
+  append?: (
+    | OperateToolbar<T>
+    | ((record: T) => OperateToolbar<T> | undefined)
+  )[];
+};
+
+export type TableCard<T extends Entity> = {
+  // 卡片点击
+  onClick?: (record: T) => void;
+  // 渲染卡片标题，如果没有则为空
+  renderTitle?: (record: T) => React.ReactNode;
+  // 渲染卡片内容，如果没有则为空
+  renderContent?: (record: T) => React.ReactNode;
+  // 渲染卡片页脚，如果没有则为空
+  renderFooter?: (record: T) => React.ReactNode;
+};
+
+export type TableEvent<T extends Entity> = FormEvent<T> & {
+  // 当删除成功后进行的回调
+  onDeleteSuccess?: (ids: T['id'][]) => void;
+  onQuerySuccess?: (
+    tableContext: TableContext<T>,
+    pageable?: TablePagination,
+  ) => void;
 };
 
 // table column 属性
-export type TableColumnProps<T extends IdEntity> = FormColumnProps<T> &
-  ColumnProps<T> & {
-    [x: string]: any;
-    // ==================== 通用 ====================
+export type TableColumnProps<T extends Entity> = FormColumnProps<T> &
+  Pick<
+    ColumnProps<T>,
+    | 'align'
+    | 'title'
+    | 'width'
+    | 'filterChildrenRecord'
+    | 'filterDropdown'
+    | 'renderFilterDropdown'
+    | 'filterDropdownProps'
+    | 'filterDropdownVisible'
+    | 'filterIcon'
+    | 'filterMultiple'
+    | 'filteredValue'
+    | 'filters'
+    | 'renderFilterDropdownItem'
+    | 'sortOrder'
+    | 'sorter'
+    | 'sortIcon'
+  > & {
     // 数据字段
     dataIndex?: string;
     // 当前column是否在table中显示，默认为true
@@ -195,10 +230,12 @@ export type TableColumnProps<T extends IdEntity> = FormColumnProps<T> &
       index: number,
       tableContext: TableContext<T>,
     ) => React.ReactNode;
+    // 是否当字段超过最大宽度，做省略，默认为true
+    ellipsis?: boolean;
   };
 
 // card column 属性
-export type CardColumnProps<T extends IdEntity> = TableColumnProps<T> & {
+export type CardColumnProps<T extends Entity> = TableColumnProps<T> & {
   // 是否为card标题字段
   cardTitle?: boolean;
 };
@@ -209,10 +246,23 @@ export type SortColumn = {
   sorted: boolean;
 };
 
-// ======================== operate ========================
+export type ContextTable = {
+  // 行选择keys
+  selectedRowKeys: string[];
+  // table loading
+  loading?: boolean;
+  // table分页
+  pagination?: TablePagination;
+  // 排序
+  orders?: Order[];
+};
 
-// 联系Table crud组件，进行数据操作传输
-export type TableContext<T extends IdEntity> = {
+export type ContextTree = {
+  // 是否展开所有
+  expandAllRows?: boolean;
+};
+
+export type TableContext<T extends Entity> = {
   // mark data source unique key, default is id
   idKey: string;
   // table props
@@ -232,23 +282,11 @@ export type TableContext<T extends IdEntity> = {
   // table columns
   tableColumns: TableColumnProps<T>[];
   // 表头搜索值
-  search: {
-    [key: string]: any;
-  };
-  table: {
-    // table loading
-    loading?: boolean;
-    // table分页器
-    pagination?: TablePagination;
-    // 行选择keys
-    selectedRowKeys: string[];
-    // 排序
-    orders?: Order[];
-  };
-  tree: {
-    // 是否展开所有
-    expandAllRows?: boolean;
-  };
+  search: ArgType<T>;
+  // 上下文下使用的 table 有关参数
+  table: ContextTable;
+  // 上下文下使用的 tree 有关参数
+  tree: ContextTree;
   // table 数据源
   dataSource: T[];
   // table columns decorator
@@ -257,37 +295,32 @@ export type TableContext<T extends IdEntity> = {
   formContext?: FormContext<T>;
   // 刷新table，使其重新调用接口（TODO 可能会出现预想不到情况）
   refresh: () => void;
-
   /**
    * 内置对columns的二次处理的返回
    * @param exclusiveOperate 排序操作列
    * @param immediateFilter 是否使用{@code TableColumnProps#table}参数对返回结果进行过滤
    * @return 返回基于{@code TableColumnProps#index}排序后的columns
    */
-  getTableColumns(
+  getTableColumns: (
     exclusiveOperate?: boolean,
     immediateFilter?: boolean,
-  ): TableColumnProps<T>[];
-
+  ) => TableColumnProps<T>[];
   // 设置columns
-  setTableColumns(columns: TableColumnProps<T>[]): void;
-
+  setTableColumns: (columns: TableColumnProps<T>[]) => void;
   /**
    * get select row keys
    */
-  getSelectedRowKeys(): string[];
-
+  getSelectedRowKeys: () => string[];
   /**
    * get select rows
    */
-  getSelectedRows(): T[];
-
+  getSelectedRows: () => T[];
   /**
    * set form context
    *
    * @param formContext the form context instance
    */
-  setFormContext(formContext: FormContext<T>): void;
+  setFormContext: (formContext: FormContext<T>) => void;
 };
 
 export interface TableApiEvent {
@@ -301,7 +334,7 @@ export interface TableApiProps {
   showMessage?: boolean;
 }
 
-export interface TableApi<T extends IdEntity> {
+export interface TableApi<T extends Entity> {
   saveOrUpdate(entity: T, props?: TableApiProps, event?: TableApiEvent): void;
   // remove data
   remove(ids: string[], props?: TableApiProps, event?: TableApiEvent): void;
@@ -336,23 +369,23 @@ export interface TableApi<T extends IdEntity> {
   setFormContext(fromContext: FormContext<T>): void;
 }
 
-export type RenderOperatorBarType<T extends IdEntity> = (
+export type RenderOperatorBarType<T extends Entity> = (
   record: T,
   tableContext: TableContext<T>,
   operateBar?: TableCrudProps<T>['operateBar'],
 ) => OperateToolbar<T>[];
 
-export type TableToolbarProps<T extends IdEntity> = {
+export type TableToolbarProps<T extends Entity> = {
   tableProps: TableCrudProps<T>;
 };
 
-export type ApiSet<T extends IdEntity> = {
+export type ApiSet<T extends Entity> = {
   tableApi: TableApi<T>;
   inlineEditorApi: InlineEditorApi<T>;
   helperApi: HelperApi<T>;
 };
 
-export type InlineEditorApi<T extends IdEntity> = {
+export type InlineEditorApi<T extends Entity> = {
   open: (id: T['id']) => void;
   save: (id: T['id']) => void;
   isEditing: (id: T['id']) => boolean;
@@ -363,12 +396,12 @@ export type InlineEditorApi<T extends IdEntity> = {
   setFormApi: (formApi: FormApi<{ data: T[] }>) => void;
 };
 
-export type InlineEditor<T extends IdEntity> = {
+export type InlineEditor<T extends Entity> = {
   modCount: number;
   editing: Map<T['id'], boolean>;
 };
 
-export type HelperApi<T extends IdEntity> = {
+export type HelperApi<T extends Entity> = {
   getId: (entity: T) => T['id'];
   // entity in table dataSource index
   index: (id: T['id']) => number;

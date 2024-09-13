@@ -1,11 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { TableUploadDragColumnProps, TableUploadColumnProps } from '.';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
 import { Form } from '@douyinfe/semi-ui';
 
-export class UploadTableField<T extends IdEntity> extends BaseTableField<
+export class UploadTableField<T extends Entity> extends BaseTableField<
   T,
   TableUploadColumnProps<T>
 > {
@@ -32,7 +32,7 @@ export class UploadTableField<T extends IdEntity> extends BaseTableField<
   }
 }
 
-export class UploadDragTableField<T extends IdEntity> extends BaseTableField<
+export class UploadDragTableField<T extends Entity> extends BaseTableField<
   T,
   TableUploadDragColumnProps<T>
 > {

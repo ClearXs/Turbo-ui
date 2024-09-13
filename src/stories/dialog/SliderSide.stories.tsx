@@ -5,7 +5,6 @@ import useSliderSide from '../../components/slider-side/useSliderSide';
 import SliderSideContext from '../../components/slider-side/context';
 import { fn } from '@storybook/test';
 import { useState } from 'react';
-import React from 'react';
 import { Button } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 

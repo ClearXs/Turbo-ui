@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { TableCrudProps } from './interface';
 import {
   Card,
@@ -23,11 +23,11 @@ import { renderOperatorBar } from './TableColumnBuilder';
 import useTableCrudContext from './hook/table';
 import useTableFormContext from './hook/tableForm';
 
-export type CardPageProps<T extends IdEntity> = {
+export type CardPageProps<T extends Entity> = {
   tableProps: TableCrudProps<T>;
 };
 
-const CardPage = observer(<T extends IdEntity>(props: CardPageProps<T>) => {
+const CardPage = observer(<T extends Entity>(props: CardPageProps<T>) => {
   const tableContext = useTableCrudContext();
   const formContext = useTableFormContext();
 

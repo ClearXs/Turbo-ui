@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ColumnType, FormColumnProps } from '../../interface';
 import {
   BaseFormField,
@@ -10,7 +10,7 @@ import {
 /**
  * @see JsonObjectSchema
  */
-export class JsonObjectFormField<T extends IdEntity> extends BaseFormField<
+export class JsonObjectFormField<T extends Entity> extends BaseFormField<
   T,
   FormJsonObjectColumnProps<T>
 > {
@@ -26,7 +26,7 @@ export class JsonObjectFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 
   public getValueHandler(): ValueHandler {

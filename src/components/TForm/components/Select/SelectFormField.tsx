@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
@@ -6,7 +6,7 @@ import { FormSelectColumnProps } from '.';
 import ConstantTag from '@/components/tag/ConstantTag';
 import { ISchema } from '@formily/json-schema';
 
-export class SelectFormField<T extends IdEntity> extends BaseFormField<
+export class SelectFormField<T extends Entity> extends BaseFormField<
   T,
   FormSelectColumnProps<T>
 > {
@@ -79,6 +79,6 @@ export class SelectFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

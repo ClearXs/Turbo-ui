@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import Copyright from './Copyright';
 import PageNotFoundAnimation from '../lottie/404Error.json';
 import InternalServerErrorAnimation from '../lottie/500Error.json';
-import AuthenticationErrorAnimation from '../lottie/401Error.json';
 import { ErrorState } from '@/store/error';
 import { useCallback } from 'react';
 
@@ -15,9 +14,7 @@ export default function Error(): React.ReactNode {
 
   const loadLottieAnimation = useCallback(() => {
     const status = error?.status;
-    if (status === 401) {
-      return AuthenticationErrorAnimation;
-    } else if (status === 404) {
+    if (status === 404) {
       return PageNotFoundAnimation;
     } else if (status === 500) {
       return InternalServerErrorAnimation;

@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { Form, Radio, RadioGroup, Space } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { ReactNode } from 'react';
@@ -6,7 +6,7 @@ import { BaseFormField } from '..';
 import { FormColorColumnProps } from '.';
 import Tag, { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
 
-export class ColorFormField<T extends IdEntity> extends BaseFormField<
+export class ColorFormField<T extends Entity> extends BaseFormField<
   T,
   FormColorColumnProps<T>
 > {
@@ -75,6 +75,6 @@ export class ColorFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 24;
   }
 }

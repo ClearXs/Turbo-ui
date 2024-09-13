@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormCascadeColumnProps } from './interface';
 import { Form } from '@douyinfe/semi-ui';
 import { ColumnType, FormColumnProps } from '../../interface';
@@ -8,7 +8,7 @@ import { CascaderData } from '@douyinfe/semi-ui/lib/es/cascader';
 import ConstantTag from '@/components/tag/ConstantTag';
 import _ from 'lodash';
 
-export class CascadeFormField<T extends IdEntity> extends BaseFormField<
+export class CascadeFormField<T extends Entity> extends BaseFormField<
   T,
   FormCascadeColumnProps<T>
 > {
@@ -42,6 +42,6 @@ export class CascadeFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

@@ -5,7 +5,7 @@ import useModular from '../../components/modular/useModular';
 import ModularContext from '../../components/modular/context';
 import { Button } from '@douyinfe/semi-ui';
 import { fn } from '@storybook/test';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const type = ['success', 'info', 'error', 'warning'];
 const size = ['small', 'medium', 'large', 'full-width'];

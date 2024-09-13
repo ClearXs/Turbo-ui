@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api';
+import { Entity, GeneralApi } from '@/api';
 import { Constant } from '@/constant/interface';
 import { RuleItem } from '@douyinfe/semi-ui/lib/es/form';
 import { FormColumnDecorator } from './form';
@@ -6,7 +6,7 @@ import { Method } from 'axios';
 import { SchemaReactions } from '@formily/json-schema';
 import { Form as FormType } from '@formily/core';
 import { Helper } from '../interface';
-import { FormilyFormProps } from './formily/interface';
+import { IFormLayoutProps } from '@formily/semi';
 
 export type Pair = {
   key: string;
@@ -75,7 +75,7 @@ export type ColumnType =
 
 export type FormStatus = 'add' | 'edit' | 'details';
 
-export type ModalButton<T extends IdEntity> = {
+export type ModalButton<T extends Entity> = {
   code: string;
   name: string;
   type: 'warning' | 'primary' | 'tertiary' | 'secondary' | 'danger';
@@ -86,7 +86,30 @@ export type ModalButton<T extends IdEntity> = {
   onClick?: (formContext: FormContext<T>) => void;
 };
 
-export type FormProps<T extends IdEntity> = {
+export type FormModal<T extends Entity> = {
+  // abandon modal dialog show form (default is false)
+  abandon?: boolean;
+  // 表单弹出框大小 (default is 'large')
+  size?: 'small' | 'medium' | 'large' | 'full-width';
+  // close on esc
+  closeOnEsc?: boolean;
+  // 是否显示确认操作
+  showConfirm?: boolean | ((formContext: FormContext<T>) => boolean);
+  // 是否显示取消操作
+  showCancel?: boolean | ((formContext: FormContext<T>) => boolean);
+  // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
+  append?: (
+    | ModalButton<T>
+    | ((formContext: FormContext<T>) => ModalButton<T> | undefined)
+  )[];
+};
+
+export type FormEvent<T extends Entity> = {
+  // 当保存或者更新成功后进行回调
+  onSaveOrUpdateSuccess?: (entity: T) => void;
+};
+
+export type FormProps<T extends Entity> = IFormLayoutProps & {
   // 表单模型标识
   mode: 'tree' | 'table' | 'simply';
   // 表单标题
@@ -104,12 +127,13 @@ export type FormProps<T extends IdEntity> = {
   // 是否显示表单验证提示消息
   showValidateErrorNotification?: boolean;
   // 内置事件回调
-  event?: {
-    // 当保存或者更新成功后进行回调
-    onSaveOrUpdateSuccess?: (entity: T) => void;
-  };
-  // 表单级字段验证
-  validateFields?: (values: T) => string;
+  event?: FormEvent<T>;
+  // modal内容
+  modal?: FormModal<T>;
+  // slot to bottom form
+  slotBottom?: React.ReactNode;
+  // reaction scope
+  scope?: Record<string, object>;
   // api
   useApi?: (() => GeneralApi<T>) | GeneralApi<T>;
   // 操作完成的回调
@@ -120,28 +144,6 @@ export type FormProps<T extends IdEntity> = {
   onCancel?: (formContext: FormContext<T>) => void;
   // 获取表单上下文
   getFormContext?: (formContext: FormContext<T>) => void;
-  // modal内容
-  modal?: {
-    // abandon modal dialog show form (default is false)
-    abandon?: boolean;
-    // 表单弹出框大小 (default is 'large')
-    size?: 'small' | 'medium' | 'large' | 'full-width';
-    // close on esc
-    closeOnEsc?: boolean;
-    // 是否显示确认操作
-    showConfirm?: boolean | ((formContext: FormContext<T>) => boolean);
-    // 是否显示取消操作
-    showCancel?: boolean | ((formContext: FormContext<T>) => boolean);
-    // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
-    append?: (
-      | ModalButton<T>
-      | ((formContext: FormContext<T>) => ModalButton<T> | undefined)
-    )[];
-  };
-  // slot to bottom form
-  slotBottom?: React.ReactNode;
-  // reaction scope
-  scope?: FormilyFormProps['scope'];
 };
 
 // 远程搜索
@@ -166,7 +168,12 @@ export type KeyColumnProps<
   Column extends FormColumnProps<any> = FormColumnProps<any>,
 > = keyof Column;
 
-export type FormColumnProps<T extends IdEntity> = {
+export type ColumnRelation<T extends Entity> = {
+  title?: FormProps<T>['title'];
+  helper: Helper<any, any>;
+};
+
+export type FormColumnProps<T extends Entity> = {
   // 字段标识
   field: string;
   // 字段位置索引
@@ -201,16 +208,12 @@ export type FormColumnProps<T extends IdEntity> = {
     values: Record<string, any>,
   ) => string | Promise<string>;
   // 联动
-  reaction?: SchemaReactions<any>;
+  reaction?: SchemaReactions;
   // 关联
-  relation?: {
-    title?: FormProps<T>['title'];
-    helper: Helper<any, any>;
-  };
-  [key: string]: any;
+  relation?: ColumnRelation<T>;
 };
 
-export type FormContext<T extends IdEntity> = {
+export type FormContext<T extends Entity> = {
   // title
   title?: string;
   // form icon

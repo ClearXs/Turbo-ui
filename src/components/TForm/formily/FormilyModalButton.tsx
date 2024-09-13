@@ -1,4 +1,4 @@
-import { GeneralApi, IdEntity } from '@/api';
+import { GeneralApi, Entity } from '@/api';
 import { FormProps, ModalButton } from '../interface';
 import _ from 'lodash';
 import { Button, ButtonGroup, Notification } from '@douyinfe/semi-ui';
@@ -9,13 +9,13 @@ import {
 import { FormilyFormContext } from './interface';
 import { observer } from '@formily/reactive-react';
 
-export type IFormilyModalButtonProps<T extends IdEntity = IdEntity> = {
+export type IFormilyModalButtonProps<T extends Entity = Entity> = {
   formProps: FormProps<T>;
   formContext: FormilyFormContext<T>;
 };
 
 const FormilyModalButton = observer(
-  <T extends IdEntity>({
+  <T extends Entity>({
     formProps,
     formContext,
   }: IFormilyModalButtonProps<T>) => {

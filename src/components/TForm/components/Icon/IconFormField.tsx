@@ -1,6 +1,6 @@
-import { IdEntity } from '@/api';
-import { Avatar, Form, Modal } from '@douyinfe/semi-ui';
-import { ColumnType, FormColumnProps, FormContext } from '../../interface';
+import { Entity } from '@/api';
+import { Avatar, Form } from '@douyinfe/semi-ui';
+import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormIconColumnProps } from '.';
 import { IconCamera } from '@douyinfe/semi-icons';
@@ -8,7 +8,7 @@ import { tryGetIcon } from '@/components/icon';
 import IconList from '@/pages/developer/icon';
 import Modular from '@/components/modular/Modular';
 
-export class IconFormField<T extends IdEntity> extends BaseFormField<
+export class IconFormField<T extends Entity> extends BaseFormField<
   T,
   FormIconColumnProps<T>
 > {
@@ -75,6 +75,6 @@ export class IconFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

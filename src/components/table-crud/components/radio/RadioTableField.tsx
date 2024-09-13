@@ -1,10 +1,11 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField, TableRadioColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
-import { Form } from '@douyinfe/semi-ui';
+import { Form, Typography } from '@douyinfe/semi-ui';
 
-export class RadioTableField<T extends IdEntity> extends BaseTableField<
+// TODO: 未经过验证
+export class RadioTableField<T extends Entity> extends BaseTableField<
   T,
   TableRadioColumnProps<T>
 > {
@@ -19,7 +20,14 @@ export class RadioTableField<T extends IdEntity> extends BaseTableField<
           pure
         />
       ) : (
-        text
+        <Typography.Text
+          ellipsis={{
+            showTooltip: column.ellipsis === undefined ? true : column.ellipsis,
+          }}
+          style={{ maxWidth: column.width }}
+        >
+          {text}
+        </Typography.Text>
       );
     };
     return { ...column, render: this.withColumnRender(column, render) };

@@ -1,9 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormUploadProps } from '.';
 
-export class UploadFormField<T extends IdEntity> extends BaseFormField<
+// TODO: 未实现
+export class UploadFormField<T extends Entity> extends BaseFormField<
   T,
   FormUploadProps<T>
 > {
@@ -19,11 +20,11 @@ export class UploadFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }
 
-export class UploadDragFormField<T extends IdEntity> extends BaseFormField<
+export class UploadDragFormField<T extends Entity> extends BaseFormField<
   T,
   FormUploadProps<T>
 > {
@@ -39,6 +40,6 @@ export class UploadDragFormField<T extends IdEntity> extends BaseFormField<
   }
 
   public getDefaultSpan(): FormColumnProps<T>['span'] {
-    return 6;
+    return 12;
   }
 }

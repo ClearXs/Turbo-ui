@@ -14,7 +14,6 @@ import { observer } from '@formily/reactive-react';
 import { UserTab } from './components/motion-content/interface';
 import { createContentTab } from './components/motion-content/util';
 import './locales';
-import './theme/default.css';
 import { useRecoilValue } from 'recoil';
 import Error from './pages/Error';
 import { ErrorState } from './store/error';
@@ -23,8 +22,10 @@ import { CurrentUserRouteState } from './store/menu';
 
 import SystemApp from '@/components/app';
 import Loading from './pages/Loading';
+import { Theme } from './theme';
 
 export type AppProperty = {
+  theme: Theme;
   // 选择顶部菜单的key
   selectTopKey: string | undefined;
   // 选择侧边菜单的key
@@ -45,6 +46,7 @@ export default function App(): React.ReactNode {
     const { pathname } = location;
     const route = findRoute(pathname, userRoutes);
     const app: AppProperty = observable({
+      theme: 'light',
       selectTopKey: route ? route.topRouteKey || 'home' : 'home',
       selectSideKey: undefined,
       userTabs: [],

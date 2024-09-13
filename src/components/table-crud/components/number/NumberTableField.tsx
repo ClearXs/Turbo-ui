@@ -1,10 +1,10 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { BaseTableField, TableNumberColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { ColumnType } from '@/components/tform/interface';
-import { Form } from '@douyinfe/semi-ui';
+import { Form, Typography } from '@douyinfe/semi-ui';
 
-export class NumberTableField<T extends IdEntity> extends BaseTableField<
+export class NumberTableField<T extends Entity> extends BaseTableField<
   T,
   TableNumberColumnProps<T>
 > {
@@ -19,7 +19,14 @@ export class NumberTableField<T extends IdEntity> extends BaseTableField<
           pure
         ></Form.InputNumber>
       ) : (
-        text
+        <Typography.Text
+          ellipsis={{
+            showTooltip: column.ellipsis === undefined ? true : column.ellipsis,
+          }}
+          style={{ maxWidth: column.width }}
+        >
+          {text}
+        </Typography.Text>
       );
     };
     return { ...column, render: this.withColumnRender(column, render) };

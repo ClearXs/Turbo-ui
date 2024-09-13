@@ -36,18 +36,18 @@ npm run build
 
 <table>
     <tr>
-        <td><img src="./docs/images/preview1.png" alt="preview1"/></td>
-        <td><img src="./docs/images/preview2.png" alt="preview2"/></td>
-        <td><img src="./docs/images/preview3.png" alt="preview3"/></td>
+        <td><img src="./docs/docs/images/preview1.png" alt="preview1"/></td>
+        <td><img src="./docs/docs/images/preview2.png" alt="preview2"/></td>
+        <td><img src="./docs/docs/images/preview3.png" alt="preview3"/></td>
     </tr>
     <tr>
-        <td><img src="./docs/images/preview4.png" alt="preview4"/></td>
-        <td><img src="./docs/images/preview5.png" alt="preview5"/></td>
-        <td><img src="./docs/images/preview6.png" alt="preview6"/></td>
+        <td><img src="./docs/docs/images/preview4.png" alt="preview4"/></td>
+        <td><img src="./docs/docs/images/preview5.png" alt="preview5"/></td>
+        <td><img src="./docs/docs/images/preview6.png" alt="preview6"/></td>
     </tr>
     <tr>
-        <td><img src="./docs/images/preview7.png" alt="preview7"/></td>
-        <td><img src="./docs/images/preview8.png" alt="preview8"/></td>
-      	<td><img src="./docs/images/preview9.png" alt="preview9"/></td>
+        <td><img src="./docs/docs/images/preview7.png" alt="preview7"/></td>
+        <td><img src="./docs/docs/images/preview8.png" alt="preview8"/></td>
+      	<td><img src="./docs/docs/images/preview9.png" alt="preview9"/></td>
     </tr>
 </table>

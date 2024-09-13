@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormColumnProps } from '../../interface';
 import {
   DateInputProps,
@@ -10,57 +10,17 @@ import {
 } from '@douyinfe/semi-ui/lib/es/timePicker';
 
 // date 组件
-export type FormDateColumnProps<T extends IdEntity> = FormColumnProps<T> &
-  DateInputProps & {
-    // 默认为datetime
-    dateType?:
-      | 'date'
-      | 'dateRange'
-      | 'year'
-      | 'month'
-      | 'dateTime'
-      | 'dateTimeRange'
-      | 'monthRange';
-  };
+export type FormDateColumnProps<T extends Entity> = FormColumnProps<T> &
+  DateInputProps;
 
 // dateRange
-export type FormDateRangeColumnProps<T extends IdEntity> = FormColumnProps<T> &
-  DatePickerProps & {
-    // 默认为datetime
-    dateType?:
-      | 'date'
-      | 'dateRange'
-      | 'year'
-      | 'month'
-      | 'dateTime'
-      | 'dateTimeRange'
-      | 'monthRange';
-  };
+export type FormDateRangeColumnProps<T extends Entity> = FormColumnProps<T> &
+  DatePickerProps;
 
 // time 组件
-export type FormTimeColumnProps<T extends IdEntity> = FormColumnProps<T> &
-  TimeInputProps & {
-    // 默认为datetime
-    dateType?:
-      | 'date'
-      | 'dateRange'
-      | 'year'
-      | 'month'
-      | 'dateTime'
-      | 'dateTimeRange'
-      | 'monthRange';
-  };
+export type FormTimeColumnProps<T extends Entity> = FormColumnProps<T> &
+  TimeInputProps;
 
 // time range
-export type FormTimeRangeColumnProps<T extends IdEntity> = FormColumnProps<T> &
-  TimePickerProps & {
-    // 默认为datetime
-    dateType?:
-      | 'date'
-      | 'dateRange'
-      | 'year'
-      | 'month'
-      | 'dateTime'
-      | 'dateTimeRange'
-      | 'monthRange';
-  };
+export type FormTimeRangeColumnProps<T extends Entity> = FormColumnProps<T> &
+  TimePickerProps;

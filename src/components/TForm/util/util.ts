@@ -1,7 +1,7 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { FormColumnProps, Pair } from '../interface';
 
-export type BarrierColumns<T extends IdEntity> = {
+export type BarrierColumns<T extends Entity> = {
   // 该栅栏位能容纳的最大column数量
   maxColumns: number;
   columns: FormColumnProps<T>[];
@@ -11,7 +11,7 @@ export type BarrierColumns<T extends IdEntity> = {
  * 按照{@code FormColumnProps#span}进行区块切分
  * @param columns form columns
  */
-export const chunk = <T extends IdEntity>(
+export const chunk = <T extends Entity>(
   columns: FormColumnProps<T>[],
   defaultSpan: number = 12,
 ): BarrierColumns<T>[] => {

@@ -10,6 +10,7 @@ import useFormContext from '../../hook/form';
 import Modular from '@/components/modular/Modular';
 import React, { useRef } from 'react';
 import App from '@/components/app';
+import { Button } from '@douyinfe/semi-ui';
 
 const SlotSchema: SchemaColumn<FormSlotColumnProps<any>> = {
   adapt: (column, formContext) => {
@@ -23,7 +24,7 @@ const SlotSchema: SchemaColumn<FormSlotColumnProps<any>> = {
       'x-validator': [],
       'x-reactions': column.reaction,
       'x-component-props': {
-        mode: column.mode || 'slider',
+        mode: column.mode,
         shown: column.shown,
         component: column.component,
         modal: column.modal,
@@ -49,74 +50,76 @@ type ISlotSetterProps = {
 };
 
 const SlotSetter: React.FC<ISlotSetterProps> = observer(
-  ({ mode, shown, component, modal, slider }) => {
+  ({ mode = 'directly', shown, component, modal, slider }) => {
     const formContext = useFormContext();
     const Shown = typeof shown === 'function' ? shown(formContext) : shown;
     const Component: React.ReactNode | undefined =
       typeof component === 'function' ? component(formContext) : component;
     const handlerRef = useRef<Handler>();
-
     const { modular, sliderSide } = App.useApp();
 
-    return (
-      <div
-        onClick={(event) => {
-          event.stopPropagation();
-          if (!Component) {
-            Modular.error({ content: 'could find any component slot' });
-            return;
-          }
+    if (!Component) {
+      Modular.error({ content: 'could find any component slot' });
+      return;
+    }
 
-          if (mode === 'slider') {
-            const sliderInstance = sliderSide.show({
-              ...slider,
-              autoClose: false,
-              content: (
-                <React.Fragment>
-                  {React.cloneElement(Component, {
-                    getHandler: (handler: Handler) =>
-                      (handlerRef.current = handler),
-                  })}
-                </React.Fragment>
-              ),
-              size: slider?.size || 'large',
-              closeOnEsc: slider?.closeOnEsc || false,
-              onConfirm: () => {
-                handlerRef.current?.onOk?.(sliderInstance);
-              },
-              onCancel: () => {
-                handlerRef.current?.onCancel?.();
-                sliderInstance.destroy();
-              },
-            });
-          } else if (mode === 'modal') {
-            const modularInstance = modular.show({
-              ...modal,
-              content: (
-                <React.Fragment>
-                  {React.cloneElement(Component, {
-                    getHandler: (handler: Handler) =>
-                      (handlerRef.current = handler),
-                  })}
-                </React.Fragment>
-              ),
-              size: slider?.size || 'large',
-              closeOnEsc: slider?.closeOnEsc || false,
-              onConfirm: () => {
-                handlerRef.current?.onOk?.(modularInstance);
-              },
-              onCancel: () => {
-                handlerRef.current?.onCancel?.();
-                modularInstance.destroy();
-              },
-            });
-          } else {
-            Modular.error({ content: 'unknown slot mode' });
-          }
-        }}
-      >
-        {Shown}
-      </div>
+    if (mode === 'directly') {
+      return Component;
+    }
+
+    const onOpen = () => {
+      if (mode === 'slider') {
+        const sliderInstance = sliderSide.show({
+          ...slider,
+          autoClose: false,
+          content: (
+            <>
+              {React.cloneElement(Component, {
+                getHandler: (handler: Handler) =>
+                  (handlerRef.current = handler),
+              })}
+            </>
+          ),
+          size: slider?.size || 'large',
+          closeOnEsc: slider?.closeOnEsc || false,
+          onConfirm: () => {
+            handlerRef.current?.onOk?.(sliderInstance);
+          },
+          onCancel: () => {
+            handlerRef.current?.onCancel?.();
+            sliderInstance.destroy();
+          },
+        });
+      } else if (mode === 'modal') {
+        const modularInstance = modular.show({
+          ...modal,
+          content: (
+            <>
+              {React.cloneElement(Component, {
+                getHandler: (handler: Handler) =>
+                  (handlerRef.current = handler),
+              })}
+            </>
+          ),
+          size: slider?.size || 'large',
+          closeOnEsc: slider?.closeOnEsc || false,
+          onConfirm: () => {
+            handlerRef.current?.onOk?.(modularInstance);
+          },
+          onCancel: () => {
+            handlerRef.current?.onCancel?.();
+            modularInstance.destroy();
+          },
+        });
+      } else {
+        Modular.error({ content: 'unknown slot mode' });
+      }
+    };
+
+    return typeof shown === 'string' ? (
+      <Button onClick={onOpen}>{Shown}</Button>
+    ) : (
+      <div onClick={onOpen}>{Shown}</div>
     );
   },
 );

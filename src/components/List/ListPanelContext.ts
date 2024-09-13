@@ -1,9 +1,9 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ListPanelContext } from './interface';
 import { FormContext } from '../tform/interface';
 import { action, define, observable } from '@formily/reactive';
 
-export default class ListPanelContextImpl<T extends IdEntity>
+export default class ListPanelContextImpl<T extends Entity>
   implements ListPanelContext<T>
 {
   props: ListPanelContext<T>['props'];

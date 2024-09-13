@@ -1,7 +1,7 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { HelperApi, TableContext } from './interface';
 
-export default class HelperApiImpl<T extends IdEntity> implements HelperApi<T> {
+export default class HelperApiImpl<T extends Entity> implements HelperApi<T> {
   constructor(private tableContext: TableContext<T>) {}
 
   getId(entity: T): T['id'] {

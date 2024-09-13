@@ -1,4 +1,4 @@
-import { IdEntity } from '@/api';
+import { Entity } from '@/api';
 import { ListPanelApi, ListPanelProps } from './interface';
 import { Toolbar } from '../table-crud/interface';
 import { Button, Space } from '@douyinfe/semi-ui';
@@ -9,12 +9,12 @@ import {
 } from '../bar/collection';
 import { useListPanelContext } from './context/listPanel';
 
-export interface ListToolbarProps<T extends IdEntity> {
+export interface ListToolbarProps<T extends Entity> {
   props: ListPanelProps<T>;
   listApi: ListPanelApi<T>;
 }
 
-export default function ListToolbar<T extends IdEntity>({
+export default function ListToolbar<T extends Entity>({
   props,
   listApi,
 }: ListToolbarProps<T>) {
@@ -44,7 +44,7 @@ export default function ListToolbar<T extends IdEntity>({
   );
 }
 
-const renderToolbar = <T extends IdEntity>(
+const renderToolbar = <T extends Entity>(
   props: ListPanelProps<T>,
   listApi: ListPanelApi<T>,
 ) => {

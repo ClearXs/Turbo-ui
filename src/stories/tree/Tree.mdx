@@ -1,0 +1,48 @@
+import {
+  Meta,
+  Canvas,
+  Controls,
+  Stories,
+  PureArgsTable,
+} from '@storybook/blocks';
+import * as TreeStories from './Tree.stories';
+import {
+  treePanelApiArgsType,
+  treePanelContextArgsType,
+  treePanelOperatorBarArgsType,
+  treePanelToolbarArgsType,
+} from './tree';
+
+<Meta title="Component/Tree" of={TreeStories} />
+
+## Introudction
+
+`TreePanel` 与 [TableCurd](?path=/docs/component-tablecrud--docs) 类似，是一个能够以树形结构都数据进行 CRUD相关操作，其内部通过在 [SEMIUI Tree](https://semi.design/zh-CN/navigation/tree) 基础上完成了**配置约定视图**。
+
+- 基于 [SEMIUI Tree](https://semi.design/zh-CN/navigation/tree)
+- 适用于树形侧
+- 丰富的组件属性。
+
+## Qucik Start
+
+<Canvas of={TreeStories.Default} />
+
+## Property
+
+<Controls of={TreeStories.Default} />
+
+### TreePanelToolbar
+
+<PureArgsTable rows={treePanelToolbarArgsType} />
+
+### TreePanelOperatorBar
+
+<PureArgsTable rows={treePanelOperatorBarArgsType} />
+
+### TreePanelApi
+
+<PureArgsTable rows={treePanelApiArgsType} />
+
+### TreePanelContext
+
+<PureArgsTable rows={treePanelContextArgsType} />
