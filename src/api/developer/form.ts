@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { CategoryEntity, GeneralApi, GeneralApiImpl } from '..';
 
 export interface Form extends CategoryEntity {

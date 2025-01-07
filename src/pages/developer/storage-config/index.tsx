@@ -8,8 +8,9 @@ import useStorageConfigApi, {
 } from '@/api/developer/storageConfig';
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Notification } from '@douyinfe/semi-ui';
+import { observer } from 'mobx-react';
 
-export default function (): React.ReactNode {
+const StorageConfigPage = () => {
   const api = useStorageConfigApi();
 
   const columns: TableColumnProps<StorageConfig>[] = useMemo(() => {
@@ -141,4 +142,6 @@ export default function (): React.ReactNode {
       }}
     />
   );
-}
+};
+
+export default observer(StorageConfigPage);

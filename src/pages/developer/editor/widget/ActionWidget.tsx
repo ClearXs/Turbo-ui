@@ -41,6 +41,7 @@ export const ActionWidget: React.FC<ActionWidgetProps> = observer(
         <Button
           loading={designableProps.loading}
           onClick={() => onSave?.(kernel, designableProps)}
+          icon={tryGetIcon('IconCopyAdd')}
         >
           保存
         </Button>
@@ -48,6 +49,7 @@ export const ActionWidget: React.FC<ActionWidgetProps> = observer(
           loading={designableProps.loading}
           type="primary"
           onClick={() => onPublish?.(kernel, designableProps)}
+          icon={tryGetIcon('IconSend')}
         >
           发布
         </Button>

@@ -38,9 +38,9 @@ const PageHelper: Helper<Page, PageApi> = {
           url: '/api/dev/form/list',
         },
         showClear: true,
-        relation: {
-          helper: FormHelper,
-        },
+        // relation: {
+        //   helper: FormHelper,
+        // },
       },
       {
         label: '业务对象',
@@ -52,9 +52,9 @@ const PageHelper: Helper<Page, PageApi> = {
         },
         disabled: true,
         showClear: true,
-        relation: {
-          helper: BoHelper,
-        },
+        // relation: {
+        //   helper: BoHelper,
+        // },
       },
       {
         label: '数据视图',
@@ -66,9 +66,9 @@ const PageHelper: Helper<Page, PageApi> = {
         remote: {
           url: '/api/sys/menu/list',
         },
-        relation: {
-          helper: MenuHelper,
-        },
+        // relation: {
+        //   helper: MenuHelper,
+        // },
       },
       {
         label: '页面路由',

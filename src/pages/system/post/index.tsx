@@ -1,8 +1,9 @@
 import { Post } from '@/api/system/post';
 import TableCrud from '@/components/table-crud';
 import PostHelper from './helper';
+import { observer } from 'mobx-react';
 
-const Post = () => {
+const PostPage = () => {
   return (
     <TableCrud<Post>
       mode="page"
@@ -12,4 +13,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default observer(PostPage);

@@ -3,8 +3,9 @@ import TableCrud from '@/components/table-crud/TableCrud';
 import { tryGetIcon } from '@/components/icon/shared';
 import _ from 'lodash';
 import MenuHelper from './helper';
+import { observer } from 'mobx-react';
 
-const Menu = () => {
+const MenuPage = () => {
   return (
     <TableCrud<MenuTree>
       mode="tree"
@@ -73,4 +74,4 @@ const Menu = () => {
   );
 };
 
-export default Menu;
+export default observer(MenuPage);

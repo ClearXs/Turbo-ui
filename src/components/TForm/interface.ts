@@ -6,7 +6,7 @@ import { Method } from 'axios';
 import { SchemaReactions } from '@formily/json-schema';
 import { Form as FormType } from '@formily/core';
 import { Helper } from '../interface';
-import { IFormLayoutProps } from '@formily/semi';
+import { IFormLayoutProps } from '@clearx/formily-semi';
 
 export type Pair = {
   key: string;

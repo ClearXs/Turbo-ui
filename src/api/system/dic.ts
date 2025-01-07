@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '..';
 import { Constant } from '@/constant/interface';
 import { TagColor } from '@douyinfe/semi-ui/lib/es/tag';
@@ -37,7 +37,7 @@ export interface Dic extends Tree {
 
 export interface DicApi extends TreeGeneralApi<Dic> {}
 
-export default function useDicApi(): DicApi {
+export default function useDicApi() {
   const request = useRequest();
   return new TreeGeneralApiImpl<Dic>('/api/sys/dic', request);
 }

@@ -14,7 +14,7 @@ import { observer } from '@formily/reactive-react';
 import { TPanelContext } from './context/treePanel';
 
 // 树形面板
-const TreePanel = observer(<T extends Tree>(props: TreePanelProps<T>) => {
+function TreePanel<T extends Tree>(props: TreePanelProps<T>) {
   const {
     columns,
     multiple = false,
@@ -129,6 +129,6 @@ const TreePanel = observer(<T extends Tree>(props: TreePanelProps<T>) => {
       />
     </Spin>
   );
-});
+}
 
-export default TreePanel;
+export default observer(TreePanel);

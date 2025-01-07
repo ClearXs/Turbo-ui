@@ -4,7 +4,7 @@ import { Suspense, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import useDicApi from '@/api/system/dic';
 import _ from 'lodash';
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import FormliyForm from './formily/FormilyForm';
 import { loadDataSet } from './util/column';
 import FormilyFormContextImpl from './formily/FormilyFormContext';

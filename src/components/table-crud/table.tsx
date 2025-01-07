@@ -39,7 +39,7 @@ import {
   UserTableField,
 } from './components';
 import { ISchema } from '@formily/json-schema';
-import { BoAttrSchema } from '@designable/core';
+import { BoAttrSchema } from '@clearx/designable-core';
 import { GlobalSchemaColumnRegistry } from '../tform/formily/schema';
 import { FormField } from '../tform/components';
 

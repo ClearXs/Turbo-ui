@@ -15,8 +15,9 @@ import { TreePanelApi } from '@/components/tree';
 import { MenuTree } from '@/api/system/menu';
 import Modular from '@/components/modular/Modular';
 import useBoApi from '@/api/developer/bo';
+import { observer } from 'mobx-react';
 
-const Page: React.FC = () => {
+const PagePage = () => {
   const pageApi = usePageApi();
   const boApi = useBoApi();
   const [categoryId, setCategoryId] = useState<string>();
@@ -155,4 +156,4 @@ const Page: React.FC = () => {
   );
 };
 
-export default Page;
+export default observer(PagePage);

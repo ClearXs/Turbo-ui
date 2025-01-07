@@ -22,7 +22,7 @@ type BoInternalProps = {
   boChangedFunc?: ModularProps['beforeCancel'];
 };
 
-const BoComponent: React.FC = observer(() => {
+const BoPage = () => {
   const [categoryId, setCategoryId] = useState<string>();
 
   const props: BoInternalProps = useMemo(() => {
@@ -56,7 +56,7 @@ const BoComponent: React.FC = observer(() => {
             columns={BoHelper.getColumns()}
             funcCode="bo"
             useApi={BoHelper.getApi}
-            params={{ categoryId: categoryId }}
+            params={{ categoryId }}
             getTableContext={(tableContext) =>
               (props.tableContext = tableContext)
             }
@@ -80,9 +80,7 @@ const BoComponent: React.FC = observer(() => {
                             const { code, data } = res;
                             if (code === 200 && data) {
                               Notification.success({ content: '物化成功' });
-                              tableContext.tableApi.listOrPageOrTree(
-                                tableContext,
-                              );
+                              tableContext.tableApi.listOrPageOrTree();
                             }
                             tableContext.table.loading = false;
                           })
@@ -117,6 +115,6 @@ const BoComponent: React.FC = observer(() => {
       )}
     </>
   );
-});
+};
 
-export default BoComponent;
+export default observer(BoPage);

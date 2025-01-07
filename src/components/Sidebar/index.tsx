@@ -1,33 +1,29 @@
 import { Nav } from '@douyinfe/semi-ui';
 import Sider from '@douyinfe/semi-ui/lib/es/layout/Sider';
-import { useRenderMenu } from '@/hook/menu';
 import _ from 'lodash';
 import { TurboRoute } from '@/route/AppRouter';
-import { useContext } from 'react';
-import { AppContext } from '@/context';
-import { observer } from '@formily/reactive-react';
-import { useLoaderData } from 'react-router-dom';
+import useStore from '@/hook/useStore';
+import UserMenu from '@/components/menu';
+import { observer } from 'mobx-react';
+import { find } from '@/route/shared';
 
-const Sidebar = observer(() => {
-  const app = useContext(AppContext);
+const Sidebar = () => {
+  const { route, app } = useStore();
   const { selectTopKey, selectSideKey } = app;
 
-  const routes = useLoaderData() as TurboRoute[];
-  const topMenu = routes.find((route) => route.code === selectTopKey);
+  const topMenu = find(route.userRoutes, (r) => r.code === selectTopKey);
   const sideMenus = (topMenu?.children || []) as TurboRoute[];
-  const renderMenu = useRenderMenu();
-
   return (
     <Sider>
       <Nav
         style={{ height: '100%', alignItems: 'center', maxWidth: 200 }}
         selectedKeys={(selectSideKey && [selectSideKey]) || []}
       >
-        {renderMenu(sideMenus, 'side', app, selectTopKey)}
+        <UserMenu routes={sideMenus} source="side" topMenuKey={selectTopKey} />
         <Nav.Footer collapseButton={true} />
       </Nav>
     </Sider>
   );
-});
+};
 
-export default Sidebar;
+export default observer(Sidebar);

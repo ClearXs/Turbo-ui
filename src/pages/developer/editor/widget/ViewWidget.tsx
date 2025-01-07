@@ -4,9 +4,9 @@ import { EditorProps, ViewType } from '../interface';
 import { Tabs } from '@douyinfe/semi-ui';
 import { tryGetIcon } from '@/components/icon';
 import { PlainTab } from '@douyinfe/semi-ui/lib/es/tabs';
-import { usePrefix, useWorkbench } from '@designable/react';
+import { usePrefix, useWorkbench } from '@clearx/designable-react';
 import cls from 'classnames';
-import './styles.less';
+import './styles.scss';
 import { DesignableProps } from '../Editor';
 
 export type ViewWidgetProps = {

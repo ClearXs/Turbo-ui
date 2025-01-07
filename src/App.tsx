@@ -1,100 +1,102 @@
-import '@/pages/developer/editor';
 import { Layout } from '@douyinfe/semi-ui';
 import MotionContent from './components/motion-content';
 import MotionHeader from './components/motion-header';
-import { Suspense, useEffect, useMemo } from 'react';
-import { GlobalRegistry } from '@designable/core';
-import { SUPPORT_LOCALES } from './components/motion-header/Locales';
-import { useLoaderData, useLocation } from 'react-router-dom';
-import { TurboRoute } from './route/AppRouter';
-import { observable } from '@formily/reactive';
+import { Suspense, useEffect } from 'react';
+import { GlobalRegistry } from '@clearx/designable-core';
+import { useLocation } from 'react-router-dom';
 import { findRoute } from './route/util';
-import { AppContext } from './context';
-import { observer } from '@formily/reactive-react';
-import { UserTab } from './components/motion-content/interface';
 import { createContentTab } from './components/motion-content/util';
 import './locales';
-import { useRecoilValue } from 'recoil';
 import Error from './pages/Error';
-import { ErrorState } from './store/error';
 import _ from 'lodash';
-import { CurrentUserRouteState } from './store/menu';
-
 import SystemApp from '@/components/app';
 import Loading from './pages/Loading';
-import { Theme } from './theme';
+import useStore from './hook/useStore';
+import { useAuth } from './hook/useAuth';
+import useRouteHelper from './route/useRouteHelper';
+import useAuthApi from './api/system/auth';
+import { observer } from 'mobx-react';
+import { reaction } from 'mobx';
+import { TurboRoute } from './route/AppRouter';
 
-export type AppProperty = {
-  theme: Theme;
-  // 选择顶部菜单的key
-  selectTopKey: string | undefined;
-  // 选择侧边菜单的key
-  selectSideKey: string | undefined;
-  // 小tab栏
-  userTabs: UserTab[];
-  // 选中的小tab栏
-  selectTabKey: string | undefined;
-};
-
-export default function App(): React.ReactNode {
-  const error = useRecoilValue(ErrorState);
+const App = () => {
   const location = useLocation();
-  const routes = useLoaderData() as TurboRoute[];
-  const userRoutes = useRecoilValue(CurrentUserRouteState);
+  const authApi = useAuthApi();
+  const { route, app, error, user } = useStore();
+  const authentication = useAuth();
+  const loadCurrentUserRoute = useRouteHelper();
 
-  const app = useMemo(() => {
-    const { pathname } = location;
-    const route = findRoute(pathname, userRoutes);
-    const app: AppProperty = observable({
-      theme: 'light',
-      selectTopKey: route ? route.topRouteKey || 'home' : 'home',
-      selectSideKey: undefined,
-      userTabs: [],
-      selectTabKey: undefined,
-    });
-    return app;
-  }, []);
+  useEffect(
+    function setLanguage() {
+      GlobalRegistry.setDesignerLanguage(app.language);
+    },
+    [app.language],
+  );
 
-  useEffect(() => {
-    const supportLocales = SUPPORT_LOCALES.map((locales) => locales.value);
-    if (!supportLocales.includes(GlobalRegistry.getDesignerLanguage())) {
-      GlobalRegistry.setDesignerLanguage('zh-cn');
-    }
-    const { pathname } = location;
-    const route = findRoute(pathname, routes);
-    if (route) {
-      app.selectTopKey = route.topRouteKey;
-      app.selectSideKey = route.code;
-      const newTabs = createContentTab(
-        app.userTabs,
-        route,
-        route.topRouteKey as string,
+  useEffect(
+    // 当刷新页面、或者页面回退或者前进时，重新设置导航相关的信息
+    function whenLocationChangeResetNavigationInformation() {
+      reaction(
+        () => route.routes,
+        (routes) => {
+          if (routes.length > 0) {
+            resetUserNavigation(routes);
+          }
+        },
       );
-      if (newTabs) {
-        app.userTabs = newTabs;
-      }
-      app.selectTabKey = route.code;
-    }
-  }, [location.pathname, userRoutes]);
 
-  return error !== undefined ? (
+      const resetUserNavigation = (routes: TurboRoute[]) => {
+        const { pathname } = location;
+        const r = findRoute(pathname, routes);
+        if (r) {
+          app.setSelectTopKey(r.topRouteKey!);
+          app.setSelectSideKey(r.code!);
+          const newTabs = createContentTab(app.userTabs, r, r.topRouteKey!);
+          if (newTabs) {
+            app.setUserTabs(newTabs);
+          }
+          app.setSelectTabKey(r.code!);
+        }
+      };
+      if (route.routes.length > 0) {
+        resetUserNavigation(route.routes);
+      }
+    },
+    [location.pathname],
+  );
+
+  useEffect(
+    function loadUserRouteIfAuthNotEmpty() {
+      if (!_.isEmpty(authentication) && _.isEmpty(route.routes)) {
+        loadCurrentUserRoute();
+      }
+    },
+    [authentication],
+  );
+
+  useEffect(
+    function loadCurrentUserIfNull() {
+      if (_.isEmpty(user.currentUser)) {
+        authApi.getCurrentUser().then((res) => {
+          user.setCurrentUser(res.data);
+        });
+      }
+    },
+    [user.currentUser],
+  );
+
+  return error.error !== undefined ? (
     <Error />
   ) : (
     <Suspense fallback={<Loading />}>
-      <AppLayout app={app} />
-    </Suspense>
-  );
-}
-
-const AppLayout: React.FC<{ app: AppProperty }> = observer(({ app }) => {
-  return (
-    <SystemApp>
-      <Layout className="h-100vh w-100vw overflow-hidden">
-        <AppContext.Provider value={app}>
+      <SystemApp>
+        <Layout className="h-100vh w-100vw overflow-hidden">
           <MotionHeader />
           <MotionContent />
-        </AppContext.Provider>
-      </Layout>
-    </SystemApp>
+        </Layout>
+      </SystemApp>
+    </Suspense>
   );
-});
+};
+
+export default observer(App);

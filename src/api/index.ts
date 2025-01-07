@@ -1,4 +1,4 @@
-import { InternalRequest } from '@/hook/request';
+import { InternalRequest } from '@/hook/useRequest';
 import _ from 'lodash';
 
 // 统一返回结构

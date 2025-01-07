@@ -1,5 +1,5 @@
 import { R } from '..';
-import useRequest from '@/hook/request';
+import useRequest, { InternalRequest } from '@/hook/useRequest';
 import { User } from './user';
 import { MenuTree } from './menu';
 import { Org } from './org';
@@ -63,139 +63,166 @@ export type Captcha = {
   base64: string;
 };
 
-export default function useAuthApi() {
-  const request = useRequest();
-
+export interface AuthApi {
   /**
    * 登陆
+   *
    * @param username 用户名
    * @param password 密码
    * @param code 验证码
+   *
    * @returns user of collection
    */
-  const login = (params: LoginInfo): Promise<R<Record<string, any>>> => {
-    return request
+  login: (params: LoginInfo) => Promise<R<Record<string, any>>>;
+
+  /**
+   * 获取当前用户
+   *
+   * @returns
+   */
+  getCurrentUser: () => Promise<R<User>>;
+
+  /**
+   * 获取当前用户菜单
+   */
+  getCurrentUserMenu: () => Promise<R<MenuTree[]>>;
+
+  /**
+   * 登出
+   */
+  logout: () => Promise<R<boolean>>;
+
+  /**
+   * 修改密码
+   *
+   * @returns token 信息
+   */
+  changePassword: (
+    id: string,
+    rawPassword: string,
+    newPassword: string,
+  ) => Promise<R<Record<string, any>>>;
+
+  /**
+   * 修改用户信息
+   *
+   * @returns token 信息
+   */
+  modify: (user: Record<string, any>) => Promise<R<Record<string, any>>>;
+
+  /**
+   * 获取验证码
+   *
+   * @returns promise for captcha
+   */
+  captcha: () => Promise<R<Captcha>>;
+
+  /**
+   * 注册
+   *
+   * @param user 用户信息
+   * @returns
+   */
+  register: (user: User) => Promise<R<Record<string, any>>>;
+
+  /**
+   * 获取当前用户组织
+   */
+  currentUserOrg: () => Promise<R<Org>>;
+
+  /**
+   * 获取当前用户角色
+   */
+  currentUserRole: () => Promise<R<Role[]>>;
+
+  /**
+   * 获取当前用户岗位
+   */
+  currentUserPost: () => Promise<R<Post[]>>;
+}
+
+export class AuthApiImpl implements AuthApi {
+  request: InternalRequest;
+  constructor(request: InternalRequest) {
+    this.request = request;
+  }
+
+  login = (params: LoginInfo): Promise<R<Record<string, any>>> => {
+    return this.request
       .post('/api/auth/login', params, { 'X-LOGIN-MODE': params.loginMode })
       .then((res) => {
         return res.data;
       });
   };
 
-  /**
-   * 获取当前用户
-   * @returns
-   */
-  const getCurrentUser = (): Promise<R<User>> => {
-    return request.get('/api/auth/current-user').then((res) => {
+  getCurrentUser = (): Promise<R<User>> => {
+    return this.request.get('/api/auth/current-user').then((res) => {
       return res.data;
     });
   };
 
-  /**
-   * 获取当前用户菜单
-   */
-  const getCurrentUserMenu = (): Promise<R<MenuTree[]>> => {
-    return request.get('/api/auth/current-user-menus').then((res) => {
+  getCurrentUserMenu = (): Promise<R<MenuTree[]>> => {
+    return this.request.get('/api/auth/current-user-menus').then((res) => {
       return res.data;
     });
   };
 
-  /**
-   * 登出
-   */
-  const logout = (): Promise<R<boolean>> => {
-    return request.get('/api/auth/logout').then((res) => {
+  logout = (): Promise<R<boolean>> => {
+    return this.request.get('/api/auth/logout').then((res) => {
       return res.data;
     });
   };
 
-  /**
-   * 修改密码
-   * @returns token 信息
-   */
-  const changePassword = (
+  changePassword = (
     id: string,
     rawPassword: string,
     newPassword: string,
   ): Promise<R<Record<string, any>>> => {
-    return request
+    return this.request
       .put('/api/auth/changePassword', { id, rawPassword, newPassword })
       .then((res) => {
         return res.data;
       });
   };
 
-  /**
-   * 修改用户信息
-   * @returns token 信息
-   */
-  const modify = (
-    user: Record<string, any>,
-  ): Promise<R<Record<string, any>>> => {
-    return request.put('/api/auth/modify', user).then((res) => {
+  modify = (user: Record<string, any>): Promise<R<Record<string, any>>> => {
+    return this.request.put('/api/auth/modify', user).then((res) => {
       return res.data;
     });
   };
 
-  /**
-   * 获取验证码
-   * @returns promise for captcha
-   */
-  const captcha = (): Promise<R<Captcha>> => {
-    return request.get('/api/auth/captcha').then((res) => {
+  captcha = (): Promise<R<Captcha>> => {
+    return this.request.get('/api/auth/captcha').then((res) => {
       return res.data || ({} as R<Captcha>);
     });
   };
 
-  /**
-   * 注册
-   * @param user 用户信息
-   * @returns
-   */
-  const register = (user: User): Promise<R<Record<string, any>>> => {
-    return request.post('/api/auth/register', user).then((res) => {
+  register = (user: User): Promise<R<Record<string, any>>> => {
+    return this.request.post('/api/auth/register', user).then((res) => {
       return res.data;
     });
   };
 
-  /**
-   * 获取当前用户组织
-   */
-  const currentUserOrg = (): Promise<R<Org>> => {
-    return request.get('/api/auth/current-user-org').then((res) => {
+  currentUserOrg = (): Promise<R<Org>> => {
+    return this.request.get('/api/auth/current-user-org').then((res) => {
       return res.data;
     });
   };
 
-  /**
-   * 获取当前用户角色
-   */
-  const currentUserRole = (): Promise<R<Role[]>> => {
-    return request.get('/api/auth/current-user-role').then((res) => {
+  currentUserRole = (): Promise<R<Role[]>> => {
+    return this.request.get('/api/auth/current-user-role').then((res) => {
       return res.data;
     });
   };
 
-  /**
-   * 获取当前用户岗位
-   */
-  const currentUserPost = (): Promise<R<Post[]>> => {
-    return request.get('/api/auth/current-user-post').then((res) => {
+  currentUserPost = (): Promise<R<Post[]>> => {
+    return this.request.get('/api/auth/current-user-post').then((res) => {
       return res.data;
     });
   };
+}
 
-  return {
-    login,
-    getCurrentUser,
-    getCurrentUserMenu,
-    logout,
-    changePassword,
-    modify,
-    captcha,
-    register,
-    currentUserOrg,
-    currentUserRole,
-    currentUserPost,
-  };
+export default function useAuthApi() {
+  const request = useRequest();
+  return new AuthApiImpl(request);
 }

@@ -11,8 +11,9 @@ import App from '@/components/app';
 import { Toast } from '@douyinfe/semi-ui';
 import PreviewCodeContent from './PreviewCodeContent';
 import { open } from '@/util/auth';
+import { observer } from 'mobx-react';
 
-const CodeGenerateComponent = () => {
+const CodeGeneratePage = () => {
   const [categoryId, setCategoryId] = useState<string>();
   const codeGenerateApi = useCodeGenerateApi();
   const { sliderSide } = App.useApp();
@@ -109,4 +110,4 @@ const CodeGenerateComponent = () => {
   );
 };
 
-export default CodeGenerateComponent;
+export default observer(CodeGeneratePage);

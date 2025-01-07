@@ -1,8 +1,9 @@
 import { Tenant } from '@/api/system/tenant';
 import TableCrud from '@/components/table-crud';
 import TenantHelper from './helper';
+import { observer } from 'mobx-react';
 
-const Tenant: React.FC = () => {
+const TenantPage = () => {
   return (
     <TableCrud<Tenant>
       mode="page"
@@ -12,4 +13,4 @@ const Tenant: React.FC = () => {
   );
 };
 
-export default Tenant;
+export default observer(TenantPage);

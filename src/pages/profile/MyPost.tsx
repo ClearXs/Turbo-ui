@@ -2,6 +2,7 @@ import useAuthApi from '@/api/system/auth';
 import { Post } from '@/api/system/post';
 import { Card, CardGroup } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
+import { observer } from 'mobx-react';
 import { useEffect, useState } from 'react';
 
 const MyPost = () => {
@@ -37,4 +38,4 @@ const MyPost = () => {
   );
 };
 
-export default MyPost;
+export default observer(MyPost);

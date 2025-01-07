@@ -1,4 +1,4 @@
-import useRequest, { InternalRequest } from '@/hook/request';
+import useRequest, { InternalRequest } from '@/hook/useRequest';
 import {
   GeneralApi,
   GeneralApiImpl,

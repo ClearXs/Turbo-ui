@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { GeneralApi, GeneralApiImpl, TenantEntity } from '..';
 
 export interface Post extends TenantEntity {
@@ -25,9 +25,9 @@ export interface Post extends TenantEntity {
 
 export interface PostApi extends GeneralApi<Post> {}
 
-class PostApiImpl extends GeneralApiImpl<Post> implements PostApi {}
+export class PostApiImpl extends GeneralApiImpl<Post> implements PostApi {}
 
-export default function usePostApi(): PostApi {
+export default function usePostApi() {
   const request = useRequest();
   return new PostApiImpl('/api/sys/post', request);
 }

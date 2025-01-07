@@ -4,9 +4,9 @@ import {
   GlobalRegistry,
   createBehavior,
   createResource,
-} from '@designable/core';
-import { DnFC } from '@designable/react';
-import { createFieldSchema } from '@designable/formily-semi';
+} from '@clearx/designable-core';
+import { DnFC } from '@clearx/designable-react';
+import { createFieldSchema } from '@clearx/designable-formily-semi';
 import { Color as TurboColor } from '@/components/tform/formily/components';
 import Locales from '../../locales/color';
 import Schema from '../../schema/color';
@@ -16,7 +16,7 @@ export const Color: DnFC<React.ComponentProps<typeof TurboColor>> = TurboColor;
 Color.Behavior = createBehavior({
   name: 'Color',
   extends: ['Field'],
-  selector: (node) => node.props['x-component'] === 'Color',
+  selector: (node) => node.props?.['x-component'] === 'Color',
   designerProps: {
     propsSchema: createFieldSchema(Schema),
   },
@@ -39,7 +39,7 @@ Color.Resource = createResource({
 
 GlobalRegistry.registerBOTransfer({
   adaptive(node) {
-    return node.props['x-component'] === 'Color';
+    return node.props?.['x-component'] === 'Color';
   },
   transform(node, root) {
     return GlobalBOFieldProps.transform(node, root, {

@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { BaseEntity, CategoryEntity, GeneralApi, GeneralApiImpl, R } from '..';
 import { CodeGenerateTemplate } from './codeGenerateTemplate';
 import { LanguageName } from '@uiw/codemirror-extensions-langs';

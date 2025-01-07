@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { Designer, Workbench, StudioPanel } from '@designable/react';
+import { Designer, Workbench, StudioPanel } from '@clearx/designable-react';
 import {
   createDesigner,
   Shortcut,
   KeyCode,
   GlobalRegistry,
-} from '@designable/core';
+} from '@clearx/designable-core';
 import { EditorProps, ViewType } from './interface';
 import * as icons from './icon';
 import { ActionWidget } from './widget/ActionWidget';
@@ -52,7 +52,7 @@ const Editor = (props: EditorProps) => {
 
 const DesignableEditor: React.FC<DesignableEditorProps> = observer(
   ({ designableProps, props }) => {
-    const PanelCollect: Record<ViewType, any> = useMemo(() => {
+    const PanelCollection = useMemo<Record<ViewType, any>>(() => {
       return {
         formDesign: FormDesignPanel,
         dataView: DataViewPanel,
@@ -79,7 +79,7 @@ const DesignableEditor: React.FC<DesignableEditorProps> = observer(
     );
 
     const kernel = useMemo(() => createKernel(engine), []);
-    const Panel = PanelCollect[designableProps.selectPanel];
+    const Panel = PanelCollection[designableProps.selectPanel];
 
     return (
       <KernelContext.Provider value={kernel}>

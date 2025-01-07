@@ -7,8 +7,9 @@ import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import Binary from '@/components/binary';
 import _ from 'lodash';
 import { Dataset } from '@/api/developer/dataset';
+import { observer } from 'mobx-react';
 
-const Dataset: React.FC = () => {
+const DatasetPage = () => {
   const [categoryId, setCategoryId] = useState<string>();
 
   return (
@@ -43,4 +44,4 @@ const Dataset: React.FC = () => {
   );
 };
 
-export default Dataset;
+export default observer(DatasetPage);

@@ -3,7 +3,7 @@ import { ColumnType, FormColumnProps } from '../interface';
 import { FormColumnDecorator } from '..';
 import { ISchema } from '@formily/json-schema';
 import { GlobalSchemaColumnRegistry } from '../formily/schema';
-import { BoAttrSchema } from '@designable/core';
+import { BoAttrSchema } from '@clearx/designable-core';
 
 export interface FormField<T extends Entity, K extends FormColumnProps<T>> {
   /**

@@ -6,7 +6,7 @@ import {
   RemoteProps,
 } from '../interface';
 import { Dic, DicApi, format } from '@/api/system/dic';
-import { InternalRequest, createRequest } from '@/hook/request';
+import { InternalRequest, createRequest } from '@/hook/useRequest';
 import { Constant } from '@/constant';
 import { findPairValue, kvPairToObject } from './util';
 import _ from 'lodash';

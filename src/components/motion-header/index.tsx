@@ -8,36 +8,32 @@ import {
 } from '@douyinfe/semi-ui';
 import Header from '@douyinfe/semi-ui/lib/es/navigation/Header';
 import { IconBell, IconLanguage } from '@douyinfe/semi-icons';
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import { useRenderMenu } from '@/hook/menu';
-import { CurrentUserState } from '@/store/user';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
 import useAuthApi from '@/api/system/auth';
 import * as auth from '@/util/auth';
 import { SUPPORT_LOCALES } from './Locales';
-import { GlobalRegistry } from '@designable/core';
-import { TextWidget } from '@designable/react';
+import { TextWidget } from '@clearx/designable-react';
 import TForm from '../tform/TForm';
-import { AppContext } from '@/context';
-import { observer } from '@formily/reactive-react';
 import { changePasswordColumns } from '@/pages/system/user/ChangePassword';
 import _ from 'lodash';
 import { IconTheme } from '../icon';
 import Message from './MessageScrolling';
 import useDicApi, { Dic } from '@/api/system/dic';
 import useMessageApi from '@/api/message/message';
-import './styles.less';
-import { CurrentUserRouteState } from '@/store/menu';
+import './styles.scss';
 import Modular from '../modular/Modular';
-import { useAuth } from '@/hook/auth';
-import { TurboRoute } from '@/route/AppRouter';
+import { useAuth } from '@/hook/useAuth';
 import { changeTheme } from '@/theme';
+import UserMenu from '@/components/menu';
 
 import logo from '../../../public/favicon.png';
+import useStore from '@/hook/useStore';
+import { observer } from 'mobx-react';
+import { TurboRoute } from '@/route/AppRouter';
 
-const MotionHeader = observer(() => {
-  const app = useContext(AppContext);
+const MotionHeader = () => {
+  const { app, user, route } = useStore();
   const { selectTopKey } = app;
   const [unreadMessageCount, setUnreadMessageCount] = useState<
     number | undefined
@@ -45,23 +41,30 @@ const MotionHeader = observer(() => {
   const authApi = useAuthApi();
   const dicApi = useDicApi();
   const messageApi = useMessageApi();
-  const currentUser = useRecoilValue(CurrentUserState);
   const navigate = useNavigate();
 
-  const routes = useLoaderData() as TurboRoute[];
-
   const [messageTypes, setMessageTypes] = useState<Dic[]>([]);
+
+  const authentication = useAuth();
 
   // 取depth = 0的菜单项进行渲染
   // const topMenus = userRoutes.filter((route) => route?.depth === 0);
   const topMenus = useMemo(() => {
-    return routes.filter((r) => r.code !== 'profile' || r?.depth === 0) || [];
-  }, [routes]);
+    const depthOf = (
+      routes: TurboRoute[] = [],
+      depth: number,
+    ): TurboRoute[] => {
+      return routes.flatMap((route) => {
+        if (route.depth === 0) {
+          return [route];
+        } else {
+          return (route.children && depthOf(route.children, depth)) || [];
+        }
+      });
+    };
 
-  const renderMenu = useRenderMenu();
-  const setUserRouters = useSetRecoilState(CurrentUserRouteState);
-
-  const authentication = useAuth();
+    return depthOf(route.userRoutes, 0).filter((r) => r.code !== 'profile');
+  }, [route.userRoutes]);
 
   useEffect(() => {
     authentication &&
@@ -92,7 +95,7 @@ const MotionHeader = observer(() => {
       >
         <div
           onClick={() => {
-            app.selectTopKey = 'home';
+            app.setSelectTopKey('home');
             navigate('/home');
           }}
           className="cursor-pointer"
@@ -102,7 +105,7 @@ const MotionHeader = observer(() => {
             logo={<img src={logo} height={24} width={24}></img>}
           />
         </div>
-        {renderMenu(topMenus, 'top', app)}
+        <UserMenu routes={topMenus} source="top" />
         <Nav.Footer>
           <Dropdown
             key="message"
@@ -142,7 +145,7 @@ const MotionHeader = observer(() => {
                 <Dropdown.Item
                   active={app.theme === 'light'}
                   onClick={() => {
-                    app.theme = 'light';
+                    app.changeTheme('light');
                     changeTheme('light');
                   }}
                 >
@@ -151,7 +154,7 @@ const MotionHeader = observer(() => {
                 <Dropdown.Item
                   active={app.theme === 'dark'}
                   onClick={() => {
-                    app.theme = 'dark';
+                    app.changeTheme('dark');
                     changeTheme('dark');
                   }}
                 >
@@ -177,23 +180,19 @@ const MotionHeader = observer(() => {
             clickToHide
             render={
               <Dropdown.Menu>
-                {SUPPORT_LOCALES.map((locales) => {
+                {SUPPORT_LOCALES.map((local) => {
                   return (
                     <Dropdown.Item
                       type={
-                        GlobalRegistry.getDesignerLanguage() === locales.value
-                          ? 'primary'
-                          : 'tertiary'
+                        app.language === local.value ? 'primary' : 'tertiary'
                       }
-                      active={
-                        GlobalRegistry.getDesignerLanguage() === locales.value
-                      }
-                      key={locales.value}
+                      active={app.language === local.value}
+                      key={local.value}
                       onClick={(e) => {
-                        GlobalRegistry.setDesignerLanguage(locales.value);
+                        app.changeLanguage(local.value);
                       }}
                     >
-                      {locales.label}
+                      {local.label}
                     </Dropdown.Item>
                   );
                 })}
@@ -234,6 +233,7 @@ const MotionHeader = observer(() => {
                       },
                       immediateVisible: false,
                       onOk(formContext) {
+                        const currentUser = user.currentUser;
                         if (currentUser === undefined) {
                           Notification.error({
                             position: 'top',
@@ -289,7 +289,7 @@ const MotionHeader = observer(() => {
                             // 2.重定向s
                             navigate('/login');
                             // 3.清除用户路由
-                            setUserRouters([]);
+                            route.setRoutes([]);
                           }
                           Notification.success({
                             position: 'top',
@@ -306,12 +306,16 @@ const MotionHeader = observer(() => {
             }
             clickToHide
           >
-            <Avatar color="orange" src={currentUser?.avatar} size="medium" />
+            <Avatar
+              color="orange"
+              src={user.currentUser?.avatar}
+              size="medium"
+            />
           </Dropdown>
         </Nav.Footer>
       </Nav>
     </Header>
   );
-});
+};
 
-export default MotionHeader;
+export default observer(MotionHeader);

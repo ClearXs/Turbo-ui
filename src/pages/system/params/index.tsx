@@ -1,8 +1,9 @@
 import TableCrud from '@/components/table-crud';
 import ParamsHelper from './helper';
 import { Params } from '@/api/system/params';
+import { observer } from 'mobx-react';
 
-const ParamsComponent = () => {
+const ParamsPage = () => {
   return (
     <TableCrud<Params>
       mode="page"
@@ -12,4 +13,4 @@ const ParamsComponent = () => {
   );
 };
 
-export default ParamsComponent;
+export default observer(ParamsPage);

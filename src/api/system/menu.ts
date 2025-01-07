@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '..';
 
 export interface Menu extends Tree {
@@ -44,7 +44,7 @@ export type MenuTree = Menu & {
 
 export interface MenuApi extends TreeGeneralApi<MenuTree> {}
 
-export default function useMenuApi(): MenuApi {
+export default function useMenuApi() {
   const request = useRequest();
   return new TreeGeneralApiImpl<MenuTree>('/api/sys/menu', request);
 }

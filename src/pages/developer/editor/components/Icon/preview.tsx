@@ -4,9 +4,9 @@ import {
   GlobalRegistry,
   createBehavior,
   createResource,
-} from '@designable/core';
-import { DnFC } from '@designable/react';
-import { createFieldSchema } from '@designable/formily-semi';
+} from '@clearx/designable-core';
+import { DnFC } from '@clearx/designable-react';
+import { createFieldSchema } from '@clearx/designable-formily-semi';
 import { Icon as TurboIcon } from '@/components/tform/formily/components';
 import Locales from '../../locales/icon';
 import Schema from '../../schema/icon';
@@ -16,7 +16,7 @@ export const Icon: DnFC<React.ComponentProps<typeof TurboIcon>> = TurboIcon;
 Icon.Behavior = createBehavior({
   name: 'Icon',
   extends: ['Field'],
-  selector: (node) => node.props['x-component'] === 'Icon',
+  selector: (node) => node.props?.['x-component'] === 'Icon',
   designerProps: {
     propsSchema: createFieldSchema(Schema),
   },
@@ -39,7 +39,7 @@ Icon.Resource = createResource({
 
 GlobalRegistry.registerBOTransfer({
   adaptive(node) {
-    return node.props['x-component'] === 'Icon';
+    return node.props?.['x-component'] === 'Icon';
   },
   transform(node, root) {
     return GlobalBOFieldProps.transform(node, root, {

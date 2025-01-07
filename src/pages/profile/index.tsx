@@ -6,6 +6,8 @@ import MyPost from './MyPost';
 
 import IconText from '@/components/text/IconText';
 import { directGetIcon } from '@/components/icon';
+import { observer } from 'mobx-react';
+import _ from 'lodash';
 
 const Profile = () => {
   const [profileKey, setProfileKey] = useState('profile');
@@ -72,4 +74,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default observer(Profile);

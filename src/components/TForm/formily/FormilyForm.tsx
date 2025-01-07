@@ -29,7 +29,7 @@ import {
   ArrayItems,
   ArrayBase,
   Form,
-} from '@formily/semi';
+} from '@clearx/formily-semi';
 import { useMemo } from 'react';
 import React from 'react';
 import { Icon, Color } from './components';
@@ -129,7 +129,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
       icon={formContext.icon}
       visible={formContext.visible}
       closeOnEsc={modal?.closeOnEsc ?? true}
-      size={modal?.size ?? 'medium'}
+      size={modal?.size ?? 'large'}
       onCancel={() => {
         if (onCancel) {
           onCancel(formContext);

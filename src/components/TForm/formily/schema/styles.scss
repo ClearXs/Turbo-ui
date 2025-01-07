@@ -1,6 +1,6 @@
-@ui-prefix: semi;
+$ui-prefix: semi;
 .dn-fold-item {
-  .@{ui-prefix}-formily-item-label-content {
+  .#{$ui-prefix}-formily-item-label-content {
     overflow: visible;
   }
 

@@ -1,4 +1,4 @@
-import { GlobalRegistry } from '@designable/core';
+import { GlobalRegistry } from '@clearx/designable-core';
 import * as componentLocales from './locales';
 
 const locales = {

@@ -4,15 +4,15 @@ import { GlobalSchemaColumnRegistry } from './SchemaColumn';
 import { observer } from '@formily/reactive-react';
 import { ISchema, Schema, SchemaContext, useField } from '@formily/react';
 import { ArrayField } from '@formily/core';
-import { FoldItem } from '@designable/react-settings-form';
+import { FoldItem } from '@clearx/designable-react-settings-form';
 import {
   FormColorColumnProps,
   FormJsonArrayColumnProps,
 } from '../../components';
 import { useContext } from 'react';
 import { TFormContext } from '../../context/form';
-import './styles.less';
-import { ArrayItems } from '@formily/semi';
+import './styles.scss';
+import { ArrayItems } from '@clearx/formily-semi';
 import { FormContext } from '../../interface';
 
 const JsonArraySchema: SchemaColumn<FormJsonArrayColumnProps<any>> = {

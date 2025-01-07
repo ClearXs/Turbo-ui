@@ -5,8 +5,9 @@ import { Notification } from '@douyinfe/semi-ui';
 import { tryGetIcon } from '@/components/icon';
 import TableGrid from './TableGrid';
 import App from '@/components/app';
+import { observer } from 'mobx-react';
 
-const DataSource: React.FC = () => {
+const DataSourcePage = () => {
   const api = DataSourceHelper.getApi();
   const { modular } = App.useApp();
 
@@ -84,4 +85,4 @@ const DataSource: React.FC = () => {
   );
 };
 
-export default DataSource;
+export default observer(DataSourcePage);

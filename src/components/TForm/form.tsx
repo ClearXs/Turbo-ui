@@ -39,7 +39,7 @@ import {
   SlotFormField,
 } from './components';
 import { ISchema } from '@formily/json-schema';
-import { BoAttrSchema } from '@designable/core';
+import { BoAttrSchema } from '@clearx/designable-core';
 import { GlobalSchemaColumnRegistry } from './formily/schema';
 import { DateRangeFormField } from './components/date/DateRangeFormField';
 import { TimeRangeFormField } from './components/date/TimeRangeFormField';

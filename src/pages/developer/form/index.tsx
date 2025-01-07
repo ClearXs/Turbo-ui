@@ -11,8 +11,9 @@ import _ from 'lodash';
 import FormEditor from '../editor/FormEditor';
 import { tryGetIcon } from '@/components/icon';
 import useBoApi from '@/api/developer/bo';
+import { observer } from 'mobx-react';
 
-const Form: React.FC = () => {
+const FormPage = () => {
   const boApi = useBoApi();
   const [categoryId, setCategoryId] = useState<string>();
   const [showEditor, setShowEditor] = useState<boolean>(false);
@@ -90,4 +91,4 @@ const Form: React.FC = () => {
   );
 };
 
-export default Form;
+export default observer(FormPage);

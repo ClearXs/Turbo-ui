@@ -10,7 +10,7 @@ import { Entity } from '@/api';
 import { ISchema, SchemaTypes } from '@formily/json-schema';
 import { uid } from '@/util/utils';
 import { chunk } from '../../util/util';
-import { BoAttrSchema, BoSchema, FieldType } from '@designable/core';
+import { BoAttrSchema, BoSchema, FieldType } from '@clearx/designable-core';
 
 /**
  * 基于Column实例创建ISchema

@@ -4,11 +4,11 @@ import { GlobalSchemaColumnRegistry, toSchema } from './SchemaColumn';
 import { observer } from '@formily/reactive-react';
 import { RecursionField, useField } from '@formily/react';
 import { ObjectField } from '@formily/core';
-import { FoldItem } from '@designable/react-settings-form';
+import { FoldItem } from '@clearx/designable-react-settings-form';
 import { FormJsonObjectColumnProps } from '../../components';
 import { useContext } from 'react';
 import { TFormContext } from '../../context/form';
-import './styles.less';
+import './styles.scss';
 
 const JsonObjectSchema: SchemaColumn<FormJsonObjectColumnProps<any>> = {
   adapt: (column, formContext) => {

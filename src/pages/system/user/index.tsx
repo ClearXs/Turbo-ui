@@ -18,8 +18,9 @@ import ChangePasswordForm from './ChangePassword';
 import TreePanel from '@/components/tree/TreePanel';
 import Binary from '@/components/binary';
 import { tryGetIcon } from '@/components/icon';
+import { observer } from 'mobx-react';
 
-export const User: React.FC = () => {
+export const UserPage = () => {
   const userApi = useUserApi();
   const [orgId, setOrgId] = useState<string>();
   const [showBindingRole, setShowBindingRole] = useState<boolean>(false);
@@ -372,4 +373,4 @@ const OrgTreeSider: React.FC<{
   );
 };
 
-export default User;
+export default observer(UserPage);

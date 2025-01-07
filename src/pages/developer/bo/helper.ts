@@ -47,9 +47,6 @@ const BoHelper: Helper<Bo, BoApi> = {
           url: '/api/dev/datasource/list',
         },
         showClear: true,
-        relation: {
-          helper: DataSourceHelper,
-        },
       } as TableSelectColumnProps<Bo>,
       {
         label: '是否物化',

@@ -11,8 +11,9 @@ import _ from 'lodash';
 import useRoleMenuApi from '@/api/system/rolemenu';
 import Modular from '@/components/modular/Modular';
 import { IconAuthorize } from '@/components/icon/collection/IconAuthorize';
+import { observer } from 'mobx-react';
 
-const RoleComponent: React.FC = () => {
+const RolePage = () => {
   const roleApi = useRoleApi();
   const [showGrant, setShowGrant] = useState<boolean>(false);
   const roleRef = useRef<Role>();
@@ -88,4 +89,4 @@ const RoleComponent: React.FC = () => {
   );
 };
 
-export default RoleComponent;
+export default observer(RolePage);

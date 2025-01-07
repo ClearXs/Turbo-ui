@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { GeneralApi, GeneralApiImpl, R, TenantEntity } from '..';
 
 export interface Attachment extends TenantEntity {
@@ -23,7 +23,7 @@ interface AttachmentApi extends GeneralApi<Attachment> {
   download: (filename: string) => Promise<R<any>>;
 }
 
-class AttachmentApiImpl
+export class AttachmentApiImpl
   extends GeneralApiImpl<Attachment>
   implements AttachmentApi
 {
@@ -41,7 +41,7 @@ class AttachmentApiImpl
   }
 }
 
-export default function useAttachmentApi(): AttachmentApi {
+export default function useAttachmentApi() {
   const request = useRequest();
   return new AttachmentApiImpl('/api/sys/attachment', request);
 }

@@ -1,8 +1,8 @@
 import { createForm } from '@formily/core';
 import { useMemo } from 'react';
-import { transformToSchema } from '@designable/formily-transformer';
-import { Form } from '@formily/semi';
-import { TreeNode } from '@designable/core';
+import { transformToSchema } from '@clearx/designable-formily-transformer';
+import { Form } from '@clearx/formily-semi';
+import { TreeNode } from '@clearx/designable-core';
 import { SchemaField } from '@/components/tform/formily/FormilyForm';
 
 export type IPreviewWidgetProps = {

@@ -44,9 +44,6 @@ const FormHelper: Helper<Form, FormApi> = {
         remote: {
           url: '/api/dev/bo/list',
         },
-        relation: {
-          helper: BoHelper,
-        },
       },
       {
         label: '备注',

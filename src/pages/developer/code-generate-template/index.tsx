@@ -6,8 +6,9 @@ import TreePanel from '@/components/tree/TreePanel';
 import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import { useState } from 'react';
+import { observer } from 'mobx-react';
 
-const CodeGenerateTemplateComponent = () => {
+const CodeGenerateTemplatePage = () => {
   const [categoryId, setCategoryId] = useState<string>();
 
   return (
@@ -41,4 +42,4 @@ const CodeGenerateTemplateComponent = () => {
   );
 };
 
-export default CodeGenerateTemplateComponent;
+export default observer(CodeGenerateTemplatePage);

@@ -6,7 +6,7 @@ import {
   FormContext,
   FormProps,
 } from '../interface';
-import { BoAttrSchema, FieldType } from '@designable/core';
+import { BoAttrSchema, FieldType } from '@clearx/designable-core';
 import { Entity } from '@/api';
 
 export type FormilyFormContext<T extends Entity> = FormContext<T> & {

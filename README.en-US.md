@@ -13,7 +13,7 @@ Here is a minimalist-style backend management UI framework.
 
 - 👊 Simple: Incorporating Semi-UI for a crisp and refreshing interface style.
 - 💢 Leading Edge: The built-in form designer based on Alibaba's Designable for secondary development.
-- 🥮 State Manager: Utilizing Recoil for internal state management of the built-in components.
+- 🥮 State Manager: Utilizing mobx for internal state management of the built-in components.
 - 🏟 Practical: In addition to the provided form designer, it also boasts a wide array of user-friendly components.
 - ...
 
@@ -33,6 +33,12 @@ npm run dev
 
 ```bash
 npm run build
+```
+
+## Document
+
+```bash
+pnpm run storybook
 ```
 
 ## Preview

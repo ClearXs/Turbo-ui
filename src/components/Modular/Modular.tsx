@@ -17,7 +17,7 @@ const Modular = (props: ModularProps) => {
     scrollX = true,
     scrollY = true,
     closable = true,
-    size = 'medium',
+    size = 'large',
     fullScreen,
     afterClose,
   } = props;

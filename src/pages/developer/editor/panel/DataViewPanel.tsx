@@ -6,7 +6,7 @@ import {
   ViewportPanel,
   Workspace,
   WorkspacePanel,
-} from '@designable/react';
+} from '@clearx/designable-react';
 import DataViewForm from './data-view-form/DataViewForm';
 import TableCrud from '@/components/table-crud';
 import { useKernel } from '../kernel';

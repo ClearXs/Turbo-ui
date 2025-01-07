@@ -4,8 +4,9 @@ import SequenceHelper from './helper';
 import { directGetIcon } from '@/components/icon';
 import App from '@/components/app';
 import { Toast, Typography } from '@douyinfe/semi-ui';
+import { observer } from 'mobx-react';
 
-const SequenceComponent: React.FC = () => {
+const SequencePage = () => {
   const sequenceApi = useSequenceApi();
   const { modular } = App.useApp();
 
@@ -72,4 +73,4 @@ const SequenceComponent: React.FC = () => {
   );
 };
 
-export default SequenceComponent;
+export default observer(SequencePage);

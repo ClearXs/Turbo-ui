@@ -1,4 +1,4 @@
-@ui-prefix: semi;
+$ui-prefix: semi;
 
 .dn-data-view-form-wrapper {
   height: 100%;
@@ -16,7 +16,7 @@
     overflow: overlay;
   }
 
-  .@{ui-prefix}-formily-item {
+  .#{$ui-prefix}-formily-item {
     border-bottom: 1px solid var(--semi-color-border);
     padding-bottom: 8px;
     margin-bottom: 8px;
@@ -26,16 +26,16 @@
       font-size: 13px;
     }
 
-    .@{ui-prefix}-formily-item-control-content-component {
+    .#{$ui-prefix}-formily-item-control-content-component {
       display: flex;
       align-items: center;
       justify-content: flex-end;
 
-      & > .@{ui-prefix}-radio-group {
+      & > .#{$ui-prefix}-radio-group {
         display: flex !important;
         width: 100%;
 
-        .@{ui-prefix}-radio-button-wrapper {
+        .#{$ui-prefix}-radio-button-wrapper {
           display: flex;
           justify-content: center;
           padding: 0 6px !important;
@@ -44,13 +44,13 @@
         }
       }
 
-      & > .@{ui-prefix}-slider {
+      & > .#{$ui-prefix}-slider {
         flex-shrink: 0;
         min-width: 0;
         width: 100%;
       }
 
-      & > .@{ui-prefix}-select {
+      & > .#{$ui-prefix}-select {
         max-width: 140px;
       }
     }

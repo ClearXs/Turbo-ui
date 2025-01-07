@@ -7,13 +7,18 @@ export default defineConfig(({ command, mode }) => {
   // 根据当前工作目录中的 `mode` 加载 .env 文件
   // 设置第三个参数为 '' 来加载所有环境变量，而不管是否有 `VITE_` 前缀。
   const env = loadEnv(mode, process.cwd(), '');
-  const apiUrl = env.API_URL || 'http://localhost:8600';
+  const apiUrl = env.API_URL;
   return {
-    plugins: [react()],
+    plugins: [
+      react({
+        tsDecorators: true,
+      }),
+    ],
     build: {
       outDir: 'dist',
       sourcemap: false,
     },
+    esbuild: { target: 'es2022' },
     resolve: {
       alias: [
         { find: /^~/, replacement: '' },
@@ -30,6 +35,12 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
+    optimizeDeps: {
+      include: ['react/jsx-runtime'],
+    },
+    define: {
+      _global: {},
+    },
     /**
      * [plugin:vite:css] Inline JavaScript is not enabled. Is it set in your options?
      *
@@ -37,13 +48,7 @@ export default defineConfig(({ command, mode }) => {
      *   https://blog.csdn.net/baobao_123456789/article/details/113986961
      *   https://stackoverflow.com/questions/46729091/enable-inline-javascript-in-less
      */
-    css: {
-      preprocessorOptions: {
-        less: {
-          javascriptEnabled: true,
-        },
-      },
-    },
+    css: {},
     test: {
       css: false,
       include: ['src/**/*.test.ts'],

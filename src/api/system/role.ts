@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { BaseEntity, GeneralApi, GeneralApiImpl, R } from '..';
 
 export interface Role extends BaseEntity {
@@ -29,7 +29,7 @@ export interface RoleApi extends GeneralApi<Role> {
   ) => Promise<R<boolean>>;
 }
 
-class RoleApiImpl extends GeneralApiImpl<Role> implements RoleApi {
+export class RoleApiImpl extends GeneralApiImpl<Role> implements RoleApi {
   grant<P extends { roleId: string; menuId: string[] }>(
     params: P,
   ): Promise<R<boolean>> {
@@ -39,9 +39,7 @@ class RoleApiImpl extends GeneralApiImpl<Role> implements RoleApi {
   }
 }
 
-const useRoleApi = (): RoleApi => {
+export default function useRoleApi() {
   const request = useRequest();
   return new RoleApiImpl('/api/sys/role', request);
-};
-
-export default useRoleApi;
+}

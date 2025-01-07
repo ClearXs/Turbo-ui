@@ -8,8 +8,9 @@ import { useMemo, useState } from 'react';
 import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
 import TreePanel from '@/components/tree/TreePanel';
 import useReaction from '@/components/tform/formily/reaction';
+import { observer } from 'mobx-react';
 
-const Dictionary: React.FC = () => {
+const DictionaryPage = () => {
   const [dicId, setDicId] = useState<string>();
 
   const columns: FormColumnProps<Dic>[] = useMemo(() => {
@@ -123,4 +124,4 @@ const Dictionary: React.FC = () => {
   );
 };
 
-export default Dictionary;
+export default observer(DictionaryPage);

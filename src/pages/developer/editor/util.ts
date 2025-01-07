@@ -2,7 +2,7 @@ import { TableColumn } from '@/api/developer/datasource';
 import { DataType, DataView } from './kernel';
 import { ColumnType } from '@/components/tform/interface';
 import _ from 'lodash';
-import { BoSchema } from '@designable/core';
+import { BoSchema } from '@clearx/designable-core';
 import { from } from '@/components/tform/formily/schema';
 
 // initial database datatype mapping to table column type

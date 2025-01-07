@@ -2,8 +2,9 @@ import { Org as OrgEntity } from '@/api/system/org';
 import TableCrud from '@/components/table-crud';
 import OrgHelper from './helper';
 import { tryGetIcon } from '@/components/icon/shared';
+import { observer } from 'mobx-react';
 
-const Org: React.FC = () => {
+const OrgPage = () => {
   return (
     <TableCrud<OrgEntity>
       mode="tree"
@@ -72,4 +73,4 @@ const Org: React.FC = () => {
   );
 };
 
-export default Org;
+export default observer(OrgPage);

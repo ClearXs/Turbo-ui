@@ -1,9 +1,9 @@
 import React from 'react';
 import { observer } from '@formily/reactive-react';
 import useDataView from '../hook/useDataView';
-import { FoldItem } from '@designable/react-settings-form';
+import { FoldItem } from '@clearx/designable-react-settings-form';
 import { useField } from '@formily/react';
-import { usePrefix } from '@designable/react';
+import { usePrefix } from '@clearx/designable-react';
 import cls from 'classnames';
 import { Typography } from '@douyinfe/semi-ui';
 import { OperateToolbar } from '@/components/table-crud/interface';

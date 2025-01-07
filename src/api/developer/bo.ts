@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import {
   CategoryEntity,
   GeneralApi,
@@ -6,7 +6,7 @@ import {
   R,
   TenantEntity,
 } from '..';
-import { BoSchema } from '@designable/core';
+import { BoSchema } from '@clearx/designable-core';
 
 export interface Bo extends TenantEntity, CategoryEntity {
   /**
