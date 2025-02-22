@@ -125,7 +125,7 @@ const ContentTabs = () => {
 
   return (
     <Tabs
-      className="w-[100%]"
+      className="max-w-[100%] overflow-x-auto"
       style={{ backgroundColor: 'var(--semi-color-bg-0)' }}
       type="card"
       onTabClick={(activeKey) => tabClick(activeKey)}

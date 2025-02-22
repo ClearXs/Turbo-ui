@@ -3,16 +3,18 @@ import { Icon, IconSystem, getIconModel } from '@/components/icon/shared';
 import {
   Col,
   Empty,
+  Input,
   Notification,
   Row,
   TabPane,
   Tabs,
   Tooltip,
 } from '@douyinfe/semi-ui';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
+import copy from 'clipboard-copy';
 
 export type IconViewProps = {
   // 是否以tooltip形式显示名称
@@ -30,7 +32,11 @@ const IconList: React.FC<IconViewProps> = ({
   showName = true,
   splitNum = 6,
   chooseIcon = (key) => {
-    Notification.info({ position: 'top', content: key });
+    copy(key);
+    Notification.info({
+      position: 'top',
+      content: `Copy ${key} to pasteboard`,
+    });
   },
 }) => {
   const iconSystem = ['semi', 'system'];
@@ -38,13 +44,25 @@ const IconList: React.FC<IconViewProps> = ({
   const [iconTab, setIconTab] = useState<IconSystem>('semi');
   const [iconViews, setIconViews] = useState<Icon[][]>([]);
 
+  const iconsRef = useRef<Icon[]>();
+
   useEffect(() => {
     const iconModel = getIconModel(iconTab);
     const icons = iconModel.getIconList();
+    iconsRef.current = icons;
     // 按照切分数量把其切分各个区块
     const iconChunk = _.chunk(icons, splitNum);
     setIconViews(iconChunk);
   }, [iconTab]);
+
+  const search = useCallback((text: string) => {
+    const icons = iconsRef.current?.filter((icon) =>
+      icon.key.toLowerCase().includes(text.toLowerCase()),
+    );
+    // 按照切分数量把其切分各个区块
+    const iconChunk = _.chunk(icons, splitNum);
+    setIconViews(iconChunk);
+  }, []);
 
   return (
     <>
@@ -58,12 +76,51 @@ const IconList: React.FC<IconViewProps> = ({
         {iconSystem.map((type) => {
           return (
             <TabPane itemKey={type} tab={type}>
-              {renderIconViews(
-                iconViews,
-                tooltip,
-                showName,
-                splitNum,
-                chooseIcon,
+              <div className="w-[50%] flex items-center mt-2 mb-2 justify-center">
+                <Input placeholder="请输入图标名" onChange={search}></Input>
+              </div>
+              {iconViews.length > 0 ? (
+                <div className="h-[75vh] overflow-y-auto overflow-x-hidden">
+                  {iconViews.map((icons) => {
+                    return (
+                      <Row gutter={24}>
+                        {icons.map((icon) => {
+                          const IconComponent = icon.component;
+                          const IconView = (
+                            <div
+                              className="flex flex-col items-center gap-4 m-2 p-3 hover:bg-slate-100 hover:cursor-pointer"
+                              onClick={() => {
+                                // TODO 选择时的回调
+                                chooseIcon?.(icon.key);
+                              }}
+                            >
+                              <IconComponent size="extra-large" />
+                              {showName && (
+                                <Text type="primary">{icon.key}</Text>
+                              )}
+                            </div>
+                          );
+
+                          return (
+                            <Col span={24 / splitNum}>
+                              {tooltip == true ? (
+                                <Tooltip content={icon.key}>{IconView}</Tooltip>
+                              ) : (
+                                IconView
+                              )}
+                            </Col>
+                          );
+                        })}
+                      </Row>
+                    );
+                  })}
+                </div>
+              ) : (
+                <Empty
+                  className="h-[100%] justify-center"
+                  image={<IllustrationConstruction />}
+                  description={<Text type="quaternary">暂无数据</Text>}
+                />
               )}
             </TabPane>
           );
@@ -72,58 +129,4 @@ const IconList: React.FC<IconViewProps> = ({
     </>
   );
 };
-
-function renderIconViews(
-  iconViews: Icon[][],
-  tooltip = false,
-  showName = true,
-  splitNum: number,
-  chooseIcon?: (key: string) => void,
-) {
-  return (
-    <>
-      {iconViews.length > 0 ? (
-        <div className="h-[75vh] overflow-y-auto overflow-x-hidden">
-          {iconViews.map((icons) => {
-            return (
-              <Row gutter={24}>
-                {icons.map((icon) => {
-                  const IconComponent = icon.component;
-                  const IconView = (
-                    <div
-                      className="flex flex-col items-center gap-4 m-2 p-3 hover:bg-slate-100 hover:cursor-pointer"
-                      onClick={() => {
-                        // TODO 选择时的回调
-                        chooseIcon?.(icon.key);
-                      }}
-                    >
-                      <IconComponent size="extra-large" />
-                      {showName && <Text type="primary">{icon.key}</Text>}
-                    </div>
-                  );
-
-                  return (
-                    <Col span={24 / splitNum}>
-                      {tooltip == true ? (
-                        <Tooltip content={icon.key}>{IconView}</Tooltip>
-                      ) : (
-                        IconView
-                      )}
-                    </Col>
-                  );
-                })}
-              </Row>
-            );
-          })}
-        </div>
-      ) : (
-        <Empty
-          className="h-[100%] justify-center"
-          image={<IllustrationConstruction />}
-          description={<Text type="quaternary">暂无数据</Text>}
-        />
-      )}
-    </>
-  );
-}
 export default IconList;

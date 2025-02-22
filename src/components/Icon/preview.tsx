@@ -24,7 +24,7 @@ const Icon: React.FC<IconProps> = ({
           return;
         }
         const modal = Modal.info({
-          size: 'medium',
+          size: 'large',
           title: 'Icon Resources',
           content: (
             <IconList
@@ -32,8 +32,7 @@ const Icon: React.FC<IconProps> = ({
                 onChooseIcon?.(key);
                 modal.destroy();
               }}
-              showName={false}
-              splitNum={3}
+              splitNum={4}
             />
           ),
           footer: null,

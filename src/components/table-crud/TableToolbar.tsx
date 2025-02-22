@@ -249,11 +249,46 @@ function TableToolbar<T extends Entity>(props: TableToolbarProps<T>) {
                   tableContext.mode = value;
                 }}
                 options={[
-                  { value: 'page', label: '分页模式' },
-                  { value: 'cardPage', label: '卡片模式' },
-                  { value: 'list', label: '列表模式' },
-                  { value: 'tree', label: '树形模式' },
-                  { value: 'scrollingList', label: '滚动列表' },
+                  {
+                    value: 'page',
+                    label: (
+                      <Tooltip content="分页模式">
+                        {tryGetIcon('IconPageModel')}
+                      </Tooltip>
+                    ),
+                  },
+                  {
+                    value: 'cardPage',
+                    label: (
+                      <Tooltip content="卡片模式">
+                        {tryGetIcon('IconCardModel')}
+                      </Tooltip>
+                    ),
+                  },
+                  {
+                    value: 'list',
+                    label: (
+                      <Tooltip content="列表模式">
+                        {tryGetIcon('IconListModel')}
+                      </Tooltip>
+                    ),
+                  },
+                  {
+                    value: 'tree',
+                    label: (
+                      <Tooltip content="树形模式">
+                        {tryGetIcon('IconTreeModel')}
+                      </Tooltip>
+                    ),
+                  },
+                  {
+                    value: 'scrollingList',
+                    label: (
+                      <Tooltip content="滚动列表模式">
+                        {tryGetIcon('IconScrollingListModel')}
+                      </Tooltip>
+                    ),
+                  },
                 ]}
               />
             )}

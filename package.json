@@ -66,6 +66,7 @@
     "@uiw/react-codemirror": "^4.23.7",
     "axios": "^1.7.9",
     "classnames": "^2.5.1",
+    "clipboard-copy": "^4.0.1",
     "dnd-core": "^16.0.1",
     "framer-motion": "^11.15.0",
     "iconoir": "^7.10.1",

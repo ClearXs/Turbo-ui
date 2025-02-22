@@ -55,9 +55,8 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         ellipsis: true,
         align: 'center',
         require: true,
-        table: false,
+        table: true,
         extraText: '编码需要唯一',
-        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '图标',

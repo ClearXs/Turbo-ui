@@ -32,6 +32,11 @@ import { NavigateFunction } from 'react-router-dom';
 import Login from '@/pages/login';
 
 import * as auth from '@/util/auth';
+import Chat from '@/pages/ai/chat';
+import Model from '@/pages/ai/model';
+import Agent from '@/pages/ai/agent';
+import Tools from '@/pages/ai/tools';
+import Credential from '@/pages/ai/credential';
 
 const routes: TurboRoute[] = [
   {
@@ -149,6 +154,33 @@ const routes: TurboRoute[] = [
     path: '/developer/sequence',
     type: 'system',
     element: <SequenceComponent />,
+  },
+
+  {
+    path: '/ai/chat',
+    type: 'system',
+    element: <Chat />,
+  },
+  {
+    path: '/ai/model',
+    type: 'system',
+    element: <Model />,
+  },
+
+  {
+    path: '/ai/agent',
+    type: 'system',
+    element: <Agent />,
+  },
+  {
+    path: '/ai/tools',
+    type: 'system',
+    element: <Tools />,
+  },
+  {
+    path: '/ai/credential',
+    type: 'system',
+    element: <Credential />,
   },
 ];
 
