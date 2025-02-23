@@ -7,7 +7,7 @@ import {
 } from '@clearx/designable-core';
 import { DnFC } from '@clearx/designable-react';
 import { createFieldSchema } from '@clearx/designable-formily-semi';
-import { Icon as TurboIcon } from '@/components/tform/formily/components';
+import { Icon as TurboIcon } from '@/components/uni-form/formily/components';
 import Locales from '../../locales/icon';
 import Schema from '../../schema/icon';
 

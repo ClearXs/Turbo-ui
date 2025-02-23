@@ -8,7 +8,6 @@ import useStorageConfigApi, {
 } from '@/api/developer/storageConfig';
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Notification } from '@douyinfe/semi-ui';
-import { observer } from 'mobx-react';
 
 const StorageConfigPage = () => {
   const api = useStorageConfigApi();
@@ -90,7 +89,7 @@ const StorageConfigPage = () => {
     <TableCrud<StorageConfig>
       mode="page"
       columns={columns}
-      useApi={useStorageConfigApi}
+      useApi={api}
       operateBar={{
         append: [
           (record) => {
@@ -144,4 +143,4 @@ const StorageConfigPage = () => {
   );
 };
 
-export default observer(StorageConfigPage);
+export default StorageConfigPage;

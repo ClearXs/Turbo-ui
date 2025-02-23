@@ -1,9 +1,9 @@
-import TForm from '@/components/tform/TForm';
+import UniForm from '@/components/uni-form/UniForm';
 import type { Meta, StoryObj } from '@storybook/react';
 import { sampleColumns } from './column';
 import { Sample } from '../interface';
 import { useRef } from 'react';
-import { FormColumnProps, FormContext } from '@/components/tform';
+import { FormColumnProps, FormContext } from '@/components/uni-form';
 import { Button } from '@douyinfe/semi-ui';
 import { fn } from '@storybook/test';
 import { IconUpload } from '@douyinfe/semi-icons';
@@ -17,9 +17,9 @@ const directionOptions = ['rtl', 'ltr'];
 const tooltipLayoutOptions = ['icon', 'text'];
 const feedbackLayoutOptions = ['loose', 'terse', 'popover'];
 
-const meta: Meta<typeof TForm<Sample>> = {
-  title: 'Component/TForm',
-  component: TForm,
+const meta: Meta<typeof UniForm<Sample>> = {
+  title: 'Component/UniForm',
+  component: UniForm,
   argTypes: {
     mode: {
       options: modeOptions,
@@ -311,7 +311,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -320,7 +320,7 @@ export const Input: Story = {
     columns: [{ field: 'id', type: 'input', label: 'id' }],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -329,7 +329,7 @@ export const Number: Story = {
     columns: [{ field: 'id', type: 'number', label: 'id' }],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -338,7 +338,7 @@ export const Textarea: Story = {
     columns: [{ field: 'id', type: 'textarea', label: 'id' }],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -347,7 +347,7 @@ export const Password: Story = {
     columns: [{ field: 'id', type: 'password', label: 'id' }],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -356,7 +356,7 @@ export const Rate: Story = {
     columns: [{ field: 'id', type: 'rate', label: 'id' }],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -365,7 +365,7 @@ export const Slider: Story = {
     columns: [{ field: 'id', type: 'slider', label: 'id' }],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -381,7 +381,7 @@ export const Select: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -403,7 +403,7 @@ export const TreeSelect: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -425,7 +425,7 @@ export const Cascade: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -441,7 +441,7 @@ export const Transfer: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -456,7 +456,7 @@ export const Radio: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -471,7 +471,7 @@ export const Switch: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -487,7 +487,7 @@ export const Checkbox: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -502,7 +502,7 @@ export const Date: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -518,7 +518,7 @@ export const DateRange: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -533,7 +533,7 @@ export const Time: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -548,7 +548,7 @@ export const TimeRange: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -569,7 +569,7 @@ export const Upload: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -587,7 +587,7 @@ export const UploadDrag: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -602,7 +602,7 @@ export const Icon: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -617,7 +617,7 @@ export const Color: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -633,7 +633,7 @@ export const SelectGroup: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -660,7 +660,7 @@ export const JsonObject: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -687,7 +687,7 @@ export const JsonArray: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -702,7 +702,7 @@ export const User: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -717,7 +717,7 @@ export const Role: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -732,7 +732,7 @@ export const Org: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -747,7 +747,7 @@ export const Post: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -762,7 +762,7 @@ export const CodeEditor: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -778,7 +778,7 @@ export const Slot: Story = {
     ],
   },
   render: (args) => {
-    return <TForm<Sample> {...args}></TForm>;
+    return <UniForm<Sample> {...args}></UniForm>;
   },
 };
 
@@ -793,7 +793,7 @@ export const Dialog: Story = {
     const formContextRef = useRef<FormContext<Sample>>();
     return (
       <>
-        <TForm<Sample>
+        <UniForm<Sample>
           {...args}
           getFormContext={(context) => {
             formContextRef.current = context;
@@ -807,7 +807,7 @@ export const Dialog: Story = {
             context.close();
             args.onOk?.(context);
           }}
-        ></TForm>
+        ></UniForm>
         <Button onClick={() => formContextRef.current?.open()}>打开</Button>
       </>
     );
@@ -831,7 +831,7 @@ export const Performance: Story = {
     const formContextRef = useRef<FormContext<Sample>>();
     return (
       <>
-        <TForm<Sample>
+        <UniForm<Sample>
           {...args}
           getFormContext={(context) => {
             formContextRef.current = context;
@@ -845,7 +845,7 @@ export const Performance: Story = {
             context.close();
             args.onOk?.(context);
           }}
-        ></TForm>
+        ></UniForm>
         <Button onClick={() => formContextRef.current?.open()}>打开</Button>
       </>
     );

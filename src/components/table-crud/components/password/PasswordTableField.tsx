@@ -2,9 +2,9 @@ import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { TablePasswordColumnProps } from '.';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { Form, Typography } from '@douyinfe/semi-ui';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { useState } from 'react';
 import { directGetIcon } from '@/components/icon';
 

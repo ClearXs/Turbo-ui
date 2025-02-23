@@ -7,7 +7,7 @@ import {
   FormPath,
 } from '@formily/shared';
 import { IGeneralFieldState } from '@formily/core';
-import { untracked, hasCollected } from '@formily/reactive';
+import { untracked, computed } from 'mobx';
 import {
   traverse,
   traverseSchema,
@@ -117,7 +117,7 @@ export const patchSchemaCompile = (
 ) => {
   traverseSchema(sourceSchema, (value, path, omitCompile) => {
     let compiled = value;
-    let collected = hasCollected(() => {
+    let collected = computed(() => {
       if (!omitCompile) {
         compiled = compile(value, scope);
       }

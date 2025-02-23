@@ -4,24 +4,23 @@ import { useContext, useMemo, useRef } from 'react';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
 import { TableContext, TableCrudProps } from './interface';
 import { Entity } from '@/api';
-import { chunk } from '../tform/util/util';
+import { chunk } from '../uni-form/util/util';
 import { TableCrudContext } from './context/table';
-import { observable } from '@formily/reactive';
-import { observer } from '@formily/reactive-react';
 import ButtonSpace from '../button-space/ButtonSpace';
+import useTableCrudContext from './hook/table';
 
 export type TableHeaderProps<T extends Entity> = {
   tableProps: TableCrudProps<T>;
 };
 
-const TableHeader = observer(<T extends Entity>(props: TableHeaderProps<T>) => {
+const TableHeader = <T extends Entity>(props: TableHeaderProps<T>) => {
   const formApiRef = useRef<FormApi | undefined>(undefined);
 
   const header = useMemo(() => {
-    return observable({ showCollapseColumn: false });
+    return { showCollapseColumn: false };
   }, []);
 
-  const tableContext = useContext<TableContext<T>>(TableCrudContext);
+  const tableContext = useTableCrudContext();
   const { columns = [], params, search = {} } = props.tableProps;
   const {
     show = true,
@@ -154,5 +153,6 @@ const TableHeader = observer(<T extends Entity>(props: TableHeaderProps<T>) => {
       </Form>
     )
   );
-});
+};
+
 export default TableHeader;

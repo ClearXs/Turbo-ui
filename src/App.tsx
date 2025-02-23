@@ -18,6 +18,7 @@ import useAuthApi from './api/system/auth';
 import { observer } from 'mobx-react';
 import { reaction } from 'mobx';
 import { TurboRoute } from './route/AppRouter';
+import SuspendPanel from './pages/suspend';
 
 const App = () => {
   const location = useLocation();
@@ -94,6 +95,7 @@ const App = () => {
           <MotionHeader />
           <MotionContent />
         </Layout>
+        <SuspendPanel />
       </SystemApp>
     </Suspense>
   );

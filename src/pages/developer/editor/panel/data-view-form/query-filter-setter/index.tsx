@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import DraggableColumnList from '@/components/table-crud/DraggableColumnList';
 import useDataView from '../hook/useDataView';
 import { FoldItem } from '@clearx/designable-react-settings-form';

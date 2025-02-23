@@ -11,13 +11,15 @@ import _ from 'lodash';
 import FormEditor from '../editor/FormEditor';
 import { tryGetIcon } from '@/components/icon';
 import useBoApi from '@/api/developer/bo';
-import { observer } from 'mobx-react';
 
 const FormPage = () => {
   const boApi = useBoApi();
   const [categoryId, setCategoryId] = useState<string>();
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const formEntityRef = useRef<FormEntity>();
+
+  const categoryApi = CategoryHelper.getApi();
+  const formApi = FormHelper.getApi();
 
   const editable = useMemo(() => {
     return (record: FormEntity) => {
@@ -45,7 +47,7 @@ const FormPage = () => {
             columns={CategoryHelper.getColumns()}
             params={{ funcCode: 'form' }}
             addDefaultValue={{ funcCode: 'form' }}
-            useApi={CategoryHelper.getApi}
+            useApi={categoryApi}
             onSelectChange={setCategoryId}
             depth={0}
             root="表单分类"
@@ -57,7 +59,7 @@ const FormPage = () => {
           <CategoryTableCrud<FormEntity>
             mode="cardPage"
             columns={FormHelper.getColumns()}
-            useApi={FormHelper.getApi}
+            useApi={formApi}
             params={{ categoryId: categoryId }}
             funcCode="form"
             operateBar={{
@@ -91,4 +93,4 @@ const FormPage = () => {
   );
 };
 
-export default observer(FormPage);
+export default FormPage;

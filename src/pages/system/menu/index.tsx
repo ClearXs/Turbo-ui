@@ -3,14 +3,15 @@ import TableCrud from '@/components/table-crud/TableCrud';
 import { tryGetIcon } from '@/components/icon/shared';
 import _ from 'lodash';
 import MenuHelper from './helper';
-import { observer } from 'mobx-react';
 
 const MenuPage = () => {
+  const menuApi = MenuHelper.getApi();
+
   return (
     <TableCrud<MenuTree>
       mode="tree"
       columns={MenuHelper.getColumns()}
-      useApi={MenuHelper.getApi}
+      useApi={menuApi}
       expandAllRows
       toolbar={{
         append: [
@@ -74,4 +75,4 @@ const MenuPage = () => {
   );
 };
 
-export default observer(MenuPage);
+export default MenuPage;

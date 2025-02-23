@@ -16,9 +16,9 @@ import { observer } from '@formily/react';
 import schema from './schema';
 import './locales';
 import { GlobalRegistry, TreeNode } from '@clearx/designable-core';
-import { SchemaField } from '@/components/tform/formily/FormilyForm';
+import { SchemaField } from '@/components/uni-form/formily/FormilyForm';
 import { useKernel } from '../../kernel';
-import { observable } from '@formily/reactive';
+import { observable } from 'mobx';
 import './styles.scss';
 import { DataViewContext } from './context/dataView';
 

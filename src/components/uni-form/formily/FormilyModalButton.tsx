@@ -7,7 +7,7 @@ import {
   CONFIRM_MODAL_BUTTON,
 } from '@/components/bar/collection';
 import { FormilyFormContext } from './interface';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 
 export type IFormilyModalButtonProps<T extends Entity = Entity> = {
   formProps: FormProps<T>;

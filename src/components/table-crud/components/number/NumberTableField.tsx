@@ -1,7 +1,7 @@
 import { Entity } from '@/api';
 import { BaseTableField, TableNumberColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { Form, Typography } from '@douyinfe/semi-ui';
 
 export class NumberTableField<T extends Entity> extends BaseTableField<

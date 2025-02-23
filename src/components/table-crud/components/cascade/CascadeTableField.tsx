@@ -4,7 +4,7 @@ import { BaseTableField } from '..';
 import ConstantTag from '@/components/tag/ConstantTag';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { findTreeConstant } from '@/constant/util';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { Form } from '@douyinfe/semi-ui';
 
 export class CascadeTableField<T extends Entity> extends BaseTableField<

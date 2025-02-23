@@ -1,6 +1,6 @@
 import { IdEntity } from '@/api';
-import TForm from '@/components/tform/TForm';
-import { FormColumnProps, FormContext } from '@/components/tform/interface';
+import UniForm from '@/components/uni-form/UniForm';
+import { FormColumnProps, FormContext } from '@/components/uni-form/interface';
 
 export type ChangePasswordType = IdEntity & {
   rawPassword: string;
@@ -46,7 +46,7 @@ const ChangePasswordForm: React.FC<{
   hiddenRawPassword?: boolean;
 }> = ({ onOk, onCancel, hiddenRawPassword = false }) => {
   return (
-    <TForm<ChangePasswordType>
+    <UniForm<ChangePasswordType>
       mode="simply"
       title="修改密码"
       columns={changePasswordColumns}

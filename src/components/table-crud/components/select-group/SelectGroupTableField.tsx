@@ -3,7 +3,7 @@ import { BaseTableField } from '..';
 import { TableSelectGroupColumnProps } from '.';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import ConstantTag from '@/components/tag/ConstantTag';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 
 export class SelectGroupTableField<T extends Entity> extends BaseTableField<
   T,

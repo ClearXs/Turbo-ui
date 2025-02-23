@@ -11,6 +11,7 @@ export type RoleListProps = {
 };
 
 const RoleList: React.FC<RoleListProps> = (props: RoleListProps) => {
+  const roleApi = useRoleApi();
   const userRoleApi = useUserRoleApi();
   const [roleIds, setRoleIds] = useState<string[]>([]);
 
@@ -28,7 +29,7 @@ const RoleList: React.FC<RoleListProps> = (props: RoleListProps) => {
   return (
     <ListPanel
       columns={RoleHelper.getColumns()}
-      useApi={useRoleApi}
+      useApi={roleApi}
       wrap={RoleHelper.wrap}
       initValues={roleIds}
       multiple

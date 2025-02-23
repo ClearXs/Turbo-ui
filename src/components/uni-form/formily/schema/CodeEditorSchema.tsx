@@ -4,7 +4,7 @@ import {
   GlobalSchemaColumnRegistry,
   baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { FormCodeEditorColumnProps } from '../../components';
 import CodeEditor from '@/components/code-editor/CodeEditor';
 

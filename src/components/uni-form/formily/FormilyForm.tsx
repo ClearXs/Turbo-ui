@@ -1,4 +1,4 @@
-import { createSchemaField, observer } from '@formily/react';
+import { createSchemaField } from '@formily/react';
 import { FormilyFormProps } from './interface';
 import {
   FormItem,
@@ -36,7 +36,7 @@ import { Icon, Color } from './components';
 import { toSchema } from './schema';
 import { Modal } from '@douyinfe/semi-ui';
 import _ from 'lodash';
-import { TFormContext } from '../context/form';
+import { UniFormContext } from '../context/form';
 import { globalThisPolyfill } from '@formily/shared';
 import CodeEditor from './components/CodeEditor';
 import FormilyModalButton from './FormilyModalButton';
@@ -88,7 +88,7 @@ export const SchemaField = createSchemaField({
   },
 });
 
-const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
+const FormliyForm: React.FC<FormilyFormProps> = (props) => {
   const {
     slotBottom,
     modal,
@@ -109,7 +109,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
   }, [formContext.dataSet, formContext.type, formContext.visible]);
 
   const InternalForm = (
-    <TFormContext.Provider value={formContext}>
+    <UniFormContext.Provider value={formContext}>
       <Form form={formContext.coreForm} {...formliyProps}>
         <SchemaField
           schema={schema}
@@ -118,7 +118,7 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
         />
       </Form>
       {slotBottom}
-    </TFormContext.Provider>
+    </UniFormContext.Provider>
   );
 
   return (modal?.abandon ?? false) ? (
@@ -146,6 +146,6 @@ const FormliyForm: React.FC<FormilyFormProps> = observer((props) => {
       {InternalForm}
     </Modal>
   );
-});
+};
 
 export default FormliyForm;

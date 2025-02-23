@@ -8,7 +8,7 @@ import {
 } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { PATTERN_TIME, parse } from '@/util/date';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { Form, Typography } from '@douyinfe/semi-ui';
 import { isArray } from 'lodash';
 

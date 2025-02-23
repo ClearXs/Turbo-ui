@@ -1,16 +1,16 @@
 import { Post } from '@/api/system/post';
 import TableCrud from '@/components/table-crud';
 import PostHelper from './helper';
-import { observer } from 'mobx-react';
 
 const PostPage = () => {
+  const postApi = PostHelper.getApi();
   return (
     <TableCrud<Post>
       mode="page"
-      useApi={PostHelper.getApi}
+      useApi={postApi}
       columns={PostHelper.getColumns()}
     />
   );
 };
 
-export default observer(PostPage);
+export default PostPage;

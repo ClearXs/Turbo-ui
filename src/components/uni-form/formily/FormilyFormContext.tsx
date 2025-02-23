@@ -3,7 +3,7 @@ import FormContextImpl from '../FormContext';
 import { FormilyFormContext } from './interface';
 import { Form } from '@formily/core';
 import FormContext from '../FormContext';
-import { action, define } from '@formily/reactive';
+import { action, makeObservable } from 'mobx';
 
 export default class FormilyFormContextImpl<T extends Entity>
   extends FormContextImpl<T>
@@ -15,7 +15,7 @@ export default class FormilyFormContextImpl<T extends Entity>
     super(props);
     this.coreForm = coreForm;
     this.coreForm.setInitialValues(this.getDefaultValues());
-    define(this, {
+    makeObservable(this, {
       setCoreForm: action,
     });
 

@@ -1,5 +1,5 @@
 import { Entity } from '@/api';
-import { FormCascadeColumnProps } from '@/components/tform/components';
+import { FormCascadeColumnProps } from '@/components/uni-form/components';
 import { CardColumnProps } from '../../interface';
 
 // Cascade 组件

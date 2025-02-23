@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import BoHelper from './helper';
 import { CategoryTree } from '@/api/system/category';
-import useBoApi, { Bo } from '@/api/developer/bo';
+import { Bo } from '@/api/developer/bo';
 import TreePanel from '@/components/tree/TreePanel';
 import Binary from '@/components/binary';
 import { Notification } from '@douyinfe/semi-ui';
@@ -10,8 +10,7 @@ import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import { directGetIcon, tryGetIcon } from '@/components/icon';
 import { TableContext } from '@/components/table-crud/interface';
 import { ModularProps } from '@/components/modular/interface';
-import { observer } from '@formily/reactive-react';
-import { observable } from '@formily/reactive';
+import { observable } from 'mobx';
 import Modular from '@/components/modular/Modular';
 import CategoryHelper from '@/pages/system/category/helper';
 
@@ -24,6 +23,8 @@ type BoInternalProps = {
 
 const BoPage = () => {
   const [categoryId, setCategoryId] = useState<string>();
+  const categoryApi = CategoryHelper.getApi();
+  const boApi = BoHelper.getApi();
 
   const props: BoInternalProps = useMemo(() => {
     return observable({
@@ -33,8 +34,6 @@ const BoPage = () => {
     });
   }, []);
 
-  const boApi = useBoApi();
-
   return (
     <>
       <Binary
@@ -43,7 +42,7 @@ const BoPage = () => {
             columns={CategoryHelper.getColumns()}
             params={{ funcCode: 'bo' }}
             addDefaultValue={{ funcCode: 'bo' }}
-            useApi={CategoryHelper.getApi}
+            useApi={categoryApi}
             onSelectChange={setCategoryId}
             depth={0}
             root="业务对象分类"
@@ -55,7 +54,7 @@ const BoPage = () => {
             mode="page"
             columns={BoHelper.getColumns()}
             funcCode="bo"
-            useApi={BoHelper.getApi}
+            useApi={boApi}
             params={{ categoryId }}
             getTableContext={(tableContext) =>
               (props.tableContext = tableContext)
@@ -117,4 +116,4 @@ const BoPage = () => {
   );
 };
 
-export default observer(BoPage);
+export default BoPage;

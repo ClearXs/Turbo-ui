@@ -5,17 +5,17 @@ import { Notification } from '@douyinfe/semi-ui';
 import { tryGetIcon } from '@/components/icon';
 import TableGrid from './TableGrid';
 import App from '@/components/app';
-import { observer } from 'mobx-react';
 
 const DataSourcePage = () => {
   const api = DataSourceHelper.getApi();
   const { modular } = App.useApp();
+  const datasourceApi = DataSourceHelper.getApi();
 
   return (
     <TableCrud<DataSourceEntity>
       mode="page"
       columns={DataSourceHelper.getColumns()}
-      useApi={DataSourceHelper.getApi}
+      useApi={datasourceApi}
       modal={{
         append: [
           {
@@ -85,4 +85,4 @@ const DataSourcePage = () => {
   );
 };
 
-export default observer(DataSourcePage);
+export default DataSourcePage;

@@ -1,5 +1,5 @@
 import { Entity } from '@/api';
-import { FormJsonObjectColumnProps } from '@/components/tform/components';
+import { FormJsonObjectColumnProps } from '@/components/uni-form/components';
 
 // Json 组件
 export type TableJsonObjectColumnProps<T extends Entity> =

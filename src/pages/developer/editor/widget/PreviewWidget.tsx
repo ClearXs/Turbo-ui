@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { transformToSchema } from '@clearx/designable-formily-transformer';
 import { Form } from '@clearx/formily-semi';
 import { TreeNode } from '@clearx/designable-core';
-import { SchemaField } from '@/components/tform/formily/FormilyForm';
+import { SchemaField } from '@/components/uni-form/formily/FormilyForm';
 
 export type IPreviewWidgetProps = {
   tree: TreeNode;

@@ -1,6 +1,6 @@
 import { Tree, TreeGeneralApi } from '@/api';
 import { OperateToolbar, Toolbar } from '../table-crud/interface';
-import { FormColumnProps, FormContext } from '../tform/interface';
+import { FormColumnProps, FormContext } from '../uni-form/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 
 export type TreePanelRoot<T extends Tree> = {
@@ -77,7 +77,7 @@ export type TreePanelProps<T extends Tree> = {
   // 根结点名称，如果赋值将会创建一个ROOT的虚拟结点
   root?: Tree['name'] | TreePanelRoot<T>;
   // api
-  useApi: (() => TreeGeneralApi<T>) | TreeGeneralApi<T>;
+  useApi: TreeGeneralApi<T>;
   // 当选中结点时回调
   onSelectChange?: (value?: string) => void;
   // 选中时回调
@@ -110,8 +110,6 @@ export interface TreePanelContext<T extends Tree> {
   props: TreePanelProps<T>;
   // tree panel loading
   loading: boolean;
-  // tree data source
-  tree: TreeNodeData[];
   dataSource: T[];
   // select key
   selectKey: string;

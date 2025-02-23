@@ -1,20 +1,19 @@
 import TableCrud from '@/components/table-crud';
-import useSequenceApi, { Sequence } from '@/api/developer/sequence';
+import { Sequence } from '@/api/developer/sequence';
 import SequenceHelper from './helper';
 import { directGetIcon } from '@/components/icon';
 import App from '@/components/app';
 import { Toast, Typography } from '@douyinfe/semi-ui';
-import { observer } from 'mobx-react';
 
 const SequencePage = () => {
-  const sequenceApi = useSequenceApi();
+  const sequenceApi = SequenceHelper.getApi();
   const { modular } = App.useApp();
 
   return (
     <TableCrud<Sequence>
       mode="page"
       columns={SequenceHelper.getColumns()}
-      useApi={SequenceHelper.getApi}
+      useApi={sequenceApi}
       operateBar={{
         append: [
           {
@@ -73,4 +72,4 @@ const SequencePage = () => {
   );
 };
 
-export default observer(SequencePage);
+export default SequencePage;

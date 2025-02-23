@@ -2,7 +2,7 @@ import useFormApi, { Form, FormApi } from '@/api/developer/form';
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import BoHelper from '../bo/helper';
-import useReaction from '@/components/tform/formily/reaction';
+import useReaction from '@/components/uni-form/formily/reaction';
 
 const FormHelper: Helper<Form, FormApi> = {
   getColumns: () => {

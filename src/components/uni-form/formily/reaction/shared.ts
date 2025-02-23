@@ -6,7 +6,7 @@ import {
   toArr,
   FormPath,
 } from '@formily/shared';
-import { isObservable, untracked } from '@formily/reactive';
+import { isObservable, untracked } from 'mobx';
 import { Schema } from '@formily/json-schema';
 import { ISchema } from '@formily/json-schema';
 

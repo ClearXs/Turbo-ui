@@ -1,5 +1,4 @@
-import { CategoryEntity, GeneralApi } from '@/api';
-import { tryGetIcon } from '@/components/icon/shared';
+import { CategoryEntity } from '@/api';
 import TableCrud from '@/components/table-crud';
 import {
   TableContext,
@@ -9,7 +8,7 @@ import {
 import TreePanel from '@/components/tree/TreePanel';
 import { Notification } from '@douyinfe/semi-ui';
 import CategoryHelper from './helper';
-import useCategoryApi, { CategoryTree } from '@/api/system/category';
+import { CategoryTree } from '@/api/system/category';
 import { useMemo, useRef, useState } from 'react';
 import { TreePanelApi } from '@/components/tree';
 import _ from 'lodash';
@@ -34,59 +33,43 @@ export type CategoryTableCrudProps<T extends CategoryEntity> = Omit<
 const CategoryTableCrud = <T extends CategoryEntity>(
   props: CategoryTableCrudProps<T>,
 ) => {
-  const { useApi } = props;
-  let api: GeneralApi<T> | undefined = undefined;
-  if (useApi) {
-    if (typeof useApi === 'function') {
-      api = props.useApi?.();
-    } else {
-      api = useApi;
-    }
-  }
+  const { useApi, toolbar: { showSetCategory = true, append = [] } = {} } =
+    props;
   const [showCategoryTree, setShowCategoryTree] = useState<boolean>(false);
   const categoryTreeRef = useRef<TreePanelApi<CategoryTree>>();
   const currentRowRef = useRef<T[]>();
   const tableContextRef = useRef<TableContext<T>>();
 
-  const newProps = useMemo(() => {
-    const newProps = { ...props };
-    const { toolbar = {} } = newProps;
+  if (showSetCategory) {
+    const setCategoryToolbar: Toolbar<T> = {
+      ...SET_CATEGORY_LITERAL_TOOLBAR,
+      onClick: (tableContext, formContext) => {
+        const {
+          dataSource,
+          table: { selectedRowKeys = [] },
+        } = tableContext as TableContext<T>;
+        if (_.isEmpty(tableContext?.table.selectedRowKeys)) {
+          Notification.error({ content: '请选择记录!' });
+          return;
+        }
+        currentRowRef.current = dataSource.filter((record) => {
+          return selectedRowKeys.includes(record.id);
+        });
+        setShowCategoryTree(true);
+      },
+    };
+    append.push(setCategoryToolbar);
+  }
 
-    const { showSetCategory = true, append = [] } = toolbar;
-
-    if (showSetCategory) {
-      const setCategoryToolbar: Toolbar<T> = {
-        ...SET_CATEGORY_LITERAL_TOOLBAR,
-        onClick: (tableContext, formContext) => {
-          const {
-            dataSource,
-            table: { selectedRowKeys = [] },
-          } = tableContext as TableContext<T>;
-          if (_.isEmpty(tableContext?.table.selectedRowKeys)) {
-            Notification.error({ content: '请选择记录!' });
-            return;
-          }
-          currentRowRef.current = dataSource.filter((record) => {
-            return selectedRowKeys.includes(record.id);
-          });
-          setShowCategoryTree(true);
-        },
-      };
-      append.push(setCategoryToolbar);
-    }
-
-    toolbar.append = append;
-    newProps.toolbar = toolbar;
-    return newProps;
-  }, []);
+  const categoryApi = CategoryHelper.getApi();
 
   return (
     <>
       <TableCrud<T>
-        {...newProps}
+        {...props}
         getTableContext={(tableContext) =>
           (tableContextRef.current = tableContext) &&
-          newProps.getTableContext?.(tableContext)
+          props.getTableContext?.(tableContext)
         }
       />
       <Modular
@@ -102,8 +85,8 @@ const CategoryTableCrud = <T extends CategoryEntity>(
           }
           const rows = [...(currentRowRef.current || [])];
           rows.forEach((row) => (row.categoryId = selectKey));
-          api
-            ?.batchSaveOrUpdate(rows)
+          useApi
+            .batchSaveOrUpdate(rows)
             .then((res) => {
               const { code, data } = res;
               if (code === 200 && data) {
@@ -126,8 +109,8 @@ const CategoryTableCrud = <T extends CategoryEntity>(
         <TreePanel<CategoryTree>
           columns={CategoryHelper.getColumns()}
           first={false}
-          useApi={useCategoryApi}
-          params={{ funcCode: newProps.funcCode }}
+          useApi={categoryApi}
+          params={{ funcCode: props.funcCode }}
           toolbar={{ showAdd: false }}
           operateBar={{ showEdit: false, showDelete: false, showAdd: false }}
           expandAll

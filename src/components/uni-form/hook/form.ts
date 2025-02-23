@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import { TFormContext } from '../context/form';
+import { UniFormContext } from '../context/form';
 
 const useFormContext = () => {
-  const formContext = useContext(TFormContext);
+  const formContext = useContext(UniFormContext);
   return formContext;
 };
 

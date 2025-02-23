@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
+import { addDynamicIconSelectors } from '@iconify/tailwind';
+
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}', './index.html'],
   theme: {
@@ -38,4 +40,5 @@ export default {
       },
     },
   },
+  plugins: [addDynamicIconSelectors()],
 };

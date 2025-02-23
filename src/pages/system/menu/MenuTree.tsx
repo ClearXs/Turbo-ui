@@ -32,21 +32,26 @@ const MenuTreeComponent: React.FC<{
   onChange,
 }) => {
   const append: OperateToolbar<MenuTree>[] = [];
+
+  const menuApi = useMenuApi();
+
   if (showAddSubordinate) {
     append.push({
       code: 'addSubordinate',
       name: '添加下级',
       type: 'primary',
       icon: tryGetIcon('IconPeer'),
-      onClick: (tableContext, formContext, record) => {
-        formContext.visible = true;
-        formContext.type = 'add';
-        formContext.setValues(
-          Object.assign(
-            { parentId: record.id },
-            formContext.getDefaultValues(),
-          ),
-        );
+      onClick: (record, tableContext, formContext) => {
+        if (formContext) {
+          formContext.visible = true;
+          formContext.type = 'add';
+          formContext.setValues(
+            Object.assign(
+              { parentId: record.id },
+              formContext.getDefaultValues(),
+            ),
+          );
+        }
       },
     });
   }
@@ -56,15 +61,17 @@ const MenuTreeComponent: React.FC<{
       name: '添加同级',
       type: 'primary',
       icon: tryGetIcon('IconSubordinate'),
-      onClick: (tableContext, formContext, record) => {
-        formContext.visible = true;
-        formContext.type = 'add';
-        formContext.setValues(
-          Object.assign(
-            { parentId: record.parentId },
-            formContext.getDefaultValues(),
-          ),
-        );
+      onClick: (record, tableContext, formContext) => {
+        if (formContext) {
+          formContext.visible = true;
+          formContext.type = 'add';
+          formContext.setValues(
+            Object.assign(
+              { parentId: record.parentId },
+              formContext.getDefaultValues(),
+            ),
+          );
+        }
       },
     });
   }
@@ -74,7 +81,7 @@ const MenuTreeComponent: React.FC<{
       initValues={menuIds}
       multiple={multiple}
       first={false}
-      useApi={useMenuApi}
+      useApi={menuApi}
       toolbar={{ showAdd }}
       operateBar={{
         showDetails,

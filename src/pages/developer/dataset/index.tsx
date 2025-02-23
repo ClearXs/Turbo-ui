@@ -7,10 +7,11 @@ import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import Binary from '@/components/binary';
 import _ from 'lodash';
 import { Dataset } from '@/api/developer/dataset';
-import { observer } from 'mobx-react';
 
 const DatasetPage = () => {
   const [categoryId, setCategoryId] = useState<string>();
+  const categoryApi = CategoryHelper.getApi();
+  const datasetApi = DatasetHelper.getApi();
 
   return (
     <>
@@ -20,7 +21,7 @@ const DatasetPage = () => {
             columns={CategoryHelper.getColumns()}
             params={{ funcCode: 'dataset' }}
             addDefaultValue={{ funcCode: 'dataset' }}
-            useApi={CategoryHelper.getApi}
+            useApi={categoryApi}
             onSelectChange={setCategoryId}
             depth={0}
             root="数据集分类"
@@ -31,7 +32,7 @@ const DatasetPage = () => {
           <CategoryTableCrud<Dataset>
             mode="page"
             columns={DatasetHelper.getColumns()}
-            useApi={DatasetHelper.getApi}
+            useApi={datasetApi}
             params={{ categoryId: categoryId }}
             funcCode="dataset"
             operateBar={{
@@ -44,4 +45,4 @@ const DatasetPage = () => {
   );
 };
 
-export default observer(DatasetPage);
+export default DatasetPage;

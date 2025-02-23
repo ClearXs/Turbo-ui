@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { SchemaColumn } from '../interface';
 import { GlobalSchemaColumnRegistry } from './SchemaColumn';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { ISchema, Schema, SchemaContext, useField } from '@formily/react';
 import { ArrayField } from '@formily/core';
 import { FoldItem } from '@clearx/designable-react-settings-form';
@@ -10,7 +10,7 @@ import {
   FormJsonArrayColumnProps,
 } from '../../components';
 import { useContext } from 'react';
-import { TFormContext } from '../../context/form';
+import { UniFormContext } from '../../context/form';
 import './styles.scss';
 import { ArrayItems } from '@clearx/formily-semi';
 import { FormContext } from '../../interface';
@@ -40,7 +40,7 @@ type IJsonSetterProps = {
 };
 
 const JsonArraySetter: React.FC<IJsonSetterProps> = observer((props) => {
-  const formContext = useContext(TFormContext);
+  const formContext = useContext(UniFormContext);
   const field = useField<ArrayField>();
   const fieldName = field.props.name;
   const jsonColumn = formContext.columns.find((c) => c.field === fieldName);

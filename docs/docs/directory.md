@@ -5,8 +5,8 @@ TurboUI的目录结构设计遵循着清晰直观的设计。
 ```shell
 .
 ├── Dockerfile																	# Dockerfile
-├── LICENSE				
-├── index.html																												
+├── LICENSE
+├── index.html
 ├── mkdocs.yml																  # mkdocs配置文件
 ├── package.json
 ├── pnpm-lock.yaml
@@ -34,7 +34,7 @@ TurboUI的目录结构设计遵循着清晰直观的设计。
 │   │   ├── SelectGroup
 │   │   ├── Sidebar
 │   │   ├── SliderSide
-│   │   ├── TForm
+│   │   ├── UniForm
 │   │   ├── TableCrud
 │   │   ├── Tag
 │   │   └── Tree
@@ -61,8 +61,6 @@ TurboUI的目录结构设计遵循着清晰直观的设计。
 └── vite.config.js															# vite配置文件
 ```
 
-
-
 ## 页面
 
 页面目录的命名尊循着如下的结构，以模块作为某一个页面的集合，在页面下存在
@@ -82,4 +80,3 @@ TurboUI的目录结构设计遵循着清晰直观的设计。
 │		└── page2
 └── module2
 ```
-

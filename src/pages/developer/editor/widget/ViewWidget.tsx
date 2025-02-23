@@ -1,4 +1,4 @@
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { useMemo } from 'react';
 import { EditorProps, ViewType } from '../interface';
 import { Tabs } from '@douyinfe/semi-ui';

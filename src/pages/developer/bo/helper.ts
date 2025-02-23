@@ -12,7 +12,7 @@ import {
   TableTreeSelectColumnProps,
 } from '@/components/table-crud/components';
 import DataSourceHelper from '../datasource/helper';
-import useReaction from '@/components/tform/formily/reaction';
+import useReaction from '@/components/uni-form/formily/reaction';
 
 const BoHelper: Helper<Bo, BoApi> = {
   getColumns: () => {

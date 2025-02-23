@@ -2,13 +2,14 @@ import { Org as OrgEntity } from '@/api/system/org';
 import TableCrud from '@/components/table-crud';
 import OrgHelper from './helper';
 import { tryGetIcon } from '@/components/icon/shared';
-import { observer } from 'mobx-react';
 
 const OrgPage = () => {
+  const orgApi = OrgHelper.getApi();
+
   return (
     <TableCrud<OrgEntity>
       mode="tree"
-      useApi={OrgHelper.getApi}
+      useApi={orgApi}
       columns={OrgHelper.getColumns()}
       expandAllRows
       toolbar={{
@@ -73,4 +74,4 @@ const OrgPage = () => {
   );
 };
 
-export default observer(OrgPage);
+export default OrgPage;

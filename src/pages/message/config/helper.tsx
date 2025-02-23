@@ -2,7 +2,7 @@ import useMessageConfigApi, {
   MessageConfig,
   MessageConfigApi,
 } from '@/api/message/config';
-import { FormJsonObjectColumnProps } from '@/components/tform/components';
+import { FormJsonObjectColumnProps } from '@/components/uni-form/components';
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import { NotificationType } from '@/constant/notificationType';

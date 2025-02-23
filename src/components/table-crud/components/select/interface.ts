@@ -1,5 +1,5 @@
 import { Entity } from '@/api';
-import { FormSelectColumnProps } from '@/components/tform/components';
+import { FormSelectColumnProps } from '@/components/uni-form/components';
 import { CardColumnProps } from '../../interface';
 
 // Select 组件

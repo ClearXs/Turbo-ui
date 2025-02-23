@@ -1,9 +1,9 @@
 import { Entity } from '@/api';
 import { TableColumnProps } from '../interface';
-import { BaseFormField, FormField } from '@/components/tform/components';
+import { BaseFormField, FormField } from '@/components/uni-form/components';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { TableColumnDecorator } from '../table';
-import { FormColumnFactory } from '@/components/tform';
+import { FormColumnFactory } from '@/components/uni-form';
 import { ISchema } from '@formily/json-schema';
 
 export interface TableField<T extends Entity, K extends TableColumnProps<T>>

@@ -1,5 +1,5 @@
 import { GeneralApi, Entity } from '@/api';
-import { FormColumnProps, FormContext } from '../tform/interface';
+import { FormColumnProps, FormContext } from '../uni-form/interface';
 import { OperateToolbar, Toolbar } from '../table-crud/interface';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { ListProps } from '@douyinfe/semi-ui/lib/es/list';

@@ -1,6 +1,6 @@
 import { Entity } from '@/api';
 import { BaseTableField, TableInputColumnProps } from '..';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
 import { Form, Typography } from '@douyinfe/semi-ui';
 

@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import { SchemaColumn } from '../interface';
 import { GlobalSchemaColumnRegistry, toSchema } from './SchemaColumn';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { RecursionField, useField } from '@formily/react';
 import { ObjectField } from '@formily/core';
 import { FoldItem } from '@clearx/designable-react-settings-form';
 import { FormJsonObjectColumnProps } from '../../components';
 import { useContext } from 'react';
-import { TFormContext } from '../../context/form';
+import { UniFormContext } from '../../context/form';
 import './styles.scss';
 
 const JsonObjectSchema: SchemaColumn<FormJsonObjectColumnProps<any>> = {
@@ -35,7 +35,7 @@ type IJsonSetterProps = {
 };
 
 const JsonObjectSetter: React.FC<IJsonSetterProps> = observer((props) => {
-  const formContext = useContext(TFormContext);
+  const formContext = useContext(UniFormContext);
   const field = useField<ObjectField>();
   const fieldName = field.props.name;
   const jsonColumn = formContext.columns.find((c) => c.field === fieldName);

@@ -1,7 +1,7 @@
 import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { TableCodeEditorColumnProps } from './interface';
 import { Button, Empty, Popover, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { IconJson } from '@/components/icon/collection/IconJson';

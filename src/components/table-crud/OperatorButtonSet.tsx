@@ -3,10 +3,9 @@ import { OperateToolbar } from './interface';
 import { tryGetIcon } from '../icon/shared';
 import { Button, ButtonGroup, Dropdown, Tooltip } from '@douyinfe/semi-ui';
 import _ from 'lodash';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import useTableCrudContext from './hook/table';
-import useTableFormContext from './hook/tableForm';
-import { useTFormContext } from '../tform/context/form';
+import { useUniFormContext } from '../uni-form/context/form';
 
 export type OperatorButtonSetProps<T extends Entity> = {
   bars: OperateToolbar<T>[];
@@ -33,7 +32,7 @@ const OperatorButtonSet = observer(
     className,
   }: OperatorButtonSetProps<T>) => {
     const tableContext = useTableCrudContext();
-    const formContext = useTableFormContext() || useTFormContext();
+    const formContext = useUniFormContext() || tableContext?.formContext;
 
     const CompositeButtonSetComponent = (
       retainBars: OperateToolbar<T>[],
@@ -50,7 +49,7 @@ const OperatorButtonSet = observer(
                 icon={bar.icon}
                 type={bar.type}
                 onClick={() => {
-                  bar.onClick?.(tableContext, formContext, record);
+                  bar.onClick?.(record, tableContext, formContext);
                 }}
               >
                 {bar.name}
@@ -63,7 +62,7 @@ const OperatorButtonSet = observer(
                   size={bar.size}
                   onClick={(event) => {
                     event.stopPropagation();
-                    bar.onClick?.(tableContext, formContext, record);
+                    bar.onClick?.(record, tableContext, formContext);
                   }}
                 />
               </Tooltip>
@@ -97,7 +96,7 @@ const OperatorButtonSet = observer(
                     icon={bar.icon}
                     type={bar.type}
                     onClick={() =>
-                      bar.onClick?.(tableContext, formContext, record)
+                      bar.onClick?.(record, tableContext, formContext)
                     }
                   >
                     {bar.name}
@@ -113,7 +112,7 @@ const OperatorButtonSet = observer(
                     icon={bar.icon}
                     type={bar.type}
                     onClick={(event) =>
-                      bar.onClick?.(tableContext, formContext, record)
+                      bar.onClick?.(record, tableContext, formContext)
                     }
                   >
                     {bar.name}

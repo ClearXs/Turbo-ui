@@ -19,7 +19,7 @@ nav:
   - 组件:
       - components/index.md
       - App: components/app.md
-      - TForm: components/tform.md
+      - UniForm: components/tform.md
       - TableCrud: components/tablecrud.md
   - 杂项记录: other.md
 

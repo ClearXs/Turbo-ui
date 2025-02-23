@@ -9,8 +9,8 @@ import {
 import { EditorProps, ViewType } from './interface';
 import * as icons from './icon';
 import { ActionWidget } from './widget/ActionWidget';
-import { observable } from '@formily/reactive';
-import { observer } from '@formily/reactive-react';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import FormDesignPanel from './panel/FormDesignPanel';
 import ViewWidget from './widget/ViewWidget';
 import LoadingPanel from './panel/LoadingPanel';

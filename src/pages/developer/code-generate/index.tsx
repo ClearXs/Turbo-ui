@@ -5,17 +5,17 @@ import TreePanel from '@/components/tree/TreePanel';
 import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import { useState } from 'react';
-import useCodeGenerateApi, { CodeGenerate } from '@/api/developer/codeGenerate';
+import { CodeGenerate } from '@/api/developer/codeGenerate';
 import { tryGetIcon } from '@/components/icon';
 import App from '@/components/app';
 import { Toast } from '@douyinfe/semi-ui';
 import PreviewCodeContent from './PreviewCodeContent';
 import { open } from '@/util/auth';
-import { observer } from 'mobx-react';
 
 const CodeGeneratePage = () => {
   const [categoryId, setCategoryId] = useState<string>();
-  const codeGenerateApi = useCodeGenerateApi();
+  const codeGenerateApi = CodeGeneratorHelper.getApi();
+  const categoryApi = CategoryHelper.getApi();
   const { sliderSide } = App.useApp();
 
   return (
@@ -26,7 +26,7 @@ const CodeGeneratePage = () => {
             columns={CategoryHelper.getColumns()}
             params={{ funcCode: 'codeGenerate' }}
             addDefaultValue={{ funcCode: 'codeGenerate' }}
-            useApi={CategoryHelper.getApi}
+            useApi={categoryApi}
             onSelectChange={setCategoryId}
             depth={0}
             root="子系统分类"
@@ -39,7 +39,7 @@ const CodeGeneratePage = () => {
             mode="page"
             modal={{ closeOnEsc: false }}
             columns={CodeGeneratorHelper.getColumns()}
-            useApi={CodeGeneratorHelper.getApi}
+            useApi={codeGenerateApi}
             funcCode="codeGenerate"
             params={{ categoryId: categoryId }}
             scope={CodeGeneratorHelper.getScope?.()}
@@ -67,15 +67,18 @@ const CodeGeneratePage = () => {
                   name: '预览',
                   icon: tryGetIcon('IconEyeOpened'),
                   type: 'primary',
-                  onClick(tableContext, formContext, value) {
+                  onClick(value, tableContext, formContext) {
                     codeGenerateApi.preview(value.id).then((res) => {
                       const { code, data, message } = res;
                       if (code === 200) {
                         sliderSide.info({
-                          size: 'large',
-                          title: value.moduleName,
+                          width: '50%',
+                          title: value.instanceName,
                           content: (
-                            <PreviewCodeContent codeContentList={data} />
+                            <PreviewCodeContent
+                              codeContentList={data}
+                              codeGenerate={value}
+                            />
                           ),
                           showConfirm: false,
                           showCancel: false,
@@ -91,7 +94,7 @@ const CodeGeneratePage = () => {
                   name: '生成',
                   icon: tryGetIcon('IconGenerate'),
                   type: 'primary',
-                  onClick(tableContext, formContext, value) {
+                  onClick(value, tableContext, formContext) {
                     open(`/api/dev/code/generate/generate/${value.id}`);
                   },
                 },
@@ -110,4 +113,4 @@ const CodeGeneratePage = () => {
   );
 };
 
-export default observer(CodeGeneratePage);
+export default CodeGeneratePage;

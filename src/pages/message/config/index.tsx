@@ -2,17 +2,16 @@ import TableCrud from '@/components/table-crud';
 import { MessageConfig } from '@/api/message/config';
 import MessageConfigHelper from './helper';
 import { IconSender } from '@/components/icon/collection/IconSender';
-import TForm from '@/components/tform/TForm';
-import { FormJsonObjectColumnProps } from '@/components/tform/components';
+import UniForm from '@/components/uni-form/UniForm';
+import { FormJsonObjectColumnProps } from '@/components/uni-form/components';
 import { Toast } from '@douyinfe/semi-ui';
-import useMessageApi from '@/api/message/message';
 
-const MessageConfigComponent = () => {
-  const messageApi = useMessageApi();
+const MessageConfigPage = () => {
+  const messageApi = MessageConfigHelper.getApi();
   return (
     <TableCrud<MessageConfig>
       mode="page"
-      useApi={MessageConfigHelper.getApi}
+      useApi={messageApi}
       columns={MessageConfigHelper.getColumns()}
       toolbar={{
         append: [
@@ -33,7 +32,7 @@ const MessageConfigComponent = () => {
                 return;
               }
               const messageConfig = selectedRows[0];
-              const form = TForm.open({
+              const form = UniForm.open({
                 mode: 'simply',
                 title: '消息发送',
                 columns: [
@@ -137,4 +136,4 @@ const MessageConfigComponent = () => {
   );
 };
 
-export default MessageConfigComponent;
+export default MessageConfigPage;

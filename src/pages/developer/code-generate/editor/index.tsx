@@ -1,6 +1,6 @@
 import { CodeGenerate } from '@/api/developer/codeGenerate';
-import TForm from '@/components/tform/TForm';
-import { FormColumnProps, FormContext } from '@/components/tform/interface';
+import UniForm from '@/components/uni-form/UniForm';
+import { FormColumnProps, FormContext } from '@/components/uni-form/interface';
 import { useCallback, useMemo, useRef } from 'react';
 import { DataView } from '../../editor/kernel';
 import viewMode from '../../editor/panel/data-view-form/constant/viewMode';
@@ -8,7 +8,7 @@ import {
   FormJsonObjectColumnProps,
   Handler,
   SlotComponentProps,
-} from '@/components/tform/components';
+} from '@/components/uni-form/components';
 import FieldColumnTable, { FieldColumnTableApi } from './FieldColumnTable';
 
 export type ICodeGenerateEditorProps = SlotComponentProps & {
@@ -173,7 +173,7 @@ const CodeGenerateEditor: React.FC<ICodeGenerateEditorProps> = ({
 
   return (
     <div className="h-[100%] overflow-x-hidden">
-      <TForm<DataView>
+      <UniForm<DataView>
         mode="simply"
         type={displayDetails && 'details'}
         modal={{ abandon: true }}

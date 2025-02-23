@@ -1,15 +1,19 @@
-import { CodeContent } from '@/api/developer/codeGenerate';
+import { CodeContent, CodeGenerate } from '@/api/developer/codeGenerate';
 import Binary from '@/components/binary';
 import CodeEditor from '@/components/code-editor/CodeEditor';
-import { Radio, RadioGroup } from '@douyinfe/semi-ui';
+import { directGetIcon } from '@/components/icon';
+import { Button, Radio, RadioGroup, Tooltip } from '@douyinfe/semi-ui';
 import React, { useState } from 'react';
+import { open } from '@/util/auth';
 
 export interface IPreviewCodeContentProps {
   codeContentList: CodeContent[];
+  codeGenerate: CodeGenerate;
 }
 
 const PreviewCodeContent: React.FC<IPreviewCodeContentProps> = ({
   codeContentList = [],
+  codeGenerate,
 }) => {
   const [codeFile, setCodeFile] = useState<string>(
     codeContentList[0]?.filename ?? '',
@@ -36,7 +40,21 @@ const PreviewCodeContent: React.FC<IPreviewCodeContentProps> = ({
                   setCodeContent(codeContent);
                 }}
               >
-                {codeContent.filename}
+                <div className="flex flex-row items-center gap-2">
+                  <span>{codeContent.filename}</span>
+                  <Tooltip content={`download ${codeContent.filename}`}>
+                    <Button
+                      className="ml-auto"
+                      icon={directGetIcon('IconDownloadStroked')}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        open(
+                          `/api/dev/code/generate/generate/${codeGenerate.id}/${codeContent.filename}`,
+                        );
+                      }}
+                    ></Button>
+                  </Tooltip>
+                </div>
               </Radio>
             );
           })}
@@ -45,6 +63,7 @@ const PreviewCodeContent: React.FC<IPreviewCodeContentProps> = ({
       RightComponent={
         codeContent && (
           <CodeEditor
+            height="100%"
             language={codeContent.language}
             value={codeContent.content}
             basicSetup={true}

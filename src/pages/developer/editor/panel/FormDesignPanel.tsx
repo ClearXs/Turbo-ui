@@ -44,7 +44,7 @@ import {
 } from '@clearx/designable-formily-semi';
 import { Icon } from '../components/icon';
 import { Color } from '../components/color';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { SettingsForm } from '@clearx/designable-react-settings-form';
 import { PreviewWidget } from '../widget/PreviewWidget';
 import { MarkupSchemaWidget } from '../widget/MarkupSchemaWidget';

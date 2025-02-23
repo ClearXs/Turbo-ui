@@ -14,7 +14,7 @@ import useAuthApi from '@/api/system/auth';
 import * as auth from '@/util/auth';
 import { SUPPORT_LOCALES } from './Locales';
 import { TextWidget } from '@clearx/designable-react';
-import TForm from '../tform/TForm';
+import UniForm from '../uni-form/UniForm';
 import { changePasswordColumns } from '@/pages/system/user/ChangePassword';
 import _ from 'lodash';
 import { IconTheme } from '../icon';
@@ -224,7 +224,7 @@ const MotionHeader = () => {
                 </Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
-                    const from = TForm.open({
+                    const from = UniForm.open({
                       mode: 'simply',
                       title: '修改密码',
                       columns: changePasswordColumns,

@@ -12,25 +12,28 @@ import {
 } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
 import { CodeGenerateSource } from '@/constant/codeGenerateSource';
-import { Button } from '@douyinfe/semi-ui';
+import { Button, TreeSelect } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 import CodeGenerateEditor from './editor';
-import { FormContext } from '@/components/tform/interface';
+import { FormContext } from '@/components/uni-form/interface';
 import useDataSourceApi from '@/api/developer/datasource';
-import { FormJsonObjectColumnProps } from '@/components/tform/components';
+import { FormJsonObjectColumnProps } from '@/components/uni-form/components';
 import * as editorUtils from '../editor/util';
 import usePageApi from '@/api/developer/page';
 import App from '@/components/app';
-import useReaction from '@/components/tform/formily/reaction';
+import useReaction from '@/components/uni-form/formily/reaction';
 import useBoApi from '@/api/developer/bo';
+import CodeEditor from '@/components/code-editor/CodeEditor';
+import { getDbTypeTree } from '../datasource/constant';
 
 const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
   getColumns: () => {
     const dataSourceApi = useDataSourceApi();
     const pageApi = usePageApi();
     const boApi = useBoApi();
+    const codeGenerateApi = useCodeGenerateApi();
     const { sliderSide } = App.useApp();
-    const reaction = useReaction();
+    const reaction = useReaction<CodeGenerate>();
 
     return [
       {
@@ -249,6 +252,77 @@ const CodeGeneratorHelper: Helper<CodeGenerate, CodeGenerateApi> = {
           },
         },
       } as FormJsonObjectColumnProps<CodeGenerate>,
+      {
+        label: 'ddl',
+        field: 'ddl',
+        ellipsis: true,
+        align: 'center',
+        type: 'slot',
+        extraText: '请输入创建表语句',
+        language: 'sql',
+        require: true,
+        table: false,
+        showClear: true,
+        filter: true,
+        line: true,
+        component: (formContext: FormContext<CodeGenerate>) => {
+          // preset ddl db engine
+          formContext.setValue('ddlDb', 'PostgreSQL');
+          return (
+            <div className="flex gap-2 flex-col">
+              <CodeEditor
+                language="sql"
+                height="200px"
+                placeholder="请输入创建表语句"
+                maxHeight="50%"
+                onChange={(text) => {
+                  formContext.setValue('ddl', text);
+                }}
+              />
+              <div className="flex gap-2 flex-row ml-auto">
+                <TreeSelect
+                  treeData={getDbTypeTree()}
+                  placeholder="请选择数据库引擎"
+                  value="PostgreSQL"
+                  expandAll
+                  onChange={(value) => {
+                    formContext.setValue('ddlDb', value);
+                  }}
+                ></TreeSelect>
+                <Button
+                  onClick={() => {
+                    codeGenerateApi
+                      .parseDDL(
+                        formContext.getValue('ddl'),
+                        formContext.getValue('ddlDb'),
+                      )
+                      .then((res) => {
+                        const { code, data } = res;
+                        if (code === 200) {
+                          const dataView =
+                            editorUtils.default.transformToDataViewFormTableColumn(
+                              data,
+                            );
+                          formContext.setValue('dataView', dataView);
+                        }
+                      });
+                  }}
+                >
+                  解析
+                </Button>
+              </div>
+            </div>
+          );
+        },
+        reaction: {
+          dependencies: ['source'],
+          fulfill: {
+            schema: {
+              'x-visible': "{{$deps[0] === 'ddl'}}",
+            },
+          },
+        },
+      } as TableSlotColumnProps<CodeGenerate>,
       {
         label: '数据视图',
         field: 'dataView',

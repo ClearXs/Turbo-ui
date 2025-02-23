@@ -1,16 +1,17 @@
 import { Tenant } from '@/api/system/tenant';
 import TableCrud from '@/components/table-crud';
 import TenantHelper from './helper';
-import { observer } from 'mobx-react';
 
 const TenantPage = () => {
+  const tenantApi = TenantHelper.getApi();
+
   return (
     <TableCrud<Tenant>
       mode="page"
       columns={TenantHelper.getColumns()}
-      useApi={TenantHelper.getApi}
+      useApi={tenantApi}
     />
   );
 };
 
-export default observer(TenantPage);
+export default TenantPage;

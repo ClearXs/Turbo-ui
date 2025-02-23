@@ -4,9 +4,10 @@ import { PROVIDER } from '@/constant/provider';
 import useAttachmentApi, { Attachment } from '@/api/system/attachment';
 import { tryGetIcon } from '@/components/icon/shared';
 import { TableColumnProps } from '@/components/table-crud/interface';
-import { observer } from 'mobx-react';
 
 const AttachmentPage = () => {
+  const attachmentApi = useAttachmentApi();
+
   const columns: TableColumnProps<Attachment>[] = useMemo(() => {
     return [
       {
@@ -42,7 +43,7 @@ const AttachmentPage = () => {
     <TableCrud<Attachment>
       mode="page"
       columns={columns}
-      useApi={useAttachmentApi}
+      useApi={attachmentApi}
       toolbar={{ showAdd: false }}
       operateBar={{
         showEdit: false,
@@ -62,4 +63,4 @@ const AttachmentPage = () => {
   );
 };
 
-export default observer(AttachmentPage);
+export default AttachmentPage;

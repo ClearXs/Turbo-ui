@@ -1,16 +1,16 @@
 import TableCrud from '@/components/table-crud';
 import ParamsHelper from './helper';
 import { Params } from '@/api/system/params';
-import { observer } from 'mobx-react';
 
 const ParamsPage = () => {
+  const paramApi = ParamsHelper.getApi();
   return (
     <TableCrud<Params>
       mode="page"
-      useApi={ParamsHelper.getApi}
+      useApi={paramApi}
       columns={ParamsHelper.getColumns()}
     />
   );
 };
 
-export default observer(ParamsPage);
+export default ParamsPage;

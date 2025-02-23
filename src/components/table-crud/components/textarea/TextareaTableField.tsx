@@ -2,7 +2,7 @@ import { Entity } from '@/api';
 import { BaseTableField } from '..';
 import { TableTextareaColumnProps } from '.';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { Form, Typography } from '@douyinfe/semi-ui';
 
 export class TextareaTableField<T extends Entity> extends BaseTableField<

@@ -9,18 +9,19 @@ import FormliyForm from './formily/FormilyForm';
 import { loadDataSet } from './util/column';
 import FormilyFormContextImpl from './formily/FormilyFormContext';
 import { createForm } from '@formily/core';
+import { observer } from 'mobx-react';
 
-function TForm<T extends Entity>(props: FormProps<T>) {
+function UniForm<T extends Entity>(props: FormProps<T>) {
   const dicApi = useDicApi();
   const request = useRequest();
+  const coreForm = createForm();
 
-  const formContext = useMemo(() => {
-    const coreForm = createForm();
-    const formContext = new FormilyFormContextImpl<T>(props, coreForm);
-    // 加载表单数据集
-    loadDataSet(formContext, dicApi, request);
-    return formContext;
-  }, [props.params]);
+  const formContext = useMemo(
+    () => new FormilyFormContextImpl<T>(props, coreForm),
+    [],
+  );
+  // 加载表单数据集
+  loadDataSet(formContext, dicApi, request);
 
   props.getFormContext?.(formContext);
 
@@ -38,8 +39,10 @@ function TForm<T extends Entity>(props: FormProps<T>) {
     ...remainingProps
   } = props;
 
+  const ObserverForm = observer(FormliyForm);
+
   return (
-    <FormliyForm
+    <ObserverForm
       formContext={formContext}
       colon={colon}
       labelAlign={labelAlign}
@@ -52,7 +55,7 @@ function TForm<T extends Entity>(props: FormProps<T>) {
   );
 }
 
-TForm.open = <T extends Entity>(props: FormProps<T>) => {
+UniForm.open = <T extends Entity>(props: FormProps<T>) => {
   // create a dom in adapter?
   const div = document.createElement('div');
   const container = createRoot(div);
@@ -76,7 +79,7 @@ TForm.open = <T extends Entity>(props: FormProps<T>) => {
     //@ts-ignore
     container.render(
       <Suspense>
-        <TForm {...props} />
+        <UniForm {...props} />
       </Suspense>,
     );
   }
@@ -85,4 +88,4 @@ TForm.open = <T extends Entity>(props: FormProps<T>) => {
   return { open, close, destroy };
 };
 
-export default TForm;
+export default UniForm;

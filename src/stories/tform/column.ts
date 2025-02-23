@@ -8,8 +8,8 @@ import {
   FormSelectGroupColumnProps,
   FormSlotColumnProps,
   FormTreeSelectColumnProps,
-} from '@/components/tform/components';
-import { FormColumnProps, RemoteProps } from '../../components/tform';
+} from '@/components/uni-form/components';
+import { FormColumnProps, RemoteProps } from '../../components/uni-form';
 import type { Property, Sample } from '../interface';
 import { Tree } from '@/api';
 

@@ -6,7 +6,7 @@ import {
 } from '@clearx/designable-formily-transformer';
 import { useContext } from 'react';
 import { KernelContext } from './context';
-import { from } from '@/components/tform/formily/schema';
+import { from } from '@/components/uni-form/formily/schema';
 import { TableCrudProps } from '@/components/table-crud/interface';
 import { TreePanelProps } from '@/components/tree';
 import { IdEntity } from '@/api';

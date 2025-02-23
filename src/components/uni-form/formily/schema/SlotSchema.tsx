@@ -4,7 +4,7 @@ import {
   GlobalSchemaColumnRegistry,
   baseOnBoAttrSchemaCreateColumn,
 } from './SchemaColumn';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { FormSlotColumnProps, Handler, Mode } from '../../components/slot';
 import useFormContext from '../../hook/form';
 import Modular from '@/components/modular/Modular';

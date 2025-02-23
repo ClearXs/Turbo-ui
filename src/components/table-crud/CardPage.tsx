@@ -14,14 +14,13 @@ import _ from 'lodash';
 import { tryGetIcon } from '../icon/shared';
 import OperatorButtonSet from './OperatorButtonSet';
 import TablePagination from './TablePagination';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import {
   IllustrationNoContent,
   IllustrationNoContentDark,
 } from '@douyinfe/semi-illustrations';
 import { renderOperatorBar } from './TableColumnBuilder';
 import useTableCrudContext from './hook/table';
-import useTableFormContext from './hook/tableForm';
 
 export type CardPageProps<T extends Entity> = {
   tableProps: TableCrudProps<T>;
@@ -29,7 +28,7 @@ export type CardPageProps<T extends Entity> = {
 
 const CardPage = observer(<T extends Entity>(props: CardPageProps<T>) => {
   const tableContext = useTableCrudContext();
-  const formContext = useTableFormContext();
+  const formContext = tableContext.formContext;
 
   const {
     mode,

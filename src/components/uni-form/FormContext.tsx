@@ -1,7 +1,7 @@
 import { GeneralApi, Entity } from '@/api';
 import { FormColumnProps, FormContext } from './interface';
 import { getFormColumnDecorator } from '.';
-import { action, define, observable } from '@formily/reactive';
+import { action, makeObservable, observable } from 'mobx';
 import _ from 'lodash';
 import { Constant } from '@/constant';
 
@@ -77,7 +77,7 @@ export default class FormContextImpl<T extends Entity>
     }
     this.decorator.setRelationApis(relationApis);
 
-    define(this, {
+    makeObservable(this, {
       type: observable,
       visible: observable,
       loading: observable,

@@ -6,6 +6,7 @@ import _, { isArray } from 'lodash';
 import { getFeature, Word } from './word';
 import { FormContext } from '../../interface';
 import { triggerUserReactions } from './transformer';
+import { useMemo } from 'react';
 
 export type ReactionFunc = (field: Field, scope: IScopeContext) => void;
 
@@ -23,6 +24,9 @@ export type Reaction<T extends Entity> = {
 };
 
 export default function useReaction<T extends Entity>(): Reaction<T> {
+  // allow each field to be assigned only once
+  const assignment = useMemo(() => new Map<keyof T, boolean>(), []);
+
   return {
     setWord(path, dependencies, word) {
       return this.setFieldState({
@@ -50,7 +54,10 @@ export default function useReaction<T extends Entity>(): Reaction<T> {
               targetValue = feature(targetValue);
             }
           }
-          formContext.setValue(path, targetValue);
+          if (!assignment.get(path)) {
+            formContext.setValue(path, targetValue);
+            assignment.set(path, true);
+          }
         },
       });
     },

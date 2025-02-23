@@ -7,7 +7,6 @@ import TableCrud from '@/components/table-crud';
 import _ from 'lodash';
 import Binary from '@/components/binary';
 import useDomainApi, { DomainEntity } from '@/api/developer/domain';
-import { observer } from 'mobx-react';
 
 const DomainPage = () => {
   const page = usePageApi();
@@ -55,4 +54,4 @@ const DomainPage = () => {
   return Table;
 };
 
-export default observer(DomainPage);
+export default DomainPage;
