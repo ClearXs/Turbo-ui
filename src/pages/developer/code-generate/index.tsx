@@ -61,6 +61,7 @@ const CodeGeneratePage = () => {
               ],
             }}
             operateBar={{
+              showCopy: true,
               append: [
                 {
                   code: 'preview',

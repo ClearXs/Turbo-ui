@@ -121,11 +121,11 @@ export interface TenantEntity extends BaseEntity {
 // 分页配置
 export interface Pagination<T> {
   // 当前页
-  current: string;
+  current: number;
   // 页大小
-  size: string;
+  size: number;
   // 总数
-  total?: string;
+  total?: number;
   // 数据
   records?: T[];
 }

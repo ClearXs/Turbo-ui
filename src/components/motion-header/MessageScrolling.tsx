@@ -29,8 +29,8 @@ export type IMessageProps = {
 };
 
 const initialPagination: Pagination<Message> = {
-  current: '1',
-  size: '5',
+  current: 1,
+  size: 5,
 };
 
 const MessageScrolling: React.FC<IMessageProps> = ({
