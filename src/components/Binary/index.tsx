@@ -3,7 +3,7 @@ import { Divider } from '@douyinfe/semi-ui';
 export type BinaryProps = {
   LeftComponent: React.ReactNode;
   RightComponent: React.ReactNode;
-  rate?: 0.2 | 0.4 | 0.6;
+  rate?: 0.2 | 0.3 | 0.4 | 0.5 | 0.6;
 };
 
 export default function Binary(props: BinaryProps) {

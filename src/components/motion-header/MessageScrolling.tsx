@@ -20,7 +20,7 @@ import { IconAllRead } from '../icon/collection/IconAllRead';
 import { IconLookupAll } from '../icon/collection/IconLookupAll';
 import { IconMarkRead } from '../icon/collection/IconMarkRead';
 import { findConstant } from '@/constant/util';
-import { MessageSource } from '@/constant/messageSource';
+import { MessageSource } from '@/constant/message-source';
 import ConstantTag from '../tag/ConstantTag';
 
 export type IMessageProps = {

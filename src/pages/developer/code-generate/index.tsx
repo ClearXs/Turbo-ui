@@ -73,7 +73,7 @@ const CodeGeneratePage = () => {
                       const { code, data, message } = res;
                       if (code === 200) {
                         sliderSide.info({
-                          width: '50%',
+                          width: '70%',
                           title: value.instanceName,
                           content: (
                             <PreviewCodeContent

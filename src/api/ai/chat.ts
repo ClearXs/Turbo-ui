@@ -7,6 +7,7 @@ import {
   R,
   TenantEntity,
 } from '..';
+import Model from '@/pages/ai/model';
 
 export interface Chat extends TenantEntity {
   /**
@@ -18,7 +19,59 @@ export interface Chat extends TenantEntity {
    * 用户id
    */
   userId: bigint;
+
+  /**
+   * 模型参数
+   */
+  modelOptions: ModelOptions;
+
+  /**
+   * 执行模式
+   */
+  executionMode: 'stream' | 'call';
+
+  /**
+   * 对话参数
+   */
+  options: any;
+
+  /**
+   * agent
+   */
+  agent: string;
 }
+
+export type ModelOptions = {
+  // Model provider/manufacturer
+  manufacturer?:
+    | 'openai'
+    | 'anthropic'
+    | 'vertex'
+    | 'monoshot'
+    | 'qianfan'
+    | 'zhipu'
+    | 'deepseek';
+
+  // Model API address or accessible address
+  // Example: 'http://ollama:11434'
+  address?: string;
+
+  // Model name (e.g. 'gpt-4', 'claude-3', etc.)
+  model?: string;
+
+  // Access credentials
+  apiKey?: string;
+  secretKey?: string;
+
+  // Generation parameters
+  frequencyPenalty?: number;
+  maxTokens?: number;
+  presencePenalty?: number;
+  stopSequences?: string[];
+  temperature?: number;
+  topK?: number;
+  topP?: number;
+};
 
 export interface Conversation extends Chat {
   latestUserMessage: string;

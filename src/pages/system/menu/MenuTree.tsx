@@ -1,7 +1,7 @@
 import useMenuApi, { MenuTree } from '@/api/system/menu';
 import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { MENU_TYPE } from '@/constant/menuType';
+import { MENU_TYPE } from '@/constant/menu-type';
 import { TreePanelApi, TreePanelProps } from '@/components/tree/interface';
 import MenuHelper from './helper';
 import TreePanel from '@/components/tree/TreePanel';

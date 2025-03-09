@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createContentTab } from '@/components/motion-content/util';
-import { HIDE, NEW_WINDOW } from '@/constant/menuAttributes';
+import { HIDE, NEW_WINDOW } from '@/constant/menu-attributes';
 
 export type UserMenuProps = {
   routes: TurboRoute[];

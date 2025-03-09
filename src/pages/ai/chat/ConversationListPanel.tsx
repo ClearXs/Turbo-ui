@@ -48,15 +48,7 @@ const ConversationListPanel: React.FC<{ context: ConversationContext }> = ({
 
   return (
     <div className="max-h-[100%] w-[100%] overflow-y-auto">
-      <div
-        onClick={() => {
-          chatApi.newConversation().then((res) => {
-            if (res.code === 200) {
-              getConversation(page.current);
-            }
-          });
-        }}
-      >
+      <div>
         <HotKeyButton
           hotKeys={
             os === 'macos'

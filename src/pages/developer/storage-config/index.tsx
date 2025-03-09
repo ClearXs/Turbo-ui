@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import TableCrud from '@/components/table-crud';
 import { PROVIDER } from '@/constant/provider';
-import { CS_TYPE } from '@/constant/storageType';
+import { CS_TYPE } from '@/constant/storage-type';
 import { ENABLE } from '@/constant/enable';
 import useStorageConfigApi, {
   StorageConfig,

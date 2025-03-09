@@ -39,3 +39,4 @@ export * from './IconScrollingListModel';
 export * from './IconChat';
 export * from './IconAgent';
 export * from './IconTool';
+export * from './IconDeepSeek';

@@ -11,7 +11,7 @@ import {
   TableContext,
 } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
-import { CodeGenerateSource } from '@/constant/codeGenerateSource';
+import { CodeGenerateSource } from '@/constant/code-generate-source';
 import { Button, TreeSelect } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 import CodeGenerateEditor from './editor';

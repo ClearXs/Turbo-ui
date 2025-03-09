@@ -4,7 +4,7 @@ import useSequenceApi, {
 } from '@/api/developer/sequence';
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
-import swiftGenType from '@/constant/swiftGenType';
+import swiftGenType from '@/constant/swift-gen-type';
 
 const SequenceHelper: Helper<Sequence, SequenceApi> = {
   getColumns: () => {

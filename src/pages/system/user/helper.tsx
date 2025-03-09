@@ -1,8 +1,8 @@
 import useUserApi, { User, UserApi } from '@/api/system/user';
 import { TableColumnProps } from '@/components/table-crud/interface';
-import { USER_STATUS } from '@/constant/userStatus';
+import { USER_STATUS } from '@/constant/user-status';
 import { Helper } from '@/components/interface';
-import { UserSource } from '@/constant/userSource';
+import { UserSource } from '@/constant/user-source';
 
 const UserHelper: Helper<User, UserApi> = {
   getColumns: () => {
