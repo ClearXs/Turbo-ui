@@ -7,7 +7,6 @@ import {
   R,
   TenantEntity,
 } from '..';
-import Model from '@/pages/ai/model';
 
 export interface Chat extends TenantEntity {
   /**
@@ -33,7 +32,7 @@ export interface Chat extends TenantEntity {
   /**
    * 对话参数
    */
-  options: any;
+  options: Options;
 
   /**
    * agent
@@ -50,7 +49,8 @@ export type ModelOptions = {
     | 'monoshot'
     | 'qianfan'
     | 'zhipu'
-    | 'deepseek';
+    | 'deepseek'
+    | 'ollama';
 
   // Model API address or accessible address
   // Example: 'http://ollama:11434'
@@ -73,13 +73,19 @@ export type ModelOptions = {
   topP?: number;
 };
 
+export type Options = {
+  enableLimitHistoryMessages: boolean;
+  maxHistoryMessageNums: number;
+};
+
+export type Variable = Record<string, any>;
+
 export interface Conversation extends Chat {
   latestUserMessage: string;
-  messages: [];
 }
 
 export interface ChatApi extends GeneralApi<Chat> {
-  newConversation: () => Promise<R<Chat>>;
+  newConversation: (chat: Partial<Chat>) => Promise<R<Chat>>;
   mineConversation: (
     page: Pagination<Chat>,
     params?: GeneralParams<Chat>,
@@ -87,17 +93,19 @@ export interface ChatApi extends GeneralApi<Chat> {
 }
 
 class ChatApiImpl extends GeneralApiImpl<Chat> implements ChatApi {
-  newConversation(): Promise<R<Chat>> {
-    return this.request.post(this.apiPath + '/newConversation').then((res) => {
-      return res.data;
-    });
+  newConversation(chat: Partial<Chat>): Promise<R<Chat>> {
+    return this.request
+      .post(this.apiPath + '/new-conversation', { ...chat })
+      .then((res) => {
+        return res.data;
+      });
   }
   mineConversation(
     page: Pagination<Chat>,
     params?: GeneralParams<Chat>,
   ): Promise<R<Pagination<Conversation>>> {
     return this.request
-      .post(this.apiPath + '/mineConversation', { page, ...params })
+      .post(this.apiPath + '/get-mine-conversations', { page, ...params })
       .then((res) => {
         return res.data;
       });

@@ -9,11 +9,11 @@ const ChatPage = () => {
   }, []);
 
   return (
-    <div className="flex flex-row w-[100%] h-[100%] gap-">
-      <div className="flex flex-col gap-2 p-2 bg-[var(--semi-color-fill-0)] w-[20%] h-[100%] max-h-[100%] overflow-y-auto">
+    <div className="flex flex-row w-[100%] h-[100%] max-h-[100%] gap-2 overflow-y-auto">
+      <div className="p-2 bg-[var(--semi-color-fill-0)] w-[20%] h-[100%]">
         <ConversationListPanel context={conversationContext} />
       </div>
-      <div className="w-[85%] h-[100%] max-h-[100%] overflow-y-auto p-4">
+      <div className="w-[85%] h-[100%]">
         <Conversation context={conversationContext} />
       </div>
     </div>

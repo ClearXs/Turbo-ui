@@ -1,3 +1,4 @@
+import { ModelOptions, Options, Variable } from '@/api/ai/chat';
 import IconButton from '@/components/button/IconButton';
 import { IconTreeTriangleDown } from '@douyinfe/semi-icons';
 import {
@@ -13,21 +14,94 @@ import {
   Typography,
 } from '@douyinfe/semi-ui';
 import { TextAreaProps } from '@douyinfe/semi-ui/lib/es/input';
-import React from 'react';
+import { clone } from 'lodash';
+import React, { useMemo } from 'react';
 import { useState } from 'react';
 
-export type ChatInputProps = TextAreaProps & {
-  onSend?: (value: string) => void;
+const DEFAULT_OPTIONS: Options = {
+  enableLimitHistoryMessages: true,
+  maxHistoryMessageNums: 8,
 };
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSend, ...props }) => {
+const DEFAULT_MODEL_OPTIONS: ModelOptions = {
+  manufacturer: 'ollama',
+  address: 'http://localhost:11434',
+  model: 'llama3.2:1b',
+};
+
+export type ChatInputApi = {
+  clear: () => void;
+  setText: (text: string) => void;
+  getText: () => string | undefined;
+};
+
+export type SendParam = {
+  text: string;
+  options: Options;
+  modelOptions: ModelOptions;
+  variable: Variable;
+};
+
+export type ChatInputProps = TextAreaProps & {
+  options?: Options;
+  modelOptions?: ModelOptions;
+  variable?: Variable;
+  // click send callback
+  onSend?: (params: SendParam) => void;
+  onChangeOptions?: (options: Options) => void;
+  onChangeModelOptions?: (modelOptions: ModelOptions) => void;
+  onChangeVariable?: (variable: Variable) => void;
+  getChatInputApi?: (api: ChatInputApi) => void;
+};
+
+const ChatInput: React.FC<ChatInputProps> = ({
+  options,
+  modelOptions,
+  variable,
+  onSend,
+  onChangeOptions,
+  onChangeModelOptions,
+  onChangeVariable,
+  getChatInputApi,
+  ...props
+}) => {
   const [useMicrophone, setUseMicrophone] = useState(false);
   const [useNetwork, setUseNetwork] = useState(false);
   const [useDeepSearch, setUseDeepSearch] = useState(false);
   const [useStreamMode, setUseStreamMode] = useState(true);
 
+  const [chatOptions, setChatOptions] = useState<Options>(
+    clone(options || DEFAULT_OPTIONS),
+  );
+
+  const [chatModelOptions, setChatModelOptions] = useState<ModelOptions>(
+    clone(modelOptions || DEFAULT_MODEL_OPTIONS),
+  );
+
+  const [chatVariable, setChatVariable] = useState<Variable>(
+    clone(variable || {}),
+  );
+
+  const [text, setText] = useState<string | undefined>('');
+
+  const chatInputApi: ChatInputApi = useMemo(() => {
+    return {
+      clear: () => {
+        setText(undefined);
+      },
+      setText: (text) => {
+        setText(text);
+      },
+      getText: () => {
+        return text;
+      },
+    };
+  }, []);
+
+  getChatInputApi?.(chatInputApi);
+
   return (
-    <div className="flex flex-col h-[100%]">
+    <div className="flex flex-col">
       <div className="flex flex-row gap-2 bg-[var(--semi-color-fill-0)] items-center align-middle justify-center p-2">
         <Popover
           trigger="hover"
@@ -121,6 +195,20 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, ...props }) => {
           ></IconButton>
         </Popover>
 
+        <Popover
+          trigger="hover"
+          content={
+            <div className="flex flex-col gap-2 w-96 bg-[var(--semi-color-fill-0)]">
+              添加环境变量
+            </div>
+          }
+          position="top"
+        >
+          <IconButton
+            icon={<span className="icon-[eos-icons--env] h-5 w-5" />}
+          ></IconButton>
+        </Popover>
+
         <div className="ml-auto ">
           <Tooltip content="清空消息">
             <IconButton
@@ -132,9 +220,10 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, ...props }) => {
       <TextArea
         {...props}
         placeholder="请输入消息..."
+        value={text}
         onChange={(value, e) => {
           props?.onChange?.(value, e);
-          onSend?.(value);
+          setText(value);
         }}
       ></TextArea>
       <div className="w-[100%] flex flex-row gap-2 bg-[var(--semi-color-fill-0)] p-2">
@@ -162,51 +251,9 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, ...props }) => {
           </div>
         </Button>
         <div className="ml-auto ">
-          <SendWidget />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const LargeLanguageModeList = () => {};
-
-const SendWidget = () => {
-  return (
-    <div className="flex flex-row gap-2 items-center">
-      <Typography.Text size="small">
-        <div className="flex flex-row gap-2 items-center">
-          <Tag>
-            <span className="icon-[tabler--command]" />
-          </Tag>
-          +
-          <Tag>
-            <span className="icon-[uil--enter]" />
-          </Tag>
-          <div>发送</div>
-        </div>
-      </Typography.Text>
-
-      <Typography.Text size="small">/</Typography.Text>
-      <Typography.Text size="small">
-        <div className="flex flex-row gap-2 items-center">
-          <Tag>
-            <span className="icon-[uil--enter]" />
-          </Tag>
-          <div>新建一行</div>
-        </div>
-      </Typography.Text>
-      <SplitButtonGroup aria-label="项目操作按钮组">
-        <Button icon={<span className="icon-[bi--send-fill]" />}>Send</Button>
-
-        <Dropdown
-          trigger="hover"
-          position="bottomRight"
-          render={
-            <Dropdown.Menu>
-              <Dropdown.Item>输入回车发送</Dropdown.Item>
-              <Dropdown.Item>
-                输入
+          <div className="flex flex-row gap-2 items-center">
+            <Typography.Text size="small">
+              <div className="flex flex-row gap-2 items-center">
                 <Tag>
                   <span className="icon-[tabler--command]" />
                 </Tag>
@@ -214,16 +261,62 @@ const SendWidget = () => {
                 <Tag>
                   <span className="icon-[uil--enter]" />
                 </Tag>
-                发送
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item>新增系统提示词</Dropdown.Item>
-            </Dropdown.Menu>
-          }
-        >
-          <Button icon={<IconTreeTriangleDown />}></Button>
-        </Dropdown>
-      </SplitButtonGroup>
+                <div>发送</div>
+              </div>
+            </Typography.Text>
+
+            <Typography.Text size="small">/</Typography.Text>
+            <Typography.Text size="small">
+              <div className="flex flex-row gap-2 items-center">
+                <Tag>
+                  <span className="icon-[uil--enter]" />
+                </Tag>
+                <div>新建一行</div>
+              </div>
+            </Typography.Text>
+            <SplitButtonGroup aria-label="项目操作按钮组">
+              <Button
+                icon={<span className="icon-[bi--send-fill]" />}
+                onClick={(e) =>
+                  onSend?.({
+                    text: text!,
+                    options: chatOptions,
+                    modelOptions: chatModelOptions,
+                    variable: chatVariable,
+                  })
+                }
+              >
+                Send
+              </Button>
+
+              <Dropdown
+                trigger="hover"
+                position="bottomRight"
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item>输入回车发送</Dropdown.Item>
+                    <Dropdown.Item>
+                      输入
+                      <Tag>
+                        <span className="icon-[tabler--command]" />
+                      </Tag>
+                      +
+                      <Tag>
+                        <span className="icon-[uil--enter]" />
+                      </Tag>
+                      发送
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item>新增系统提示词</Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Button icon={<IconTreeTriangleDown />}></Button>
+              </Dropdown>
+            </SplitButtonGroup>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

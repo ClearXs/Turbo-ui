@@ -4,6 +4,8 @@ import HotKeyButton from '@/components/button/HotKeyButton';
 import HoverButton from '@/components/button/HoverButton';
 import useOperatingSystem from '@/hook/useOperationSystem';
 import {
+  Button,
+  Collapse,
   Divider,
   Dropdown,
   HotKeys,
@@ -11,9 +13,9 @@ import {
   Spin,
   Typography,
 } from '@douyinfe/semi-ui';
-import { useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
+import { useCallback, useEffect, useState } from 'react';
 import ConversationContext from './conversation-context';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { observer } from 'mobx-react';
 
 const ConversationListPanel: React.FC<{ context: ConversationContext }> = ({
@@ -26,74 +28,125 @@ const ConversationListPanel: React.FC<{ context: ConversationContext }> = ({
     size: 10,
   });
   const [chats, setChats] = useState<Conversation[]>([]);
-  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [total, setTotal] = useState<number>(-1);
+
+  const [selectChat, setSelectChat] = useState<string>();
 
   const os = useOperatingSystem();
 
-  const getConversation = (pageNo: number) => {
-    const newPage = { ...page, current: pageNo };
-    chatApi.mineConversation(newPage).then((res) => {
+  useEffect(() => {
+    chatApi.mineConversation(page).then((res) => {
       if (res.code === 200) {
-        const newChats = [...chats, ...res.data.records!];
-        setChats(newChats);
-        setPage(newPage);
-
-        const total = res.data.total!;
-        if (newChats.length >= total) {
-          setHasMore(false);
-        }
+        setChats(res.data.records!);
+        setTotal(res.data.total!);
       }
     });
-  };
+  }, []);
+
+  const getConversation = useCallback(() => {
+    const newPage = {
+      ...page,
+      current: page.current === 1 ? page.current : page.current + 1,
+    };
+    chatApi.mineConversation(newPage).then((res) => {
+      if (res.code === 200) {
+        const data = res.data;
+        setChats((prevChats) => [...prevChats, ...data.records!]);
+        setPage(newPage);
+      }
+    });
+  }, []);
 
   return (
-    <div className="max-h-[100%] w-[100%] overflow-y-auto">
-      <div>
-        <HotKeyButton
-          hotKeys={
-            os === 'macos'
-              ? [HotKeys.Keys.Meta, HotKeys.Keys.K]
-              : [HotKeys.Keys.Control, HotKeys.Keys.K]
-          }
-          icon={<span className="icon-[nimbus--edit] w-4 h-4"></span>}
-          onHotKey={(e) => {
-            console.log(e);
-          }}
-        >
-          <Typography.Text>新建会话</Typography.Text>
-        </HotKeyButton>
-      </div>
-      <Divider />
-      <InfiniteScroll
-        loadMore={getConversation}
-        loader={<Spin />}
-        hasMore={hasMore}
-        pageStart={0}
+    <div className="flex flex-col gap-2 h-[100%]">
+      <HotKeyButton
+        hotKeys={
+          os === 'macos'
+            ? [HotKeys.Keys.Meta, HotKeys.Keys.K]
+            : [HotKeys.Keys.Control, HotKeys.Keys.K]
+        }
+        icon={<span className="icon-[nimbus--edit] w-4 h-4"></span>}
+        onHotKey={(e) => {
+          context.setConversation(undefined);
+        }}
+        onClick={() => {
+          context.setConversation(undefined);
+        }}
       >
-        <List
-          dataSource={chats}
-          renderItem={(item) => (
-            <List.Item>
-              <ConversationItem {...item} />
-            </List.Item>
-          )}
-        ></List>
-      </InfiniteScroll>
+        <Typography.Text>新建会话</Typography.Text>
+      </HotKeyButton>
+      <Divider />
+      <Collapse
+        accordion
+        defaultActiveKey="recentConversation"
+        clickHeaderToExpand
+      >
+        <Collapse.Panel header="最近对话" itemKey="recentConversation">
+          <InfiniteScroll
+            next={getConversation}
+            loader={
+              <div className="flex w-[100%] items-center">
+                <Spin />
+              </div>
+            }
+            hasMore={chats.length < total || total === -1}
+            height="28rem"
+            dataLength={chats.length}
+          >
+            <List
+              dataSource={chats}
+              renderItem={(conversation) => (
+                <List.Item>
+                  <ConversationItem
+                    conversation={conversation}
+                    isSelect={conversation.id === selectChat}
+                    context={context}
+                  />
+                </List.Item>
+              )}
+            ></List>
+          </InfiniteScroll>
+        </Collapse.Panel>
+      </Collapse>
+
+      <Button
+        block
+        className="mt-auto"
+        icon={<span className="icon-[tdesign--control-platform-filled]" />}
+      >
+        管理对话记录
+      </Button>
     </div>
   );
 };
 
-const ConversationItem: React.FC<Conversation> = (conversation) => {
+const ConversationItem: React.FC<{
+  conversation: Conversation;
+  isSelect: boolean;
+  context: ConversationContext;
+}> = observer(({ conversation, isSelect, context }) => {
   return (
     <HoverButton
+      className="always-show-hover-child"
+      onClick={(e) => {
+        e.stopPropagation();
+        context.setConversation(conversation);
+      }}
       hover={
         <Dropdown
-          trigger="click"
+          trigger="hover"
           render={
             <Dropdown.Menu>
-              <Dropdown.Item>Menu Item 1</Dropdown.Item>
-              <Dropdown.Item>Menu Item 2</Dropdown.Item>
-              <Dropdown.Item>Menu Item 3</Dropdown.Item>
+              <Dropdown.Item icon={<span className="icon-[mdi--rename]" />}>
+                重命名
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item
+                type="danger"
+                icon={<span className="icon-[material-symbols--delete]" />}
+              >
+                删除
+              </Dropdown.Item>
             </Dropdown.Menu>
           }
         >
@@ -106,6 +159,6 @@ const ConversationItem: React.FC<Conversation> = (conversation) => {
       </Typography.Text>
     </HoverButton>
   );
-};
+});
 
 export default observer(ConversationListPanel);
