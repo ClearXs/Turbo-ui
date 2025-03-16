@@ -2,7 +2,7 @@ import TableCrud from '@/components/table-crud';
 import { DataSource as DataSourceEntity } from '@/api/developer/datasource';
 import DataSourceHelper from './helper';
 import { Notification } from '@douyinfe/semi-ui';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import TableGrid from './TableGrid';
 import App from '@/components/app';
 

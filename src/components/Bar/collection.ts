@@ -1,4 +1,4 @@
-import { tryGetIcon } from '../icon';
+import { tryGetIcon } from '../icon/shared';
 import { OperateToolbar, Toolbar } from '../table-crud/interface';
 import { ModalButton } from '../uni-form/interface';
 

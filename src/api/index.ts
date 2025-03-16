@@ -22,7 +22,7 @@ export interface BaseEntity extends IdEntity {
   /**
    * 创建时间
    */
-  createdTime: Date;
+  createdTime: string;
 
   /**
    * 创建人
@@ -32,7 +32,7 @@ export interface BaseEntity extends IdEntity {
   /**
    * 更新时间
    */
-  updatedTime: Date;
+  updatedTime: string;
 
   /**
    * 更新人

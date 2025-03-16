@@ -1,4 +1,4 @@
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import { DialogButtonProps, DialogProps } from '../interface';
 
 const useBottomButton = ({

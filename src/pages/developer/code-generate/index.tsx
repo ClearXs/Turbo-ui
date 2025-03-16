@@ -6,7 +6,7 @@ import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import { useState } from 'react';
 import { CodeGenerate } from '@/api/developer/codeGenerate';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import App from '@/components/app';
 import { Toast } from '@douyinfe/semi-ui';
 import PreviewCodeContent from './PreviewCodeContent';

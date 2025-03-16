@@ -1,4 +1,4 @@
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import { Button, ButtonGroup, Popover, Typography } from '@douyinfe/semi-ui';
 import { EditorProps } from '../interface';
 import { DesignableProps } from '../Editor';

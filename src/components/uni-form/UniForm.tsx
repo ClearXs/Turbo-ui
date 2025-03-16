@@ -12,20 +12,8 @@ import { createForm } from '@formily/core';
 import { observer } from 'mobx-react';
 
 function UniForm<T extends Entity>(props: FormProps<T>) {
-  const dicApi = useDicApi();
-  const request = useRequest();
-  const coreForm = createForm();
-
-  const formContext = useMemo(
-    () => new FormilyFormContextImpl<T>(props, coreForm),
-    [],
-  );
-  // 加载表单数据集
-  loadDataSet(formContext, dicApi, request);
-
-  props.getFormContext?.(formContext);
-
   const {
+    mode,
     colon = false,
     labelWidth = 120,
     labelAlign = 'right',
@@ -38,6 +26,22 @@ function UniForm<T extends Entity>(props: FormProps<T>) {
     bordered = false,
     ...remainingProps
   } = props;
+
+  const coreForm = createForm();
+
+  const formContext = useMemo(
+    () => new FormilyFormContextImpl<T>(props, coreForm),
+    [],
+  );
+
+  if (mode !== 'simply') {
+    const dicApi = useDicApi();
+    const request = useRequest();
+    // 加载表单数据集
+    loadDataSet(formContext, dicApi, request);
+  }
+
+  props.getFormContext?.(formContext);
 
   const ObserverForm = observer(FormliyForm);
 
@@ -71,8 +75,9 @@ UniForm.open = <T extends Entity>(props: FormProps<T>) => {
   }
 
   function close() {
-    const newProps: FormProps<T> = { ...props, immediateVisible: false };
-    render(newProps);
+    // const newProps: FormProps<T> = { ...props, immediateVisible: false };
+    // render(newProps);
+    container.unmount();
   }
 
   function render(props: FormProps<T>) {

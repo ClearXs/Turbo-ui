@@ -7,7 +7,7 @@ import Binary from '@/components/binary';
 import { Notification } from '@douyinfe/semi-ui';
 import ModularBoTable from './ModularBoTable';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
-import { directGetIcon, tryGetIcon } from '@/components/icon';
+import { directGetIcon, tryGetIcon } from '@/components/icon/shared';
 import { TableContext } from '@/components/table-crud/interface';
 import { ModularProps } from '@/components/modular/interface';
 import { observable } from 'mobx';

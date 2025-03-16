@@ -44,7 +44,7 @@ const MenuPage = () => {
             name: '添加下级',
             type: 'primary',
             icon: tryGetIcon('IconSubordinate'),
-            onClick: (tableContext, formContext, record) => {
+            onClick: (record, tableContext, formContext) => {
               formContext.visible = true;
               formContext.setValues(
                 Object.assign(
@@ -59,7 +59,7 @@ const MenuPage = () => {
             name: '添加同级',
             type: 'primary',
             icon: tryGetIcon('IconPeer'),
-            onClick: (tableContext, formContext, record) => {
+            onClick: (record, tableContext, formContext) => {
               formContext.visible = true;
               formContext.setValues(
                 Object.assign(

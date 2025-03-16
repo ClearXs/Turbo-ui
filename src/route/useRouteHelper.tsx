@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { findRoute } from './util';
 import { MenuTree } from '@/api/system/menu';
 import { TurboRoute } from './AppRouter';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import PageNotFound from '@/error/PageNotFound';
 import useStore from '@/hook/useStore';
 import routes from './routes';

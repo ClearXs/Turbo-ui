@@ -5,7 +5,7 @@ import MyRole from './MyRole';
 import MyPost from './MyPost';
 
 import IconText from '@/components/text/IconText';
-import { directGetIcon } from '@/components/icon';
+import { directGetIcon } from '@/components/icon/shared';
 import { observer } from 'mobx-react';
 import _ from 'lodash';
 

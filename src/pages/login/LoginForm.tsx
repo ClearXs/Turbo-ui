@@ -26,7 +26,7 @@ import { IconQQ } from '@/components/icon/collection/IconQQ';
 import useOAuth2Api from '@/api/system/oauth2';
 import { IconTaobao } from '@/components/icon/collection/IconTaobao';
 import useRouteHelper from '@/route/useRouteHelper';
-import { directGetIcon } from '@/components/icon';
+import { directGetIcon } from '@/components/icon/shared';
 
 const LoginForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();

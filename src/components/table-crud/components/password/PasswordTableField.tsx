@@ -6,7 +6,7 @@ import { ColumnType } from '@/components/uni-form/interface';
 import { Form, Typography } from '@douyinfe/semi-ui';
 import { observer } from 'mobx-react';
 import { useState } from 'react';
-import { directGetIcon } from '@/components/icon';
+import { directGetIcon } from '@/components/icon/shared';
 
 export class PasswordTableField<T extends Entity> extends BaseTableField<
   T,

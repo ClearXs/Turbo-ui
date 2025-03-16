@@ -1,0 +1,1 @@
+export const ICON_COOKIES_KEY = 'TURBO_ICON_KEYS';

@@ -48,11 +48,11 @@ const ConversationHome: React.FC<ConversationProps> = observer(
     const chatApi = useChatApi();
     return (
       <>
-        <div className="flex flex-col justify-center items-center gap-10">
+        <div className="flex flex-col justify-center items-center gap-4">
           <Typography.Title>Welcome Turbo Agent</Typography.Title>
-          <Typography.Paragraph>
+          <Typography.Text>
             我是你的私有助手，你有什么疑问都可以询问我
-          </Typography.Paragraph>
+          </Typography.Text>
 
           <div className="flex flex-col justify-start w-[60%]">
             <div className="flex flex-row items-center">

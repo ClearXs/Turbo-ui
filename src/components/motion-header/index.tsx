@@ -17,7 +17,7 @@ import { TextWidget } from '@clearx/designable-react';
 import UniForm from '../uni-form/UniForm';
 import { changePasswordColumns } from '@/pages/system/user/ChangePassword';
 import _ from 'lodash';
-import { IconTheme } from '../icon';
+import { IconTheme } from '../icon/collection';
 import Message from './MessageScrolling';
 import useDicApi, { Dic } from '@/api/system/dic';
 import useMessageApi from '@/api/message/message';

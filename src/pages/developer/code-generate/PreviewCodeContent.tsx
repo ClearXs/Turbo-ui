@@ -1,7 +1,7 @@
 import { CodeContent, CodeGenerate } from '@/api/developer/codeGenerate';
 import Binary from '@/components/binary';
 import CodeEditor from '@/components/code-editor/CodeEditor';
-import { directGetIcon } from '@/components/icon';
+import { directGetIcon } from '@/components/icon/shared';
 import {
   Button,
   Radio,

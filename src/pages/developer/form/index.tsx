@@ -9,7 +9,7 @@ import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import Binary from '@/components/binary';
 import _ from 'lodash';
 import FormEditor from '../editor/FormEditor';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import useBoApi from '@/api/developer/bo';
 
 const FormPage = () => {

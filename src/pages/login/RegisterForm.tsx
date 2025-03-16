@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import * as local from '@/util/local';
 import * as headers from '@/util/constant';
 import useAuthApi from '@/api/system/auth';
-import { directGetIcon } from '@/components/icon';
+import { directGetIcon } from '@/components/icon/shared';
 
 const RegisterForm: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const navigate = useNavigate();

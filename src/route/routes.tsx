@@ -24,7 +24,7 @@ import CodeGenerateComponent from '@/pages/developer/code-generate';
 import SequenceComponent from '@/pages/developer/sequence';
 import { TurboRoute } from './AppRouter';
 import Home from '@/pages/home';
-import { importIcon } from '@/components/icon';
+import { importIcon } from '@/components/icon/shared';
 import Profile from '@/pages/profile';
 import App from '@/App';
 import Loading from '@/pages/Loading';
@@ -37,6 +37,7 @@ import Model from '@/pages/ai/model';
 import Agent from '@/pages/ai/agent';
 import Tools from '@/pages/ai/tools';
 import Credential from '@/pages/ai/credential';
+import Knowledge from '@/pages/ai/knowledge';
 
 const routes: TurboRoute[] = [
   {
@@ -181,6 +182,11 @@ const routes: TurboRoute[] = [
     path: '/ai/credential',
     type: 'system',
     element: <Credential />,
+  },
+  {
+    path: '/ai/knowledge',
+    type: 'system',
+    element: <Knowledge />,
   },
 ];
 

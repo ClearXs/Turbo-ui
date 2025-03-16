@@ -6,7 +6,7 @@ import { TreePanelApi, TreePanelProps } from '@/components/tree/interface';
 import MenuHelper from './helper';
 import TreePanel from '@/components/tree/TreePanel';
 import { OperateToolbar } from '@/components/table-crud/interface';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 
 const MenuTreeComponent: React.FC<{
   menuIds?: string[];

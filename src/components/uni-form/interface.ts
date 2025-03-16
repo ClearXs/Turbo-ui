@@ -111,6 +111,7 @@ export type FormEvent<T extends Entity> = {
 
 export type FormProps<T extends Entity> = IFormLayoutProps & {
   // 表单模型标识
+  // simply: 不会使用 useDict 构建远程字典值
   mode: 'tree' | 'table' | 'simply';
   // 表单标题
   title?: string;

@@ -36,5 +36,5 @@ class AIMessageApiImpl
 
 export default function useAIMessageApi(): AIMessageApi {
   const request = useRequest();
-  return new AIMessageApiImpl('/api/ai/chat', request);
+  return new AIMessageApiImpl('/api/ai/message', request);
 }

@@ -5,7 +5,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { Bar, TableColumnProps, TableContext } from './interface';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Checkbox, List, Typography } from '@douyinfe/semi-ui';
-import { tryGetIcon } from '../icon';
+import { tryGetIcon } from '../icon/shared';
 import _ from 'lodash';
 import ButtonSpace from '../button-space/ButtonSpace';
 import { useIconBar } from './hook/bar';

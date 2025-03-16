@@ -4,6 +4,7 @@ import { IconTreeTriangleDown } from '@douyinfe/semi-icons';
 import {
   Button,
   Dropdown,
+  HotKeys,
   MarkdownRender,
   Popover,
   SplitButtonGroup,
@@ -15,7 +16,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { TextAreaProps } from '@douyinfe/semi-ui/lib/es/input';
 import { clone } from 'lodash';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useState } from 'react';
 
 const DEFAULT_OPTIONS: Options = {
@@ -54,6 +55,46 @@ export type ChatInputProps = TextAreaProps & {
   getChatInputApi?: (api: ChatInputApi) => void;
 };
 
+type Keyboard = 'Shift+Ctrl+Enter' | 'Ctrl+Enter';
+
+const SHIFT_CTRL_ENTER = 'Shift+Ctrl+Enter';
+const CTRL_ENTER = 'Ctrl+Enter';
+
+const SHIFT_CTRL_ENTER_HOTKEYS = [
+  HotKeys.Keys.Shift,
+  HotKeys.Keys.Meta,
+  HotKeys.Keys.Enter,
+];
+const CTRL_ENTER_HOTKEYS = [HotKeys.Keys.Meta, HotKeys.Keys.Enter];
+
+const ShiftCtrlEnterKeyboard = () => {
+  return (
+    <div className="flex flex-row gap-2 items-center">
+      <Tag>shift</Tag>+
+      <Tag>
+        <span className="icon-[tabler--command]" />
+      </Tag>
+      +
+      <Tag>
+        <span className="icon-[uil--enter]" />
+      </Tag>
+    </div>
+  );
+};
+const CtrlEnterKeyboard = () => {
+  return (
+    <div className="flex flex-row gap-2 items-center">
+      <Tag>
+        <span className="icon-[tabler--command]" />
+      </Tag>
+      +
+      <Tag>
+        <span className="icon-[uil--enter]" />
+      </Tag>
+    </div>
+  );
+};
+
 const ChatInput: React.FC<ChatInputProps> = ({
   options,
   modelOptions,
@@ -84,6 +125,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   const [text, setText] = useState<string | undefined>('');
 
+  const [sendKeyboard, setSendKeyboard] = useState<Keyboard>('Ctrl+Enter');
+
   const chatInputApi: ChatInputApi = useMemo(() => {
     return {
       clear: () => {
@@ -99,6 +142,16 @@ const ChatInput: React.FC<ChatInputProps> = ({
   }, []);
 
   getChatInputApi?.(chatInputApi);
+
+  const doSendMessage = useCallback(() => {
+    setText(undefined);
+    onSend?.({
+      text: text!,
+      options: chatOptions,
+      modelOptions: chatModelOptions,
+      variable: chatVariable,
+    });
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -250,65 +303,73 @@ const ChatInput: React.FC<ChatInputProps> = ({
             ></Switch>
           </div>
         </Button>
-        <div className="ml-auto ">
+        <div className="ml-auto">
           <div className="flex flex-row gap-2 items-center">
             <Typography.Text size="small">
               <div className="flex flex-row gap-2 items-center">
-                <Tag>
-                  <span className="icon-[tabler--command]" />
-                </Tag>
-                +
-                <Tag>
-                  <span className="icon-[uil--enter]" />
-                </Tag>
-                <div>发送</div>
-              </div>
-            </Typography.Text>
-
-            <Typography.Text size="small">/</Typography.Text>
-            <Typography.Text size="small">
-              <div className="flex flex-row gap-2 items-center">
+                <HotKeys
+                  hotKeys={
+                    sendKeyboard === CTRL_ENTER
+                      ? CTRL_ENTER_HOTKEYS
+                      : SHIFT_CTRL_ENTER_HOTKEYS
+                  }
+                  onHotKey={(e) => {
+                    e.stopPropagation();
+                    doSendMessage();
+                  }}
+                ></HotKeys>
+                /
                 <Tag>
                   <span className="icon-[uil--enter]" />
                 </Tag>
                 <div>新建一行</div>
               </div>
             </Typography.Text>
-            <SplitButtonGroup aria-label="项目操作按钮组">
+            <SplitButtonGroup>
               <Button
                 icon={<span className="icon-[bi--send-fill]" />}
-                onClick={(e) =>
-                  onSend?.({
-                    text: text!,
-                    options: chatOptions,
-                    modelOptions: chatModelOptions,
-                    variable: chatVariable,
-                  })
+                hotKeys={
+                  sendKeyboard === CTRL_ENTER
+                    ? CTRL_ENTER_HOTKEYS
+                    : SHIFT_CTRL_ENTER_HOTKEYS
                 }
+                onClick={(e) => {
+                  doSendMessage();
+                }}
               >
                 Send
               </Button>
-
               <Dropdown
                 trigger="hover"
                 position="bottomRight"
+                showTick
                 render={
-                  <Dropdown.Menu>
-                    <Dropdown.Item>输入回车发送</Dropdown.Item>
-                    <Dropdown.Item>
+                  <Dropdown>
+                    <Dropdown.Title>快捷键</Dropdown.Title>
+                    <Dropdown.Item
+                      name={SHIFT_CTRL_ENTER}
+                      active={sendKeyboard === SHIFT_CTRL_ENTER}
+                      onClick={() => setSendKeyboard(SHIFT_CTRL_ENTER)}
+                    >
                       输入
-                      <Tag>
-                        <span className="icon-[tabler--command]" />
-                      </Tag>
-                      +
-                      <Tag>
-                        <span className="icon-[uil--enter]" />
-                      </Tag>
+                      <ShiftCtrlEnterKeyboard />
+                      发送
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      name={CTRL_ENTER}
+                      active={sendKeyboard === CTRL_ENTER}
+                      onClick={() => setSendKeyboard(CTRL_ENTER)}
+                    >
+                      输入
+                      <CtrlEnterKeyboard />
                       发送
                     </Dropdown.Item>
                     <Dropdown.Divider />
-                    <Dropdown.Item>新增系统提示词</Dropdown.Item>
-                  </Dropdown.Menu>
+                    <Dropdown.Item>
+                      <span className="icon-[humbleicons--prompt] w-4 h-4" />
+                      <span>新增系统提示词</span>
+                    </Dropdown.Item>
+                  </Dropdown>
                 }
               >
                 <Button icon={<IconTreeTriangleDown />}></Button>

@@ -1,7 +1,7 @@
 import TableCrud from '@/components/table-crud';
 import { Sequence } from '@/api/developer/sequence';
 import SequenceHelper from './helper';
-import { directGetIcon } from '@/components/icon';
+import { directGetIcon } from '@/components/icon/shared';
 import App from '@/components/app';
 import { Toast, Typography } from '@douyinfe/semi-ui';
 

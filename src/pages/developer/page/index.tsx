@@ -9,7 +9,7 @@ import { Page as PageEntity } from '@/api/developer/page';
 import PageHelper from './helper';
 import { Notification, Toast } from '@douyinfe/semi-ui';
 import FormEditor from '../editor/FormEditor';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import MenuTreeComponent from '@/pages/system/menu/MenuTree';
 import { TreePanelApi } from '@/components/tree';
 import { MenuTree } from '@/api/system/menu';

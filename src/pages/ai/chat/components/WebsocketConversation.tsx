@@ -117,7 +117,8 @@ const WebsocketConversation: React.FC<{ conversation: Conversation }> = ({
       return {
         role: message.role,
         id: message.id,
-        createAt: message.createdTime?.getTime(),
+        createAt:
+          message.createdTime && new Date(message.createdTime).getTime(),
         content: message.content,
       };
     },

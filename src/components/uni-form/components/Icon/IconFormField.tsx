@@ -4,9 +4,9 @@ import { ColumnType, FormColumnProps } from '../../interface';
 import { BaseFormField } from '..';
 import { FormIconColumnProps } from '.';
 import { IconCamera } from '@douyinfe/semi-icons';
-import { tryGetIcon } from '@/components/icon';
-import IconList from '@/pages/developer/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import Modular from '@/components/modular/Modular';
+import IconList from '@/components/Icon/IconList';
 
 export class IconFormField<T extends Entity> extends BaseFormField<
   T,
@@ -31,7 +31,7 @@ export class IconFormField<T extends Entity> extends BaseFormField<
               }
               const modal = Modular.info({
                 icon: undefined,
-                size: 'medium',
+                size: 'large',
                 title: 'Icon Resources',
                 content: (
                   <IconList

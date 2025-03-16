@@ -17,7 +17,7 @@ import Post from '../post';
 import ChangePasswordForm from './ChangePassword';
 import TreePanel from '@/components/tree/TreePanel';
 import Binary from '@/components/binary';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 
 export const UserPage = () => {
   const userApi = UserHelper.getApi();
