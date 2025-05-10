@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm' # optional: 'yarn', 'pnpm', 'npm'
+          cache: 'npm' # optional: 'yarn', 'pnpm', 'npm'
 
       - name: Install pnpm
         run: npm install -g pnpm
