@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm' # 可选: 'yarn', 'pnpm', 'npm'
+          cache: 'pnpm' # optional: 'yarn', 'pnpm', 'npm'
 
       # 3. buuld 
       - name: Build with Node
