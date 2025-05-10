@@ -1,0 +1,46 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "version"
+        required: true
+        default: "master"
+
+jobs:
+
+  build-deployment:
+
+    runs-on: ubuntu-latest
+    environment: BUILD_IMAGE
+
+    steps:
+      # 1. check
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. setup node version
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm' # 可选: 'yarn', 'pnpm', 'npm'
+
+      # 3. buuld 
+      - name: Build with Node
+        run: |
+          npm install && npm run build
+
+      # 4. build docker image
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.REGISTRY_URL }}/${{ secrets.IMAGE_NAME }}:${{ github.event.inputs.version }} .
+
+      # 5. login privatization docker registry
+      - name: Log in to Docker registry
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_PASSWORD }}
+
+      # 6. push docker image to registry
+      - name: Push Docker image
+        run: docker push ${{ secrets.REGISTRY_URL }}/${{ secrets.IMAGE_NAME }}:${{ github.event.inputs.version }}
