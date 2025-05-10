@@ -27,10 +27,13 @@ jobs:
           node-version: 20
           cache: 'pnpm' # optional: 'yarn', 'pnpm', 'npm'
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       # 3. buuld 
       - name: Build with Node
         run: |
-          npm install && npm run build
+          pnpm install && pnpm run build
 
       # 4. build docker image
       - name: Build Docker image
