@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { GeneralApi, GeneralApiImpl, TenantEntity } from '..';
 
 export interface Params extends TenantEntity {
@@ -25,9 +25,11 @@ export interface Params extends TenantEntity {
 
 export interface ParamsApi extends GeneralApi<Params> {}
 
-class ParamsApiImpl extends GeneralApiImpl<Params> implements ParamsApi {}
+export class ParamsApiImpl
+  extends GeneralApiImpl<Params>
+  implements ParamsApi {}
 
-export default function useParamsApi(): ParamsApi {
+export default function useParamsApi() {
   const request = useRequest();
   return new ParamsApiImpl('/api/sys/params', request);
 }

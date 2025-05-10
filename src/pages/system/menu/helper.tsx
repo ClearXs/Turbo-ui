@@ -1,17 +1,17 @@
 import useMenuApi, { MenuApi, MenuTree } from '@/api/system/menu';
-import { MENU_TYPE } from '@/constant/menuType';
+import { MENU_TYPE } from '@/constant/menu-type';
 import { Helper } from '@/components/interface';
 import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { treeMap } from '@/util/tree';
 import { tryGetIcon } from '@/components/icon/shared';
-import { MENU_ATTR } from '@/constant/menuAttributes';
+import { MENU_ATTR } from '@/constant/menu-attributes';
 import {
   TableCheckboxColumnProps,
   TableTreeSelectColumnProps,
 } from '@/components/table-crud/components';
-import useReaction from '@/components/tform/formily/reaction';
+import useReaction from '@/components/uni-form/formily/reaction';
 
 const loadMenuTreeData = (
   menus: MenuTree[],
@@ -55,9 +55,8 @@ const MenuHelper: Helper<MenuTree, MenuApi> = {
         ellipsis: true,
         align: 'center',
         require: true,
-        table: false,
+        table: true,
         extraText: '编码需要唯一',
-        reaction: reaction.setWord('code', ['name'], 'pinyin'),
       },
       {
         label: '图标',

@@ -6,20 +6,20 @@ import {
   useSelected,
   useSelectedNode,
   useWorkbench,
-} from '@designable/react';
+} from '@clearx/designable-react';
 import { Form, createForm, isVoidField, onFieldReact } from '@formily/core';
 import { useMemo } from 'react';
 import cls from 'classnames';
-import { Form as SemiForm } from '@formily/semi';
+import { Form as SemiForm } from '@clearx/formily-semi';
 import { Empty } from '@douyinfe/semi-ui';
 import { observer } from '@formily/react';
 import schema from './schema';
 import './locales';
-import { GlobalRegistry, TreeNode } from '@designable/core';
-import { SchemaField } from '@/components/tform/formily/FormilyForm';
+import { GlobalRegistry, TreeNode } from '@clearx/designable-core';
+import { SchemaField } from '@/components/uni-form/formily/FormilyForm';
 import { useKernel } from '../../kernel';
-import { observable } from '@formily/reactive';
-import './styles.less';
+import { observable } from 'mobx';
+import './styles.scss';
 import { DataViewContext } from './context/dataView';
 
 export type IDataFormProps = {

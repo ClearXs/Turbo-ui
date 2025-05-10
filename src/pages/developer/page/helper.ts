@@ -4,7 +4,7 @@ import { Helper } from '@/components/interface';
 import BoHelper from '../bo/helper';
 import FormHelper from '../form/helper';
 import MenuHelper from '@/pages/system/menu/helper';
-import useReaction from '@/components/tform/formily/reaction';
+import useReaction from '@/components/uni-form/formily/reaction';
 
 const PageHelper: Helper<Page, PageApi> = {
   getColumns: () => {
@@ -38,9 +38,9 @@ const PageHelper: Helper<Page, PageApi> = {
           url: '/api/dev/form/list',
         },
         showClear: true,
-        relation: {
-          helper: FormHelper,
-        },
+        // relation: {
+        //   helper: FormHelper,
+        // },
       },
       {
         label: '业务对象',
@@ -52,9 +52,9 @@ const PageHelper: Helper<Page, PageApi> = {
         },
         disabled: true,
         showClear: true,
-        relation: {
-          helper: BoHelper,
-        },
+        // relation: {
+        //   helper: BoHelper,
+        // },
       },
       {
         label: '数据视图',
@@ -66,9 +66,9 @@ const PageHelper: Helper<Page, PageApi> = {
         remote: {
           url: '/api/sys/menu/list',
         },
-        relation: {
-          helper: MenuHelper,
-        },
+        // relation: {
+        //   helper: MenuHelper,
+        // },
       },
       {
         label: '页面路由',

@@ -14,13 +14,13 @@ import {
 } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
 import { useNavigate } from 'react-router-dom';
 import { IconAllRead } from '../icon/collection/IconAllRead';
 import { IconLookupAll } from '../icon/collection/IconLookupAll';
 import { IconMarkRead } from '../icon/collection/IconMarkRead';
 import { findConstant } from '@/constant/util';
-import { MessageSource } from '@/constant/messageSource';
+import { MessageSource } from '@/constant/message-source';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import ConstantTag from '../tag/ConstantTag';
 
 export type IMessageProps = {
@@ -29,8 +29,8 @@ export type IMessageProps = {
 };
 
 const initialPagination: Pagination<Message> = {
-  current: '1',
-  size: '5',
+  current: 1,
+  size: 5,
 };
 
 const MessageScrolling: React.FC<IMessageProps> = ({
@@ -134,20 +134,20 @@ const MessageScrolling: React.FC<IMessageProps> = ({
           </Space>
         </div>
         <Divider />
-        <div className="h-[80%] max-h-[19rem] overflow-y-auto">
+        <div className="max-h-[19rem] overflow-y-auto">
           <InfiniteScroll
-            initialLoad={false}
-            pageStart={Number(initialPagination.current)}
+            dataLength={messages.length}
+            height="80%"
+            loader={<Spin></Spin>}
             hasMore={loadMore && !loadMoreLoading}
-            loadMore={() => {
+            next={() => {
               const newPagination: Pagination<Message> = {
                 ...pagination,
-                current: (Number(pagination.current) + 1).toString(),
+                current: Number(pagination.current) + 1,
               };
               setPagination(newPagination);
               loadMessage(newPagination, true);
             }}
-            useWindow={false}
           >
             <List
               loadMore={loadMore && !loadMoreLoading}

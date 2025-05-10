@@ -1,5 +1,5 @@
 import { GeneralApi, GeneralApiImpl, R, TenantEntity } from '..';
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { Role } from './role';
 import { Org } from './org';
 import { Post } from './post';
@@ -78,7 +78,7 @@ export interface UserApi extends GeneralApi<User> {
   ) => Promise<R<Boolean>>;
 }
 
-class UserApiImpl extends GeneralApiImpl<User> implements UserApi {
+export class UserApiImpl extends GeneralApiImpl<User> implements UserApi {
   bindingRole(userId: string, roleIds: string[]): Promise<R<Boolean>> {
     return this.request
       .post(this.apiPath + '/binding-role', { userId, roleIds })

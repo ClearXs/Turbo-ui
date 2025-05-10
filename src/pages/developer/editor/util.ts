@@ -1,9 +1,9 @@
 import { TableColumn } from '@/api/developer/datasource';
 import { DataType, DataView } from './kernel';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import _ from 'lodash';
-import { BoSchema } from '@designable/core';
-import { from } from '@/components/tform/formily/schema';
+import { BoSchema } from '@clearx/designable-core';
+import { from } from '@/components/uni-form/formily/schema';
 
 // initial database datatype mapping to table column type
 const DATA_TYPE_MAPPINGS: Map<DataType, ColumnType> = new Map();

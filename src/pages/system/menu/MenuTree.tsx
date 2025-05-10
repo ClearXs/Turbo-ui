@@ -1,12 +1,12 @@
 import useMenuApi, { MenuTree } from '@/api/system/menu';
 import { Space, Tag } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
-import { MENU_TYPE } from '@/constant/menuType';
+import { MENU_TYPE } from '@/constant/menu-type';
 import { TreePanelApi, TreePanelProps } from '@/components/tree/interface';
 import MenuHelper from './helper';
 import TreePanel from '@/components/tree/TreePanel';
 import { OperateToolbar } from '@/components/table-crud/interface';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 
 const MenuTreeComponent: React.FC<{
   menuIds?: string[];
@@ -32,21 +32,26 @@ const MenuTreeComponent: React.FC<{
   onChange,
 }) => {
   const append: OperateToolbar<MenuTree>[] = [];
+
+  const menuApi = useMenuApi();
+
   if (showAddSubordinate) {
     append.push({
       code: 'addSubordinate',
       name: '添加下级',
       type: 'primary',
       icon: tryGetIcon('IconPeer'),
-      onClick: (tableContext, formContext, record) => {
-        formContext.visible = true;
-        formContext.type = 'add';
-        formContext.setValues(
-          Object.assign(
-            { parentId: record.id },
-            formContext.getDefaultValues(),
-          ),
-        );
+      onClick: (record, tableContext, formContext) => {
+        if (formContext) {
+          formContext.visible = true;
+          formContext.type = 'add';
+          formContext.setValues(
+            Object.assign(
+              { parentId: record.id },
+              formContext.getDefaultValues(),
+            ),
+          );
+        }
       },
     });
   }
@@ -56,15 +61,17 @@ const MenuTreeComponent: React.FC<{
       name: '添加同级',
       type: 'primary',
       icon: tryGetIcon('IconSubordinate'),
-      onClick: (tableContext, formContext, record) => {
-        formContext.visible = true;
-        formContext.type = 'add';
-        formContext.setValues(
-          Object.assign(
-            { parentId: record.parentId },
-            formContext.getDefaultValues(),
-          ),
-        );
+      onClick: (record, tableContext, formContext) => {
+        if (formContext) {
+          formContext.visible = true;
+          formContext.type = 'add';
+          formContext.setValues(
+            Object.assign(
+              { parentId: record.parentId },
+              formContext.getDefaultValues(),
+            ),
+          );
+        }
       },
     });
   }
@@ -74,7 +81,7 @@ const MenuTreeComponent: React.FC<{
       initValues={menuIds}
       multiple={multiple}
       first={false}
-      useApi={useMenuApi}
+      useApi={menuApi}
       toolbar={{ showAdd }}
       operateBar={{
         showDetails,

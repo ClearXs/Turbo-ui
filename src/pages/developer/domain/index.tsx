@@ -8,7 +8,7 @@ import _ from 'lodash';
 import Binary from '@/components/binary';
 import useDomainApi, { DomainEntity } from '@/api/developer/domain';
 
-const Domain = () => {
+const DomainPage = () => {
   const page = usePageApi();
   const location = useLocation();
   const [pageView, setPageView] = useState<PageView>();
@@ -54,4 +54,4 @@ const Domain = () => {
   return Table;
 };
 
-export default Domain;
+export default DomainPage;

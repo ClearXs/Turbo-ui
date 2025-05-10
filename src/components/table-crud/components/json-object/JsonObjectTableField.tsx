@@ -1,10 +1,13 @@
 import { Entity } from '@/api';
 import { BaseTableField, TableJsonObjectColumnProps } from '..';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { Button, Tooltip } from '@douyinfe/semi-ui';
 import { IconJson } from '@/components/icon/collection/IconJson';
-import { JsonValueHandler, ValueHandler } from '@/components/tform/components';
+import {
+  JsonValueHandler,
+  ValueHandler,
+} from '@/components/uni-form/components';
 
 export class JsonObjectTableField<T extends Entity> extends BaseTableField<
   T,

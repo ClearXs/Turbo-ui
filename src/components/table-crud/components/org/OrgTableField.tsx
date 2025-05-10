@@ -2,7 +2,7 @@ import { Entity } from '@/api';
 import ConstantTag from '@/components/tag/ConstantTag';
 import { BaseTableField } from '..';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { findConstant } from '@/constant/util';
 import Relational from '../RelationField';
 import { TableOrgColumnProps } from '.';

@@ -9,12 +9,12 @@ import {
   TableCrudProps,
 } from './interface';
 import { getTableDecorator } from './table';
-import { action, define, observable } from '@formily/reactive';
+import { action, makeObservable, observable } from 'mobx';
 import HelperApiImpl from './HelperApi';
 import { DefaultTableApi, RemoteTableApi } from './TableApi';
 import InlineEditorApiImpl from './InlineEditorApi';
 import TableColumnsBuilder from './TableColumnBuilder';
-import { FormContext } from '../tform/interface';
+import { FormContext } from '../uni-form/interface';
 import { TablePagination } from '@douyinfe/semi-ui/lib/es/table';
 
 export default class TableContextImpl<T extends Entity>
@@ -35,7 +35,6 @@ export default class TableContextImpl<T extends Entity>
   dataSource: TableContext<T>['dataSource'];
   decorator: TableContext<T>['decorator'];
   formContext?: FormContext<T>;
-
   fixed: boolean;
 
   constructor(props: TableCrudProps<T>, api: GeneralApi<T>) {
@@ -91,7 +90,7 @@ export default class TableContextImpl<T extends Entity>
 
     this.decorator.setTableContext(this);
 
-    define(this, {
+    makeObservable(this, {
       idKey: observable,
       mode: observable,
       inlineEditor: observable,

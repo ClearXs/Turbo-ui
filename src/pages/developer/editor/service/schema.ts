@@ -1,7 +1,7 @@
 import useBoApi from '@/api/developer/bo';
 import useFormApi, { Form } from '@/api/developer/form';
 import useDicApi from '@/api/system/dic';
-import { useDesigner } from '@designable/react';
+import { useDesigner } from '@clearx/designable-react';
 import { Notification } from '@douyinfe/semi-ui';
 import _ from 'lodash';
 import { DesignableProps } from '../Editor';

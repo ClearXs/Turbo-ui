@@ -1,0 +1,20 @@
+.x-shape::before,
+.x-shape::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background-color: var(--semi-color-danger);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.x-group:hover .x-shape::before,
+.x-group:hover .x-shape::after {
+  opacity: 1;
+}
+.x-shape::before {
+  transform: rotate(45deg);
+}
+.x-shape::after {
+  transform: rotate(-45deg);
+}

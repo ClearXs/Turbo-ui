@@ -1,4 +1,8 @@
-import { SettingsPanel, ViewPanel, ViewportPanel } from '@designable/react';
+import {
+  SettingsPanel,
+  ViewPanel,
+  ViewportPanel,
+} from '@clearx/designable-react';
 
 const DataManagerPanel = () => {
   return (

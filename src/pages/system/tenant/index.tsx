@@ -2,14 +2,16 @@ import { Tenant } from '@/api/system/tenant';
 import TableCrud from '@/components/table-crud';
 import TenantHelper from './helper';
 
-const Tenant: React.FC = () => {
+const TenantPage = () => {
+  const tenantApi = TenantHelper.getApi();
+
   return (
     <TableCrud<Tenant>
       mode="page"
       columns={TenantHelper.getColumns()}
-      useApi={TenantHelper.getApi}
+      useApi={tenantApi}
     />
   );
 };
 
-export default Tenant;
+export default TenantPage;

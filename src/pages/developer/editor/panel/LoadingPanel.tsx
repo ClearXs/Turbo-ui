@@ -1,7 +1,7 @@
 import { useLottie } from 'lottie-react';
 import animation from '@/lottie/FormLoading.json';
 import { DesignableProps } from '../Editor';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { EditorProps } from '../interface';
 import { useInitialize } from '../service/schema';
 import { useEffect } from 'react';

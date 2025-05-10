@@ -2,19 +2,20 @@ import TableCrud from '@/components/table-crud';
 import { DataSource as DataSourceEntity } from '@/api/developer/datasource';
 import DataSourceHelper from './helper';
 import { Notification } from '@douyinfe/semi-ui';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import TableGrid from './TableGrid';
 import App from '@/components/app';
 
-const DataSource: React.FC = () => {
+const DataSourcePage = () => {
   const api = DataSourceHelper.getApi();
   const { modular } = App.useApp();
+  const datasourceApi = DataSourceHelper.getApi();
 
   return (
     <TableCrud<DataSourceEntity>
       mode="page"
       columns={DataSourceHelper.getColumns()}
-      useApi={DataSourceHelper.getApi}
+      useApi={datasourceApi}
       modal={{
         append: [
           {
@@ -84,4 +85,4 @@ const DataSource: React.FC = () => {
   );
 };
 
-export default DataSource;
+export default DataSourcePage;

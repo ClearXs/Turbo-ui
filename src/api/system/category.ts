@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '..';
 
 export interface Category extends Tree {
@@ -29,7 +29,7 @@ export type CategoryTree = Category & {
 
 export interface CategoryApi extends TreeGeneralApi<CategoryTree> {}
 
-export default function useCategoryApi(): CategoryApi {
+export default function useCategoryApi() {
   const request = useRequest();
   return new TreeGeneralApiImpl<CategoryTree>('/api/sys/category', request);
 }

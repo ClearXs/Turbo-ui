@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { BaseEntity, GeneralApi, GeneralApiImpl, R } from '..';
 
 export interface StorageConfig extends BaseEntity {

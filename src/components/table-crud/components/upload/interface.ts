@@ -3,7 +3,7 @@ import { CardColumnProps } from '../../interface';
 import {
   FormUploadDragProps,
   FormUploadProps,
-} from '@/components/tform/components';
+} from '@/components/uni-form/components';
 
 // upload
 export type TableUploadColumnProps<T extends Entity> = CardColumnProps<T> &

@@ -2,7 +2,7 @@ import { Entity } from '@/api';
 import { Button } from '@douyinfe/semi-ui';
 import { TableColumnProps } from '../interface';
 import { TableColumnDecorator } from '../table';
-import TForm from '@/components/tform/TForm';
+import UniForm from '@/components/uni-form/UniForm';
 
 export type RelationComponentProps<T extends Entity> = {
   column: TableColumnProps<T>;
@@ -28,7 +28,7 @@ const Relational: React.FC<RelationComponentProps<any>> = ({
           event.stopPropagation();
           const api = decorator.getRelationApis().get(field);
           if (api) {
-            const form = TForm.open<any>({
+            const form = UniForm.open<any>({
               mode: 'simply',
               columns: relation.helper.getColumns(),
               title: relation.title || label,

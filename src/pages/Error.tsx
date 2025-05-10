@@ -1,19 +1,18 @@
 import { useLottie } from 'lottie-react';
-import { useRecoilState } from 'recoil';
 import Declaration from './Declaration';
 import { Button, Typography } from '@douyinfe/semi-ui';
 import { Link } from 'react-router-dom';
 import Copyright from './Copyright';
 import PageNotFoundAnimation from '../lottie/404Error.json';
 import InternalServerErrorAnimation from '../lottie/500Error.json';
-import { ErrorState } from '@/store/error';
 import { useCallback } from 'react';
+import useStore from '@/hook/useStore';
 
 export default function Error(): React.ReactNode {
-  const [error, setError] = useRecoilState(ErrorState);
+  const { error } = useStore();
 
   const loadLottieAnimation = useCallback(() => {
-    const status = error?.status;
+    const status = error.getError()?.status;
     if (status === 404) {
       return PageNotFoundAnimation;
     } else if (status === 500) {
@@ -38,7 +37,7 @@ export default function Error(): React.ReactNode {
         style={{ left: '65%', top: '30%', maxWidth: '50%' }}
       >
         <Typography.Title heading={4} type="danger">
-          {error?.message}
+          {error.getError()?.message}
         </Typography.Title>
         <Typography>
           我们正在努力创造更好的东西，
@@ -48,7 +47,7 @@ export default function Error(): React.ReactNode {
           <Button
             block
             onClick={() => {
-              setError(undefined);
+              error.setError(undefined);
             }}
           >
             回到首页

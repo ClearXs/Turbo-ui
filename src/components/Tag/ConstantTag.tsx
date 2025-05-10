@@ -10,9 +10,10 @@ export type ConstantTagProps = TagProps & {
 };
 
 const ConstantTag = (props: ConstantTagProps) => {
-  const { tag, icon, label, extra } = props.constant;
+  const { tag, icon, label, extra,value } = props.constant;
   return tag ? (
     <Tag
+    key={value}
       size="large"
       {..._.omit(props, 'constant')}
       color={tag}

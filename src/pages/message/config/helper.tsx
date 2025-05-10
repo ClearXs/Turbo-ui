@@ -2,14 +2,14 @@ import useMessageConfigApi, {
   MessageConfig,
   MessageConfigApi,
 } from '@/api/message/config';
-import { FormJsonObjectColumnProps } from '@/components/tform/components';
+import { FormJsonObjectColumnProps } from '@/components/uni-form/components';
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
-import { NotificationType } from '@/constant/notificationType';
-import { RetryStrategy } from '@/constant/retryStrategy';
-import { SendProtocol } from '@/constant/sendProtocol';
-import { SendTarget } from '@/constant/sendTarget';
-import { SendWay } from '@/constant/sendWay';
+import { NotificationType } from '@/constant/notification-type';
+import { RetryStrategy } from '@/constant/retry-strategy';
+import { SendProtocol } from '@/constant/send-protocol';
+import { SendTarget } from '@/constant/send-target';
+import { SendWay } from '@/constant/send-way';
 import _ from 'lodash';
 
 const MessageConfigHelper: Helper<MessageConfig, MessageConfigApi> = {

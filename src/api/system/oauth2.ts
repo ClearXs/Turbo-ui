@@ -1,4 +1,4 @@
-import useRequest, { InternalRequest } from '@/hook/request';
+import useRequest, { InternalRequest } from '@/hook/useRequest';
 
 type RegistrationCode =
   | 'github'
@@ -21,7 +21,7 @@ interface OAuth2Api {
   authorization: (code: RegistrationCode) => Promise<any>;
 }
 
-class OAuth2ApiImpl implements OAuth2Api {
+export class OAuth2ApiImpl implements OAuth2Api {
   constructor(protected request: InternalRequest) {}
 
   authorization(code: RegistrationCode): Promise<any> {

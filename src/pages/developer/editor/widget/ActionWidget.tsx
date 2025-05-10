@@ -1,8 +1,8 @@
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import { Button, ButtonGroup, Popover, Typography } from '@douyinfe/semi-ui';
 import { EditorProps } from '../interface';
 import { DesignableProps } from '../Editor';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { useKernel } from '../kernel';
 
 export type ActionWidgetProps = {
@@ -41,6 +41,7 @@ export const ActionWidget: React.FC<ActionWidgetProps> = observer(
         <Button
           loading={designableProps.loading}
           onClick={() => onSave?.(kernel, designableProps)}
+          icon={tryGetIcon('IconCopyAdd')}
         >
           保存
         </Button>
@@ -48,6 +49,7 @@ export const ActionWidget: React.FC<ActionWidgetProps> = observer(
           loading={designableProps.loading}
           type="primary"
           onClick={() => onPublish?.(kernel, designableProps)}
+          icon={tryGetIcon('IconSend')}
         >
           发布
         </Button>

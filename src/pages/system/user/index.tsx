@@ -1,5 +1,5 @@
 import useOrgApi, { Org } from '@/api/system/org';
-import useUserApi, { UserApi, User as UserEntity } from '@/api/system/user';
+import { UserApi, User as UserEntity } from '@/api/system/user';
 import SliderSide from '@/components/slider-side';
 import TableCrud from '@/components/table-crud';
 import { TableContext } from '@/components/table-crud/interface';
@@ -17,10 +17,10 @@ import Post from '../post';
 import ChangePasswordForm from './ChangePassword';
 import TreePanel from '@/components/tree/TreePanel';
 import Binary from '@/components/binary';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 
-export const User: React.FC = () => {
-  const userApi = useUserApi();
+export const UserPage = () => {
+  const userApi = UserHelper.getApi();
   const [orgId, setOrgId] = useState<string>();
   const [showBindingRole, setShowBindingRole] = useState<boolean>(false);
   const [showBindingOrg, setShowBindingOrg] = useState<boolean>(false);
@@ -33,13 +33,15 @@ export const User: React.FC = () => {
   // 当前选中用户，用于更新用户组织、角色
   const selectUserRef = useRef<UserEntity>();
 
+  const orgApi = useOrgApi();
+
   return (
     <>
       <Binary
         LeftComponent={
           <TreePanel<Org>
             columns={OrgHelper.getColumns()}
-            useApi={useOrgApi}
+            useApi={orgApi}
             onSelectChange={setOrgId}
             toolbar={{ showAdd: false }}
             operateBar={{
@@ -57,7 +59,7 @@ export const User: React.FC = () => {
           <TableCrud<UserEntity>
             mode="page"
             columns={UserHelper.getColumns()}
-            useApi={UserHelper.getApi}
+            useApi={userApi}
             getTableContext={(tableContext) => {
               tableContextRef.current = tableContext;
             }}
@@ -320,6 +322,7 @@ const OrgTreeSider: React.FC<{
 }> = ({ visible, user, userApi, onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const treeRef = useRef<TreePanelApi<Org>>();
+  const orgApi = useOrgApi();
 
   return (
     <SliderSide
@@ -354,7 +357,7 @@ const OrgTreeSider: React.FC<{
       <TreePanel
         columns={OrgHelper.getColumns()}
         first={false}
-        useApi={useOrgApi}
+        useApi={orgApi}
         toolbar={{ showAdd: false }}
         initValue={user.orgId}
         operateBar={{
@@ -372,4 +375,4 @@ const OrgTreeSider: React.FC<{
   );
 };
 
-export default User;
+export default UserPage;

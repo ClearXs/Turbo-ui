@@ -1,5 +1,4 @@
 import { CategoryEntity } from '@/api';
-import { tryGetIcon } from '@/components/icon/shared';
 import TableCrud from '@/components/table-crud';
 import {
   TableContext,
@@ -9,8 +8,8 @@ import {
 import TreePanel from '@/components/tree/TreePanel';
 import { Notification } from '@douyinfe/semi-ui';
 import CategoryHelper from './helper';
-import useCategoryApi, { CategoryTree } from '@/api/system/category';
-import { useRef, useState } from 'react';
+import { CategoryTree } from '@/api/system/category';
+import { useMemo, useRef, useState } from 'react';
 import { TreePanelApi } from '@/components/tree';
 import _ from 'lodash';
 import Modular from '@/components/modular/Modular';
@@ -34,15 +33,12 @@ export type CategoryTableCrudProps<T extends CategoryEntity> = Omit<
 const CategoryTableCrud = <T extends CategoryEntity>(
   props: CategoryTableCrudProps<T>,
 ) => {
-  const api = props.useApi?.();
+  const { useApi, toolbar: { showSetCategory = true, append = [] } = {} } =
+    props;
   const [showCategoryTree, setShowCategoryTree] = useState<boolean>(false);
   const categoryTreeRef = useRef<TreePanelApi<CategoryTree>>();
   const currentRowRef = useRef<T[]>();
   const tableContextRef = useRef<TableContext<T>>();
-  const newProps = { ...props };
-  const { toolbar = {}, funcCode } = newProps;
-
-  const { showSetCategory = true, append = [] } = toolbar;
 
   if (showSetCategory) {
     const setCategoryToolbar: Toolbar<T> = {
@@ -65,16 +61,15 @@ const CategoryTableCrud = <T extends CategoryEntity>(
     append.push(setCategoryToolbar);
   }
 
-  toolbar.append = append;
-  newProps.toolbar = toolbar;
+  const categoryApi = CategoryHelper.getApi();
 
   return (
     <>
       <TableCrud<T>
-        {...newProps}
+        {...props}
         getTableContext={(tableContext) =>
           (tableContextRef.current = tableContext) &&
-          newProps.getTableContext?.(tableContext)
+          props.getTableContext?.(tableContext)
         }
       />
       <Modular
@@ -90,7 +85,7 @@ const CategoryTableCrud = <T extends CategoryEntity>(
           }
           const rows = [...(currentRowRef.current || [])];
           rows.forEach((row) => (row.categoryId = selectKey));
-          api
+          useApi
             .batchSaveOrUpdate(rows)
             .then((res) => {
               const { code, data } = res;
@@ -114,8 +109,8 @@ const CategoryTableCrud = <T extends CategoryEntity>(
         <TreePanel<CategoryTree>
           columns={CategoryHelper.getColumns()}
           first={false}
-          useApi={useCategoryApi}
-          params={{ funcCode }}
+          useApi={categoryApi}
+          params={{ funcCode: props.funcCode }}
           toolbar={{ showAdd: false }}
           operateBar={{ showEdit: false, showDelete: false, showAdd: false }}
           expandAll

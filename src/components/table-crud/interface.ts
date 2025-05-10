@@ -10,7 +10,7 @@ import {
   FormContext,
   FormEvent,
   FormProps,
-} from '../tform/interface';
+} from '../uni-form/interface';
 import { TableColumnDecorator } from './table';
 import { PopoverProps } from '@douyinfe/semi-ui/lib/es/popover';
 import { FormApi } from '@douyinfe/semi-ui/lib/es/form';
@@ -54,7 +54,7 @@ export type Bar<T extends Entity> = {
   disabled?: boolean;
   onClick?: (
     tableContext: TableContext<T>,
-    formContext: FormContext<T>,
+    formContext?: FormContext<T>,
   ) => void;
 };
 
@@ -68,9 +68,9 @@ export type OperateToolbar<T extends Entity> = Omit<Bar<T>, 'onClick'> & {
   internal?: boolean;
   // 点击操作
   onClick?: (
-    tableContext: TableContext<T>,
-    formContext: FormContext<T>,
     value: T,
+    tableContext: TableContext<T>,
+    formContext?: FormContext<T>,
   ) => void;
 };
 
@@ -110,7 +110,7 @@ export type TableCrudProps<T extends Entity> = Pick<
   // form modal
   modal?: FormProps<T>['modal'];
   // table使用的curd api
-  useApi?: (() => GeneralApi<T>) | GeneralApi<T>;
+  useApi: GeneralApi<T>;
   // 内置事件回调
   event?: TableEvent<T>;
   // 获取table context实例

@@ -1,5 +1,5 @@
 import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '..';
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 
 export interface Org extends Tree {
   /**
@@ -30,7 +30,7 @@ export interface Org extends Tree {
 
 export interface OrgApi extends TreeGeneralApi<Org> {}
 
-export default function useOrgApi(): OrgApi {
+export default function useOrgApi() {
   const request = useRequest();
   return new TreeGeneralApiImpl<Org>('/api/sys/org', request);
 }

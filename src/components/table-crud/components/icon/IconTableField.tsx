@@ -1,9 +1,9 @@
 import { Entity } from '@/api';
 import { BaseTableField, TableIconColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import { Tooltip, Typography } from '@douyinfe/semi-ui';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 
 export class IconTableField<T extends Entity> extends BaseTableField<
   T,

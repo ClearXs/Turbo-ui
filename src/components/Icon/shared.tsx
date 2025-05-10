@@ -2,13 +2,15 @@ import * as systemIcons from './collection';
 import { IconProps } from '@douyinfe/semi-icons';
 import * as semiIcons from '@douyinfe/semi-icons/lib/es/icons';
 import _ from 'lodash';
+import Cookies from 'js-cookie';
+import { ICON_COOKIES_KEY } from './constant';
 
 export type Icon = {
   key: string;
   component: any;
 };
 
-export type IconSystem = 'semi' | 'system';
+export type IconKey = 'semi' | 'system' | 'custom';
 
 export interface IconModel {
   /**
@@ -78,31 +80,50 @@ export class SystemIconsModel implements IconModel {
   }
 }
 
-export class IconoirModel implements IconModel {
+export class CustomModel implements IconModel {
   constructor(private icons: Map<string, Icon>) {}
 
   getIcons(): Map<string, Icon> {
-    throw new Error('Method not implemented.');
+    this.icons.clear();
+    const icons = Cookies.get(ICON_COOKIES_KEY);
+    if (icons) {
+      const iconKeys: string[] = JSON.parse(icons);
+      const deduplicateIconKeys = new Set(iconKeys);
+      for (const key of deduplicateIconKeys) {
+        this.icons.set(key, {
+          key,
+          component: () => <span className={`${key}`} />,
+        });
+      }
+    }
+    return this.icons;
   }
   getIconList(): Icon[] {
-    throw new Error('Method not implemented.');
+    const icons = this.getIcons();
+    const iconList = new Array();
+    const values = icons.values();
+    for (let v of values) {
+      iconList.push(v);
+    }
+    return iconList;
   }
+
   getIcon(key: string): Icon | undefined {
-    throw new Error('Method not implemented.');
+    return this.getIcons().get(key);
   }
 }
 
 const SemiIcons = new SemiIconsModel(new Map());
 const SystemIcons = new SystemIconsModel(new Map());
-const IconoirIcons = new SystemIconsModel(new Map());
+const CustomIcons = new CustomModel(new Map());
 
-const IconModels: Record<IconSystem, IconModel> = {
+const IconModels: Record<IconKey, IconModel> = {
   semi: SemiIcons,
   system: SystemIcons,
-  iconoir: IconoirIcons,
+  custom: CustomIcons,
 };
 
-export const getIconModel = (type: IconSystem = 'semi'): IconModel => {
+export const getIconModel = (type: IconKey = 'semi'): IconModel => {
   return IconModels[type];
 };
 
@@ -112,7 +133,7 @@ export const getIconModel = (type: IconSystem = 'semi'): IconModel => {
  * @param type 类型
  * @returns
  */
-export const importIcon = (icon: string, type: IconSystem = 'semi') => {
+export const importIcon = (icon: string, type: IconKey = 'semi') => {
   const iconModel = getIconModel(type);
   return iconModel.getIcon(icon)?.component;
 };
@@ -125,7 +146,7 @@ export const importIcon = (icon: string, type: IconSystem = 'semi') => {
  */
 export const directGetIcon = (
   icon: string | undefined,
-  type: IconSystem = 'semi',
+  type: IconKey = 'semi',
   props: Partial<IconProps> = {},
 ): React.ReactNode | undefined => {
   if (icon === undefined) {
@@ -147,7 +168,10 @@ export const tryGetIcon = (
 ): React.ReactNode | undefined => {
   let IconComponent = directGetIcon(icon, 'semi', props);
   if (_.isEmpty(IconComponent)) {
-    return directGetIcon(icon, 'system', props);
+    IconComponent = directGetIcon(icon, 'system', props);
+  }
+  if (_.isEmpty(IconComponent)) {
+    IconComponent = directGetIcon(icon, 'custom', props);
   }
   return IconComponent;
 };

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import useRoleApi, { Role } from '@/api/system/role';
+import { Role } from '@/api/system/role';
 import TableCrud from '@/components/table-crud';
 import { Notification } from '@douyinfe/semi-ui';
 import MenuTreeComponent from '../menu/MenuTree';
@@ -12,20 +12,20 @@ import useRoleMenuApi from '@/api/system/rolemenu';
 import Modular from '@/components/modular/Modular';
 import { IconAuthorize } from '@/components/icon/collection/IconAuthorize';
 
-const RoleComponent: React.FC = () => {
-  const roleApi = useRoleApi();
+const RolePage = () => {
   const [showGrant, setShowGrant] = useState<boolean>(false);
   const roleRef = useRef<Role>();
   const treeApiRef = useRef<TreePanelApi<MenuEntity>>();
   const [menuIds, setMenuIds] = useState<string[]>([]);
   const roleMenuApi = useRoleMenuApi();
+  const roleApi = RoleHelper.getApi();
 
   return (
     <>
       <TableCrud<Role>
         mode="page"
         columns={RoleHelper.getColumns()}
-        useApi={RoleHelper.getApi}
+        useApi={roleApi}
         operateBar={{
           append: [
             {
@@ -88,4 +88,4 @@ const RoleComponent: React.FC = () => {
   );
 };
 
-export default RoleComponent;
+export default RolePage;

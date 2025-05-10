@@ -10,8 +10,8 @@ import {
   IllustrationNoContent,
   IllustrationNoContentDark,
 } from '@douyinfe/semi-illustrations';
-import { observable } from '@formily/reactive';
-import { observer } from '@formily/react';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import Modular from '@/components/modular/Modular';
 import useBoApi from '@/api/developer/bo';
 

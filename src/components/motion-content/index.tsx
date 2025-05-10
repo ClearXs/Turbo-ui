@@ -1,14 +1,12 @@
 import { Layout } from '@douyinfe/semi-ui';
-import { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../sidebar';
 import ContentTabs from './ContentTabs';
-import { AppContext } from '@/context';
-import { observer } from '@formily/reactive-react';
-import { motion } from 'framer-motion';
+import useStore from '@/hook/useStore';
+import { observer } from 'mobx-react';
 
-const MotionContent = observer(() => {
-  const app = useContext(AppContext);
+const MotionContent = () => {
+  const { app, route } = useStore();
 
   const { selectTopKey } = app;
 
@@ -18,22 +16,14 @@ const MotionContent = observer(() => {
       <div className="flex flex-col h-[100%] w-[100%] bg-[var(--semi-color-bg-0)]">
         {selectTopKey !== 'home' && <ContentTabs />}
         <Layout.Content>
-          <motion.div
-            key={app.selectTabKey}
-            initial={{ y: 20, opacity: 1 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -10, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="w-[100%] h-[100%]"
-          >
-            <div className="w-[100%] h-[100%] p-2 overflow-hidden">
-              <Outlet />
-            </div>
-          </motion.div>
+          <div className="w-[100%] h-[100%] p-2 overflow-hidden">
+            {/* 避免提前渲染 */}
+            {route.routes.length > 0 && <Outlet />}
+          </div>
         </Layout.Content>
       </div>
     </Layout>
   );
-});
+};
 
-export default MotionContent;
+export default observer(MotionContent);

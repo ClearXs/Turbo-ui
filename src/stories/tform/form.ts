@@ -1,4 +1,4 @@
-import { FormContext, FormModal } from '../../components/tform';
+import { FormContext, FormModal } from '../../components/uni-form';
 import type { Property, Sample } from '../interface';
 
 const formStatusOptions = ['add', 'edit', 'details'];

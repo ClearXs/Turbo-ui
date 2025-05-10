@@ -13,6 +13,8 @@ const SliderSide = (props: SliderSideProps) => {
     closeOnEsc = true,
     visible = true,
     children,
+    width,
+    height,
     scrollX = true,
     scrollY = true,
     closable = true,
@@ -29,6 +31,8 @@ const SliderSide = (props: SliderSideProps) => {
       visible={visible}
       closeOnEsc={closeOnEsc}
       size={size}
+      width={width}
+      height={height}
       onCancel={() => {
         powerfulCancel();
         afterClose?.();

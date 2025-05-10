@@ -1,7 +1,7 @@
 import { tryGetIcon } from '@/components/icon/shared';
-import IconList, { IconViewProps } from '@/pages/developer/icon';
 import { IconCamera } from '@douyinfe/semi-icons';
 import { Avatar, Modal } from '@douyinfe/semi-ui';
+import IconList, { IconViewProps } from './IconList';
 
 export type IconProps = {
   icon?: string;
@@ -16,7 +16,6 @@ const Icon: React.FC<IconProps> = ({
 }) => {
   return (
     <Avatar
-      alt="Alice Swift"
       size="small"
       shape="square"
       onClick={() => {
@@ -24,7 +23,7 @@ const Icon: React.FC<IconProps> = ({
           return;
         }
         const modal = Modal.info({
-          size: 'medium',
+          size: 'large',
           title: 'Icon Resources',
           content: (
             <IconList
@@ -32,8 +31,7 @@ const Icon: React.FC<IconProps> = ({
                 onChooseIcon?.(key);
                 modal.destroy();
               }}
-              showName={false}
-              splitNum={3}
+              splitNum={4}
             />
           ),
           footer: null,

@@ -3,7 +3,7 @@ import { ListPanelApi, ListPanelContext } from './interface';
 import OperatorButtonSet from '../table-crud/OperatorButtonSet';
 import { Notification } from '@douyinfe/semi-ui';
 import renderListPanelOperatorBar from './ListOperatorBar';
-import { TFormContext } from '../tform/context/form';
+import { UniFormContext } from '../uni-form/context/form';
 
 export default class ListPanelApiImpl<T extends Entity>
   implements ListPanelApi<T>
@@ -31,7 +31,7 @@ export default class ListPanelApiImpl<T extends Entity>
             return {
               ...treeNode,
               label: (
-                <TFormContext.Provider value={this.context.formContext}>
+                <UniFormContext.Provider value={this.context.formContext}>
                   <div className="flex">
                     {treeNode?.label}
                     <OperatorButtonSet
@@ -43,7 +43,7 @@ export default class ListPanelApiImpl<T extends Entity>
                       showButtonName={false}
                     />
                   </div>
-                </TFormContext.Provider>
+                </UniFormContext.Provider>
               ),
             };
           });

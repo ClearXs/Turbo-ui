@@ -4,12 +4,14 @@ import { tryGetIcon } from '@/components/icon/shared';
 import _ from 'lodash';
 import MenuHelper from './helper';
 
-const Menu = () => {
+const MenuPage = () => {
+  const menuApi = MenuHelper.getApi();
+
   return (
     <TableCrud<MenuTree>
       mode="tree"
       columns={MenuHelper.getColumns()}
-      useApi={MenuHelper.getApi}
+      useApi={menuApi}
       expandAllRows
       toolbar={{
         append: [
@@ -42,7 +44,7 @@ const Menu = () => {
             name: '添加下级',
             type: 'primary',
             icon: tryGetIcon('IconSubordinate'),
-            onClick: (tableContext, formContext, record) => {
+            onClick: (record, tableContext, formContext) => {
               formContext.visible = true;
               formContext.setValues(
                 Object.assign(
@@ -57,7 +59,7 @@ const Menu = () => {
             name: '添加同级',
             type: 'primary',
             icon: tryGetIcon('IconPeer'),
-            onClick: (tableContext, formContext, record) => {
+            onClick: (record, tableContext, formContext) => {
               formContext.visible = true;
               formContext.setValues(
                 Object.assign(
@@ -73,4 +75,4 @@ const Menu = () => {
   );
 };
 
-export default Menu;
+export default MenuPage;

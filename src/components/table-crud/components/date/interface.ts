@@ -5,7 +5,7 @@ import {
   FormDateRangeColumnProps,
   FormTimeColumnProps,
   FormTimeRangeColumnProps,
-} from '@/components/tform/components';
+} from '@/components/uni-form/components';
 
 // date 组件
 export type TableDateColumnProps<T extends Entity> = CardColumnProps<T> &

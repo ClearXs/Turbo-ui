@@ -9,8 +9,9 @@ import useTenantApi, { Tenant } from '@/api/system/tenant';
 import Copyright from '../Copyright';
 import { useLottie } from 'lottie-react';
 import LoadingAnimation from '@/lottie/Login.json';
+import { observer } from 'mobx-react';
 
-const Login: React.FC = () => {
+const LoginPage = () => {
   const [switchRegister, setSwitchRegister] = useState<boolean>(false);
   const [tenantList, setTenantList] = useState<Tenant[]>([]);
   const [tenantId, setTenantId] = useState('');
@@ -98,4 +99,4 @@ const Login: React.FC = () => {
     </div>
   );
 };
-export default Login;
+export default observer(LoginPage);

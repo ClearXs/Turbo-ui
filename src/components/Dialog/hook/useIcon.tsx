@@ -1,4 +1,4 @@
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import { DialogProps } from '../interface';
 
 export const TypeIcons: Record<string, React.ReactNode> = {};

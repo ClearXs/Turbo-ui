@@ -136,7 +136,7 @@ export const renderOperatorBar = <T extends Entity>(
   ) {
     const inlineEditOperatorBar: OperateToolbar<T> = {
       ...INLINE_EDIT_LITERAL_OPERATOR_BAR,
-      onClick(tableContext, formContext, value) {
+      onClick(value, tableContext, formContext) {
         tableContext?.tableApi.inlineEdit(id);
       },
     };
@@ -147,7 +147,7 @@ export const renderOperatorBar = <T extends Entity>(
   if (isEditing) {
     const inlineSaveOperatorBar: OperateToolbar<T> = {
       ...INLINE_SAVE_LITERAL_OPERATOR_BAR,
-      onClick(tableContext, formContext, value) {
+      onClick(value, tableContext, formContext) {
         inlineEditorApi.save(id);
       },
     };
@@ -158,7 +158,7 @@ export const renderOperatorBar = <T extends Entity>(
   if (isEditing) {
     const inlineCancelOperatorBar: OperateToolbar<T> = {
       ...INLINE_CANCEL_LITERAL_OPERATOR_BAR,
-      onClick(tableContext, formContext, value) {
+      onClick(value, tableContext, formContext) {
         inlineEditorApi.finish(helperApi.getId(value));
       },
     };
@@ -172,8 +172,8 @@ export const renderOperatorBar = <T extends Entity>(
   ) {
     const editOperatorBar: OperateToolbar<T> = {
       ...EDIT_LITERAL_OPERATOR_BAR,
-      onClick(tableContext, formContext, value) {
-        tableContext?.tableApi.edit(id);
+      onClick(value, tableContext, formContext) {
+        tableContext.tableApi.edit(id);
       },
     };
     bars.push(editOperatorBar);
@@ -185,7 +185,7 @@ export const renderOperatorBar = <T extends Entity>(
   ) {
     const detailsOperatorBar: OperateToolbar<T> = {
       ...DETAILS_LITERAL_OPERATOR_BAR,
-      onClick: (tableContext, formContext, record) => {
+      onClick: (record, tableContext, formContext) => {
         tableContext?.tableApi.details(id);
       },
     };
@@ -198,7 +198,7 @@ export const renderOperatorBar = <T extends Entity>(
   ) {
     const deleteOperatorBar: OperateToolbar<T> = {
       ...DELETE_LITERAL_OPERATOR_BAR,
-      onClick(tableContext, formContext, value) {
+      onClick(value, tableContext, formContext) {
         Modular.warning({
           title: '是否确定删除?',
           content: '该数据被删除，与其关联的数据将无法使用，请慎重操作!',
@@ -217,7 +217,7 @@ export const renderOperatorBar = <T extends Entity>(
   ) {
     const copyOperatorBar: OperateToolbar<T> = {
       ...COPY_LITERAL_OPERATOR_BAR,
-      onClick(tableContext, formContext, value) {
+      onClick(value, tableContext, formContext) {
         const copyValues = _.assignWith(
           {},
           value,
@@ -228,9 +228,11 @@ export const renderOperatorBar = <T extends Entity>(
             return key && source?.[key];
           },
         );
-        formContext.type = 'add';
-        formContext.visible = true;
-        formContext.setValues(copyValues);
+        if (formContext) {
+          formContext.type = 'add';
+          formContext.visible = true;
+          formContext.setValues(copyValues);
+        }
       },
     };
     bars.push(copyOperatorBar);

@@ -7,38 +7,38 @@ import { CategoryTree } from '@/api/system/category';
 import CategoryHelper from '@/pages/system/category/helper';
 import { useState } from 'react';
 
-const CodeGenerateTemplateComponent = () => {
+const CodeGenerateTemplatePage = () => {
   const [categoryId, setCategoryId] = useState<string>();
+  const codeGenerateTemplateApi = CodeGenerateTemplateHelper.getApi();
+  const categoryApi = CategoryHelper.getApi();
 
   return (
-    <>
-      <Binary
-        LeftComponent={
-          <TreePanel<CategoryTree>
-            columns={CategoryHelper.getColumns()}
-            params={{ funcCode: 'codeTemplate' }}
-            addDefaultValue={{ funcCode: 'codeTemplate' }}
-            useApi={CategoryHelper.getApi}
-            onSelectChange={setCategoryId}
-            depth={0}
-            root="模板分类"
-            expandAll
-            first={false}
-          />
-        }
-        RightComponent={
-          <CategoryTableCrud<CodeGenerateTemplate>
-            mode="page"
-            columns={CodeGenerateTemplateHelper.getColumns()}
-            useApi={CodeGenerateTemplateHelper.getApi}
-            funcCode="codeTemplate"
-            params={{ categoryId: categoryId }}
-            operateBar={{ showCopy: true }}
-          />
-        }
-      />
-    </>
+    <Binary
+      LeftComponent={
+        <TreePanel<CategoryTree>
+          columns={CategoryHelper.getColumns()}
+          params={{ funcCode: 'codeTemplate' }}
+          addDefaultValue={{ funcCode: 'codeTemplate' }}
+          useApi={categoryApi}
+          onSelectChange={setCategoryId}
+          depth={0}
+          root="模板分类"
+          expandAll
+          first={false}
+        />
+      }
+      RightComponent={
+        <CategoryTableCrud<CodeGenerateTemplate>
+          mode="page"
+          columns={CodeGenerateTemplateHelper.getColumns()}
+          useApi={codeGenerateTemplateApi}
+          funcCode="codeTemplate"
+          params={{ categoryId: categoryId }}
+          operateBar={{ showCopy: true }}
+        />
+      }
+    />
   );
 };
 
-export default CodeGenerateTemplateComponent;
+export default CodeGenerateTemplatePage;

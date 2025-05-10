@@ -1,42 +1,39 @@
 import useAuthApi from '@/api/system/auth';
-import { CurrentUserRouteState } from '@/store/menu';
 import _ from 'lodash';
 import { useCallback } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
 import { findRoute } from './util';
-import { ErrorState } from '@/store/error';
 import { MenuTree } from '@/api/system/menu';
 import { TurboRoute } from './AppRouter';
-import { tryGetIcon } from '@/components/icon';
-import Preview from './routes';
+import { tryGetIcon } from '@/components/icon/shared';
 import PageNotFound from '@/error/PageNotFound';
+import useStore from '@/hook/useStore';
+import routes from './routes';
+import { find } from './shared';
 
 const SKIP_PATH_LIST = ['/', '/home', '/profile', '/login'];
 
 export default function useRouteHelper() {
-  const setError = useSetRecoilState(ErrorState);
-
   const authApi = useAuthApi();
-  const [userRoutes, setUserRouters] = useRecoilState(CurrentUserRouteState);
+  const { route, error } = useStore();
 
   const loadCurrentUserRoute = useCallback(() => {
     const { pathname } = window.location;
-    if (_.isEmpty(userRoutes)) {
+    if (_.isEmpty(route.routes)) {
       authApi.getCurrentUserMenu().then((res) => {
         if (res.code === 200) {
           const routes = menuToRoutes(res.data || []);
           // 根据当前路径获取（可能是刷新的情况，去除/）设置选中的content tab 与 side tab
           // 如果没有找到则publish error（此时浏览器会提示错误信息并且展示error页面）
-          const route = findRoute(pathname, routes);
-          if (route || SKIP_PATH_LIST.indexOf(pathname) > -1) {
-            setUserRouters(routes);
+          const r = findRoute(pathname, routes);
+          if (r || SKIP_PATH_LIST.indexOf(pathname) > -1) {
+            route.setRoutes(routes);
             // 去除error signal
-            setError(undefined);
+            error.setError(undefined);
             return;
           }
         }
         // 发布菜单错误
-        setError({ status: 404, message: `page ${pathname} not found` });
+        error.setError({ status: 404, message: `page ${pathname} not found` });
       });
     }
   }, []);
@@ -87,21 +84,23 @@ export default function useRouteHelper() {
    * @param m the menu data
    */
   const findPageComponent = useCallback((m: MenuTree): any => {
-    // find preview route
-    const PageComponent = Preview.find((preview) => {
+    const route = find(routes, (r) => {
       // low code domain page
       if (m.type === 'PAGE') {
         return (
-          m.route?.startsWith('/domain') && preview.path.startsWith('/domain')
+          (m.route?.startsWith('/domain') && r.path!.startsWith('/domain')) ||
+          false
         );
       }
-      return preview.path === m.route;
-    })?.element;
+      return r.path! === m.route;
+    });
+
     // exclude parent route ('parent' has children )
-    if (_.isEmpty(m.children) && _.isEmpty(PageComponent)) {
+    if (_.isEmpty(m.children) && _.isEmpty(route)) {
       return <PageNotFound />;
     }
-    return PageComponent;
+
+    return route?.Component;
   }, []);
 
   return loadCurrentUserRoute;

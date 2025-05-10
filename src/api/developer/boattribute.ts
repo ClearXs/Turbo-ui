@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { Tree, TreeGeneralApi, TreeGeneralApiImpl } from '..';
 
 export interface BoAttributeTree extends Tree {

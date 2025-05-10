@@ -1,7 +1,7 @@
 import useMessageLogApi, { MessageLog, MessageLogApi } from '@/api/message/log';
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
-import { SendStatus } from '@/constant/sendStatus';
+import { SendStatus } from '@/constant/send-status';
 import _ from 'lodash';
 
 const MessageLogHelper: Helper<MessageLog, MessageLogApi> = {

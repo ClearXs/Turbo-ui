@@ -1,8 +1,12 @@
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { GeneralApi, Entity } from '@/api';
 import { TableColumnProps, TableContext } from './interface';
-import { ColumnType, FormColumnProps, FormContext } from '../tform/interface';
-import { FormColumnDecorator } from '../tform/form';
+import {
+  ColumnType,
+  FormColumnProps,
+  FormContext,
+} from '../uni-form/interface';
+import { FormColumnDecorator } from '../uni-form/form';
 import { ReactNode } from 'react';
 import {
   BaseTableField,
@@ -39,9 +43,9 @@ import {
   UserTableField,
 } from './components';
 import { ISchema } from '@formily/json-schema';
-import { BoAttrSchema } from '@designable/core';
-import { GlobalSchemaColumnRegistry } from '../tform/formily/schema';
-import { FormField } from '../tform/components';
+import { BoAttrSchema } from '@clearx/designable-core';
+import { GlobalSchemaColumnRegistry } from '../uni-form/formily/schema';
+import { FormField } from '../uni-form/components';
 
 export interface TableColumnDecorator<T extends Entity>
   extends FormColumnDecorator<T> {

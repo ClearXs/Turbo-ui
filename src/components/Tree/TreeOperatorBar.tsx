@@ -35,11 +35,13 @@ export default function renderTreeOperatorBar<T extends Tree>(
   ) {
     const saveOperatorBar: OperateToolbar<T> = {
       ...ADD_LITERAL_OPERATOR_BAR,
-      onClick(tableContext, formContext, record) {
-        formContext.visible = true;
-        formContext.loading = false;
-        formContext.type = 'add';
-        formContext.setValues(formContext.getDefaultValues());
+      onClick(record, tableContext, formContext) {
+        if (formContext) {
+          formContext.visible = true;
+          formContext.loading = false;
+          formContext.type = 'add';
+          formContext.setValues(formContext.getDefaultValues());
+        }
       },
     };
     bars.push(saveOperatorBar);

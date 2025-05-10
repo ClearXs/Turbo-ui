@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import TableCrud from '@/components/table-crud';
 import { PROVIDER } from '@/constant/provider';
-import { CS_TYPE } from '@/constant/storageType';
+import { CS_TYPE } from '@/constant/storage-type';
 import { ENABLE } from '@/constant/enable';
 import useStorageConfigApi, {
   StorageConfig,
@@ -9,7 +9,7 @@ import useStorageConfigApi, {
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Notification } from '@douyinfe/semi-ui';
 
-export default function (): React.ReactNode {
+const StorageConfigPage = () => {
   const api = useStorageConfigApi();
 
   const columns: TableColumnProps<StorageConfig>[] = useMemo(() => {
@@ -89,7 +89,7 @@ export default function (): React.ReactNode {
     <TableCrud<StorageConfig>
       mode="page"
       columns={columns}
-      useApi={useStorageConfigApi}
+      useApi={api}
       operateBar={{
         append: [
           (record) => {
@@ -141,4 +141,6 @@ export default function (): React.ReactNode {
       }}
     />
   );
-}
+};
+
+export default StorageConfigPage;

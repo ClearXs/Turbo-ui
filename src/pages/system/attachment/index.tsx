@@ -5,7 +5,9 @@ import useAttachmentApi, { Attachment } from '@/api/system/attachment';
 import { tryGetIcon } from '@/components/icon/shared';
 import { TableColumnProps } from '@/components/table-crud/interface';
 
-export default function (): React.ReactNode {
+const AttachmentPage = () => {
+  const attachmentApi = useAttachmentApi();
+
   const columns: TableColumnProps<Attachment>[] = useMemo(() => {
     return [
       {
@@ -41,7 +43,7 @@ export default function (): React.ReactNode {
     <TableCrud<Attachment>
       mode="page"
       columns={columns}
-      useApi={useAttachmentApi}
+      useApi={attachmentApi}
       toolbar={{ showAdd: false }}
       operateBar={{
         showEdit: false,
@@ -59,4 +61,6 @@ export default function (): React.ReactNode {
       }}
     />
   );
-}
+};
+
+export default AttachmentPage;

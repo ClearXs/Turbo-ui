@@ -1,7 +1,7 @@
 import { Entity } from '@/api';
 import { ListPanelContext } from './interface';
-import { FormContext } from '../tform/interface';
-import { action, define, observable } from '@formily/reactive';
+import { FormContext } from '../uni-form/interface';
+import { action, makeObservable, observable } from 'mobx';
 
 export default class ListPanelContextImpl<T extends Entity>
   implements ListPanelContext<T>
@@ -22,7 +22,7 @@ export default class ListPanelContextImpl<T extends Entity>
     this.selectKey = '';
     this.selectKeys = [];
 
-    define(this, {
+    makeObservable(this, {
       loading: observable,
       list: observable,
       dataSource: observable,

@@ -3,16 +3,16 @@ import { useLoaderData, useNavigate } from 'react-router-dom';
 import { tryGetIcon } from '../icon/shared';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import _ from 'lodash';
-import { useContext, useEffect } from 'react';
-import { AppContext } from '@/context';
+import { useEffect } from 'react';
 import { findRoute } from '@/route/util';
 import { createContentTab } from './util';
-import { observer } from '@formily/reactive-react';
 import { UserTab } from './interface';
 import { TurboRoute } from '@/route/AppRouter';
+import useStore from '@/hook/useStore';
+import { observer } from 'mobx-react';
 
-const ContentTabs = observer(() => {
-  const app = useContext(AppContext);
+const ContentTabs = () => {
+  const { app } = useStore();
   const { userTabs, selectTopKey, selectTabKey, selectSideKey } = app;
   const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ const ContentTabs = observer(() => {
       ...userTabs.slice(0, closeTabIndex),
       ...userTabs.slice(closeTabIndex + 1, userTabs.length),
     ];
-    app.userTabs = newUserTabs;
+    app.setUserTabs(newUserTabs);
     // 判断当前关闭的key是否为激活的key，如果不是则不重新设置激活key
     if (tabKey === selectSideKey) {
       // 判断当前关闭是否为最后一个，如果是则取上一个，如果不是则取下一个
@@ -43,7 +43,7 @@ const ContentTabs = observer(() => {
         toHome();
         return;
       }
-      app.selectSideKey = nextTab.itemKey;
+      app.setSelectSideKey(nextTab.itemKey!);
       navigate(nextTab.path as string);
       onceMoreRenderSideMenu(nextTab);
     }
@@ -61,16 +61,17 @@ const ContentTabs = observer(() => {
     // 如果是，则不需要设置选中项
     // 如果不是，则需要设置选中项，以当前结点作为选中项并跳转
     if (selectSideKey !== tab.itemKey) {
-      app.selectSideKey = tab.itemKey;
+      app.setSelectSideKey(tab.itemKey!);
       navigate(tab.path as string);
     }
-    app.userTabs = newUserTabs;
+    app.setUserTabs(newUserTabs);
   };
 
   const closeAllTab = () => {
     toHome();
     // 保留home tab
-    app.userTabs = userTabs.slice(0, 1);
+    const newUserTabs = userTabs.slice(0, 1);
+    app.setUserTabs(newUserTabs);
   };
 
   const tabClick = (activeKey: string) => {
@@ -90,8 +91,8 @@ const ContentTabs = observer(() => {
         navigate(tab.path);
       }
       // 设置active
-      app.selectTabKey = activeKey;
-      app.selectSideKey = activeKey;
+      app.setSelectTabKey(activeKey);
+      app.setSelectSideKey(activeKey);
       onceMoreRenderSideMenu(tab);
     }
   };
@@ -100,13 +101,13 @@ const ContentTabs = observer(() => {
   const onceMoreRenderSideMenu = (tab: UserTab) => {
     // 避免重复渲染
     if (selectTopKey !== tab.topMenuKey) {
-      app.selectTopKey = tab.topMenuKey;
+      app.setSelectTopKey(tab.topMenuKey);
     }
   };
 
   const toHome = () => {
     navigate('/home');
-    app.selectTopKey = 'home';
+    app.setSelectTopKey('home');
   };
 
   useEffect(() => {
@@ -114,17 +115,17 @@ const ContentTabs = observer(() => {
     if (homeRoute) {
       const newTabs = createContentTab(userTabs, homeRoute, 'home');
       if (app.selectTabKey === undefined) {
-        app.selectTabKey = 'home';
+        app.setSelectTabKey('home');
       }
       if (newTabs) {
-        app.userTabs = newTabs;
+        app.setUserTabs(newTabs);
       }
     }
   }, []);
 
   return (
     <Tabs
-      className="w-[100%]"
+      className="max-w-[100%] overflow-x-auto"
       style={{ backgroundColor: 'var(--semi-color-bg-0)' }}
       type="card"
       onTabClick={(activeKey) => tabClick(activeKey)}
@@ -156,7 +157,7 @@ const ContentTabs = observer(() => {
                         onClick={() => {
                           navigate(tab.path);
                           // 设置active
-                          app.selectSideKey = tab.itemKey as string;
+                          app.setSelectSideKey(tab.itemKey!);
                         }}
                       >
                         刷新
@@ -201,6 +202,6 @@ const ContentTabs = observer(() => {
       })}
     </Tabs>
   );
-});
+};
 
-export default ContentTabs;
+export default observer(ContentTabs);

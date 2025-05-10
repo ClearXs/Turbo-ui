@@ -3,9 +3,8 @@ import { Modal, Toast } from '@douyinfe/semi-ui';
 import { useEffect, useState } from 'react';
 import Editor from '.';
 import { EditorProps } from './interface';
-import { usePrefix } from '@designable/react';
+import { usePrefix } from '@clearx/designable-react';
 import cls from 'classnames';
-import './styles.less';
 import useBoApi from '@/api/developer/bo';
 
 export type ModalEditorProps = {

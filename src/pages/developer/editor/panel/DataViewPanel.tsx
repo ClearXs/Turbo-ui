@@ -6,12 +6,12 @@ import {
   ViewportPanel,
   Workspace,
   WorkspacePanel,
-} from '@designable/react';
+} from '@clearx/designable-react';
 import DataViewForm from './data-view-form/DataViewForm';
 import TableCrud from '@/components/table-crud';
 import { useKernel } from '../kernel';
 import { IdEntity } from '@/api';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 
 const DataViewPanel = observer(() => {
   const kernel = useKernel();

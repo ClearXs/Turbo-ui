@@ -4,10 +4,9 @@ import _ from 'lodash';
 import { useEffect, useMemo, useRef } from 'react';
 import { RouteContext } from './context';
 import { findRoute } from './util';
-import { useRecoilValue } from 'recoil';
-import { CurrentUserRouteState } from '@/store/menu';
 import AuthenticationInterceptor from './AuthenticationInterceptor';
 import InnerRouteInterceptor from './InnerRouteInterceptor';
+import useStore from '@/hook/useStore';
 
 export type RouteInterceptor = {
   // 优先级
@@ -35,17 +34,17 @@ export type InterceptorContext = {
 };
 
 export const withInterceptorComponent = (
-  route: TurboRoute,
+  r: TurboRoute,
   Element: React.ReactNode,
 ) => {
   return (): React.ReactNode => {
     const navigate = useNavigate();
-    const userRoutes = useRecoilValue(CurrentUserRouteState);
+    const { route } = useStore();
     const backRoute = useRef<TurboRoute | undefined>(undefined);
 
     const location = window.location;
     const interceptor = useMemo(() => {
-      return [AuthenticationInterceptor, new InnerRouteInterceptor(route)].sort(
+      return [AuthenticationInterceptor, new InnerRouteInterceptor(r)].sort(
         (a, b) => {
           return a.order - b.order;
         },
@@ -55,11 +54,11 @@ export const withInterceptorComponent = (
     useEffect(() => {
       const { pathname } = window.location;
       for (const intcp of interceptor) {
-        if (pathname === route.path) {
+        if (pathname === r.path) {
           const nextExecute =
-            intcp.match(route, pathname) &&
+            intcp.match(r, pathname) &&
             intcp.intercept({
-              route,
+              route: r,
               navigate,
             });
           if (!nextExecute) {
@@ -67,13 +66,11 @@ export const withInterceptorComponent = (
           }
         }
       }
-      backRoute.current = findRoute(pathname, userRoutes || []);
+      backRoute.current = findRoute(pathname, route.userRoutes || []);
     }, [location.pathname]);
 
     return (
-      <RouteContext.Provider
-        value={{ current: route, back: backRoute.current }}
-      >
+      <RouteContext.Provider value={{ current: r, back: backRoute.current }}>
         {Element}
       </RouteContext.Provider>
     );

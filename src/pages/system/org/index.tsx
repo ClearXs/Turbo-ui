@@ -3,11 +3,13 @@ import TableCrud from '@/components/table-crud';
 import OrgHelper from './helper';
 import { tryGetIcon } from '@/components/icon/shared';
 
-const Org: React.FC = () => {
+const OrgPage = () => {
+  const orgApi = OrgHelper.getApi();
+
   return (
     <TableCrud<OrgEntity>
       mode="tree"
-      useApi={OrgHelper.getApi}
+      useApi={orgApi}
       columns={OrgHelper.getColumns()}
       expandAllRows
       toolbar={{
@@ -72,4 +74,4 @@ const Org: React.FC = () => {
   );
 };
 
-export default Org;
+export default OrgPage;

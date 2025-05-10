@@ -1,6 +1,6 @@
 import React from 'react';
-import { BusinessObject, BoSchema, TreeNode } from '@designable/core';
-import { MonacoInput } from '@designable/react-settings-form';
+import { BusinessObject, BoSchema, TreeNode } from '@clearx/designable-core';
+import { MonacoInput } from '@clearx/designable-react-settings-form';
 
 export interface IBoSchemaWidgetProps {
   bo: BusinessObject;

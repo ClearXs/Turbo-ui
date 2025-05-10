@@ -20,6 +20,10 @@ export type DialogProps = {
   showCancel?: boolean | (() => boolean);
   // 自定义追加，当是函数渲染时，返回值如果是undefined 该追加操作则不进行添加
   append?: DialogButtonProps[];
+  // 宽度
+  width?: string | number;
+  // 高度
+  height?: string | number;
   // 是否显示Y轴滑动轮，默认为true
   scrollY?: boolean;
   // 是否显示X轴滑动轮，默认为true

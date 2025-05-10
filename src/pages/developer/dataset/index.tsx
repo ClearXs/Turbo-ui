@@ -8,8 +8,10 @@ import Binary from '@/components/binary';
 import _ from 'lodash';
 import { Dataset } from '@/api/developer/dataset';
 
-const Dataset: React.FC = () => {
+const DatasetPage = () => {
   const [categoryId, setCategoryId] = useState<string>();
+  const categoryApi = CategoryHelper.getApi();
+  const datasetApi = DatasetHelper.getApi();
 
   return (
     <>
@@ -19,7 +21,7 @@ const Dataset: React.FC = () => {
             columns={CategoryHelper.getColumns()}
             params={{ funcCode: 'dataset' }}
             addDefaultValue={{ funcCode: 'dataset' }}
-            useApi={CategoryHelper.getApi}
+            useApi={categoryApi}
             onSelectChange={setCategoryId}
             depth={0}
             root="数据集分类"
@@ -30,7 +32,7 @@ const Dataset: React.FC = () => {
           <CategoryTableCrud<Dataset>
             mode="page"
             columns={DatasetHelper.getColumns()}
-            useApi={DatasetHelper.getApi}
+            useApi={datasetApi}
             params={{ categoryId: categoryId }}
             funcCode="dataset"
             operateBar={{
@@ -43,4 +45,4 @@ const Dataset: React.FC = () => {
   );
 };
 
-export default Dataset;
+export default DatasetPage;

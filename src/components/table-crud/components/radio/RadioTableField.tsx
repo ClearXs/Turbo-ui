@@ -1,7 +1,7 @@
 import { Entity } from '@/api';
 import { BaseTableField, TableRadioColumnProps } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { Form, Typography } from '@douyinfe/semi-ui';
 
 // TODO: 未经过验证

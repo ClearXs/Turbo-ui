@@ -1,16 +1,16 @@
 import { Dic } from '@/api/system/dic';
-import { BoSchema, Engine } from '@designable/core';
-import { Dictionary } from '@designable/core/lib/models/Dictionary';
+import { BoSchema, Engine } from '@clearx/designable-core';
 import {
   transformToSchema,
   transformToTreeNode,
-} from '@designable/formily-transformer';
+} from '@clearx/designable-formily-transformer';
 import { useContext } from 'react';
 import { KernelContext } from './context';
-import { from } from '@/components/tform/formily/schema';
+import { from } from '@/components/uni-form/formily/schema';
 import { TableCrudProps } from '@/components/table-crud/interface';
 import { TreePanelProps } from '@/components/tree';
 import { IdEntity } from '@/api';
+import { Dictionary } from '@clearx/designable-core/lib/esm/models/Dictionary';
 
 // 数据视图
 export type DataView = TableCrudProps<IdEntity> & {

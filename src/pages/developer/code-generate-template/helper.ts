@@ -8,8 +8,8 @@ import {
 } from '@/components/table-crud/components';
 import { TableColumnProps } from '@/components/table-crud/interface';
 import { Helper } from '@/components/interface';
-import { CodeTemplateDomain } from '@/constant/codeTemplateDomain';
-import { CodeTemplateLanguage } from '@/constant/codeTemplateLanguage';
+import { CodeTemplateDomain } from '@/constant/code-template-domain';
+import { CodeTemplateLanguage } from '@/constant/code-template-language';
 import _ from 'lodash';
 import mentions from './mentions';
 

@@ -3,12 +3,12 @@ import { ListPanelProps } from './interface';
 import { useEffect, useMemo } from 'react';
 import Tree from '@douyinfe/semi-ui/lib/es/tree';
 import { Spin } from '@douyinfe/semi-ui';
-import TForm from '../tform/TForm';
+import UniForm from '../uni-form/UniForm';
 import _ from 'lodash';
 import ListPanelContextImpl from './ListPanelContext';
 import ListPanelApiImpl from './ListPanelApi';
 import ListToolbar from './ListToolbar';
-import { observer } from '@formily/reactive-react';
+import { observer } from 'mobx-react';
 import { TListPanelContext } from './context/listPanel';
 
 const ListPanel = observer(<T extends Entity>(props: ListPanelProps<T>) => {
@@ -82,7 +82,7 @@ const ListPanel = observer(<T extends Entity>(props: ListPanelProps<T>) => {
             }}
           />
         </TListPanelContext.Provider>
-        <TForm<T>
+        <UniForm<T>
           mode="tree"
           useApi={useApi}
           columns={columns}

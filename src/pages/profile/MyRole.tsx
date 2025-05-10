@@ -2,6 +2,7 @@ import useAuthApi from '@/api/system/auth';
 import { Role } from '@/api/system/role';
 import { Card, CardGroup } from '@douyinfe/semi-ui';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
+import { observer } from 'mobx-react';
 import { useEffect, useState } from 'react';
 
 const MyRole = () => {
@@ -37,4 +38,4 @@ const MyRole = () => {
   );
 };
 
-export default MyRole;
+export default observer(MyRole);

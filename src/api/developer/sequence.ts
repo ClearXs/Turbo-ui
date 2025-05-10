@@ -1,4 +1,4 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { GeneralApi, GeneralApiImpl, R, TenantEntity } from '..';
 
 export interface Sequence extends TenantEntity {

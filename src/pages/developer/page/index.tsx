@@ -5,19 +5,18 @@ import TreePanel from '@/components/tree/TreePanel';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
 import Binary from '@/components/binary';
 import _ from 'lodash';
-import usePageApi, { Page as PageEntity } from '@/api/developer/page';
+import { Page as PageEntity } from '@/api/developer/page';
 import PageHelper from './helper';
 import { Notification, Toast } from '@douyinfe/semi-ui';
 import FormEditor from '../editor/FormEditor';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import MenuTreeComponent from '@/pages/system/menu/MenuTree';
 import { TreePanelApi } from '@/components/tree';
 import { MenuTree } from '@/api/system/menu';
 import Modular from '@/components/modular/Modular';
 import useBoApi from '@/api/developer/bo';
 
-const Page: React.FC = () => {
-  const pageApi = usePageApi();
+const PagePage = () => {
   const boApi = useBoApi();
   const [categoryId, setCategoryId] = useState<string>();
   const [showEditor, setShowEditor] = useState<boolean>(false);
@@ -25,6 +24,8 @@ const Page: React.FC = () => {
   const pageRef = useRef<PageEntity>();
   const [showMenuTree, setShowMenuTree] = useState<boolean>(false);
   const menuTreeApiRef = useRef<TreePanelApi<MenuTree>>();
+  const categoryApi = CategoryHelper.getApi();
+  const pageApi = PageHelper.getApi();
 
   const editable = useMemo(() => {
     return (record: PageEntity) => {
@@ -53,7 +54,7 @@ const Page: React.FC = () => {
             columns={CategoryHelper.getColumns()}
             params={{ funcCode: 'page' }}
             addDefaultValue={{ funcCode: 'page' }}
-            useApi={CategoryHelper.getApi}
+            useApi={categoryApi}
             onSelectChange={setCategoryId}
             depth={0}
             root="页面分类"
@@ -65,7 +66,7 @@ const Page: React.FC = () => {
           <CategoryTableCrud<PageEntity>
             mode="cardPage"
             columns={PageHelper.getColumns()}
-            useApi={PageHelper.getApi}
+            useApi={pageApi}
             params={{ categoryId: categoryId }}
             funcCode="page"
             operateBar={{
@@ -155,4 +156,4 @@ const Page: React.FC = () => {
   );
 };
 
-export default Page;
+export default PagePage;

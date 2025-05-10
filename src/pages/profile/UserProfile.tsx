@@ -1,4 +1,3 @@
-import { CurrentUserState } from '@/store/user';
 import {
   Avatar,
   Button,
@@ -13,21 +12,21 @@ import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import Title from '@douyinfe/semi-ui/lib/es/typography/title';
 import _ from 'lodash';
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
 import * as local from '@/util/local';
 import * as headers from '@/util/constant';
 import * as auth from '@/util/auth';
 import useAuthApi from '@/api/system/auth';
 import { IconCamera } from '@douyinfe/semi-icons';
+import useStore from '@/hook/useStore';
+import { observer } from 'mobx-react';
 
-export default function UserProfile() {
-  const [isSave, setSave] = useState(false);
-  const [currentUser, setCurrentUser] = useRecoilState(CurrentUserState);
-
-  const [avatar, setAvatar] = useState(currentUser?.avatar);
-  const [loading, setLoading] = useState(false);
-
+const UserProfile = () => {
   const authApi = useAuthApi();
+  const { user } = useStore();
+
+  const [isSave, setSave] = useState(false);
+  const [avatar, setAvatar] = useState(user.currentUser?.avatar || '');
+  const [loading, setLoading] = useState(false);
 
   return (
     <>
@@ -43,14 +42,14 @@ export default function UserProfile() {
                 const data = res.data;
                 const token = data.token?.tokenValue || '';
                 auth.set(token);
-                setCurrentUser(newCurrentUser);
+                user.setCurrentUser(newCurrentUser);
                 setSave(false);
                 Notification.success({ position: 'top', content: '修改成功!' });
               }
               setLoading(false);
             });
           }}
-          initValues={currentUser}
+          initValues={user.currentUser}
           disabled={!isSave}
         >
           <div className="flex">
@@ -198,4 +197,6 @@ export default function UserProfile() {
       </Spin>
     </>
   );
-}
+};
+
+export default observer(UserProfile);

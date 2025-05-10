@@ -1,7 +1,8 @@
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 import { BaseEntity, CategoryEntity, GeneralApi, GeneralApiImpl, R } from '..';
 import { CodeGenerateTemplate } from './codeGenerateTemplate';
 import { LanguageName } from '@uiw/codemirror-extensions-langs';
+import { TableColumn } from './datasource';
 
 export interface CodeGenerate extends BaseEntity, CategoryEntity {
   /**
@@ -58,6 +59,16 @@ export interface CodeGenerate extends BaseEntity, CategoryEntity {
   };
 
   /**
+   * ddl
+   */
+  ddl: string;
+
+  /**
+   * ddlDb
+   */
+  ddlDb: string;
+
+  /**
    * 数据视图
    */
   dataView: string;
@@ -81,6 +92,7 @@ export interface CodeContent {
 }
 
 export interface CodeGenerateApi extends GeneralApi<CodeGenerate> {
+  parseDDL: (ddlText: string, engine: string) => Promise<R<TableColumn>>;
   preview: (id: string) => Promise<R<CodeContent[]>>;
   generate: (id: string) => Promise<void>;
 }
@@ -89,6 +101,12 @@ class CodeGenerateApiImpl
   extends GeneralApiImpl<CodeGenerate>
   implements CodeGenerateApi
 {
+  parseDDL(ddlText: string, engine: string): Promise<R<TableColumn>> {
+    return this.request
+      .post(this.apiPath + '/parse-ddl', { ddlText, engine })
+      .then((res) => res.data);
+  }
+
   preview(id: string): Promise<R<CodeContent[]>> {
     return this.request
       .get(this.apiPath + `/preview/${id}`)

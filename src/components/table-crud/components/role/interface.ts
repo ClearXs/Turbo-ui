@@ -1,5 +1,5 @@
 import { Entity } from '@/api';
-import { FormRoleColumnProps } from '@/components/tform/components';
+import { FormRoleColumnProps } from '@/components/uni-form/components';
 import { CardColumnProps } from '../../interface';
 
 // role 组件

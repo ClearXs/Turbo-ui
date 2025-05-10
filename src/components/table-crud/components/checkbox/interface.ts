@@ -1,5 +1,5 @@
 import { Entity } from '@/api';
-import { FormCheckboxColumnProps } from '@/components/tform/components';
+import { FormCheckboxColumnProps } from '@/components/uni-form/components';
 import { CardColumnProps } from '../../interface';
 
 // checkbox组件

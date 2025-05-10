@@ -1,13 +1,13 @@
-import { ErrorState } from '@/store/error';
+import useStore from '@/hook/useStore';
 import { useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
 
 const PageNotFound = () => {
   const { pathname } = window.location;
-  const setError = useSetRecoilState(ErrorState);
+  const { error } = useStore();
+
   useEffect(() => {
     // 发布菜单错误
-    setError({ status: 404, message: `page ${pathname} not found` });
+    error.setError({ status: 404, message: `page ${pathname} not found` });
   }, [pathname]);
   return <></>;
 };

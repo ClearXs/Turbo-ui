@@ -1,5 +1,5 @@
 import { Form } from '@/api/developer/form';
-import { tryGetIcon } from '@/components/icon';
+import { tryGetIcon } from '@/components/icon/shared';
 import MenuTreeComponent from '@/pages/system/menu/MenuTree';
 import { Button, Popover } from '@douyinfe/semi-ui';
 import { useNavigate } from 'react-router-dom';

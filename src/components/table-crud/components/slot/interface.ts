@@ -1,5 +1,5 @@
 import { Entity } from '@/api';
-import { FormSlotColumnProps } from '@/components/tform/components';
+import { FormSlotColumnProps } from '@/components/uni-form/components';
 import { TableColumnProps } from '../../interface';
 
 // slot

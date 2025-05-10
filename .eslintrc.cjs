@@ -1,5 +1,14 @@
 module.exports = {
-  extends: ['airbnb', 'prettier', 'eslint:recommended', 'plugin:react/recommended', 'plugin:import/recommended', 'plugin:jsx-a11y/recommended', 'eslint-config-prettier', 'plugin:storybook/recommended'],
+  extends: [
+    'airbnb',
+    'prettier',
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:import/recommended',
+    'plugin:jsx-a11y/recommended',
+    'eslint-config-prettier',
+    'plugin:storybook/recommended',
+  ],
   plugins: ['react', 'react-hooks', 'prettier', 'jsx-a11y', 'import'],
   settings: {
     react: {
@@ -45,12 +54,6 @@ module.exports = {
       },
     ],
     'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': [
-      'warn',
-      {
-        additionalHooks: '(useRecoilCallback|useRecoilTransaction_UNSTABLE)',
-      },
-    ],
     'linebreak-style': 'off',
     'implicit-arrow-linebreak': 'off',
     indent: 'off',

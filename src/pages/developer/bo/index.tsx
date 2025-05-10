@@ -1,17 +1,16 @@
 import { useMemo, useState } from 'react';
 import BoHelper from './helper';
 import { CategoryTree } from '@/api/system/category';
-import useBoApi, { Bo } from '@/api/developer/bo';
+import { Bo } from '@/api/developer/bo';
 import TreePanel from '@/components/tree/TreePanel';
 import Binary from '@/components/binary';
 import { Notification } from '@douyinfe/semi-ui';
 import ModularBoTable from './ModularBoTable';
 import CategoryTableCrud from '@/pages/system/category/CategoryTableCrud';
-import { directGetIcon, tryGetIcon } from '@/components/icon';
+import { directGetIcon, tryGetIcon } from '@/components/icon/shared';
 import { TableContext } from '@/components/table-crud/interface';
 import { ModularProps } from '@/components/modular/interface';
-import { observer } from '@formily/reactive-react';
-import { observable } from '@formily/reactive';
+import { observable } from 'mobx';
 import Modular from '@/components/modular/Modular';
 import CategoryHelper from '@/pages/system/category/helper';
 
@@ -22,8 +21,10 @@ type BoInternalProps = {
   boChangedFunc?: ModularProps['beforeCancel'];
 };
 
-const BoComponent: React.FC = observer(() => {
+const BoPage = () => {
   const [categoryId, setCategoryId] = useState<string>();
+  const categoryApi = CategoryHelper.getApi();
+  const boApi = BoHelper.getApi();
 
   const props: BoInternalProps = useMemo(() => {
     return observable({
@@ -33,8 +34,6 @@ const BoComponent: React.FC = observer(() => {
     });
   }, []);
 
-  const boApi = useBoApi();
-
   return (
     <>
       <Binary
@@ -43,7 +42,7 @@ const BoComponent: React.FC = observer(() => {
             columns={CategoryHelper.getColumns()}
             params={{ funcCode: 'bo' }}
             addDefaultValue={{ funcCode: 'bo' }}
-            useApi={CategoryHelper.getApi}
+            useApi={categoryApi}
             onSelectChange={setCategoryId}
             depth={0}
             root="业务对象分类"
@@ -55,8 +54,8 @@ const BoComponent: React.FC = observer(() => {
             mode="page"
             columns={BoHelper.getColumns()}
             funcCode="bo"
-            useApi={BoHelper.getApi}
-            params={{ categoryId: categoryId }}
+            useApi={boApi}
+            params={{ categoryId }}
             getTableContext={(tableContext) =>
               (props.tableContext = tableContext)
             }
@@ -80,9 +79,7 @@ const BoComponent: React.FC = observer(() => {
                             const { code, data } = res;
                             if (code === 200 && data) {
                               Notification.success({ content: '物化成功' });
-                              tableContext.tableApi.listOrPageOrTree(
-                                tableContext,
-                              );
+                              tableContext.tableApi.listOrPageOrTree();
                             }
                             tableContext.table.loading = false;
                           })
@@ -117,6 +114,6 @@ const BoComponent: React.FC = observer(() => {
       )}
     </>
   );
-});
+};
 
-export default BoComponent;
+export default BoPage;

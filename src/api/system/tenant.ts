@@ -1,5 +1,5 @@
 import { GeneralApi, GeneralApiImpl, IdEntity } from '..';
-import useRequest from '@/hook/request';
+import useRequest from '@/hook/useRequest';
 
 export interface Tenant extends IdEntity {
   /**
@@ -30,7 +30,7 @@ export interface Tenant extends IdEntity {
 
 export interface TenantApi extends GeneralApi<Tenant> {}
 
-export default function useTenantApi(): TenantApi {
+export default function useTenantApi() {
   const request = useRequest();
   return new GeneralApiImpl<Tenant>('/api/sys/tenant', request);
 }

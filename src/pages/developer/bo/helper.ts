@@ -12,7 +12,7 @@ import {
   TableTreeSelectColumnProps,
 } from '@/components/table-crud/components';
 import DataSourceHelper from '../datasource/helper';
-import useReaction from '@/components/tform/formily/reaction';
+import useReaction from '@/components/uni-form/formily/reaction';
 
 const BoHelper: Helper<Bo, BoApi> = {
   getColumns: () => {
@@ -47,9 +47,6 @@ const BoHelper: Helper<Bo, BoApi> = {
           url: '/api/dev/datasource/list',
         },
         showClear: true,
-        relation: {
-          helper: DataSourceHelper,
-        },
       } as TableSelectColumnProps<Bo>,
       {
         label: '是否物化',

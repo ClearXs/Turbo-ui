@@ -1,17 +1,18 @@
 import TableCrud from '@/components/table-crud';
-import MessageTemplateHelper from './helper';
 import { MessageLog } from '@/api/message/log';
+import MessageLogHelper from './helper';
 
-const MessageLogComponent = () => {
+const MessageLogPage = () => {
+  const messageLogApi = MessageLogHelper.getApi();
   return (
     <TableCrud<MessageLog>
       mode="page"
-      useApi={MessageTemplateHelper.getApi}
-      columns={MessageTemplateHelper.getColumns()}
+      useApi={messageLogApi}
+      columns={MessageLogHelper.getColumns()}
       toolbar={{ showAdd: false }}
       operateBar={{ showEdit: false }}
     />
   );
 };
 
-export default MessageLogComponent;
+export default MessageLogPage;

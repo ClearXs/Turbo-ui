@@ -18,7 +18,7 @@ import {
   TablePagination,
   TablePaginationProps,
 } from '@douyinfe/semi-ui/lib/es/table';
-import { FormContext } from '../tform/interface';
+import { FormContext } from '../uni-form/interface';
 
 const check = <T extends Entity>(tableContext: TableContext<T>) => {
   if (tableContext === undefined) {

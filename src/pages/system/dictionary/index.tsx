@@ -1,5 +1,5 @@
 import useDicApi, { Dic } from '@/api/system/dic';
-import { FormColumnProps } from '@/components/tform/interface';
+import { FormColumnProps } from '@/components/uni-form/interface';
 import TableCrud from '@/components/table-crud';
 import { DIC_TYPE } from '@/constant/dicType';
 import { Divider, Empty, Space, Tag } from '@douyinfe/semi-ui';
@@ -7,10 +7,11 @@ import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import { useMemo, useState } from 'react';
 import { IllustrationConstruction } from '@douyinfe/semi-illustrations';
 import TreePanel from '@/components/tree/TreePanel';
-import useReaction from '@/components/tform/formily/reaction';
+import useReaction from '@/components/uni-form/formily/reaction';
 
-const Dictionary: React.FC = () => {
+const DictionaryPage = () => {
   const [dicId, setDicId] = useState<string>();
+  const dicApi = useDicApi();
 
   const columns: FormColumnProps<Dic>[] = useMemo(() => {
     const reaction = useReaction();
@@ -85,7 +86,7 @@ const Dictionary: React.FC = () => {
         <div className="w-[25%] p-2 overflow-auto">
           <TreePanel
             columns={columns}
-            useApi={useDicApi}
+            useApi={dicApi}
             onSelectChange={setDicId}
             depth={0}
             expandAll
@@ -107,7 +108,7 @@ const Dictionary: React.FC = () => {
             <TableCrud<Dic>
               mode="page"
               columns={columns}
-              useApi={useDicApi}
+              useApi={dicApi}
               params={{ parentId: dicId }}
             />
           ) : (
@@ -123,4 +124,4 @@ const Dictionary: React.FC = () => {
   );
 };
 
-export default Dictionary;
+export default DictionaryPage;

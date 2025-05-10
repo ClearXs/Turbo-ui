@@ -4,7 +4,7 @@ import { TreeNodeData } from '@douyinfe/semi-ui/lib/es/tree';
 import { TableTreeSelectColumnProps } from '.';
 import { BaseTableField } from '..';
 import { ColumnProps, ColumnRender } from '@douyinfe/semi-ui/lib/es/table';
-import { ColumnType } from '@/components/tform/interface';
+import { ColumnType } from '@/components/uni-form/interface';
 import { ISchema } from '@formily/json-schema';
 
 export class TreeSelectTableField<T extends Tree> extends BaseTableField<

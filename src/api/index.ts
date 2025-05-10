@@ -1,4 +1,4 @@
-import { InternalRequest } from '@/hook/request';
+import { InternalRequest } from '@/hook/useRequest';
 import _ from 'lodash';
 
 // 统一返回结构
@@ -22,7 +22,7 @@ export interface BaseEntity extends IdEntity {
   /**
    * 创建时间
    */
-  createdTime: Date;
+  createdTime: string;
 
   /**
    * 创建人
@@ -32,7 +32,7 @@ export interface BaseEntity extends IdEntity {
   /**
    * 更新时间
    */
-  updatedTime: Date;
+  updatedTime: string;
 
   /**
    * 更新人
@@ -121,11 +121,11 @@ export interface TenantEntity extends BaseEntity {
 // 分页配置
 export interface Pagination<T> {
   // 当前页
-  current: string;
+  current: number;
   // 页大小
-  size: string;
+  size: number;
   // 总数
-  total?: string;
+  total?: number;
   // 数据
   records?: T[];
 }

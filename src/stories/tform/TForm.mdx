@@ -5,15 +5,15 @@ import {
   Stories,
   PureArgsTable,
 } from '@storybook/blocks';
-import * as FormStories from './TForm.stories';
+import * as FormStories from './UniForm.stories';
 
 import { formContextArgsType, formModalArgsType } from './form';
 
-<Meta title="Component/TForm" of={FormStories} />
+<Meta title="Component/UniForm" of={FormStories} />
 
 ## Introudction
 
-`TForm(Template Form)` 是一个配置约定UI的组件, 通过高度配置自定义化, 以及引用 Formily 阿里出品的高性能表单解决方案，来能够为业务提供更为优质快速的表单构建解决方案，这些特性包括:
+`UniForm(Template Form)` 是一个配置约定UI的组件, 通过高度配置自定义化, 以及引用 Formily 阿里出品的高性能表单解决方案，来能够为业务提供更为优质快速的表单构建解决方案，这些特性包括:
 
 - 通用化表单字段配置(Column, 详细配置可以查看👉[column](?path=/story/component-tform--column)).
 - 通过上下文表述表单行为, 包括**提交**，**验证**，**获取表单数据**... (更多详细看)[👉[context](?path=/story/component-tform--context)].
@@ -29,7 +29,7 @@ import { formContextArgsType, formModalArgsType } from './form';
 
 ```tsx
 import { Entity } from '@/api';
-import { FormColumnProps, TForm } from '@/components/tform';
+import { FormColumnProps, UniForm } from '@/components/tform';
 
 type Sample = Entity;
 
@@ -41,7 +41,7 @@ const sampleColumns: FormColumnProps<Sample>[] = [
   },
 ];
 
-<TForm<Sample> columns={sampleColumns} model="simply"></TForm>;
+<UniForm<Sample> columns={sampleColumns} model="simply"></UniForm>;
 ```
 
 <Canvas of={FormStories.Default} />
@@ -60,7 +60,7 @@ const sampleColumns: FormColumnProps<Sample>[] = [
 
 ## Dialog
 
-`TForm` 组件允许以弹窗的形式打开表单。
+`UniForm` 组件允许以弹窗的形式打开表单。
 
 <Canvas of={FormStories.Dialog} />
 
